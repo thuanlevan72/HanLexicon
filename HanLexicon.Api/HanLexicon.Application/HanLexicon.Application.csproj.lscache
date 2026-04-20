@@ -71,7 +71,9 @@ Features/Lessons/
  GetDocuments.cs
  GetLessonDetail.cs
  GetLessons.cs
+ GetVocabularyLessons.cs
 Interfaces/
+ ICurrentUserService.cs
  IStorageService.cs
  IVocabularyImportJob.cs
 Mappers/MappingProfile.cs

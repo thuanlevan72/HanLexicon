@@ -61,11 +61,13 @@ Controllers/
  LessonsController.cs
  WeatherForecastController.cs
 Extensions/ApiServiceCollectionExtensions.cs
+Middlewares/GlobalExceptionHandler.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  HanLexicon.Api.AssemblyInfo.cs
  HanLexicon.Api.GlobalUsings.g.cs
 Program.cs
+Services/CurrentUserService.cs
 WeatherForecast.cs
 
 [metadataReferences]
