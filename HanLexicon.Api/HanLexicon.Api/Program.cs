@@ -1,6 +1,8 @@
 using HanLexicon.Api.Extensions;
 using HanLexicon.Application.DependencyInjections;
 using Infrastructure.Postgres.DependencyInjections;
+using Infrastructure.S3;
+using Infrastructure.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,10 +15,13 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 
-// 1. Đăng ký AppDbContext
+// 1. Đăng ký Các services
 builder.Services.AddApplicationDependencyInjection();
 
 builder.Services.AddInfrastructurePostgres(builder.Configuration);
+builder.Services.AddInfrastructureS3(builder.Configuration);
+builder.Services.AddInfrastructureGoogleCloud(builder.Configuration);
+builder.Services.AddInfrastructureBackgroundJobs(builder.Configuration);
 
 // đăng ký service dùng cho api
 builder.Services.AddApiServices(builder.Configuration);

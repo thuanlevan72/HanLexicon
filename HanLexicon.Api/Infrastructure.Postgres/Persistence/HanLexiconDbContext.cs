@@ -22,6 +22,8 @@ public partial class HanLexiconDbContext : DbContext
 
     public virtual DbSet<LessonCategory> LessonCategories { get; set; }
 
+    public virtual DbSet<Permission> Permissions { get; set; }
+
     public virtual DbSet<QuizOption> QuizOptions { get; set; }
 
     public virtual DbSet<QuizQuestion> QuizQuestions { get; set; }
@@ -30,11 +32,17 @@ public partial class HanLexiconDbContext : DbContext
 
     public virtual DbSet<RadicalSet> RadicalSets { get; set; }
 
+    public virtual DbSet<Role> Roles { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserProgress> UserProgresses { get; set; }
 
+    public virtual DbSet<UserRole> UserRoles { get; set; }
+
     public virtual DbSet<UserSession> UserSessions { get; set; }
+
+    public virtual DbSet<UserWordProgress> UserWordProgresses { get; set; }
 
     public virtual DbSet<VLessonsSummary> VLessonsSummaries { get; set; }
 
@@ -210,6 +218,24 @@ public partial class HanLexiconDbContext : DbContext
             entity.Property(e => e.SortOrder).HasColumnName("sort_order");
         });
 
+        modelBuilder.Entity<Permission>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("permissions_pkey");
+
+            entity.ToTable("permissions");
+
+            entity.HasIndex(e => e.Code, "permissions_code_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Code)
+                .HasMaxLength(50)
+                .HasColumnName("code");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasColumnName("name");
+        });
+
         modelBuilder.Entity<QuizOption>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("quiz_options_pkey");
@@ -306,6 +332,42 @@ public partial class HanLexiconDbContext : DbContext
                 .HasConstraintName("radical_sets_lesson_id_fkey");
         });
 
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("roles_pkey");
+
+            entity.ToTable("roles");
+
+            entity.HasIndex(e => e.Code, "roles_code_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Code)
+                .HasMaxLength(50)
+                .HasColumnName("code");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .HasColumnName("name");
+
+            entity.HasMany(d => d.Permissions).WithMany(p => p.Roles)
+                .UsingEntity<Dictionary<string, object>>(
+                    "RolePermission",
+                    r => r.HasOne<Permission>().WithMany()
+                        .HasForeignKey("PermissionId")
+                        .HasConstraintName("role_permissions_permission_id_fkey"),
+                    l => l.HasOne<Role>().WithMany()
+                        .HasForeignKey("RoleId")
+                        .HasConstraintName("role_permissions_role_id_fkey"),
+                    j =>
+                    {
+                        j.HasKey("RoleId", "PermissionId").HasName("role_permissions_pkey");
+                        j.ToTable("role_permissions");
+                        j.HasIndex(new[] { "RoleId" }, "idx_role_permissions_role");
+                        j.IndexerProperty<short>("RoleId").HasColumnName("role_id");
+                        j.IndexerProperty<short>("PermissionId").HasColumnName("permission_id");
+                    });
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("users_pkey");
@@ -335,10 +397,6 @@ public partial class HanLexiconDbContext : DbContext
             entity.Property(e => e.PasswordHash)
                 .HasComment("bcrypt hash, cost=12")
                 .HasColumnName("password_hash");
-            entity.Property(e => e.Role)
-                .HasMaxLength(20)
-                .HasDefaultValueSql("'student'::character varying")
-                .HasColumnName("role");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .HasColumnName("username");
@@ -385,6 +443,29 @@ public partial class HanLexiconDbContext : DbContext
                 .HasConstraintName("user_progress_user_id_fkey");
         });
 
+        modelBuilder.Entity<UserRole>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.RoleId }).HasName("user_roles_pkey");
+
+            entity.ToTable("user_roles");
+
+            entity.HasIndex(e => e.UserId, "idx_user_roles_user");
+
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.UserRoles)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("user_roles_role_id_fkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserRoles)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("user_roles_user_id_fkey");
+        });
+
         modelBuilder.Entity<UserSession>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("user_sessions_pkey");
@@ -414,6 +495,32 @@ public partial class HanLexiconDbContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UserSessions)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("user_sessions_user_id_fkey");
+        });
+
+        modelBuilder.Entity<UserWordProgress>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.VocabId }).HasName("user_word_progress_pkey");
+
+            entity.ToTable("user_word_progress", tb => tb.HasComment("Lưu lịch sử học tập/tra cứu của từng từ vựng riêng biệt"));
+
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.VocabId).HasColumnName("vocab_id");
+            entity.Property(e => e.LastReviewed)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("last_reviewed");
+            entity.Property(e => e.ReviewCount).HasColumnName("review_count");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .HasDefaultValueSql("'learning'::character varying")
+                .HasColumnName("status");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserWordProgresses)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("user_word_progress_user_id_fkey");
+
+            entity.HasOne(d => d.Vocab).WithMany(p => p.UserWordProgresses)
+                .HasForeignKey(d => d.VocabId)
+                .HasConstraintName("user_word_progress_vocab_id_fkey");
         });
 
         modelBuilder.Entity<VLessonsSummary>(entity =>
@@ -481,8 +588,12 @@ public partial class HanLexiconDbContext : DbContext
             entity.Property(e => e.ExampleCn).HasColumnName("example_cn");
             entity.Property(e => e.ExamplePy).HasColumnName("example_py");
             entity.Property(e => e.ExampleVn).HasColumnName("example_vn");
+            entity.Property(e => e.ImageUrl).HasColumnName("image_url");
             entity.Property(e => e.LessonId).HasColumnName("lesson_id");
             entity.Property(e => e.Meaning).HasColumnName("meaning");
+            entity.Property(e => e.MeaningEn)
+                .HasMaxLength(255)
+                .HasColumnName("meaning_en");
             entity.Property(e => e.Pinyin)
                 .HasMaxLength(100)
                 .HasColumnName("pinyin");

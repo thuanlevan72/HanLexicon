@@ -23,13 +23,15 @@ public partial class User
 
     public bool IsActive { get; set; }
 
-    public string Role { get; set; } = null!;
-
     public DateTime CreatedAt { get; set; }
 
     public DateTime? LastLoginAt { get; set; }
 
     public virtual ICollection<UserProgress> UserProgresses { get; set; } = new List<UserProgress>();
 
+    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+
     public virtual ICollection<UserSession> UserSessions { get; set; } = new List<UserSession>();
+
+    public virtual ICollection<UserWordProgress> UserWordProgresses { get; set; } = new List<UserWordProgress>();
 }

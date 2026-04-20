@@ -65,13 +65,17 @@ Entities/
  HanziCard.cs
  Lesson.cs
  LessonCategory.cs
+ Permission.cs
  QuizOption.cs
  QuizQuestion.cs
  Radical.cs
  RadicalSet.cs
+ Role.cs
  User.cs
  UserProgress.cs
+ UserRole.cs
  UserSession.cs
+ UserWordProgress.cs
  VLessonsSummary.cs
  Vocabulary.cs
  VUserStat.cs

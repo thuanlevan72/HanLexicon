@@ -15,18 +15,18 @@ primary
 lastDtbSucceeded
 
 [properties]
-AssemblyName=HanLexicon.Application
+AssemblyName=Infrastructure.S3
 CommandLineArgsForDesignTimeEvaluation=-langversion:14.0 -define:TRACE
 CompilerGeneratedFilesOutputPath=
 MaxSupportedLangVersion=14.0
 ProjectAssetsFile=<PATH>obj/project.assets.json
-RootNamespace=HanLexicon.Application
+RootNamespace=Infrastructure.S3
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
 SolutionPath=*Undefined*
 TargetFrameworkIdentifier=.NETCoreApp
-TargetPath=<PATH>bin/Debug/net10.0/HanLexicon.Application.dll
-TargetRefPath=<PATH>obj/Debug/net10.0/ref/HanLexicon.Application.dll
+TargetPath=<PATH>bin/Debug/net10.0/Infrastructure.S3.dll
+TargetRefPath=<PATH>obj/Debug/net10.0/ref/Infrastructure.S3.dll
 TemporaryDependencyNodeTargetIdentifier=net10.0
 
 [commandLineArguments]
@@ -46,8 +46,8 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 /debug:portable
 /filealign:512
 /optimize-
-/out:obj\Debug\net10.0\HanLexicon.Application.dll
-/refout:obj\Debug\net10.0\refint\HanLexicon.Application.dll
+/out:obj\Debug\net10.0\Infrastructure.S3.dll
+/refout:obj\Debug\net10.0\refint\Infrastructure.S3.dll
 /target:library
 /warnaserror-
 /utf8output
@@ -56,32 +56,17 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 /warnaserror+:NU1605,SYSLIB0011
 
 [sourceFiles]
-DependencyInjections/ApplicationDependencyInjection.cs.cs
-DTOs/docsData/
- DocumentCategoryResponseDto.cs
- DocumentItemDto.cs
-DTOs/gamesData/
- GameCategoryResponseDto.cs
- GameItemDto.cs
-Features/Auth/Login/
- LoginCommand.cs
- LoginEndpoint.cs
- LoginHandler.cs
-Features/Lessons/
- GetDocuments.cs
- GetLessonDetail.cs
- GetLessons.cs
-Interfaces/
- IStorageService.cs
- IVocabularyImportJob.cs
-Mappers/MappingProfile.cs
+DependencyInjection.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
- HanLexicon.Application.AssemblyInfo.cs
- HanLexicon.Application.GlobalUsings.g.cs
+ Infrastructure.S3.AssemblyInfo.cs
+ Infrastructure.S3.GlobalUsings.g.cs
+S3Settings.cs
+S3StorageService.cs
 
 [metadataReferences]
 ../
+ HanLexicon.Application/obj/Debug/net10.0/ref/HanLexicon.Application.dll
  HanLexicon.Domain/obj/Debug/net10.0/ref/HanLexicon.Domain.dll
  Infrastructure.Postgres/obj/Debug/net10.0/ref/Infrastructure.Postgres.dll
 <DOTNET>/packs/Microsoft.NETCore.App.Ref/10.0.5/ref/net10.0/
@@ -254,6 +239,8 @@ obj/Debug/net10.0/
  WindowsBase.dll
 <NUGET>/
  automapper/16.1.1/lib/net10.0/AutoMapper.dll
+ awssdk.core/4.0.3.29/lib/net8.0/AWSSDK.Core.dll
+ awssdk.s3/4.0.21.2/lib/net8.0/AWSSDK.S3.dll
  efcore.namingconventions/10.0.1/lib/net10.0/EFCore.NamingConventions.dll
  mediatr.contracts/2.0.1/lib/netstandard2.0/MediatR.Contracts.dll
  mediatr/14.1.0/lib/net10.0/MediatR.dll
@@ -298,6 +285,9 @@ obj/Debug/net10.0/
 <DOTNET>/sdk/10.0.201/Sdks/Microsoft.NET.Sdk/analyzers/
  Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
  Microsoft.CodeAnalysis.NetAnalyzers.dll
+<NUGET>/awssdk.s3/4.0.21.2/analyzers/dotnet/cs/
+ AWSSDK.S3.CodeAnalysis.dll
+ SharedAnalysisCode.dll
 <NUGET>/microsoft.codeanalysis.analyzers/3.11.0/analyzers/dotnet/cs/
  Microsoft.CodeAnalysis.Analyzers.dll
  Microsoft.CodeAnalysis.CSharp.Analyzers.dll
@@ -308,4 +298,4 @@ obj/Debug/net10.0/
 
 [analyzerConfigFiles]
 <DOTNET>/sdk/10.0.201/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_default.globalconfig
-obj/Debug/net10.0/HanLexicon.Application.GeneratedMSBuildEditorConfig.editorconfig
+obj/Debug/net10.0/Infrastructure.S3.GeneratedMSBuildEditorConfig.editorconfig

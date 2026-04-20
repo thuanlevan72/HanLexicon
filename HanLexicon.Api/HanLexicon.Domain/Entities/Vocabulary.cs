@@ -25,5 +25,11 @@ public partial class Vocabulary
 
     public string? AudioUrl { get; set; }
 
+    public string? MeaningEn { get; set; }
+
+    public string? ImageUrl { get; set; }
+
     public virtual Lesson Lesson { get; set; } = null!;
+
+    public virtual ICollection<UserWordProgress> UserWordProgresses { get; set; } = new List<UserWordProgress>();
 }

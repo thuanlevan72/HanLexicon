@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HanLexicon.Application.Features.Lessons
 {
-    internal class GetDocuments
+    public class GetDocuments
     {
     }
 }
