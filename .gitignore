@@ -1,0 +1,104 @@
+Bỏ qua thư mục audio của base
+Base/audio/
+# =========================
+# 🔷 OS / System
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# 🔷 IDE / Editor
+# =========================
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+
+# =========================
+# 🔷 .NET build
+# =========================
+bin/
+obj/
+Debug/
+Release/
+publish/
+*.dll
+*.exe
+
+# Rider / VS
+_ReSharper*/
+*.DotSettings.user
+
+# Logs
+*.log
+
+# =========================
+# 🔷 ASP.NET Secrets
+# =========================
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# =========================
+# 🔷 Node.js
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build frontend
+dist/
+build/
+.next/
+.nuxt/
+out/
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+
+# =========================
+# 🔷 Environment variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# 🔷 Upload / storage (tuỳ project)
+# =========================
+uploads/
+wwwroot/uploads/
+
+# giữ folder rỗng nếu cần
+!wwwroot/uploads/.gitkeep
+
+# =========================
+# 🔷 Database / local files
+# =========================
+*.sqlite
+*.db
+
+# =========================
+# 🔷 Docker
+# =========================
+docker-compose.override.yml
+
+# =========================
+# 🔷 Test / coverage
+# =========================
+coverage/
+TestResults/
+
+# =========================
+# 🔷 Misc
+# =========================
+*.tmp
+*.swp

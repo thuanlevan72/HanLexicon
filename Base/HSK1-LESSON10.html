@@ -1,0 +1,445 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSK 1 - Bài 10: 我能坐这儿吗？ | Nga Học HSK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Tone màu Teal & Orange cho chủ đề Văn phòng & Học tập */
+            --primary: #009688; 
+            --primary-dark: #00796b;
+            --secondary: #ff9800; 
+            --bg-color: #f0f4f4; 
+            --card-bg: #ffffff;
+            --text-main: #263238;
+            --text-muted: #546e7a;
+            --hanzi-color: #00796b;
+            --font-cn: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; 
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            font-family: 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#b2dfdb 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; padding-bottom: 50px;
+        }
+
+        .branding {
+            width: 100%; background: #fff; text-align: center; padding: 6px 0;
+            font-size: 0.8rem; font-weight: 800; color: var(--primary-dark);
+            letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-transform: uppercase;
+        }
+
+        .header {
+            width: 100%; max-width: 800px; padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(0, 150, 136, 0.3);
+        }
+
+        .btn-back {
+            background: rgba(255,255,255,0.2); color: white; text-decoration: none;
+            padding: 8px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .header h2 { font-size: 1.1rem; text-align: center; flex: 1; margin: 0 10px; }
+        .header-spacer { width: 80px; }
+
+        .tabs {
+            display: flex; justify-content: space-between; gap: 5px;
+            margin: 20px auto; background: white; padding: 6px;
+            border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 95%; max-width: 600px;
+        }
+
+        .tab-btn {
+            flex: 1; border: none; background: transparent;
+            padding: 10px 0; border-radius: 25px;
+            font-size: 0.9rem; font-weight: 700; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s;
+            text-align: center; white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--secondary); color: white;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.4);
+        }
+
+        .section { display: none; width: 100%; max-width: 800px; padding: 0 15px; animation: fadeIn 0.4s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hanzi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .hanzi-card {
+            background: var(--card-bg); border-radius: 15px; padding: 20px;
+            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            border-top: 4px solid var(--primary);
+        }
+        .char-display { font-family: var(--font-cn); font-size: 4rem; color: var(--hanzi-color); line-height: 1.2; }
+        .pinyin {
+            background: #e0f2f1; color: #00796b; padding: 4px 15px; border-radius: 12px;
+            font-weight: 800; font-size: 1.1rem; display: inline-block; margin-bottom: 10px;
+        }
+        .meaning { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; color: var(--text-muted); }
+        
+        .hanzi-details {
+            background: #f1f8f7; border-radius: 10px; padding: 12px; margin-bottom: 10px;
+            text-align: left; font-size: 0.95rem; color: #424242; border-left: 4px solid var(--primary);
+        }
+        .hanzi-details p { margin-bottom: 5px; }
+        .hanzi-details b { color: var(--primary-dark); }
+        .memo { font-size: 0.95rem; background: #fff3e0; padding: 12px; border-radius: 10px; color: #e65100; text-align: left; border-left: 4px solid var(--secondary); line-height: 1.4;}
+
+        .vocab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .flashcard { width: 100%; height: 260px; perspective: 1000px; cursor: pointer; }
+        .flashcard-inner {
+            position: relative; width: 100%; height: 100%; text-align: center;
+            transition: transform 0.5s; transform-style: preserve-3d;
+        }
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            border-radius: 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px;
+        }
+        .flashcard-front { background: #fff; border: 2px solid var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .flashcard-front .word-cn { font-family: var(--font-cn); font-size: 3.5rem; color: var(--text-main); }
+        .flashcard-front .hint { position: absolute; bottom: 10px; font-size: 0.8rem; color: #aaa; }
+        .flashcard-back { background: #fffef2; transform: rotateY(180deg); border: 2px solid var(--secondary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .flashcard-back .py { font-size: 1.3rem; font-weight: bold; color: var(--primary-dark); margin-bottom: 5px; }
+        .flashcard-back .mn { font-size: 1.2rem; font-weight: 800; color: #e65100; margin-bottom: 15px; }
+        .example-box { background: white; padding: 10px; border-radius: 10px; width: 100%; }
+        .ex-cn { font-family: var(--font-cn); font-size: 1.1rem; color: #333; margin-bottom: 2px; }
+        .ex-py { font-size: 0.9rem; color: #666; margin-bottom: 2px; }
+        .ex-vn { font-size: 0.9rem; color: var(--primary-dark); font-style: italic; }
+
+        .game-container { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); text-align: center; }
+        .game-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 800; color: var(--primary-dark); font-size: 1rem; }
+        .progress-bar { width: 100%; height: 10px; background: #eee; border-radius: 5px; margin-bottom: 25px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%; transition: width 0.3s; }
+        .question-text { font-size: 1.2rem; font-weight: 700; margin-bottom: 25px; color: var(--text-muted); line-height: 1.4; }
+        .question-highlight { font-family: var(--font-cn); font-size: 2.5rem; color: var(--primary-dark); display: block; margin: 10px 0; font-weight: normal; }
+        
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: #f8f9fa; border: 2px solid #e0e0e0; padding: 15px; border-radius: 12px;
+            font-size: 1.1rem; font-weight: bold; color: #424242; cursor: pointer; transition: all 0.2s; font-family: var(--font-cn);
+        }
+        .option-btn:active { transform: scale(0.98); }
+        .option-btn.correct { background: #4CAF50 !important; color: white !important; border-color: #388E3C !important; }
+        .option-btn.wrong { background: #F44336 !important; color: white !important; border-color: #D32F2F !important; }
+
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 400px; padding: 25px;
+            border-radius: 20px; text-align: center; animation: popIn 0.3s;
+        }
+        .modal-icon { font-size: 4rem; margin-bottom: 10px; line-height: 1; }
+        .modal-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 10px; }
+        .modal-title.t-correct { color: #4CAF50; }
+        .modal-title.t-wrong { color: #F44336; }
+        .modal-desc { font-size: 1.05rem; color: #555; margin-bottom: 20px; line-height: 1.5; }
+        .btn-next {
+            background: var(--primary); color: white; border: none; padding: 12px 30px;
+            border-radius: 25px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%;
+        }
+
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .game-result { display: none; flex-direction: column; align-items: center; gap: 15px; }
+        .score-circle {
+            width: 100px; height: 100px; border-radius: 50%; border: 5px solid var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: 900; color: var(--primary-dark); margin: 10px 0;
+        }
+        .btn-play-again {
+            background: var(--secondary); color: white; border: none; padding: 12px 30px;
+            border-radius: 25px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="branding">© Bản Quyền Thuộc Về Nga Học HSK</div>
+
+    <header class="header">
+        <a href="index.html" class="btn-back">❮ Về Vườn</a>
+        <h2>Bài 10: 我能坐这儿吗？</h2>
+        <div class="header-spacer"></div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('hanzi')">✏️ Hán Tự</button>
+        <button class="tab-btn" onclick="switchTab('vocab')">🃏 Từ Vựng</button>
+        <button class="tab-btn" onclick="switchTab('game')">🎮 Luyện Tập</button>
+    </div>
+
+    <!-- HÁN TỰ -->
+    <section id="hanzi" class="section active">
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
+            * Các chữ Hán trọng tâm của Bài 10
+        </p>
+        <div class="hanzi-grid" id="hanzi-container"></div>
+    </section>
+
+    <!-- TỪ VỰNG -->
+    <section id="vocab" class="section">
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
+            * Chạm vào thẻ để lật xem mặt sau
+        </p>
+        <div class="vocab-grid" id="vocab-container"></div>
+    </section>
+
+    <!-- LUYỆN TẬP -->
+    <section id="game" class="section">
+        <div class="game-container" id="quiz-area">
+            <div class="game-header">
+                <span id="score-display">Điểm: 0</span>
+                <span id="question-count">Câu: 1/15</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <div id="question-text" class="question-text"></div>
+            <div class="options-grid" id="options-container"></div>
+        </div>
+
+        <div class="game-container game-result" id="result-area">
+            <div style="font-size: 5rem;" id="medal-emoji">🏆</div>
+            <div class="score-circle" id="final-score">150</div>
+            <h2 id="result-title">Xuất sắc!</h2>
+            <p id="result-desc" style="color: #555;">Bạn đã làm chủ không gian và vị trí của Bài 10.</p>
+            <button class="btn-play-again" onclick="startGame()">↻ Chơi lại nhé</button>
+        </div>
+    </section>
+
+    <!-- MODAL EXPLANATION -->
+    <div id="explanation-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="modal-icon" class="modal-icon">✅</div>
+            <h3 id="modal-title" class="modal-title">Đúng rồi!</h3>
+            <p id="modal-desc" class="modal-desc"></p>
+            <button class="btn-next" onclick="nextQuestion()">Tiếp tục ❯</button>
+        </div>
+    </div>
+
+    <script>
+        // --- ÂM THANH MÔ PHỎNG ---
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+        function playSound(type) {
+            if (!audioCtx) audioCtx = new AudioContext();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            if (type === 'click') { osc.frequency.setValueAtTime(600, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1); osc.start(); osc.stop(now + 0.1); }
+            else if (type === 'correct') { osc.frequency.setValueAtTime(523, now); osc.frequency.exponentialRampToValueAtTime(659, now + 0.2); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(); osc.stop(now + 0.3); }
+            else if (type === 'wrong') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(); osc.stop(now + 0.3); }
+        }
+
+        // --- DỮ LIỆU BÀI 10 ---
+        const hanziData = [
+            { char: '桌', pinyin: 'zhuō', meaning: 'cái bàn', radical: '木 (Mộc)', memo: 'Cái bàn làm bằng GỖ (木). Phía trên có chữ 卓 (cao) để chỉ âm đọc.' },
+            { char: '脑', pinyin: 'nǎo', meaning: 'não, đầu óc', radical: '月 (Nhục)', memo: 'Liên quan đến cơ thể nên có bộ Nguyệt (月). 电脑 (điện não) là bộ não điện tử -> máy tính.' },
+            { char: '里', pinyin: 'lǐ', meaning: 'trong, bên trong', radical: '里 (Lý)', memo: 'Hình ảnh thửa ruộng (田) và đất (土), mô tả không gian bên TRONG làng xóm.' },
+            { char: '前', pinyin: 'qián', meaning: 'trước, phía trước', radical: '刂 (Đao)', memo: 'Tượng hình con thuyền đang tiến về phía TRƯỚC.' },
+            { char: '后', pinyin: 'hòu', meaning: 'sau, phía sau', radical: '口 (Khẩu)', memo: 'Đứng phía SAU để ra lệnh bằng miệng (口).' },
+            { char: '能', pinyin: 'néng', meaning: 'có thể', radical: '⺼ (Nhục)', memo: 'Hình ảnh con gấu mạnh mẽ, tượng trưng cho KHẢ NĂNG làm được việc.' },
+            { char: '坐', pinyin: 'zuò', meaning: 'ngồi', radical: '土 (Thổ)', memo: 'Hai người (人) đang NGỒI đối diện nhau trên mặt đất (土).' }
+        ];
+
+        const vocabData = [
+            { word: '桌子', pinyin: 'zhuōzi', meaning: 'Cái bàn', ex_cn: '桌子上有电脑。', ex_py: 'Zhuōzi shang yǒu diànnǎo.', ex_vn: 'Trên bàn có máy tính.' },
+            { word: '电脑', pinyin: 'diànnǎo', meaning: 'Máy tính', ex_cn: '那是我的电脑。', ex_py: 'Nà shì wǒ de diànnǎo.', ex_vn: 'Đó là máy tính của tôi.' },
+            { word: '和', pinyin: 'hé', meaning: 'Và', ex_cn: '桌子上有一本书和一支笔。', ex_py: 'Zhuōzi shang yǒu yì běn shū hé yì zhī bǐ.', ex_vn: 'Trên bàn có một quyển sách và một chiếc bút.' },
+            { word: '本', pinyin: 'běn', meaning: 'Quyển (lượng từ)', ex_cn: '我买了一本书。', ex_py: 'Wǒ mǎi le yì běn shū.', ex_vn: 'Tôi đã mua một quyển sách.' },
+            { word: '里', pinyin: 'lǐ', meaning: 'Trong, bên trong', ex_cn: '杯子里有水。', ex_py: 'Bēizi li yǒu shuǐ.', ex_vn: 'Trong ly có nước.' },
+            { word: '前面', pinyin: 'qiánmiàn', meaning: 'Phía trước', ex_cn: '前面那个人是谁？', ex_py: 'Qiánmiàn nà ge rén shì shéi?', ex_vn: 'Người phía trước kia là ai?' },
+            { word: '后面', pinyin: 'hòumiàn', meaning: 'Phía sau', ex_cn: '后面没有人。', ex_py: 'Hòumiàn méiyǒu rén.', ex_vn: 'Phía sau không có người.' },
+            { word: '这儿', pinyin: 'zhèr', meaning: 'Chỗ này, đây', ex_cn: '请坐这儿。', ex_py: 'Qǐng zuò zhèr.', ex_vn: 'Mời ngồi đây.' },
+            { word: '没有', pinyin: 'méiyǒu', meaning: 'Không có', ex_cn: '我没有电脑。', ex_py: 'Wǒ méiyǒu diànnǎo.', ex_vn: 'Tôi không có máy tính.' },
+            { word: '能', pinyin: 'néng', meaning: 'Có thể', ex_cn: '我能坐这儿吗？', ex_py: 'Wǒ néng zuò zhèr ma?', ex_vn: 'Tôi có thể ngồi đây không?' },
+            { word: '坐', pinyin: 'zuò', meaning: 'Ngồi', ex_cn: '请坐，请喝茶。', ex_py: 'Qǐng zuò, qǐng hē chá.', ex_vn: 'Mời ngồi, mời uống trà.' },
+            { word: '王方', pinyin: 'Wáng Fāng', meaning: 'Vương Phương', ex_cn: '王方在前面。', ex_py: 'Wáng Fāng zài qiánmiàn.', ex_vn: 'Vương Phương ở phía trước.' }
+        ];
+
+        const quizQuestions = [
+            { q: 'Để hỏi xin phép lịch sự "Tôi có thể ngồi đây không?", bạn nói thế nào?', options: ['我坐哪儿吗？', '我能坐这儿吗？', '这是我的坐吗？', '我坐不坐？'], answer: 1, exp: 'Cấu trúc: 我 (Tôi) + 能 (Có thể) + 坐 (Ngồi) + 这儿 (Ở đây) + 吗 (Không)?' },
+            { q: 'Dịch câu: "Trên bàn có một cái máy tính."', options: ['桌子上有电脑。', '电脑在桌子。', '桌子下有电脑。', '电脑里有桌子。'], answer: 0, exp: 'Cấu trúc tồn tại: Địa điểm (桌子上) + 有 (có) + Vật (电脑).' },
+            { q: 'Đâu là lượng từ dùng cho sách, vở (ví dụ: một quyển sách)?', options: ['个 (gè)', '块 (kuài)', '本 (běn)', '杯 (bēi)'], answer: 2, exp: '本 (běn) là lượng từ dành cho các vật đóng thành quyển như sách, từ điển.' },
+            { q: 'Chữ Hán nào có nghĩa là "Bên trong"?', options: ['里 (lǐ)', '上 (shàng)', '下 (xià)', '前 (qián)'], answer: 0, exp: '里 (lǐ) có nghĩa là bên trong.' },
+            { q: 'Từ "Máy tính" (电脑) trong tiếng Trung nghĩa đen là gì?', options: ['Mắt điện', 'Não điện', 'Tay điện', 'Chân điện'], answer: 1, exp: '电 (Điện) + 脑 (Não) = Não điện tử (Máy tính).' },
+            { q: 'Điền từ còn thiếu: 我 ____ 电脑，我有书。 (Tôi không có máy tính, tôi có sách).', options: ['不 (bù)', '没有 (méiyǒu)', '能 (néng)', '在 (zài)'], answer: 1, exp: 'Để phủ định sự sở hữu, ta dùng 没有 (không có).' },
+            { q: 'Từ nào chỉ phương hướng "Phía trước"?', options: ['后面 (hòumiàn)', '上面 (shàngmiàn)', '前面 (qiánmiàn)', '下面 (xiàmiàn)'], answer: 2, exp: '前面 (qiánmiàn) là phía trước.' },
+            { q: 'Liên từ "Và" (dùng nối 2 danh từ) trong tiếng Trung là từ nào?', options: ['和 (hé)', '也 (yě)', '都 (dōu)', '吗 (ma)'], answer: 0, exp: '和 (hé) dùng để nối hai danh từ hoặc cụm danh từ.' },
+            { q: 'Chữ <span class="question-highlight">坐</span> (Ngồi) mô tả hình ảnh gì?', options: ['Người đứng dưới gốc cây', 'Hai người ngồi trên mặt đất', 'Một người nằm trên giường', 'Người đang chạy'], answer: 1, exp: 'Chữ 坐 gồm hai chữ 人 (người) ở trên chữ 土 (đất), tượng trưng cho việc ngồi trên mặt đất.' },
+            { q: 'Pinyin của từ "Cái bàn" là gì?', options: ['zhuōzi', 'yǐzi', 'bēizi', 'diànnǎo'], answer: 0, exp: '桌子 (zhuōzi) là cái bàn. (Lưu ý: 椅子 yǐzi là cái ghế).' },
+            { q: '"Phía sau" trong tiếng Trung đọc là gì?', options: ['qiánmiàn', 'hòumiàn', 'zuǒbiān', 'yòubiān'], answer: 1, exp: '后面 (hòumiàn) là phía sau.' },
+            { q: 'Nếu muốn mời ai đó ngồi, bạn nên thêm từ nào để lịch sự hơn?', options: ['请 (qǐng)', '能 (néng)', '和 (hé)', '在 (zài)'], answer: 0, exp: '请坐 (qǐng zuò) nghĩa là "Mời ngồi".' },
+            { q: 'Sắp xếp câu: 电脑 / 桌子 / 上 / 有 / 。', options: ['桌子上有电脑。', '电脑有桌子上。', '上桌子有电脑。', '有电脑桌子上。'], answer: 0, exp: 'Trật tự đúng: Địa điểm + 有 + Vật.' },
+            { q: 'Hỏi tên người: "Người ở phía sau là ai?"', options: ['后面那个人是谁？', '是谁前面那个人？', '那个人是后面？', '谁是那个人后面？'], answer: 0, exp: '後面 (phía sau) + 那個人 (người kia) + 是誰 (là ai).' },
+            { q: 'Bạn có thể thay "这儿" (đây) bằng từ nào mang nghĩa tương đương (phổ biến ở miền Nam Trung Quốc)?', options: ['那儿 (nàr)', '这里 (zhèlǐ)', '哪里 (nǎlǐ)', '什么 (shénme)'], answer: 1, exp: '这儿 (zhèr) và 这里 (zhèlǐ) đều có nghĩa là "ở đây, chỗ này".' }
+        ];
+
+        // --- RENDER FUNCTIONS ---
+        function render() {
+            // Render Hanzi
+            const hanziContainer = document.getElementById('hanzi-container');
+            hanziContainer.innerHTML = hanziData.map(h => `
+                <div class="hanzi-card">
+                    <div class="char-display">${h.char}</div>
+                    <div class="pinyin">${h.pinyin}</div>
+                    <div class="meaning">${h.meaning}</div>
+                    <div class="hanzi-details">
+                        <p><b>🧩 Bộ thủ:</b> ${h.radical}</p>
+                    </div>
+                    <div class="memo">💡 ${h.memo}</div>
+                </div>
+            `).join('');
+
+            // Render Vocab Flashcards
+            const vocabContainer = document.getElementById('vocab-container');
+            vocabContainer.innerHTML = vocabData.map(v => `
+                <div class="flashcard" onclick="playSound('click'); this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="word-cn">${v.word}</div>
+                            <div class="hint">👆 Chạm để lật</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="py">${v.pinyin}</div>
+                            <div class="mn">${v.meaning}</div>
+                            <div class="example-box">
+                                <div class="ex-cn">${v.ex_cn}</div>
+                                <div class="ex-py">${v.ex_py}</div>
+                                <div class="ex-vn">${v.ex_vn}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- GAME LOGIC ---
+        let currentQ = 0;
+        let score = 0;
+        let answering = false;
+
+        function switchTab(tabId) {
+            playSound('click');
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if (tabId === 'game') startGame();
+        }
+
+        function startGame() {
+            currentQ = 0;
+            score = 0;
+            document.getElementById('quiz-area').style.display = 'block';
+            document.getElementById('result-area').style.display = 'none';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answering = false;
+            const q = quizQuestions[currentQ];
+            document.getElementById('score-display').innerText = `Điểm: ${score}`;
+            document.getElementById('question-count').innerText = `Câu: ${currentQ + 1}/15`;
+            document.getElementById('progress').style.width = `${((currentQ) / 15) * 100}%`;
+            
+            document.getElementById('question-text').innerHTML = q.q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(choice) {
+            if (answering) return;
+            answering = true;
+            
+            const q = quizQuestions[currentQ];
+            const btns = document.querySelectorAll('.option-btn');
+            
+            if (choice === q.answer) {
+                btns[choice].classList.add('correct');
+                score += 10;
+                playSound('correct');
+                showModal(true);
+            } else {
+                btns[choice].classList.add('wrong');
+                btns[q.answer].classList.add('correct');
+                playSound('wrong');
+                showModal(false);
+            }
+        }
+
+        function showModal(isCorrect) {
+            const modal = document.getElementById('explanation-modal');
+            const icon = document.getElementById('modal-icon');
+            const title = document.getElementById('modal-title');
+            const desc = document.getElementById('modal-desc');
+            
+            icon.innerText = isCorrect ? "✅" : "❌";
+            title.innerText = isCorrect ? "Đúng rồi!" : "Tiếc quá!";
+            title.className = `modal-title ${isCorrect ? 't-correct' : 't-wrong'}`;
+            desc.innerText = quizQuestions[currentQ].exp;
+            
+            modal.style.display = 'flex';
+        }
+
+        function nextQuestion() {
+            document.getElementById('explanation-modal').style.display = 'none';
+            currentQ++;
+            if (currentQ < 15) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-area').style.display = 'none';
+            document.getElementById('result-area').style.display = 'flex';
+            document.getElementById('final-score').innerText = score;
+            
+            const medal = document.getElementById('medal-emoji');
+            const title = document.getElementById('result-title');
+            if (score >= 140) { medal.innerText = "🏆"; title.innerText = "Tuyệt đỉnh!"; }
+            else if (score >= 100) { medal.innerText = "🥈"; title.innerText = "Rất tốt!"; }
+            else { medal.innerText = "🥉"; title.innerText = "Cố gắng lên!"; }
+        }
+
+        // Khởi tạo ứng dụng
+        window.onload = render;
+    </script>
+</body>
+</html>

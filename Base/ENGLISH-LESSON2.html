@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Lesson 2 - Dictation Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ghibli-green: #9dc183;
+            --ghibli-dark-green: #4f7942;
+            --ghibli-sky: #d0f0f7;
+            --ghibli-pink: #ffb7c5;
+            --ghibli-wood: #8b5a2b;
+        }
+
+        body {
+            margin: 0; padding: 20px;
+            font-family: 'Quicksand', sans-serif;
+            background: var(--ghibli-sky);
+            background-image: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0)), url('https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-attachment: fixed;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px; border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px; width: 95%;
+            text-align: center; border: 3px solid var(--ghibli-green);
+            backdrop-filter: blur(10px); margin-top: 20px;
+            position: relative;
+        }
+
+        h1 { color: var(--ghibli-dark-green); font-size: 1.5rem; margin-bottom: 20px; }
+
+        .audio-btn {
+            background: var(--ghibli-green);
+            border: none; width: 70px; height: 70px;
+            border-radius: 50%; cursor: pointer;
+            font-size: 28px; color: white;
+            margin-bottom: 15px; transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(157, 193, 131, 0.4);
+        }
+
+        .audio-btn:hover { transform: scale(1.1); background: var(--ghibli-dark-green); }
+
+        .input-area { width: 100%; margin: 15px 0; }
+
+        input {
+            width: 90%; padding: 15px;
+            border: 2px solid #ddd; border-radius: 15px;
+            font-size: 1.1rem; font-family: inherit;
+            text-align: center; outline: none; transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--ghibli-green); box-shadow: 0 0 10px rgba(157, 193, 131, 0.2); }
+
+        .feedback-container { min-height: 100px; margin: 10px 0; }
+        .main-feedback { font-weight: 600; font-size: 1.1rem; margin-bottom: 8px; }
+        .correct { color: #2ecc71; }
+        .incorrect { color: #e74c3c; }
+
+        .detail-info { 
+            background: rgba(157, 193, 131, 0.15); 
+            padding: 12px; border-radius: 15px;
+            display: none; animation: fadeIn 0.5s;
+        }
+        .ipa { color: var(--ghibli-wood); font-style: italic; font-size: 1rem; margin: 4px 0; }
+        .translation { color: var(--ghibli-dark-green); font-weight: 600; font-size: 1rem; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .progress { font-size: 0.8rem; color: #666; margin-bottom: 10px; }
+
+        .btn-nav {
+            background: white; border: 2px solid var(--ghibli-green);
+            color: var(--ghibli-dark-green); padding: 8px 20px;
+            border-radius: 20px; cursor: pointer; font-weight: bold;
+            margin: 5px; transition: 0.3s;
+        }
+
+        .btn-nav:hover { background: var(--ghibli-green); color: white; }
+
+        .back-home { margin-top: 20px; text-decoration: none; color: var(--ghibli-dark-green); font-size: 0.9rem; font-weight: bold; display: block; }
+        
+        #congrats-overlay {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.98); border-radius: 22px;
+            flex-direction: column; align-items: center; justify-content: center; z-index: 100;
+        }
+        #congrats-overlay h2 { color: var(--ghibli-dark-green); }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div id="congrats-overlay">
+        <h2>🎉 Chúc mừng! 🎉</h2>
+        <p>Bạn đã hoàn thành Bài 2 xuất sắc!</p>
+        <button class="btn-nav" onclick="window.location.href='index.html'" style="margin-top: 20px;">Quay về Khu Vườn 🌿</button>
+    </div>
+
+    <div class="progress" id="progress">Câu 1 / 20</div>
+    <h1>English: Lesson 2 🎧</h1>
+    
+    <button class="audio-btn" onclick="playAudio()">🔊</button>
+    
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Nghe và gõ lại..." autocomplete="off">
+    </div>
+
+    <div class="feedback-container">
+        <div id="mainFeedback" class="main-feedback"></div>
+        <div id="detailInfo" class="detail-info">
+            <div id="displayScript" style="font-weight: bold; font-size: 1.1rem;"></div>
+            <div id="displayIpa" class="ipa"></div>
+            <div id="displayTrans" class="translation"></div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button class="btn-nav" onclick="checkAnswer()">Kiểm tra</button>
+        <button class="btn-nav" onclick="showHint()">Gợi ý</button>
+        <button class="btn-nav" onclick="nextQuestion()" id="nextBtn" style="display:none;">Câu tiếp theo ➔</button>
+    </div>
+
+    <a href="index.html" class="back-home">🌿 Quay về trang chủ</a>
+</div>
+
+<script>
+    const data = [
+        { s: "Is he your uncle?", p: "/ɪz hiː jɔː ˈʌŋkl/", t: "Anh ấy là chú/bác của bạn à?" },
+        { s: "Is she your aunt?", p: "/ɪz ʃiː jɔː ɑːnt/", t: "Cô ấy là dì/cô của bạn à?" },
+        { s: "Are they your parents?", p: "/ɑː ðeɪ jɔː ˈpeərənts/", t: "Họ là bố mẹ bạn à?" },
+        { s: "Are they your children?", p: "/ɑː ðeɪ jɔː ˈtʃɪldrən/", t: "Họ là con bạn à?" },
+        { s: "Is this your room?", p: "/ɪz ðɪs jɔː ruːm/", t: "Đây là phòng của bạn à?" },
+        { s: "Is that a kitchen?", p: "/ɪz ðæt ə ˈkɪtʃɪn/", t: "Kia là bếp à?" },
+        { s: "Is she your daughter?", p: "/ɪz ʃiː jɔː ˈdɔːtə(r)/", t: "Cô ấy là con gái bạn à?" },
+        { s: "Is he your son?", p: "/ɪz hiː jɔː sʌn/", t: "Anh ấy là con trai bạn à?" },
+        { s: "Is this picture lovely?", p: "/ɪz ðɪs ˈpɪktʃə ˈlʌvli/", t: "Bức tranh này có đẹp không?" },
+        { s: "Are these boxes big?", p: "/ɑː ðiːz ˈbɒksɪz bɪɡ/", t: "Những hộp này có to không?" },
+        { s: "Is he a doctor?", p: "/ɪz hiː ə ˈdɒktə(r)/", t: "Anh ấy là bác sĩ à?" },
+        { s: "Is she a lawyer?", p: "/ɪz ʃiː ə ˈlɔɪə(r)/", t: "Cô ấy là luật sư à?" },
+        { s: "Is he a firefighter?", p: "/ɪz hiː ə ˈfaɪəfaɪtə(r)/", t: "Anh ấy là lính cứu hỏa à?" },
+        { s: "Are they your friends?", p: "/ɑː ðeɪ jɔː frendz/", t: "Họ là bạn của bạn à?" },
+        { s: "Are these cats lovely?", p: "/ɑː ðiːz kæts ˈlʌvli/", t: "Những con mèo này có đáng yêu không?" },
+        { s: "Am I late?", p: "/æm aɪ leɪt/", t: "Tôi có bị muộn không?" },
+        { s: "Are they busy?", p: "/ɑː ðeɪ ˈbɪzi/", t: "Họ có bận không?" },
+        { s: "Is she kind?", p: "/ɪz ʃiː kaɪnd/", t: "Cô ấy có tốt bụng không?" },
+        { s: "Is this room new?", p: "/ɪz ðɪs ruːm njuː/", t: "Phòng này có mới không?" },
+        { s: "Is that kitchen old?", p: "/ɪz ðæt ˈkɪtʃɪn əʊld/", t: "Cái bếp đó có cũ không?" }
+    ];
+
+    let currentIndex = 0;
+
+    function playAudio() {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = data[currentIndex].s;
+        msg.lang = 'en-US';
+        msg.rate = 0.85;
+        window.speechSynthesis.speak(msg);
+    }
+
+    function updateUI() {
+        document.getElementById('progress').innerText = `Câu ${currentIndex + 1} / ${data.length}`;
+        document.getElementById('userInput').value = "";
+        document.getElementById('mainFeedback').innerText = "";
+        document.getElementById('detailInfo').style.display = "none";
+        document.getElementById('nextBtn').style.display = "none";
+        document.getElementById('userInput').focus();
+        // Tự động phát âm thanh khi chuyển câu
+        setTimeout(playAudio, 400);
+    }
+
+    function checkAnswer() {
+        const userCleaned = document.getElementById('userInput').value.trim().toLowerCase().replace(/[.,!?;]/g, "");
+        const correctCleaned = data[currentIndex].s.toLowerCase().replace(/[.,!?;]/g, "");
+        
+        const mainFeedback = document.getElementById('mainFeedback');
+        const detailInfo = document.getElementById('detailInfo');
+        
+        if (userCleaned === correctCleaned) {
+            mainFeedback.innerText = "Chính xác! ✨";
+            mainFeedback.className = "main-feedback correct";
+            
+            document.getElementById('displayScript').innerText = data[currentIndex].s;
+            document.getElementById('displayIpa').innerText = data[currentIndex].p;
+            document.getElementById('displayTrans').innerText = "→ " + data[currentIndex].t;
+            detailInfo.style.display = "block";
+            
+            document.getElementById('nextBtn').style.display = "inline-block";
+        } else {
+            mainFeedback.innerText = "Chưa đúng rồi, hãy nghe lại!";
+            mainFeedback.className = "main-feedback incorrect";
+            playAudio();
+        }
+    }
+
+    function showHint() {
+        document.getElementById('mainFeedback').innerText = "Gợi ý: " + data[currentIndex].s;
+        document.getElementById('mainFeedback').className = "main-feedback";
+    }
+
+    function nextQuestion() {
+        if (currentIndex < data.length - 1) {
+            currentIndex++;
+            updateUI();
+        } else {
+            document.getElementById('congrats-overlay').style.display = 'flex';
+        }
+    }
+
+    document.getElementById('userInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            if (document.getElementById('nextBtn').style.display === "inline-block") {
+                nextQuestion();
+            } else {
+                checkAnswer();
+            }
+        }
+    });
+
+    window.onload = updateUI;
+</script>
+
+</body>
+</html>

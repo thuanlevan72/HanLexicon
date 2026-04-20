@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSK 2 - Bài 4: 这个工作是他帮我介绍的 | Nga Học HSK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8bc34a; 
+            --primary-dark: #558b2f;
+            --secondary: #ffb74d; 
+            --secondary-dark: #f57c00;
+            --bg-color: #f1f8e9; 
+            --card-bg: #ffffff;
+            --text-main: #33691e;
+            --text-muted: #5d4037;
+            --hanzi-color: #d84315;
+            --font-cn: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; 
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            font-family: 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#cddc39 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; padding-bottom: 50px;
+        }
+
+        .branding {
+            width: 100%; background: #fff; text-align: center; padding: 6px 0;
+            font-size: 0.8rem; font-weight: 800; color: var(--primary-dark);
+            letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-transform: uppercase;
+        }
+
+        .header {
+            width: 100%; max-width: 800px; padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(139, 195, 74, 0.3);
+        }
+
+        .btn-back {
+            background: rgba(255,255,255,0.2); color: white; text-decoration: none;
+            padding: 8px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.5); cursor: pointer;
+        }
+
+        .header h2 { font-size: 1.15rem; text-align: center; flex: 1; margin: 0 10px; }
+        .header-spacer { width: 80px; }
+
+        .tabs {
+            display: flex; justify-content: space-between; gap: 5px;
+            margin: 20px auto; background: white; padding: 6px;
+            border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 95%; max-width: 600px;
+        }
+
+        .tab-btn {
+            flex: 1; border: none; background: transparent;
+            padding: 10px 0; border-radius: 25px;
+            font-size: 0.9rem; font-weight: 700; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s;
+            text-align: center; white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--secondary); color: white;
+            box-shadow: 0 4px 10px rgba(255, 183, 77, 0.4);
+        }
+
+        .section { display: none; width: 100%; max-width: 800px; padding: 0 15px; animation: fadeIn 0.4s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* V O C A B   S T Y L E S */
+        .vocab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .flashcard { width: 100%; height: 260px; perspective: 1000px; cursor: pointer; }
+        .flashcard-inner {
+            position: relative; width: 100%; height: 100%; text-align: center;
+            transition: transform 0.5s; transform-style: preserve-3d;
+        }
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            border-radius: 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px;
+        }
+        .flashcard-front { background: #fff; border: 2px solid var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .flashcard-front .word-cn { font-family: var(--font-cn); font-size: 3.5rem; color: var(--text-main); font-weight: bold; }
+        .flashcard-front .hint { position: absolute; bottom: 10px; font-size: 0.8rem; color: #aaa; font-weight: bold;}
+        .flashcard-back { background: #fffde7; transform: rotateY(180deg); border: 2px solid var(--secondary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .flashcard-back .py { font-size: 1.3rem; font-weight: bold; color: #1976d2; margin-bottom: 5px; }
+        .flashcard-back .mn { font-size: 1.2rem; font-weight: 800; color: #e65100; margin-bottom: 15px; }
+        .example-box { background: white; padding: 10px; border-radius: 10px; width: 100%; }
+        .ex-cn { font-family: var(--font-cn); font-size: 1.1rem; color: #333; margin-bottom: 2px; font-weight: bold;}
+        .ex-py { font-size: 0.9rem; color: #666; margin-bottom: 2px; }
+        .ex-vn { font-size: 0.9rem; color: var(--primary-dark); font-style: italic; }
+
+        /* G A M E   S T Y L E S */
+        .game-container { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); text-align: center; }
+        .game-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 800; color: var(--primary-dark); font-size: 1rem; }
+        .progress-bar { width: 100%; height: 10px; background: #eee; border-radius: 5px; margin-bottom: 25px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), #ff9800); width: 0%; transition: width 0.3s; }
+        .question-text { font-size: 1.2rem; font-weight: 700; margin-bottom: 25px; color: var(--text-muted); line-height: 1.4; }
+        .question-highlight { font-family: var(--font-cn); font-size: 1.8rem; color: var(--hanzi-color); display: inline-block; margin: 5px 0; font-weight: bold; }
+        
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: #f8f9fa; border: 2px solid #e0e0e0; padding: 15px; border-radius: 12px;
+            font-size: 1.1rem; font-weight: bold; color: #424242; cursor: pointer; transition: all 0.2s; font-family: var(--font-cn);
+        }
+        .option-btn:active { transform: scale(0.98); }
+        .option-btn.correct { background: #8bc34a !important; color: white !important; border-color: #558b2f !important; }
+        .option-btn.wrong { background: #F44336 !important; color: white !important; border-color: #D32F2F !important; }
+
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 400px; padding: 25px;
+            border-radius: 20px; text-align: center; animation: popIn 0.3s;
+        }
+        .modal-icon { font-size: 4rem; margin-bottom: 10px; line-height: 1; }
+        .modal-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 10px; }
+        .modal-title.t-correct { color: var(--primary-dark); }
+        .modal-title.t-wrong { color: #F44336; }
+        .modal-desc { font-size: 1.05rem; color: #555; margin-bottom: 20px; line-height: 1.5; }
+        .btn-next {
+            background: var(--primary); color: white; border: none; padding: 12px 30px;
+            border-radius: 25px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px;
+        }
+
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .game-result { display: none; flex-direction: column; align-items: center; gap: 15px; }
+        .score-circle {
+            width: 100px; height: 100px; border-radius: 50%; border: 5px solid var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem; font-weight: 900; color: var(--primary-dark); margin: 10px 0;
+        }
+        .btn-primary {
+            background: var(--secondary); color: white; border: none; padding: 12px 30px;
+            border-radius: 25px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 10px; width: 100%;
+        }
+
+        /* D I C T A T I O N   S T Y L E S */
+        .dict-container { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); width: 100%; }
+        
+        /* Menu */
+        .dict-lesson-btn {
+            background: #f1f8e9; border: 2px solid var(--primary); padding: 15px; border-radius: 12px;
+            margin-bottom: 12px; cursor: pointer; text-align: left; display: flex; flex-direction: column;
+            transition: transform 0.2s;
+        }
+        .dict-lesson-btn:active { transform: scale(0.98); }
+        .dict-lesson-btn.completed { opacity: 0.8; background: #e8f5e9; border-color: #a5d6a7; }
+        .dict-lesson-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .dict-lesson-title { color: var(--primary-dark); font-size: 1.15rem; font-weight: bold; }
+        .dict-lesson-badge { font-size: 0.85rem; background: white; padding: 3px 8px; border-radius: 8px; color: var(--secondary-dark); font-weight: bold; }
+        .dict-lesson-desc { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* Play Screen */
+        .dict-top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+        .dict-back { color: var(--secondary-dark); font-weight: bold; cursor: pointer; font-size: 0.95rem; }
+        .dict-counter { background: #e8f5e9; color: var(--primary-dark); padding: 4px 12px; border-radius: 15px; font-weight: 800; font-size: 0.9rem; }
+        .dict-audio-box { background: #f1f8e9; padding: 15px; border-radius: 15px; border: 2px solid #dcedc8; margin-bottom: 15px; text-align: center;}
+        .dict-audio-box audio { width: 100%; height: 40px; outline: none; }
+        
+        .dict-hint-box { border: 2px dashed var(--secondary); background: #fffde7; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 15px;}
+        .dict-hint-title { font-size: 0.8rem; color: var(--secondary-dark); font-weight: 800; margin-bottom: 5px; text-transform: uppercase; }
+        .dict-hint-text { font-family: var(--font-cn); font-size: 2rem; color: var(--primary-dark); font-weight: bold; letter-spacing: 4px; }
+        
+        .dict-input {
+            width: 100%; padding: 15px; font-size: 1.5rem; text-align: center; font-weight: bold;
+            border: 3px dashed var(--text-muted); border-radius: 12px; outline: none; transition: all 0.3s;
+            font-family: var(--font-cn); color: var(--text-main);
+        }
+        .dict-input:focus { border-color: var(--primary); background: #f1f8e9; }
+        .dict-input:disabled { background: #f5f5f5; border-color: #ddd; color: #777; }
+        
+        .dict-instruction { font-size: 0.8rem; color: #9e9e9e; text-align: center; margin-top: 10px; font-weight: bold; text-transform: uppercase;}
+        .dict-key { background: #e0e0e0; color: #616161; padding: 2px 6px; border-radius: 4px; }
+
+        .dict-feedback-box { margin-top: 15px; border-radius: 12px; overflow: hidden; display: none; border: 2px solid #eee; }
+        .dict-fb-status { padding: 10px; text-align: center; font-weight: bold; font-size: 1.05rem; }
+        .dict-fb-status.correct { background: #e8f5e9; color: #2e7d32; }
+        .dict-fb-status.wrong { background: #ffebee; color: #c62828; }
+        .dict-fb-content { padding: 15px; background: #fffde7; text-align: center; }
+        .dict-fb-hz { font-family: var(--font-cn); font-size: 1.8rem; color: var(--hanzi-color); font-weight: bold; margin-bottom: 5px; }
+        .dict-fb-py { font-size: 1.1rem; color: #1565c0; font-weight: bold; margin-bottom: 5px; }
+        .dict-fb-vi { font-size: 0.95rem; color: var(--text-muted); border-top: 1px solid #ffe082; padding-top: 8px; font-style: italic; }
+
+        /* End Screen Stats */
+        .stat-circles { display: flex; justify-content: space-around; margin: 20px 0; }
+        .stat-circle { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 80px; height: 80px; border-radius: 50%; border: 6px solid #eee; background: white; }
+        .stat-circle.c-total { border-color: #64b5f6; color: #1565c0; }
+        .stat-circle.c-right { border-color: #81c784; color: #2e7d32; }
+        .stat-circle.c-wrong { border-color: #e57373; color: #c62828; }
+        .stat-num { font-size: 1.8rem; font-weight: 900; line-height: 1; }
+        .stat-label { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; margin-top: 2px; }
+        
+        #toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #333; color: #fff;
+            padding: 12px 24px; border-radius: 30px; font-weight: bold; opacity: 0; transition: opacity 0.3s;
+            pointer-events: none; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        #toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div id="toast">Đã copy kết quả!</div>
+
+    <div class="branding">© Bản Quyền Thuộc Về Nga Học HSK</div>
+
+    <header class="header">
+        <div class="btn-back" onclick="window.location.href='index.html'">❮ Về Vườn</div>
+        <h2>Bài 4: 这个工作是他帮我介绍的</h2>
+        <div class="header-spacer"></div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('vocab')">🃏 Từ Vựng</button>
+        <button class="tab-btn" onclick="switchTab('game')">🎮 Luyện Tập</button>
+        <button class="tab-btn" onclick="switchTab('dictation')">🎧 Nghe Chép</button>
+    </div>
+
+    <!-- PHẦN 1: TỪ VỰNG -->
+    <section id="vocab" class="section active">
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem; font-weight: bold;">
+            * Chạm vào thẻ để lật xem mặt sau
+        </p>
+        <div class="vocab-grid" id="vocab-container"></div>
+    </section>
+
+    <!-- PHẦN 2: LUYỆN TẬP -->
+    <section id="game" class="section">
+        <div class="game-container" id="quiz-area">
+            <div class="game-header">
+                <span id="score-display">Điểm: 0</span>
+                <span id="question-count">Câu: 1/15</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <div id="question-text" class="question-text"></div>
+            <div class="options-grid" id="options-container"></div>
+        </div>
+
+        <div class="game-container game-result" id="result-area">
+            <div style="font-size: 5rem;" id="medal-emoji">🏆</div>
+            <div class="score-circle" id="final-score">150</div>
+            <h2 id="result-title" style="color: var(--primary-dark);">Tuyệt vời!</h2>
+            <p id="result-desc" style="color: #555; margin-bottom: 10px;">Bạn đã hoàn thành bài luyện tập.</p>
+            <button class="btn-primary" onclick="startGame()">↻ Chơi lại nhé</button>
+        </div>
+    </section>
+
+    <!-- PHẦN 3: NGHE CHÉP BÀI KHÓA -->
+    <section id="dictation" class="section">
+        <!-- 3.1 MENU BÀI KHÓA -->
+        <div class="dict-container" id="dict-menu">
+            <h2 style="color: var(--primary-dark); margin-bottom: 15px; font-size: 1.3rem; text-align: center;">Chọn Bài Khóa</h2>
+            <div id="dict-lesson-list"></div>
+            <button class="btn-primary" id="btn-finish-all" style="display: none; margin-top: 20px;" onclick="showDictStats()">📊 Xem Kết Quả Nghe Chép</button>
+        </div>
+
+        <!-- 3.2 MÀN HÌNH CHƠI NGHE CHÉP -->
+        <div class="dict-container" id="dict-play" style="display: none;">
+            <div class="dict-top-bar">
+                <div class="dict-back" onclick="backToDictMenu()">❮ Quay lại</div>
+                <div class="dict-counter" id="dict-title-display">Bài 4: 1/4</div>
+            </div>
+
+            <div class="dict-audio-box">
+                <!-- AUDIO SOURCE: Update link bài nghe thật vào thuộc tính src dưới đây -->
+                <audio id="dict-audio-player" controls controlsList="nodownload" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+                <p style="font-size: 0.75rem; color: #888; margin-top: 5px;">(Click play để nghe âm thanh bài khóa)</p>
+            </div>
+
+            <div class="dict-hint-box">
+                <div class="dict-hint-title">Gợi ý câu đang nghe</div>
+                <div class="dict-hint-text" id="dict-hint">-- ... --</div>
+            </div>
+
+            <input type="text" id="dict-input" class="dict-input" placeholder="Nghe và gõ lại..." autocomplete="off">
+            
+            <div class="dict-instruction" id="dict-instruct">Nhấn <span class="dict-key">ENTER</span> hoặc bấm Kiểm tra</div>
+            <!-- Nút kiểm tra tối ưu cho Mobile (Thay vì bắt buộc ấn Enter) -->
+            <button class="btn-primary" id="btn-check-dict" style="margin-top: 10px; width: 100%; display: none;" onclick="checkDictation()">Kiểm tra ❯</button>
+
+            <div class="dict-feedback-box" id="dict-fb-box">
+                <div class="dict-fb-status" id="dict-fb-status">Chính xác! 🌟</div>
+                <div class="dict-fb-content">
+                    <div class="dict-fb-hz" id="dict-fb-hz"></div>
+                    <div class="dict-fb-py" id="dict-fb-py"></div>
+                    <div class="dict-fb-vi" id="dict-fb-vi"></div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-next-dict" style="display: none;" onclick="nextDictStep()">Tiếp theo ❯</button>
+        </div>
+
+        <!-- 3.3 MÀN HÌNH KẾT QUẢ NGHE CHÉP -->
+        <div class="dict-container" id="dict-result" style="display: none; text-align: center;">
+            <h2 style="color: var(--primary-dark); font-size: 1.5rem;">Thống Kê Nghe Chép</h2>
+            
+            <div class="stat-circles">
+                <div class="stat-circle c-total"><span class="stat-num" id="stat-total">0</span><span class="stat-label">Tổng</span></div>
+                <div class="stat-circle c-right"><span class="stat-num" id="stat-correct">0</span><span class="stat-label">Đúng</span></div>
+                <div class="stat-circle c-wrong"><span class="stat-num" id="stat-wrong">0</span><span class="stat-label">Sai</span></div>
+            </div>
+
+            <div class="progress-bar" style="height: 15px; margin-top: 10px;">
+                <div class="progress-fill" id="dict-progress-bar" style="background: var(--primary); width: 0%;"></div>
+            </div>
+            <p style="font-weight: bold; color: var(--primary-dark); margin-bottom: 20px;" id="stat-percent">Tỉ lệ đúng: 0%</p>
+
+            <button class="btn-primary" style="background: var(--primary-dark);" onclick="copyDictResults()">📋 Copy Kết Quả Gửi Cô</button>
+            <button class="btn-primary" style="background: #e0e0e0; color: #333;" onclick="resetDictation()">↻ Làm lại từ đầu</button>
+        </div>
+    </section>
+
+    <!-- MODAL CHO GAME -->
+    <div id="explanation-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="modal-icon" class="modal-icon">✅</div>
+            <h3 id="modal-title" class="modal-title">Đúng rồi!</h3>
+            <p id="modal-desc" class="modal-desc"></p>
+            <button class="btn-next" onclick="nextQuestion()">Tiếp tục ❯</button>
+        </div>
+    </div>
+
+    <!-- AUDIO ASSETS (FX) -->
+    <audio id="audio-click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="audio-correct" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+    <audio id="audio-wrong" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3"></audio>
+
+    <script>
+        // --- ÂM THANH FX ---
+        function playSound(type) {
+            try {
+                const audio = document.getElementById(`audio-${type}`);
+                if (audio) { audio.currentTime = 0; audio.play().catch(()=>{}); }
+            } catch(e) {}
+        }
+
+        // --- DỮ LIỆU TỪ VỰNG (HSK2 Bài 4) ---
+        const vocabData = [
+            { word: '生日', pinyin: 'shēngrì', meaning: 'Sinh nhật', ex_cn: '祝你生日快乐！', ex_py: 'Zhù nǐ shēngrì kuàilè!', ex_vn: 'Chúc bạn sinh nhật vui vẻ!' },
+            { word: '快乐', pinyin: 'kuàilè', meaning: 'Vui vẻ', ex_cn: '生日快乐！', ex_py: 'Shēngrì kuàilè!', ex_vn: 'Sinh nhật vui vẻ!' },
+            { word: '给', pinyin: 'gěi', meaning: 'Cho, đưa cho', ex_cn: '这是送给你的。', ex_py: 'Zhè shì sòng gěi nǐ de.', ex_vn: 'Đây là tặng cho bạn.' },
+            { word: '晚上', pinyin: 'wǎnshang', meaning: 'Buổi tối', ex_cn: '晚上我问一下儿子。', ex_py: 'Wǎnshang wǒ wèn yíxià érzi.', ex_vn: 'Tối tôi sẽ hỏi con trai một chút.' },
+            { word: '问', pinyin: 'wèn', meaning: 'Hỏi', ex_cn: '我去问一下老师。', ex_py: 'Wǒ qù wèn yíxià lǎoshī.', ex_vn: 'Tôi đi hỏi giáo viên một chút.' },
+            { word: '非常', pinyin: 'fēicháng', meaning: 'Rất, vô cùng', ex_cn: '我非常喜欢踢足球。', ex_py: 'Wǒ fēicháng xǐhuan tī zúqiú.', ex_vn: 'Tôi vô cùng thích đá bóng.' },
+            { word: '开始', pinyin: 'kāishǐ', meaning: 'Bắt đầu', ex_cn: '我们几点开始？', ex_py: 'Wǒmen jǐ diǎn kāishǐ?', ex_vn: 'Chúng ta mấy giờ bắt đầu?' },
+            { word: '已经', pinyin: 'yǐjīng', meaning: 'Đã', ex_cn: '已经十年了。', ex_py: 'Yǐjīng shí nián le.', ex_vn: 'Đã 10 năm rồi.' },
+            { word: '长', pinyin: 'cháng', meaning: 'Dài, lâu', ex_cn: '你工作多长时间了？', ex_py: 'Nǐ gōngzuò duō cháng shíjiān le?', ex_vn: 'Bạn làm việc bao lâu rồi?' },
+            { word: '两', pinyin: 'liǎng', meaning: 'Hai', ex_cn: '已经两年多了。', ex_py: 'Yǐjīng liǎng nián duō le.', ex_vn: 'Đã hơn hai năm rồi.' },
+            { word: '帮', pinyin: 'bāng', meaning: 'Giúp, giúp đỡ', ex_cn: '他帮我介绍工作。', ex_py: 'Tā bāng wǒ jièshào gōngzuò.', ex_vn: 'Anh ấy giúp tôi giới thiệu công việc.' },
+            { word: '介绍', pinyin: 'jièshào', meaning: 'Giới thiệu', ex_cn: '这个工作是他介绍的。', ex_py: 'Zhè ge gōngzuò shì tā jièshào de.', ex_vn: 'Công việc này do anh ấy giới thiệu.' },
+            { word: '接', pinyin: 'jiē', meaning: 'Nhận, nghe (điện thoại)', ex_cn: '电话是儿子接的。', ex_py: 'Diànhuà shì érzi jiē de.', ex_vn: 'Điện thoại là con trai nghe.' }
+        ];
+
+        // --- DỮ LIỆU LUYỆN TẬP CÓ GIẢI THÍCH (15 Câu HSK2 Bài 4) ---
+        const quizQuestions = [
+            { q: '"Sinh nhật" tiếng Trung là gì?', options: ['晚上 (wǎnshang)', '生日 (shēngrì)', '快乐 (kuàilè)', '早上 (zǎoshang)'], answer: 1, exp: '生日 (shēngrì) nghĩa là sinh nhật.' },
+            { q: 'Dịch "Sinh nhật vui vẻ":', options: ['生日快乐', '快乐生日', '生日好', '生日非常'], answer: 0, exp: 'Sinh nhật vui vẻ là 生日快乐 (shēngrì kuàilè).' },
+            { q: 'Điền từ: 这是送 _ 你的。 (tặng cho)', options: ['帮 (bāng)', '问 (wèn)', '给 (gěi)', '接 (jiē)'], answer: 2, exp: '送给 (sòng gěi) có nghĩa là đem tặng cho ai đó.' },
+            { q: 'Trong bài khóa 2, ai là người đã nghe điện thoại vào buổi sáng?', options: ['爸爸 (bàba)', '妈妈 (māma)', '朋友 (péngyou)', '儿子 (érzi)'], answer: 3, exp: 'Bài khóa 2 nói: "电话是谁打的？不知道，是儿子接的" (Không biết, là con trai nghe).' },
+            { q: 'Điền từ: 电话是谁 _ 的？ (gọi)', options: ['接 (jiē)', '打 (dǎ)', '看 (kàn)', '听 (tīng)'], answer: 1, exp: '打电话 (dǎ diànhuà) là gọi điện thoại. Câu này hỏi: Cuộc điện thoại do ai gọi vậy?' },
+            { q: '"Vô cùng, rất" tiếng Trung là gì?', options: ['已经 (yǐjīng)', '开始 (kāishǐ)', '非常 (fēicháng)', '长 (cháng)'], answer: 2, exp: '非常 (fēicháng) là phó từ chỉ mức độ cao: Vô cùng, rất.' },
+            { q: 'Dịch: "Tôi bắt đầu đá bóng năm 11 tuổi".', options: ['我十一岁开始踢足球的时候。', '我十一岁踢足球的时候开始。', '我十一岁的时候开始踢足球。', '开始我十一岁踢足球的时候。'], answer: 2, exp: 'Cấu trúc: "...的时候" (Lúc...). "Tôi lúc 11 tuổi (我十一岁的时候) + bắt đầu đá bóng (开始踢足球)".' },
+            { q: 'Từ <span class="question-highlight">已经</span> (yǐjīng) nghĩa là gì?', options: ['Bắt đầu', 'Vô cùng', 'Giới thiệu', 'Đã'], answer: 3, exp: '已经 (yǐjīng) là phó từ có nghĩa là "Đã" (biểu thị sự việc đã xảy ra).' },
+            { q: 'Để hỏi "Bao lâu / Thời gian bao lâu", ta dùng cụm từ nào?', options: ['多少钱 (duōshao qián)', '多大 (duō dà)', '多长时间 (duō cháng shíjiān)', '多高 (duō gāo)'], answer: 2, exp: '多长 (bao lâu/dài bao nhiêu) + 时间 (thời gian) = 多长时间 (bao lâu).' },
+            { q: '"Giúp, giúp đỡ" tiếng Trung là gì?', options: ['介绍 (jièshào)', '接 (jiē)', '帮 (bāng)', '问 (wèn)'], answer: 2, exp: '帮 (bāng) nghĩa là giúp, giúp đỡ.' },
+            { q: 'Dịch: "Công việc này do anh ấy giới thiệu giúp tôi".', options: ['这个工作是他介绍帮我的。', '这个工作是他帮我介绍的。', '这个帮是我介绍他的工作。', '这个工作是帮我介绍他的。'], answer: 1, exp: 'Cấu trúc "A 帮 B + Động từ": A giúp B làm gì đó. (他帮我介绍 = Anh ấy giúp tôi giới thiệu).' },
+            { q: 'Từ <span class="question-highlight">介绍</span> (jièshào) nghĩa là gì?', options: ['Nghe máy', 'Giới thiệu', 'Hỏi', 'Bắt đầu'], answer: 1, exp: '介绍 (jièshào) nghĩa là giới thiệu.' },
+            { q: '"Buổi tối" tiếng Trung là gì?', options: ['中午 (zhōngwǔ)', '早上 (zǎoshang)', '下午 (xiàwǔ)', '晚上 (wǎnshang)'], answer: 3, exp: '晚上 (wǎnshang) nghĩa là buổi tối.' },
+            { q: 'Pinyin của từ "Bắt đầu" (开始) là gì?', options: ['kāishǐ', 'kāishì', 'kàishǐ', 'kāixīn'], answer: 0, exp: '开始 đọc là kāishǐ (Bắt đầu).' },
+            { q: 'Điền từ: 我 _ 问一下儿子。(Buổi tối)', options: ['早上', '晚上', '中午', '昨天'], answer: 1, exp: 'Trong bài khóa 2: "晚上我问一下儿子" (Tối tôi hỏi con trai một chút).' }
+        ];
+
+        // --- DỮ LIỆU NGHE CHÉP (HSK2 Bài 4) ---
+        const dictationData = [
+            { id: 0, title: "Bài khóa 1", desc: "在家里 (Ở nhà)", completed: false, sentences: [
+                { h: "生日快乐！这是送给你的！", p: "Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!", vi: "Sinh nhật vui vẻ! Đây là tặng cho bạn!" },
+                { h: "是什么？是一本书吗？", p: "Shì shénme? Shì yī běn shū ma?", vi: "Là gì vậy? Là một cuốn sách à?" },
+                { h: "对，这本书是我写的。", p: "Duì, zhè běn shū shì wǒ xiě de.", vi: "Đúng, cuốn sách này do tôi viết." },
+                { h: "太谢谢你了！", p: "Tài xièxie nǐ le!", vi: "Quá cảm ơn bạn rồi!" }
+            ]},
+            { id: 1, title: "Bài khóa 2", desc: "在家里 (Ở nhà)", completed: false, sentences: [
+                { h: "早上有你一个电话。", p: "Zǎoshang yǒu nǐ yīgè diànhuà.", vi: "Sáng nay có một cuộc điện thoại gọi cho anh." },
+                { h: "电话是谁打的？", p: "Diànhuà shì shéi dǎ de?", vi: "Điện thoại do ai gọi vậy?" },
+                { h: "不知道，是儿子接的。", p: "Bù zhīdào, shì érzi jiē de.", vi: "Không biết, là con trai nghe." },
+                { h: "好，晚上我问一下儿子。", p: "Hǎo, wǎnshang wǒ wèn yíxià érzi.", vi: "Được, tối anh sẽ hỏi con trai một chút." }
+            ]},
+            { id: 2, title: "Bài khóa 3", desc: "在运动场 (Trên sân thể thao)", completed: false, sentences: [
+                { h: "你喜欢踢足球吗？", p: "Nǐ xǐhuān tī zúqiú ma?", vi: "Bạn thích đá bóng không?" },
+                { h: "非常喜欢。", p: "Fēicháng xǐhuān.", vi: "Vô cùng thích." },
+                { h: "你是什么时候开始踢足球的？", p: "Nǐ shì shénme shíhòu kāishǐ tī zúqiú de?", vi: "Bạn bắt đầu đá bóng từ khi nào?" },
+                { h: "我十一岁的时候开始踢足球，已经踢了十年了。", p: "Wǒ shíyī suì de shíhòu kāishǐ tī zúqiú, yǐjīng tīle shí nián le.", vi: "Tôi bắt đầu đá bóng năm 11 tuổi, đã đá 10 năm rồi." }
+            ]},
+            { id: 3, title: "Bài khóa 4", desc: "在公司 (Ở công ty)", completed: false, sentences: [
+                { h: "你在这儿工作多长时间了？", p: "Nǐ zài zhè'er gōngzuò duō cháng shíjiān le?", vi: "Bạn làm việc ở đây bao lâu rồi?" },
+                { h: "已经两年多了，我是2011年来的。", p: "Yǐjīng liǎng nián duō le, wǒ shì 2011 niánlái de.", vi: "Đã hơn hai năm rồi, tôi đến từ năm 2011." },
+                { h: "你认识谢先生吗？", p: "Nǐ rènshí Xiè xiānshēng ma?", vi: "Bạn quen anh Tạ không?" },
+                { h: "认识，我们是大学同学，这个工作是他帮我介绍的。", p: "Rènshí, wǒmen shì dàxué tóngxué, zhègè gōngzuò shì tā bāng wǒ jièshào de.", vi: "Quen chứ, chúng tôi là bạn học đại học, công việc này do anh ấy giới thiệu giúp tôi." }
+            ]}
+        ];
+
+        // --- RENDER & TABS LOGIC ---
+        function switchTab(id) {
+            playSound('click');
+            document.querySelectorAll('.section, .tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            // Highlight current tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.innerText.toLowerCase().includes(id === 'vocab' ? 'từ' : (id === 'game' ? 'luyện' : 'nghe'))) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Pause dictation audio if leaving dictation tab
+            if(id !== 'dictation') {
+                const audio = document.getElementById('dict-audio-player');
+                if(audio) audio.pause();
+            }
+
+            if (id === 'game' && currentQ === 0 && score === 0) startGame();
+            if (id === 'dictation') openDictMenu();
+        }
+
+        function renderVocab() {
+            document.getElementById('vocab-container').innerHTML = vocabData.map(v => `
+                <div class="flashcard" onclick="playSound('click'); this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front"><div class="word-cn">${v.word}</div><div class="hint">👆 Lật thẻ</div></div>
+                        <div class="flashcard-back">
+                            <div class="py">${v.pinyin}</div><div class="mn">${v.meaning}</div>
+                            <div class="example-box">
+                                <div class="ex-cn">${v.ex_cn}</div><div class="ex-py">${v.ex_py}</div><div class="ex-vn">${v.ex_vn}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        // --- GAME LOGIC ---
+        let currentQ = 0, score = 0, answering = false;
+        
+        function startGame() {
+            currentQ = 0; score = 0;
+            document.getElementById('quiz-area').style.display = 'block';
+            document.getElementById('result-area').style.display = 'none';
+            loadQ();
+        }
+
+        function loadQ() {
+            answering = false;
+            const q = quizQuestions[currentQ];
+            document.getElementById('score-display').innerText = `Điểm: ${score}`;
+            document.getElementById('question-count').innerText = `Câu: ${currentQ+1}/${quizQuestions.length}`;
+            document.getElementById('progress').style.width = `${(currentQ/quizQuestions.length)*100}%`;
+            document.getElementById('question-text').innerHTML = `${currentQ+1}. ${q.q}`;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn'; btn.innerHTML = opt;
+                btn.onclick = () => {
+                    if(answering) return; answering = true;
+                    if(i === q.answer) { 
+                        btn.classList.add('correct'); score += 10; playSound('correct'); 
+                    } else { 
+                        btn.classList.add('wrong'); 
+                        container.children[q.answer].classList.add('correct'); 
+                        playSound('wrong'); 
+                    }
+                    setTimeout(() => showModal(i === q.answer), 600);
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function showModal(correct) {
+            const m = document.getElementById('explanation-modal');
+            document.getElementById('modal-icon').innerText = correct ? "✅" : "❌";
+            document.getElementById('modal-title').innerText = correct ? "Đúng rồi!" : "Tiếc quá!";
+            document.getElementById('modal-title').className = `modal-title ${correct ? 't-correct' : 't-wrong'}`;
+            document.getElementById('modal-desc').innerText = quizQuestions[currentQ].exp;
+            m.style.display = 'flex';
+        }
+
+        function nextQuestion() {
+            document.getElementById('explanation-modal').style.display = 'none';
+            currentQ++;
+            if(currentQ < quizQuestions.length) loadQ();
+            else {
+                document.getElementById('quiz-area').style.display = 'none';
+                document.getElementById('result-area').style.display = 'flex';
+                document.getElementById('final-score').innerText = score;
+            }
+        }
+
+        // --- DICTATION LOGIC ---
+        let dictLessonIdx = -1, dictStep = 0;
+        let dictAnswers = {}; // Format: "0-1": { isCorrect: true, userInput: "..." }
+
+        function openDictMenu() {
+            document.getElementById('dict-menu').style.display = 'block';
+            document.getElementById('dict-play').style.display = 'none';
+            document.getElementById('dict-result').style.display = 'none';
+            renderDictList();
+        }
+
+        function renderDictList() {
+            const listContainer = document.getElementById('dict-lesson-list');
+            listContainer.innerHTML = '';
+            let allCompleted = true;
+
+            dictationData.forEach((lesson, index) => {
+                let totalSents = lesson.sentences.length;
+                let doneSents = 0;
+                for(let i=0; i<totalSents; i++) {
+                    if(dictAnswers[`${index}-${i}`]) doneSents++;
+                }
+                
+                lesson.completed = (doneSents === totalSents);
+                if (!lesson.completed) allCompleted = false;
+
+                const btn = document.createElement('div');
+                btn.className = `dict-lesson-btn ${lesson.completed ? 'completed' : ''}`;
+                btn.onclick = () => startDictLesson(index);
+                btn.innerHTML = `
+                    <div class="dict-lesson-header">
+                        <span class="dict-lesson-title">${lesson.title}</span>
+                        ${lesson.completed ? '<span style="font-size: 1.2rem;">✅</span>' : `<span class="dict-lesson-badge">${doneSents}/${totalSents}</span>`}
+                    </div>
+                    <span class="dict-lesson-desc">${lesson.desc}</span>
+                `;
+                listContainer.appendChild(btn);
+            });
+
+            if (allCompleted && dictationData.length > 0) {
+                document.getElementById('btn-finish-all').style.display = 'inline-block';
+            } else {
+                document.getElementById('btn-finish-all').style.display = 'none';
+            }
+        }
+
+        function startDictLesson(index) {
+            playSound('click');
+            dictLessonIdx = index;
+            dictStep = 0;
+            
+            // Tìm câu đầu tiên chưa làm
+            for(let i=0; i<dictationData[index].sentences.length; i++) {
+                if(!dictAnswers[`${index}-${i}`]) {
+                    dictStep = i; break;
+                }
+            }
+
+            document.getElementById('dict-menu').style.display = 'none';
+            document.getElementById('dict-play').style.display = 'block';
+            
+            // Re-assign audio if needed (Replace link for actual audio if available)
+            // document.getElementById('dict-audio-player').src = dictationData[dictLessonIdx].audioSrc;
+            
+            loadDictStep();
+        }
+
+        function backToDictMenu() {
+            document.getElementById('dict-audio-player').pause();
+            openDictMenu();
+        }
+
+        function loadDictStep() {
+            const lesson = dictationData[dictLessonIdx];
+            const sentObj = lesson.sentences[dictStep];
+            
+            document.getElementById('dict-title-display').innerText = `Bài 4: ${dictStep + 1}/${lesson.sentences.length}`;
+            
+            // Tạo hint text (Chữ đầu ... Chữ cuối)
+            const rawH = sentObj.h.replace(/[，。？！、\s“”：]/g, '');
+            let hint = "-- ... --";
+            if(rawH.length <= 2) hint = "* *";
+            else hint = `${rawH.substring(0, 1)} ... ${rawH.substring(rawH.length - 1)}`;
+            document.getElementById('dict-hint').innerText = hint;
+
+            // Reset Input
+            const inputField = document.getElementById('dict-input');
+            inputField.value = "";
+            inputField.disabled = false;
+            
+            document.getElementById('dict-fb-box').style.display = 'none';
+            document.getElementById('btn-next-dict').style.display = 'none';
+            document.getElementById('dict-instruct').style.display = 'block';
+            document.getElementById('btn-check-dict').style.display = 'block'; // Hiện lại nút kiểm tra
+            
+            inputField.focus();
+
+            // Nếu đã từng làm, hiển thị lại kết quả
+            const oldAns = dictAnswers[`${dictLessonIdx}-${dictStep}`];
+            if(oldAns) {
+                inputField.value = oldAns.userInput;
+                checkDictation(true);
+            }
+        }
+
+        function cleanChineseText(text) { 
+            return text.replace(/[^\u4e00-\u9fa5]/g, '').trim(); 
+        }
+
+        function checkDictation(isHistoryLoad = false) {
+            const sentObj = dictationData[dictLessonIdx].sentences[dictStep];
+            const inputField = document.getElementById('dict-input');
+            const rawUserInput = inputField.value.trim();
+            
+            const userInput = cleanChineseText(rawUserInput);
+            const correctInput = cleanChineseText(sentObj.h);
+            const isCorrect = (userInput === correctInput && userInput !== "");
+
+            if(!isHistoryLoad) {
+                playSound(isCorrect ? 'correct' : 'wrong');
+            }
+
+            // Lưu kết quả
+            dictAnswers[`${dictLessonIdx}-${dictStep}`] = {
+                isCorrect: isCorrect,
+                userInput: rawUserInput
+            };
+
+            // Hiện Feedback
+            const fbBox = document.getElementById('dict-fb-box');
+            const fbStatus = document.getElementById('dict-fb-status');
+            fbBox.style.display = 'block';
+            
+            if (isCorrect) {
+                fbStatus.innerText = "Chính xác! 🌟";
+                fbStatus.className = "dict-fb-status correct";
+            } else {
+                fbStatus.innerText = "Chưa đúng! Vui lòng đối chiếu đáp án:";
+                fbStatus.className = "dict-fb-status wrong";
+            }
+
+            document.getElementById('dict-fb-hz').innerText = sentObj.h;
+            document.getElementById('dict-fb-py').innerText = sentObj.p;
+            document.getElementById('dict-fb-vi').innerText = sentObj.vi;
+
+            // Chuyển UI
+            inputField.disabled = true;
+            document.getElementById('dict-instruct').style.display = 'none';
+            document.getElementById('btn-check-dict').style.display = 'none'; // Ẩn nút kiểm tra
+            
+            const btnNext = document.getElementById('btn-next-dict');
+            if(dictStep === dictationData[dictLessonIdx].sentences.length - 1) {
+                btnNext.innerText = "Hoàn thành Bài khóa 🏆";
+                btnNext.style.background = "var(--secondary)";
+            } else {
+                btnNext.innerText = "Tiếp theo ❯";
+                btnNext.style.background = "var(--primary)";
+            }
+            btnNext.style.display = 'block';
+        }
+
+        function nextDictStep() {
+            if (dictStep < dictationData[dictLessonIdx].sentences.length - 1) {
+                dictStep++;
+                loadDictStep();
+            } else {
+                backToDictMenu();
+            }
+        }
+
+        function showDictStats() {
+            playSound('click');
+            document.getElementById('dict-menu').style.display = 'none';
+            document.getElementById('dict-result').style.display = 'block';
+
+            let total = 0, correct = 0, wrong = 0;
+            dictationData.forEach((lesson, lIdx) => {
+                lesson.sentences.forEach((s, sIdx) => {
+                    total++;
+                    let ans = dictAnswers[`${lIdx}-${sIdx}`];
+                    if(ans) {
+                        if(ans.isCorrect) correct++;
+                        else wrong++;
+                    } else {
+                        wrong++; // Chưa làm
+                    }
+                });
+            });
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-correct').innerText = correct;
+            document.getElementById('stat-wrong').innerText = wrong;
+
+            const percentage = Math.round((correct / total) * 100) || 0;
+            setTimeout(() => {
+                document.getElementById('dict-progress-bar').style.width = percentage + '%';
+            }, 100);
+            document.getElementById('stat-percent').innerText = `Tỉ lệ đúng: ${percentage}%`;
+        }
+
+        function copyDictResults() {
+            let text = "📊 KẾT QUẢ NGHE CHÉP HSK2 - BÀI 4\n\n";
+            let total = 0, correct = 0;
+            let detailText = "";
+
+            dictationData.forEach((lesson, lIdx) => {
+                detailText += `--- ${lesson.title} ---\n`;
+                lesson.sentences.forEach((sent, sIdx) => {
+                    total++;
+                    let ans = dictAnswers[`${lIdx}-${sIdx}`];
+                    if(ans) {
+                        if(ans.isCorrect) {
+                            correct++;
+                            detailText += `${sIdx+1}. [✅] ${sent.h}\n`;
+                        } else {
+                            let uInput = ans.userInput ? ans.userInput : "[Để trống]";
+                            detailText += `${sIdx+1}. [❌] Đáp án: ${sent.h}\n      (Bạn gõ: ${uInput})\n`;
+                        }
+                    } else {
+                            detailText += `${sIdx+1}. [⚪] Chưa làm: ${sent.h}\n`;
+                    }
+                });
+                detailText += "\n";
+            });
+
+            const percent = Math.round((correct / total) * 100) || 0;
+            text += `🎯 Tổng: ${total} câu | Đúng: ${correct} | Sai/Chưa làm: ${total - correct} (${percent}%)\n\n`;
+            text += detailText;
+
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function resetDictation() {
+            if(confirm("Bạn có chắc chắn muốn xóa dữ liệu nghe chép và bắt đầu lại?")) {
+                dictAnswers = {};
+                document.getElementById('dict-progress-bar').style.width = '0%';
+                openDictMenu();
+            }
+        }
+
+        // Bắt sự kiện Enter cho input nghe chép
+        document.addEventListener("keydown", function(e) {
+            const dictPlay = document.getElementById('dict-play');
+            if (e.key === "Enter" && dictPlay.style.display === 'block') {
+                e.preventDefault();
+                const btnNext = document.getElementById('btn-next-dict');
+                const inputField = document.getElementById('dict-input');
+                
+                if (btnNext.style.display === 'block') {
+                    nextDictStep();
+                } else if (!inputField.disabled) {
+                    checkDictation();
+                }
+            }
+        });
+
+        // Initialize
+        window.onload = renderVocab;
+    </script>
+</body>
+</html>

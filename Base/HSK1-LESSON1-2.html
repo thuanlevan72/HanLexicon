@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thử Thách Tình Huống HSK - Nga Học HSK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Lexend:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: #f0f2f5;
+            background-image: radial-gradient(#db2777 0.5px, transparent 0.5px), radial-gradient(#db2777 0.5px, #f0f2f5 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chinese-text { font-family: 'Noto Sans SC', sans-serif; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(10px);
+            box-shadow: -5px 5px 0px #db2777;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide { animation: slideIn 0.4s ease-out; }
+        .no-underline { text-decoration: none !important; }
+    </style>
+</head>
+<body class="p-6">
+
+    <div id="game-container" class="max-w-4xl w-full glass-morphism rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border-4 border-white">
+        
+        <div class="md:w-1/3 bg-pink-600 p-8 text-white flex flex-col justify-between relative">
+            
+            <a href="index.html" class="absolute top-4 left-4 flex items-center gap-2 text-[10px] font-bold bg-white/10 hover:bg-white/20 py-2 px-3 rounded-xl transition-all border border-white/20 group no-underline text-white">
+                <span class="group-hover:-translate-x-1 transition-transform">⬅</span> TRANG CHỦ
+            </a>
+
+            <div class="mt-4">
+                <div class="bg-white/20 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-inner">🏮</div>
+                <h1 class="text-3xl font-bold leading-tight">Ứng dụng<br>Giao tiếp HSK</h1>
+                <p class="mt-4 text-pink-100 opacity-80">Giáo viên: <span class="font-bold border-b-2 border-yellow-300 text-yellow-300">Nga Học HSK</span></p>
+            </div>
+
+            <div class="mt-8 space-y-6">
+                <div class="bg-black/10 p-4 rounded-2xl border border-white/10">
+                    <p class="text-xs uppercase tracking-widest opacity-60 mb-1">Tiến độ bài học</p>
+                    <div class="flex items-center gap-3">
+                        <div class="flex-1 h-2 bg-white/20 rounded-full overflow-hidden">
+                            <div id="progress-bar" class="h-full bg-yellow-400 transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <span id="progress-text" class="text-sm font-bold">0%</span>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-end">
+                    <div>
+                        <p class="text-xs uppercase tracking-widest opacity-60">Điểm số</p>
+                        <p id="score-display" class="text-4xl font-black text-yellow-300">0</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs uppercase tracking-widest opacity-60">Câu hỏi</p>
+                        <p class="text-xl font-bold"><span id="current-count">0</span>/20</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:w-2/3 p-10 relative bg-white">
+            
+            <div id="start-screen" class="h-full flex flex-col justify-center text-center animate-slide">
+                <h2 class="text-4xl font-black text-gray-800 mb-4">Bạn có giỏi ứng xử?</h2>
+                <p class="text-gray-500 mb-10 max-w-sm mx-auto text-lg">Vượt qua 20 tình huống giao tiếp tiếng Trung cơ bản cùng cô Nga.</p>
+                <button onclick="startGame()" class="group relative bg-pink-600 hover:bg-pink-700 text-white font-bold py-5 px-10 rounded-2xl shadow-xl transition-all hover:-translate-y-1 active:scale-95 overflow-hidden">
+                    <span class="relative z-10 text-xl">BẮT ĐẦU THỬ THÁCH</span>
+                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                </button>
+            </div>
+
+            <div id="game-screen" class="hidden h-full flex flex-col justify-center">
+                <div id="question-container" class="animate-slide">
+                    <div class="mb-2 flex items-center gap-2">
+                        <span class="bg-pink-100 text-pink-600 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">Tình huống</span>
+                    </div>
+                    <h3 id="scenario-text" class="text-2xl font-bold text-gray-800 mb-8 leading-snug">Câu hỏi sẽ hiện ở đây...</h3>
+                    
+                    <div id="options-container" class="space-y-4">
+                        </div>
+                </div>
+            </div>
+
+            <div id="result-screen" class="hidden h-full flex flex-col justify-center text-center animate-slide">
+                <div class="text-8xl mb-6" id="result-emoji">🏅</div>
+                <h2 class="text-4xl font-black text-gray-800 mb-2">Kết Quả</h2>
+                <p id="result-message" class="text-gray-500 mb-8 text-lg px-10"></p>
+                <div class="flex flex-col gap-3 max-w-sm mx-auto w-full">
+                    <button onclick="location.reload()" class="bg-gray-800 hover:bg-black text-white font-bold py-4 rounded-xl shadow-lg transition-all">CHƠI LẠI</button>
+                    
+                    <a href="index.html" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 rounded-xl shadow-lg transition-all flex justify-center items-center gap-2 no-underline">
+                        VỀ TRANG CHỦ 🌿
+                    </a>
+
+                    <button onclick="shareScore()" class="border-2 border-pink-200 text-pink-600 font-bold py-4 rounded-xl hover:bg-pink-50 transition-all">CHIA SẺ VỚI CÔ NGA</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="toast" class="hidden fixed top-10 right-10 p-6 rounded-2xl shadow-2xl text-white font-bold transform transition-all translate-x-full z-50"></div>
+
+    <script>
+        const scenarioData = [
+            { q: "Khi gặp thầy cô giáo hoặc người lớn tuổi, bạn chào thế nào cho lịch sự?", options: ["你好", "您好", "再见", "对不起"], correct: 1 },
+            { q: "Bạn lỡ đi trễ một cuộc họp/buổi học quan trọng, bạn nên nói gì đầu tiên?", options: ["没关系", "谢谢", "对不起", "不客气"], correct: 2 },
+            { q: "Khi người khác nói 'Cảm ơn' (谢谢) với bạn, bạn đáp lại thế nào?", options: ["再见", "不客气", "不", "您好"], correct: 1 },
+            { q: "Khi bạn vô tình làm phiền ai đó và họ nói 'Không sao đâu' (没关系), bạn đã nói gì trước đó?", options: ["再见", "谢谢", "对不起", "你好"], correct: 2 },
+            { q: "Để chào tạm biệt một người bạn, bạn dùng từ nào?", options: ["再见", "好", "不谢", "你们"], correct: 0 },
+            { q: "Khi bạn muốn chào một nhóm gồm nhiều bạn học?", options: ["你好", "您好", "你们好", "老师好"], correct: 2 },
+            { q: "Ai đó giúp bạn xách đồ nặng, bạn sẽ nói gì?", options: ["不谢", "谢谢", "没关系", "不"], correct: 1 },
+            { q: "Bạn muốn từ chối một lời đề nghị một cách ngắn gọn?", options: ["不", "好", "您", "再见"], correct: 0 },
+            { q: "Khi khách cảm ơn bạn rất nhiều lần, bạn có thể dùng cách nói ngắn gọn này để đáp lại?", options: ["不客气", "不谢", "对不起", "再见"], correct: 1 },
+            { q: "Bạn gặp một người lớn tuổi mà bạn rất kính trọng, bạn xưng hô thế nào?", options: ["你", "你们", "您", "好"], correct: 2 },
+            { q: "Bạn gặp bạn thân vào buổi sáng?", options: ["你好", "对不起", "没关系", "不客气"], correct: 0 },
+            { q: "Khi bạn muốn hỏi thăm sức khỏe một người?", options: ["你好吗？", "谢谢你", "对不起", "再见"], correct: 0 },
+            { q: "Bạn muốn gọi 'Thầy cô giáo' trong tiếng Trung?", options: ["学生", "老师", "爸爸", "妈妈"], correct: 1 },
+            { q: "Câu nói nào thể hiện sự đồng ý, khen ngợi điều gì đó ổn?", options: ["不", "再见", "好", "您"], correct: 2 },
+            { q: "Bạn làm đổ nước vào áo bạn học, câu đầu tiên cần nói là?", options: ["没关系", "对不起", "谢谢", "你好"], correct: 1 },
+            { q: "Khi bạn chào tạm biệt và hẹn gặp lại vào ngày mai?", options: ["明天见", "谢谢", "您好", "不客气"], correct: 0 },
+            { q: "Bạn muốn chào 'Chào buổi sáng'?", options: ["早上好", "对不起", "没关系", "不"], correct: 0 },
+            { q: "Ai đó xin lỗi bạn vì một lỗi nhỏ, bạn đáp lại để họ an tâm?", options: ["谢谢", "没关系", "再见", "不客气"], correct: 1 },
+            { q: "Bạn muốn nói 'Tôi không phải học sinh'?", options: ["我不学生", "我不是学生", "我 student", "对不起"], correct: 1 },
+            { q: "Kết thúc bài học, học sinh chào cô giáo?", options: ["老师再见", "老师谢谢", "老师您好", "对不起"], correct: 0 }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            if (type === 'correct') {
+                osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1);
+            } else {
+                osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(110, audioCtx.currentTime + 0.2);
+            }
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const data = scenarioData[currentIdx];
+            document.getElementById('current-count').innerText = currentIdx + 1;
+            document.getElementById('scenario-text').innerText = data.q;
+            const progress = (currentIdx / scenarioData.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + "%";
+            document.getElementById('progress-text').innerText = Math.round(progress) + "%";
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            data.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full p-5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-left font-bold text-gray-700 flex justify-between items-center group";
+                btn.innerHTML = `<div class="flex items-center gap-4"><span class="w-8 h-8 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-xs group-hover:border-pink-500">${String.fromCharCode(65+i)}</span><span class="text-xl chinese-text">${opt}</span></div>`;
+                btn.onclick = () => handleAnswer(i, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(choiceIdx, btnElement) {
+            const correctIdx = scenarioData[currentIdx].correct;
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            if (choiceIdx === correctIdx) {
+                score += 5;
+                btnElement.classList.add('border-green-500', 'bg-green-50', 'text-green-700');
+                showToast("TUYỆT VỜI! 🥳", "bg-green-500");
+                playSound('correct');
+            } else {
+                btnElement.classList.add('border-red-500', 'bg-red-50', 'text-red-700');
+                buttons[correctIdx].classList.add('border-green-500', 'bg-green-100');
+                showToast("CỐ GẮNG HƠN NHÉ! 💡", "bg-red-500");
+                playSound('wrong');
+            }
+            document.getElementById('score-display').innerText = score;
+            setTimeout(() => {
+                currentIdx++;
+                if (currentIdx < scenarioData.length) renderQuestion();
+                else finishGame();
+            }, 1500);
+        }
+
+        function showToast(text, colorClass) {
+            const toast = document.getElementById('toast');
+            toast.innerText = text;
+            toast.className = `fixed top-10 right-10 p-6 rounded-2xl shadow-2xl text-white font-bold z-50 transition-all duration-500 ${colorClass}`;
+            toast.style.transform = "translateX(0)";
+            setTimeout(() => toast.style.transform = "translateX(200%)", 1000);
+        }
+
+        function finishGame() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('progress-bar').style.width = "100%";
+            document.getElementById('progress-text').innerText = "100%";
+            let msg = score >= 90 ? "Xuất sắc! Bạn là bậc thầy giao tiếp rồi!" : (score >= 60 ? "Làm tốt lắm!" : "Cố gắng luyện thêm nhé!");
+            document.getElementById('result-message').innerText = msg;
+        }
+
+        function shareScore() {
+            const text = `Mình vừa đạt ${score} điểm giao tiếp HSK! 🏮`;
+            navigator.clipboard.writeText(text).then(() => showToast("ĐÃ COPY LỜI NHẮN!", "bg-blue-500"));
+        }
+    </script>
+</body>
+</html>

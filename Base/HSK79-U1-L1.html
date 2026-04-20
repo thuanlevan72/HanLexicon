@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>顶石中文 Bài 1 - 没有高考，你怎么拼得过富二代？ | Nga Học HSK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+SC:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8bc34a; --primary-dark: #558b2f;
+            --secondary: #ffb74d; --secondary-dark: #f57c00;
+            --bg-color: #f1f8e9; --card-bg: #ffffff;
+            --text-main: #33691e; --text-muted: #5d4037;
+            --hanzi-color: #689f38; --font-cn: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; 
+            --border-light: #dcedc8; --pinyin-color: #0284c7;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); background-image: radial-gradient(var(--border-light) 1.5px, transparent 1.5px); background-size: 25px 25px; color: var(--text-main); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 50px; }
+        .branding { width: 100%; background: #fff; text-align: center; padding: 6px 0; font-size: 0.8rem; font-weight: 800; color: var(--primary-dark); letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-transform: uppercase; z-index: 10; }
+        .header { width: 100%; padding: 15px 20px; position: relative; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 0 0 20px 20px; box-shadow: 0 5px 15px rgba(139, 195, 74, 0.3); min-height: 60px; }
+        .btn-back { position: absolute; left: 15px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 6px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.5); cursor: pointer; white-space: nowrap; z-index: 2; }
+        .header h2 { font-size: 1.15rem; text-align: center; font-family: var(--font-cn); font-weight: 900; line-height: 1.3; padding: 0 85px; word-wrap: break-word; }
+        @media (min-width: 768px) { .header h2 { font-size: 1.4rem; } .btn-back { padding: 8px 12px; font-size: 0.9rem;} }
+        
+        .tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 20px auto; background: white; padding: 8px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 96%; max-width: 1000px; }
+        .tab-btn { flex: 1 1 auto; border: none; background: transparent; padding: 8px 4px; border-radius: 12px; font-size: 0.85rem; font-weight: 800; color: var(--text-muted); cursor: pointer; transition: all 0.2s; text-align: center; white-space: nowrap; }
+        @media (min-width: 640px) { .tab-btn { font-size: 0.95rem; padding: 10px 8px; border-radius: 20px; } .tabs { border-radius: 30px; gap: 8px; } }
+        .tab-btn.active { background: var(--secondary); color: white; box-shadow: 0 4px 10px rgba(255, 183, 77, 0.4); }
+        
+        .btn-primary, .btn-action { color: white; border: none; padding: 12px 20px; border-radius: 15px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--secondary); box-shadow: 0 4px 0 var(--secondary-dark); }
+        .btn-action { background: var(--primary); box-shadow: 0 4px 0 var(--primary-dark); }
+        .btn-primary:active, .btn-action:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+        
+        .card-container { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); width: 100%; border: 2px solid var(--border-light); animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .chinese-text { font-family: var(--font-cn); font-weight: 700; letter-spacing: 0.5px; }
+        
+        /* Cập nhật chiều cao động để thẻ không bị cắt trên mobile */
+        .flashcard-inner { position: relative; width: 100%; height: 60vh; min-height: 440px; max-height: 520px; transition: transform 0.4s ease-in-out; transform-style: preserve-3d; cursor: pointer; }
+        @media (min-width: 768px) { .flashcard-inner { height: 520px; } }
+        .flashcard-inner.is-flipped { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 15px; padding: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .flashcard-front { background-color: #fff; border: 2px solid var(--primary); }
+        .flashcard-back { background-color: var(--bg-color); transform: rotateY(180deg); border: 2px solid var(--secondary); justify-content: flex-start; padding-top: 16px;}
+        
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 10px; }
+        
+        .circle-stat { position: relative; width: 100px; height: 100px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 8px solid var(--bg-color); background: white; }
+        .stat-green { border-color: var(--primary); color: var(--primary-dark); }
+        .stat-red { border-color: #ffcc80; color: #e65100; }
+        
+        .text-content-area { font-size: 1.4rem; line-height: 2.4; }
+        @media (min-width: 768px) { .text-content-area { font-size: 1.6rem; line-height: 2.6; } }
+        ruby { ruby-position: over; margin: 0 2px; }
+        rt { font-size: 0.85rem; color: var(--pinyin-color); font-family: 'Nunito', sans-serif; font-weight: 800; transform: translateY(-2px); transition: opacity 0.2s; }
+        .hide-pinyin rt { opacity: 0; visibility: hidden; }
+        .hide-pinyin .text-content-area { line-height: 1.9; }
+        input:checked ~ .toggle-bg { background-color: var(--primary); }
+        input:checked ~ .toggle-dot { transform: translateX(100%); }
+        
+        .quiz-option { width: 100%; text-align: left; padding: 12px 16px; margin-bottom: 10px; border: 2px solid var(--border-light); border-radius: 12px; font-weight: 700; font-size: 1.1rem; background: white; color: var(--text-main); cursor: pointer; transition: all 0.2s; }
+        .quiz-option:hover:not(:disabled) { border-color: var(--secondary); background: #fff3e0; }
+        .quiz-option:disabled { cursor: not-allowed; opacity: 0.9; }
+        .opt-correct { background: #dcedc8 !important; border-color: #7cb342 !important; color: #33691e !important; box-shadow: 0 0 10px rgba(139,195,74,0.3); }
+        .opt-wrong { background: #ffcc80 !important; border-color: #ff9800 !important; color: #e65100 !important; }
+        .feedback-box { animation: fadeIn 0.3s ease-out; }
+        .hl-word { color: var(--secondary-dark); border-bottom: 2px dashed var(--secondary); cursor: pointer; padding: 0 2px; border-radius: 4px; transition: background 0.2s; }
+        .hl-word:hover { background-color: rgba(255, 183, 77, 0.1); }
+        .blank-space { display: inline-block; min-width: 60px; border-bottom: 2px solid var(--primary-dark); text-align: center; color: var(--primary-dark); font-weight: bold; }
+        
+        .grammar-header { position: relative; border-radius: 1rem; transition: border-radius 0.3s ease, background-color 0.2s; }
+        .grammar-header::after { content: '▼'; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); transition: transform 0.3s ease; color: var(--primary-dark); font-size: 0.9rem;}
+        .grammar-card.open .grammar-header::after { transform: translateY(-50%) rotate(180deg); }
+        .grammar-card.open .grammar-header { background-color: #f1f8e9; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid var(--border-light); }
+        .grammar-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease-out; }
+        .grammar-card.open .grammar-content { grid-template-rows: 1fr; }
+        .grammar-content-inner { overflow: hidden; }
+    </style>
+</head>
+<body>
+    <div class="branding">© Bản Quyền Thuộc Về Nga Học HSK</div>
+    <header class="header">
+        <a href="#" class="btn-back">❮ Về</a>
+        <h2>顶石中文 Bài 1: 没有高考，你怎么拼得过富二代？</h2>
+    </header>
+
+    <div class="tabs">
+        <button id="tab-vocab" class="tab-btn active" onclick="switchTab('vocab')">🎴 Từ Vựng</button>
+        <button id="tab-grammar" class="tab-btn" onclick="switchTab('grammar')">🎯 Trọng Điểm</button>
+        <button id="tab-text" class="tab-btn" onclick="switchTab('text')">📖 Bài Khóa</button>
+        <button id="tab-exercise" class="tab-btn" onclick="switchTab('exercise')">📝 Bài Tập</button>
+    </div>
+
+    <div class="w-full max-w-[1200px] px-3 sm:px-6 lg:px-10 mb-10 mx-auto">
+        <!-- TAB 1: TỪ VỰNG -->
+        <div id="section-vocab" class="w-full">
+            <div id="vocab-start" class="card-container text-center max-w-2xl mx-auto">
+                <h2 class="text-2xl font-bold mb-3" style="color: var(--primary-dark);">Từ Vựng Bài 1 - 顶石中文</h2>
+                <div class="text-6xl mb-6 mt-4">🎴</div>
+                <p class="text-[var(--text-muted)] font-bold mb-8">Học và ghi nhớ 44 từ vựng/thành ngữ qua Flashcard trước khi làm bài tập nhé!</p>
+                <button onclick="startFlashcards()" class="btn-primary w-full">Bắt đầu học ❯</button>
+            </div>
+
+            <div id="flashcard-screen" class="card-container hidden max-w-3xl mx-auto">
+                <div class="flex justify-between items-center mb-4 border-b pb-3" style="border-color: var(--border-light);">
+                    <button onclick="resetVocabTab()" class="text-sm font-bold text-orange-500 hover:underline">❮ Quay Lại</button>
+                    <div class="font-bold px-4 py-2 rounded-full text-sm" style="background: var(--bg-color); color: var(--primary-dark);">
+                        Thẻ: <span id="card-index">1</span> / <span id="card-total">0</span>
+                    </div>
+                </div>
+                <div class="mb-6 relative pointer-events-none" id="flashcard-wrapper">
+                    <div id="flashcard-inner" class="flashcard-inner pointer-events-auto" onclick="flipCard()">
+                        
+                        <!-- MẶT TRƯỚC -->
+                        <div class="flashcard-front">
+                            <h2 id="card-hanzi" class="chinese-text text-[4.5rem] md:text-[6.5rem] text-center px-2 leading-none mb-6" style="color: var(--hanzi-color);"></h2>
+                            <p class="absolute bottom-4 text-sm font-bold text-gray-400">Chạm vào thẻ để lật 👆</p>
+                        </div>
+
+                        <!-- MẶT SAU -->
+                        <div class="flashcard-back overflow-y-auto custom-scroll relative">
+                            <div class="flex flex-col items-center justify-center mb-1 w-full mt-1">
+                                <!-- Chữ Hán trên cùng được thu nhỏ -->
+                                <h2 id="card-back-hanzi" class="chinese-text text-[3.5rem] md:text-[4.5rem] font-black text-center" style="color: var(--hanzi-color); line-height: 1.1;"></h2>
+                            </div>
+                            
+                            <h3 id="card-pinyin" class="text-lg md:text-xl font-bold mb-1 text-center" style="color: var(--primary-dark);"></h3>
+                            <p id="card-mean" class="text-sm md:text-base mb-2 font-bold text-center text-orange-600"></p>
+                            
+                            <div class="text-left w-full px-1 md:px-2 mt-1 pt-2 border-t-2 border-[var(--border-light)]">
+                                <p class="text-[0.75rem] font-bold text-gray-500 mb-1 uppercase tracking-wide">Giải nghĩa tiếng Trung:</p>
+                                <p id="card-cn-mean" class="chinese-text text-base md:text-lg font-bold leading-relaxed text-gray-800 mb-2"></p>
+                                <p id="card-example-cn" class="chinese-text text-lg md:text-xl font-black text-[#558b2f] leading-relaxed whitespace-pre-line mb-1"></p>
+                                <p id="card-example-py" class="text-xs md:text-sm italic font-semibold text-gray-500 whitespace-pre-line mb-1"></p>
+                                <!-- Câu dịch nghĩa được thu nhỏ -->
+                                <p id="card-example-vi" class="text-sm md:text-base bg-white p-2 rounded-lg border border-[var(--border-light)] text-[var(--primary-dark)] whitespace-pre-line font-bold"></p>
+                            </div>
+                            
+                            <!-- Container chứa Từ Kết Hợp -->
+                            <div id="card-collocations-container" class="w-full px-1 md:px-2 text-left mt-1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="markCard(false)" class="bg-orange-100 border-2 border-orange-300 text-orange-800 p-3 rounded-xl font-bold hover:bg-orange-200 shadow-sm transition active:scale-95">❌ Chưa thuộc</button>
+                    <button onclick="markCard(true)" class="bg-[#dcedc8] border-2 border-[#8bc34a] text-[#33691e] p-3 rounded-xl font-bold hover:bg-[#c5e1a5] shadow-sm transition active:scale-95">✅ Đã thuộc</button>
+                </div>
+            </div>
+
+            <div id="flashcard-stat-screen" class="card-container text-center hidden max-w-2xl mx-auto">
+                 <h2 class="text-2xl font-bold mb-6" style="color: var(--primary-dark);">Kết quả ghi nhớ</h2>
+                 <div class="flex justify-center gap-12 items-center mb-8">
+                    <div class="circle-stat stat-green">
+                        <span id="stat-learned-percent" class="text-2xl font-bold">0%</span>
+                        <span class="text-xs uppercase font-bold mt-1">Thuộc</span>
+                    </div>
+                    <div class="circle-stat stat-red">
+                        <span id="stat-unlearned-percent" class="text-2xl font-bold">0%</span>
+                        <span class="text-xs uppercase font-bold mt-1">Cần ôn</span>
+                    </div>
+                 </div>
+                 <div class="text-left mb-6">
+                    <p class="font-bold text-base mb-2" style="color: var(--text-muted);">Danh sách cần lưu ý:</p>
+                    <div id="unlearned-list" class="max-h-48 overflow-y-auto custom-scroll bg-white rounded-xl border-2 p-3 space-y-2" style="border-color: #ffb74d;"></div>
+                 </div>
+                 <div class="grid grid-cols-1 gap-3">
+                     <button id="btn-relearn" onclick="relearnUnlearned()" class="btn-primary bg-orange-500">🔄 Học lại từ chưa thuộc</button>
+                     <button onclick="switchTab('grammar')" class="btn-action">🎯 Chuyển sang Trọng Điểm ❯</button>
+                 </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: TRỌNG ĐIỂM -->
+        <div id="section-grammar" class="w-full hidden">
+            <div class="card-container max-w-3xl mx-auto bg-transparent border-none shadow-none !p-0">
+                <div class="text-center mb-6 bg-white p-6 rounded-3xl shadow-sm border-2 border-[var(--border-light)]">
+                    <div class="text-5xl mb-3">🎯</div>
+                    <h2 class="text-2xl font-bold mb-2" style="color: var(--primary-dark);">重点句型与词汇</h2>
+                    <p class="font-semibold text-gray-600">Cấu trúc câu, cách kết hợp từ và Thành ngữ trọng điểm. Bấm vào từng thẻ để xem chi tiết.</p>
+                </div>
+
+                <div id="grammar-accordion-container" class="flex flex-col gap-4">
+                    <!-- Nội dung sẽ được render bằng Javascript -->
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <button onclick="switchTab('text')" class="btn-action w-full md:w-auto shadow-lg">📖 Đọc Bài Khóa ❯</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: BÀI KHÓA -->
+        <div id="section-text" class="w-full hidden">
+            <div class="card-container max-w-4xl mx-auto" id="text-wrapper">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-2 chinese-text" style="color: var(--primary-dark);">没有高考，你怎么拼得过富二代？</h2>
+                <p class="text-center text-sm font-bold text-orange-500 mb-4">(Chạm vào các từ được gạch chân để xem nghĩa)</p>
+                
+                <div class="sticky top-0 z-10 bg-white pb-3 pt-2 border-b-2 mb-4 flex flex-col gap-3" style="border-color: var(--primary);">
+                    <audio id="lesson-audio" controls class="w-full h-11 outline-none rounded-lg" src="https://raw.githubusercontent.com/nga-hoc-hsk/game-hoc-tieng-trung/main/audio/hsk7/lesson1/1.1.mp3"></audio>
+                    
+                    <div class="flex justify-end w-full px-2">
+                        <label class="flex items-center cursor-pointer select-none">
+                            <div class="relative">
+                                <input type="checkbox" id="toggle-pinyin" class="sr-only" checked onchange="togglePinyin()">
+                                <div class="block bg-gray-300 w-12 h-7 rounded-full toggle-bg transition"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition transform toggle-dot"></div>
+                            </div>
+                            <div class="ml-2 font-bold text-sm text-[var(--primary-dark)]">Hiện Pinyin</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="chinese-text text-gray-800 custom-scroll max-h-[60vh] overflow-y-auto pb-6 px-1 md:px-4 text-content-area transition-all duration-300" id="sync-container"></div>
+                
+                <div class="mt-6 border-t-2 pt-4 flex justify-center" style="border-color: var(--border-light);">
+                    <button onclick="switchTab('exercise')" class="btn-action w-full md:w-auto">📝 Làm Bài Tập (课后练习) ❯</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: BÀI TẬP -->
+        <div id="section-exercise" class="w-full hidden">
+            
+            <!-- Global Score Bar -->
+            <div id="global-score-bar" class="sticky top-0 z-20 bg-white border-b-4 border-green-500 p-3 mb-5 rounded-xl shadow-md flex justify-between items-center">
+                <span class="font-bold text-[var(--primary-dark)]">Tiến độ Điểm số:</span>
+                <div class="flex items-center gap-3">
+                    <div class="w-32 md:w-48 h-4 bg-gray-200 rounded-full overflow-hidden">
+                        <div id="global-progress" class="h-full bg-green-500 transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <span id="global-score-text" class="font-black text-orange-600 text-lg">0/102</span>
+                </div>
+            </div>
+
+            <!-- Sub tabs bài tập -->
+            <div class="tabs mb-4 w-full bg-transparent shadow-none" style="max-width: 100%;">
+                <button class="tab-btn active w-auto px-4 !bg-[var(--primary)] !text-white" id="btn-ex-0" onclick="switchEx('ex-0')">1. Giải nghĩa</button>
+                <button class="tab-btn w-auto px-4 border border-[var(--primary)] !text-[var(--primary-dark)] bg-white" id="btn-ex-1" onclick="switchEx('ex-1')">2. Điền trống</button>
+                <button class="tab-btn w-auto px-4 border border-[var(--primary)] !text-[var(--primary-dark)] bg-white" id="btn-ex-2" onclick="switchEx('ex-2')">3. Trắc nghiệm</button>
+                <button class="tab-btn w-auto px-4 border border-[var(--primary)] !text-[var(--primary-dark)] bg-white" id="btn-ex-3" onclick="switchEx('ex-3')">4. Viết & AI Chấm</button>
+                <button class="tab-btn w-auto px-4 border border-[var(--primary)] !text-[var(--primary-dark)] bg-white" id="btn-ex-4" onclick="switchEx('ex-4')">5. Điền đoạn văn</button>
+                <button class="tab-btn w-auto px-4 border border-[var(--primary)] !text-red-600 bg-white font-black" id="btn-ex-5" onclick="switchEx('ex-5')">6. Tổng Kết 🏆</button>
+            </div>
+
+            <!-- Ex 0: Giải Nghĩa -->
+            <div id="exercise-meaning-container" class="card-container relative max-w-3xl mx-auto hidden">
+                <div class="flex justify-between items-center mb-5 border-b pb-2" style="border-color: var(--border-light);">
+                    <h3 class="font-bold text-lg text-[var(--primary-dark)]">一、找正确的解释</h3>
+                    <div class="font-bold px-3 py-1 rounded-full text-sm bg-[var(--bg-color)] text-[var(--primary-dark)]">
+                        Câu: <span id="meaning-current">1</span> / <span id="meaning-total">44</span>
+                    </div>
+                </div>
+                
+                <p class="mb-4 text-sm font-semibold text-gray-600 bg-orange-50 border border-orange-200 p-3 rounded-lg">💬 Hãy chọn đáp án giải nghĩa tiếng Trung chính xác nhất cho từng từ vựng dưới đây. Mỗi câu đúng bạn sẽ nhận được 1 điểm.</p>
+                
+                <div class="text-center mb-6 mt-6">
+                    <h3 id="meaning-word" class="chinese-text text-5xl md:text-6xl font-black mb-2 tracking-wide" style="color: var(--primary-dark);"></h3>
+                </div>
+                
+                <div id="meaning-options" class="flex flex-col mb-4 gap-3"></div>
+                
+                <div id="meaning-inline-feedback" class="hidden feedback-box p-4 rounded-xl mb-5 text-left">
+                    <div id="meaning-fb-title" class="font-bold text-xl mb-2 text-center border-b border-[var(--border-light)] pb-2"></div>
+                    <div id="meaning-fb-viet" class="text-gray-700 font-bold text-base whitespace-pre-line leading-relaxed mt-2"></div>
+                </div>
+                
+                <button id="btn-meaning-next" onclick="nextMeaningEx()" class="btn-action w-full hidden mt-3 shadow-lg">Câu tiếp theo ❯</button>
+            </div>
+
+            <!-- Ex 1 & 2: Chọn từ / Trắc nghiệm -->
+            <div id="exercise-quiz-container" class="card-container relative max-w-3xl mx-auto hidden">
+                <div class="flex justify-between items-center mb-5 border-b pb-2" style="border-color: var(--border-light);">
+                    <h3 id="ex-title" class="font-bold text-lg text-[var(--primary-dark)]">二、用所给的词语填空</h3>
+                    <div class="font-bold px-3 py-1 rounded-full text-sm bg-[var(--bg-color)] text-[var(--primary-dark)]">
+                        Câu: <span id="ex-current">1</span> / <span id="ex-total"></span>
+                    </div>
+                </div>
+                <div id="ex-word-bank" class="mb-4 flex flex-wrap gap-2 justify-center hidden"></div>
+                <h3 id="ex-question" class="chinese-text text-lg md:text-xl font-bold mb-5 text-gray-800 leading-relaxed"></h3>
+                <div id="ex-options" class="flex flex-col mb-4 gap-2"></div>
+                <div id="ex-inline-feedback" class="hidden feedback-box p-4 rounded-xl mb-5">
+                    <div id="ex-fb-title" class="font-bold text-lg mb-2"></div>
+                    <div id="ex-fb-exp" class="text-gray-700 font-semibold text-sm md:text-base leading-relaxed"></div>
+                </div>
+                <button id="btn-ex-next" onclick="nextEx()" class="btn-action w-full hidden">Câu tiếp theo ❯</button>
+            </div>
+            
+            <!-- Ex 3 (Viết & AI Chấm điểm) -->
+            <div id="exercise-writing-container" class="card-container relative max-w-3xl mx-auto hidden">
+                <h3 class="font-bold text-lg text-[var(--primary-dark)] border-b pb-2 mb-4">四、用所给的词语和句型回答问题 (AI Chấm Điểm)</h3>
+                <p class="mb-4 text-sm font-semibold text-gray-600 bg-orange-50 border border-orange-200 p-3 rounded-lg">💬 Gõ câu trả lời của bạn vào ô trống, AI giáo viên sẽ phân tích ngữ pháp, từ vựng và chấm <b>10 điểm</b> cho mỗi câu hỏi.</p>
+                <div id="writing-questions"></div>
+            </div>
+            
+            <!-- Ex 4: Điền đoạn văn -->
+            <div id="exercise-cloze-container" class="card-container relative max-w-3xl mx-auto hidden">
+                <h3 class="font-bold text-lg text-[var(--primary-dark)] border-b pb-2 mb-4">五、用所给的词语填空</h3>
+                <div class="flex justify-center gap-3 mb-4 flex-wrap" id="cloze-word-bank">
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-lg font-bold">持</span>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-lg font-bold">可喜</span>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-lg font-bold">按说</span>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-lg font-bold">门槛</span>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-lg font-bold">渺茫</span>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-lg font-bold">涉及</span>
+                </div>
+                <div class="chinese-text text-lg leading-loose text-gray-800" id="cloze-paragraph">
+                    据报道，近日江苏省某高中一个班有 20 多名学生考取北大清华等著名高校，对此多数网友都 <select class="cloze-select border-2 border-[var(--primary)] rounded px-1 outline-none text-[var(--primary-dark)] font-bold" data-ans="持"><option value="">___</option><option value="持">持</option><option value="可喜">可喜</option><option value="按说">按说</option><option value="门槛">门槛</option><option value="渺茫">渺茫</option><option value="涉及">涉及</option></select> 积极态度，网络上一片惊叹之声。这样的成绩当然是 <select class="cloze-select border-2 border-[var(--primary)] rounded px-1 outline-none text-[var(--primary-dark)] font-bold" data-ans="可喜"><option value="">___</option><option value="持">持</option><option value="可喜">可喜</option><option value="按说">按说</option><option value="门槛">门槛</option><option value="渺茫">渺茫</option><option value="涉及">涉及</option></select> 的，可 <select class="cloze-select border-2 border-[var(--primary)] rounded px-1 outline-none text-[var(--primary-dark)] font-bold" data-ans="按说"><option value="">___</option><option value="持">持</option><option value="可喜">可喜</option><option value="按说">按说</option><option value="门槛">门槛</option><option value="渺茫">渺茫</option><option value="涉及">涉及</option></select> 来说，中国的求学者多，名校少，大学的 <select class="cloze-select border-2 border-[var(--primary)] rounded px-1 outline-none text-[var(--primary-dark)] font-bold" data-ans="门槛"><option value="">___</option><option value="持">持</option><option value="可喜">可喜</option><option value="按说">按说</option><option value="门槛">门槛</option><option value="渺茫">渺茫</option><option value="涉及">涉及</option></select> 高，因此，每年高考，依然有不少的学子觉得希望 <select class="cloze-select border-2 border-[var(--primary)] rounded px-1 outline-none text-[var(--primary-dark)] font-bold" data-ans="渺茫"><option value="">___</option><option value="持">持</option><option value="可喜">可喜</option><option value="按说">按说</option><option value="门槛">门槛</option><option value="渺茫">渺茫</option><option value="涉及">涉及</option></select>。要让“残酷”的高考变成“温柔”的高考，需要国家增加对教育事业的投入，合理分配教育资源，这就 <select class="cloze-select border-2 border-[var(--primary)] rounded px-1 outline-none text-[var(--primary-dark)] font-bold" data-ans="涉及"><option value="">___</option><option value="持">持</option><option value="可喜">可喜</option><option value="按说">按说</option><option value="门槛">门槛</option><option value="渺茫">渺茫</option><option value="涉及">涉及</option></select> 到教育体制的改革，在这个方面，中国还有很长的路要走。
+                </div>
+                <div class="mt-6 text-center">
+                    <button onclick="checkCloze()" class="btn-primary w-full md:w-auto">Kiểm tra kết quả ❯</button>
+                    <p id="cloze-result-msg" class="mt-3 font-bold text-lg hidden"></p>
+                </div>
+            </div>
+
+            <!-- Ex 5: Tổng Kết -->
+            <div id="exercise-summary-container" class="card-container relative max-w-3xl mx-auto hidden text-center">
+                <div class="text-7xl mb-4">🎓</div>
+                <h2 class="text-3xl font-black text-[var(--primary-dark)] mb-2">BẢNG TỔNG KẾT ĐIỂM</h2>
+                <p class="text-gray-600 font-bold mb-6">Kết quả làm bài tập của bạn trong phiên học này.</p>
+                
+                <div class="bg-white rounded-2xl border-2 border-[var(--border-light)] overflow-hidden shadow-sm mb-6 text-left">
+                    <table class="w-full text-lg">
+                        <tr class="bg-gray-100 border-b border-gray-200">
+                            <th class="p-3">Phần Bài Tập</th>
+                            <th class="p-3 text-right">Điểm số</th>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="p-3 font-bold text-gray-700">1. Giải nghĩa (44 câu)</td>
+                            <td class="p-3 text-right font-black text-green-600"><span id="sum-ex0">0</span> / 44</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="p-3 font-bold text-gray-700">2. Chọn từ điền trống</td>
+                            <td class="p-3 text-right font-black text-green-600"><span id="sum-ex1">0</span> / 6</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="p-3 font-bold text-gray-700">3. Trắc nghiệm</td>
+                            <td class="p-3 text-right font-black text-green-600"><span id="sum-ex2">0</span> / 6</td>
+                        </tr>
+                        <tr class="border-b border-gray-100">
+                            <td class="p-3 font-bold text-gray-700">4. Tự luận (AI Chấm)</td>
+                            <td class="p-3 text-right font-black text-blue-600"><span id="sum-ex3">0</span> / 40</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-bold text-gray-700">5. Điền đoạn văn</td>
+                            <td class="p-3 text-right font-black text-green-600"><span id="sum-ex4">0</span> / 6</td>
+                        </tr>
+                        <tr class="bg-[#f1f8e9] border-t-2 border-[var(--primary)]">
+                            <td class="p-4 font-black text-xl text-[var(--primary-dark)]">TỔNG CỘNG</td>
+                            <td class="p-4 text-right font-black text-2xl text-orange-600"><span id="sum-total">0</span> / 102</td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="final-evaluation" class="text-xl font-bold p-4 rounded-xl border-2"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- POPUP TỪ VỰNG BÀI KHÓA -->
+    <div id="vocab-popup" class="fixed inset-0 bg-black bg-opacity-40 z-[100] flex justify-center items-center hidden backdrop-blur-sm transition-opacity">
+        <div class="bg-white p-6 rounded-3xl max-w-sm w-[90%] text-center shadow-2xl transform transition-transform duration-300 border-4 border-[var(--primary)] relative">
+            <button onclick="speakPopupWord()" class="absolute top-3 right-3 text-xl hover:scale-110 transition bg-gray-100 p-2 rounded-full border border-gray-300 shadow-sm" title="Nghe phát âm">🔊</button>
+            <h3 id="vp-word" class="chinese-text text-4xl md:text-5xl font-black mb-1 whitespace-pre-line mt-3" style="color: var(--primary-dark);"></h3>
+            <p id="vp-pinyin" class="text-base text-[var(--pinyin-color)] font-bold mb-3 whitespace-pre-line"></p>
+            <div class="bg-[var(--bg-color)] p-3 rounded-xl mb-6 border border-[var(--border-light)] text-left">
+                <p id="vp-meaning" class="text-[var(--text-main)] font-bold text-sm mb-2 border-b border-gray-300 pb-2"></p>
+                <p id="vp-cn" class="text-gray-700 font-semibold text-sm"></p>
+            </div>
+            <button onclick="closeVocabPopup()" class="btn-primary w-full py-3 rounded-xl shadow-none">Đã hiểu 💖</button>
+        </div>
+    </div>
+
+    <!-- AUDIO EFFECTS -->
+    <audio id="audio-click" src="https://cdn.pixabay.com/audio/2022/10/16/audio_9302e1c981.mp3"></audio> 
+    <audio id="audio-correct" src="https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1539c.mp3"></audio> 
+    <audio id="audio-wrong" src="https://cdn.pixabay.com/audio/2022/03/24/audio_eb324aab56.mp3"></audio> 
+    <audio id="audio-win" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3"></audio> 
+
+    <script>
+        function playAudio(id) { const a = document.getElementById(id); if (a) { a.currentTime = 0; a.play().catch(()=>{}); } }
+        
+        let isTTSInitialized = false;
+
+        document.addEventListener('touchstart', function() {
+            if(!isTTSInitialized && window.speechSynthesis) {
+                let msg = new SpeechSynthesisUtterance(''); window.speechSynthesis.speak(msg); isTTSInitialized = true;
+            }
+        }, {once:true});
+
+        document.addEventListener('click', function() {
+            if(!isTTSInitialized && window.speechSynthesis) {
+                let msg = new SpeechSynthesisUtterance(''); window.speechSynthesis.speak(msg); isTTSInitialized = true;
+            }
+        }, {once:true});
+
+        function speakChinese(text) {
+            if (typeof window.speechSynthesis === "undefined" || !window.speechSynthesis) return;
+            window.speechSynthesis.cancel();
+            let msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'zh-CN'; 
+            let voices = window.speechSynthesis.getVoices();
+            let zhVoice = voices.find(v => v.lang === 'zh-CN' || v.lang === 'zh_CN');
+            if(zhVoice) msg.voice = zhVoice;
+            window.speechSynthesis.speak(msg);
+        }
+
+        if(typeof window.speechSynthesis !== "undefined" && window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); };
+        }
+        
+        function speakPopupWord() { speakChinese(document.getElementById('vp-word').innerText); }
+
+        const GLOBAL_MAX_SCORE = 102; 
+        let exScores = { ex0: 0, ex1: 0, ex2: 0, ex3: [0, 0, 0, 0], ex4: 0 };
+
+        function updateGlobalScore() {
+            let sumAi = exScores.ex3.reduce((a, b) => a + b, 0);
+            let currentTotal = exScores.ex0 + exScores.ex1 + exScores.ex2 + sumAi + exScores.ex4;
+            document.getElementById('global-score-text').innerText = `${currentTotal}/${GLOBAL_MAX_SCORE}`;
+            document.getElementById('global-progress').style.width = `${(currentTotal / GLOBAL_MAX_SCORE) * 100}%`;
+        }
+
+        function switchTab(tabId) {
+            playAudio('audio-click');
+            ['vocab', 'grammar', 'text', 'exercise'].forEach(id => {
+                const section = document.getElementById('section-' + id);
+                if(section) section.classList.add('hidden');
+                let btn = document.getElementById('tab-' + id);
+                if(btn) { btn.classList.remove('active', 'text-white'); btn.style.backgroundColor = ''; }
+            });
+            
+            const activeSection = document.getElementById('section-' + tabId);
+            if(activeSection) activeSection.classList.remove('hidden');
+            
+            let tBtn = document.getElementById('tab-' + tabId);
+            if(tBtn) { tBtn.classList.add('active', 'text-white'); tBtn.style.backgroundColor = 'var(--primary)'; }
+            
+            const lessonAudio = document.getElementById('lesson-audio');
+            if(lessonAudio && tabId !== 'text') lessonAudio.pause();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            if(tabId === 'vocab') resetVocabTab();
+            if(tabId === 'grammar') renderGrammarPoints();
+            if(tabId === 'exercise') {
+                if(!isMeaningLoaded) startMeaningGame();
+                switchEx('ex-0'); 
+            }
+        }
+
+        const dsL1Vocab = [
+            { h: "富二代", p: "fù'èrdài", type: "名", m: "Thế hệ giàu có thứ hai", cn: "父母拥有大量财富的子女。", ex: "没有高考你拼得过富二代吗？", exp: "Méiyǒu gāokǎo nǐ pīn de guò fù'èrdài ma?", exv: "Không có Cao khảo, bạn cạnh tranh lại Phú nhị đại không?" },
+            { h: "按说", p: "ànshuō", type: "副", m: "Theo lý mà nói", cn: "依照事实和情理来说。", ex: "按说这样的说法未免过于绝对。", exp: "Ànshuō zhèyàng de shuōfǎ wèimiǎn guòyú juéduì.", exv: "Theo lý mà nói cách nói như vậy khó tránh khỏi quá tuyệt đối." },
+            { h: "未免", p: "wèimiǎn", type: "副", m: "Không thể không nói là, khó tránh", cn: "不能不说是。", ex: "按说这样的说法未免过于绝对。", exp: "Ànshuō zhèyàng de shuōfǎ wèimiǎn guòyú juéduì.", exv: "Theo lý mà nói cách nói như vậy khó tránh khỏi quá tuyệt đối." },
+            { h: "尊严", p: "zūnyán", type: "名", m: "Tôn nghiêm", cn: "可尊敬的地位和身份：国家～｜人格～。", ex: "更是几代中国人对于公平、尊严的梦想。", exp: "Gèng shì jǐ dài Zhōngguórén duìyú gōngpíng, zūnyán de mèngxiǎng.", exv: "Càng là giấc mơ về sự công bằng, tôn nghiêm của mấy thế hệ người Trung Quốc." },
+            { h: "历来", p: "lìlái", type: "副", m: "Xưa nay, từ trước đến nay", cn: "过去多年（次）以来；从来：～如此。", ex: "中国历来流传着一句话。", exp: "Zhōngguó lìlái liúchuán zhe yí jù huà.", exv: "Trung Quốc từ xưa đến nay lưu truyền một câu nói." },
+            { h: "流传", p: "liúchuán", type: "动", m: "Lưu truyền", cn: "传下来或传播开：长期～｜～很广。", ex: "中国历来流传着一句话。", exp: "Zhōngguó lìlái liúchuán zhe yí jù huà.", exv: "Trung Quốc từ xưa đến nay lưu truyền một câu nói." },
+            { h: "稍稍", p: "shāoshāo", type: "副", m: "Hơi, một chút", cn: "稍微。", ex: "应该稍稍对前面的话加以改动。", exp: "Yīnggāi shāoshāo duì qiánmiàn de huà jiāyǐ gǎidòng.", exv: "Nên sửa đổi một chút câu nói phía trước." },
+            { h: "改动", p: "gǎidòng", type: "动", m: "Sửa đổi, thay đổi", cn: "变动（文字、项目、次序等）：～字体｜课程～。", ex: "应该稍稍对前面的话加以改动。", exp: "Yīnggāi shāoshāo duì qiánmiàn de huà jiāyǐ gǎidòng.", exv: "Nên sửa đổi một chút câu nói phía trước." },
+            { h: "学子", p: "xuézǐ", type: "名", m: "Học sinh, sĩ tử", cn: "[书] 学生：青年～；莘莘（shēnshēn）～（很多学生）。", ex: "国家兴亡，学子有路。", exp: "Guójiā xīngwáng, xuézǐ yǒu lù.", exv: "Quốc gia hưng vong, sĩ tử có đường." },
+            { h: "科目", p: "kēmù", type: "名", m: "Môn học", cn: "学校教学中指课程名目：考试～。", ex: "当年我所有的科目都是满分。", exp: "Dāngnián wǒ suǒyǒu de kēmù dōu shì mǎnfēn.", exv: "Năm đó tất cả các môn học của tôi đều đạt điểm tối đa." },
+            { h: "满分", p: "mǎnfēn", type: "名", m: "Điểm tuyệt đối, điểm tối đa", cn: "指规定的最高分数：打～｜得～。", ex: "当年我所有的科目都是满分。", exp: "Dāngnián wǒ suǒyǒu de kēmù dōu shì mǎnfēn.", exv: "Năm đó tất cả các môn học của tôi đều đạt điểm tối đa." },
+            { h: "文科", p: "wénkē", type: "名", m: "Văn khoa", cn: "教学上对文学、历史、哲学、经济等学科的总称。", ex: "她当年是镇江文科状元。", exp: "Tā dāngnián shì Zhènjiāng wénkē zhuàngyuán.", exv: "Năm đó cô ấy là thủ khoa khối khoa học xã hội của Trấn Giang." },
+            { h: "状元", p: "zhuàngyuán", type: "名", m: "Trạng nguyên, thủ khoa", cn: "科举时代的一种称号，后指考试取得第一名的人：高考～｜文科～。", ex: "她当年是镇江文科状元。", exp: "Tā dāngnián shì Zhènjiāng wénkē zhuàngyuán.", exv: "Năm đó cô ấy là thủ khoa khối khoa học xã hội của Trấn Giang." },
+            { h: "偏偏", p: "piānpiān", type: "副", m: "Lại cứ, khăng khăng", cn: "表示故意跟客观要求或现实情况相反。", ex: "偏偏莫名其妙地报考了北京广播学院。", exp: "Piānpiān mòmíngqímiào de bàokǎo le Běijīng Guǎngbō Xuéyuàn.", exv: "Lại cứ không hiểu tại sao báo danh thi vào Học viện Phát thanh Bắc Kinh." },
+            { h: "反倒", p: "fǎndào", type: "副", m: "Trái lại, ngược lại", cn: "反而。", ex: "这反倒说明那个时候大家更多的是挑选自己想去的学校。", exp: "Zhè fǎndào shuōmíng nàgè shíhòu dàjiā gèng duō de shì tiāoxuǎn zìjǐ xiǎng qù de xuéxiào.", exv: "Điều này trái lại đã chứng minh, lúc bấy giờ mọi người chọn trường mình muốn đi nhiều hơn." },
+            { h: "持", p: "chí", type: "动", m: "Giữ, mang (thái độ, quan điểm)", cn: "持有（某种见解、态度等）。", ex: "对于部分高考名校，我持中立态度。", exp: "Duìyú bùfèn gāokǎo míngxiào, wǒ chí zhōnglì tàidù.", exv: "Đối với một bộ phận trường điểm thi đại học, tôi giữ thái độ trung lập." },
+            { h: "中立", p: "zhōnglì", type: "形", m: "Trung lập", cn: "处于对立的双方中间，不倾向于任何一方：～国。", ex: "对于部分高考名校，我持中立态度。", exp: "Duìyú bùfèn gāokǎo míngxiào, wǒ chí zhōnglì tàidù.", exv: "Đối với một bộ phận trường điểm thi đại học, tôi giữ thái độ trung lập." },
+            { h: "赞赏", p: "zànshǎng", type: "动", m: "Tán thưởng, khen ngợi", cn: "赞美欣赏：得到～｜～的目光。", ex: "不一定赞赏，但是也不便于直接批评。", exp: "Bù yídìng zànshǎng, dànshì yě bú biànyú zhíjiē pīpíng.", exv: "Chưa chắc đã tán thưởng, nhưng cũng không tiện trực tiếp phê bình." },
+            { h: "官家子弟", p: "guānjiā zǐdì", type: "名", m: "Con em quan chức", cn: "父母官职高、权力较大的子女。", ex: "很多官家子弟找人把孩子送到高考名校。", exp: "Hěn duō guānjiā zǐdì zhǎo rén bǎ háizi sòng dào gāokǎo míngxiào.", exv: "Rất nhiều con em nhà quan chức tìm người gửi con cái vào trường luyện thi danh tiếng." },
+            { h: "富家子弟", p: "fùjiā zǐdì", type: "名", m: "Con nhà giàu", cn: "父母拥有大量财富的子女。", ex: "富家子弟费尽心机进好学校。", exp: "Fùjiā zǐdì fèijìn-xīnjī jìn hǎo xuéxiào.", exv: "Con nhà giàu phí hết tâm cơ để vào trường tốt." },
+            { h: "子弟", p: "zǐdì", type: "名", m: "Con em, thế hệ trẻ", cn: "年轻的后辈：职工～｜干部～。", ex: "很多官家子弟、富家子弟...", exp: "Hěn duō guānjiā zǐdì, fùjiā zǐdì...", exv: "Rất nhiều con em quan chức, con nhà giàu..." },
+            { h: "门槛", p: "ménkǎn", type: "名", m: "Ngưỡng, rào cản", cn: "比喻进入某范围的标准或条件：～高｜设置～。", ex: "竞争门槛较高的高考名校。", exp: "Jìngzhēng ménkǎn jiào gāo de gāokǎo míngxiào.", exv: "Những ngôi trường luyện thi đại học có ngưỡng cạnh tranh khá cao." },
+            { h: "并非", p: "bìngfēi", type: "动", m: "Hoàn toàn không phải", cn: "并不是。", ex: "然而毛坦厂中学并非如此。", exp: "Rán'ér Máotǎnchǎng zhōngxué bìngfēi rúcǐ.", exv: "Thế nhưng trường trung học Mao Thản Xưởng hoàn toàn không phải như vậy." },
+            { h: "柳树", p: "liǔshù", type: "名", m: "Cây liễu", cn: "一种树木的名称。", ex: "把院墙外柳树当神树祭拜。", exp: "Bǎ yuànqiáng wài liǔshù dāng shénshù jìbài.", exv: "Coi cây liễu ngoài tường viện như thần thụ để cúng bái." },
+            { h: "祭拜", p: "jìbài", type: "动", m: "Tế bái, cúng vái", cn: "祭祀礼拜。", ex: "把院墙外柳树当神树祭拜。", exp: "Bǎ yuànqiáng wài liǔshù dāng shénshù jìbài.", exv: "Coi cây liễu ngoài tường viện như thần thụ để cúng bái." },
+            { h: "富裕", p: "fùyù", type: "形", m: "Giàu có, sung túc", cn: "经济条件较好，钱财充足：～人家｜生活～。", ex: "都不是富裕的父母。", exp: "Dōu bú shì fùyù de fùmǔ.", exv: "Đều không phải là những bậc cha mẹ sung túc." },
+            { h: "卑微", p: "bēiwēi", type: "形", m: "Nhỏ bé, thấp kém", cn: "地位低下：身份～｜～的态度。", ex: "毛坦厂中学的背后是非常卑微的家庭。", exp: "Máotǎnchǎng zhōngxué de bèihòu shì fēicháng bēiwēi de jiātíng.", exv: "Đằng sau trường Mao Thản Xưởng là những gia đình vô cùng nhỏ bé thấp kém." },
+            { h: "轮流", p: "lúnliú", type: "动", m: "Luân phiên, thay phiên", cn: "依照次序一个接替一个：～休息｜～敬酒。", ex: "母亲轮流给三四个孩子做饭。", exp: "Mǔqīn lúnliú gěi sān sì gè háizi zuòfàn.", exv: "Người mẹ luân phiên nấu cơm cho 3, 4 đứa trẻ." },
+            { h: "寄托", p: "jìtuō", type: "动", m: "Gửi gắm", cn: "把理想、希望、感情等放在（某人身上或某种事物上）：失去精神～｜～哀思。", ex: "这些孩子身上寄托着家庭梦想。", exp: "Zhèxiē háizi shēnshang jìtuō zhe jiātíng mèngxiǎng.", exv: "Trên người những đứa trẻ này gửi gắm giấc mơ của cả gia đình." },
+            { h: "可喜", p: "kěxǐ", type: "形", m: "Đáng mừng", cn: "令人高兴的：～的成绩｜～的收获｜～的变化。", ex: "把高考作为人生梦想是可喜的。", exp: "Bǎ gāokǎo zuòwéi rénshēng mèngxiǎng shì kěxǐ de.", exv: "Việc lấy kỳ thi đại học làm ước mơ đời người là điều đáng mừng." },
+            { h: "嘲讽", p: "cháofěng", type: "动", m: "Trào phúng, mỉa mai", cn: "嘲笑讽刺：受到～｜～对方｜～的语气。", ex: "我都做不出任何嘲讽毛坦厂中学的事情。", exp: "Wǒ dōu zuò bù chū rènhé cháofěng Máotǎnchǎng zhōngxué de shìqíng.", exv: "Tôi không thể làm ra bất kỳ chuyện gì mỉa mai trường trung học Mao Thản Xưởng." },
+            { h: "体制", p: "tǐzhì", type: "名", m: "Thể chế", cn: "国家、国家机关、企业、事业单位等的组织制度：政治～｜教育～。", ex: "涉及到教育体制、应试教育的东西。", exp: "Shèjí dào jiàoyù tǐzhì, yìngshì jiàoyù de dōngxi.", exv: "Liên quan đến những thứ thuộc về thể chế giáo dục, nền giáo dục ứng thí." },
+            { h: "应试教育", p: "yìngshì jiàoyù", type: "名", m: "Giáo dục chạy theo thi cử", cn: "以单纯培养学生应对考试的能力为主要目的的教育。", ex: "涉及到教育体制、应试教育的东西。", exp: "Shèjí dào jiàoyù tǐzhì, yìngshì jiàoyù de dōngxi.", exv: "Liên quan đến những thứ thuộc về thể chế giáo dục, nền giáo dục ứng thí." },
+            { h: "温情", p: "wēnqíng", type: "名", m: "Sự ấm áp, ôn tình", cn: "温和的态度：充满～｜～的目光。", ex: "我愿意用温情去面对这样的事情。", exp: "Wǒ yuànyì yòng wēnqíng qù miànduì zhèyàng de shìqíng.", exv: "Tôi tình nguyện dùng sự ấm áp để đối mặt với những việc như vậy." },
+            { h: "回想", p: "huíxiǎng", type: "动", m: "Hồi tưởng", cn: "想（过去的事）：～不起来｜～起不少往事。", ex: "回想1985年的时候。", exp: "Huíxiǎng yī jiǔ bā wǔ nián de shíhòu.", exv: "Hồi tưởng lại thời điểm năm 1985." },
+            { h: "少之又少", p: "shǎozhīyòushǎo", type: "成", m: "Rất ít, cực kỳ ít", cn: "很少很少，几乎没有。", ex: "谈发财、物质只有一两个，少之又少。", exp: "Tán fācái, wùzhì zhǐyǒu yī liǎng gè, shǎo zhī yòu shǎo.", exv: "Người nói đến chuyện phát tài, vật chất chỉ có một hai người, cực kỳ ít." },
+            { h: "门路", p: "ménlù", type: "名", m: "Mánh khóe, ngõ ngách, con đường", cn: "特指能达到个人目的的途径：～多｜找～。", ex: "我们没有任何的门路。", exp: "Wǒmen méiyǒu rènhé de ménlù.", exv: "Chúng tôi không có bất kỳ cửa ô/con đường chạy chọt nào." },
+            { h: "人脉", p: "rénmài", type: "名", m: "Mối quan hệ xã hội, nhân mạch", cn: "指人各方面的社会关系：～资源｜拓展～。", ex: "我没有亲戚和熟悉的人脉。", exp: "Wǒ méiyǒu qīnqi hé shúxī de rénmài.", exv: "Tôi không có họ hàng cũng như các mối quan hệ quen biết." },
+            { h: "调转", p: "diàozhuǎn", type: "动", m: "Điều chuyển, luân chuyển", cn: "调动转换：～工作｜～岗位。", ex: "却没有为找工作、调转岗位送过一次礼。", exp: "Què méiyǒu wèi zhǎo gōngzuò, diàozhuǎn gǎngwèi sòng guò yí cì lǐ.", exv: "Vậy mà chưa từng tặng quà lần nào vì việc tìm việc hay điều chuyển vị trí." },
+            { h: "渺茫", p: "miǎománg", type: "形", m: "Mịt mờ, mù mịt", cn: "因没有把握而难以预期：希望～。", ex: "进入名校的机会真的很渺茫。", exp: "Jìnrù míngxiào de jīhuì zhēn de hěn miǎománg.", exv: "Cơ hội bước vào các ngôi trường danh tiếng thực sự rất mịt mờ." },
+            { h: "寒门", p: "hánmén", type: "名", m: "Nhà nghèo, hàn môn", cn: "贫困的家庭：出身～｜～子弟。", ex: "我希望高考能使很多寒门孩子成为富一代。", exp: "Wǒ xīwàng gāokǎo néng shǐ hěn duō hánmén háizi chéngwéi fù yídài.", exv: "Tôi hy vọng thi đại học có thể giúp nhiều đứa trẻ nhà nghèo trở thành thế hệ giàu có thứ nhất." },
+            { h: "国家兴亡，匹夫有责", p: "Guójiā xīngwáng, pǐfū yǒu zé", type: "成", m: "Quốc gia hưng vong, thất phu hữu trách", cn: "指国家兴亡大事，每个平民都有责任。", ex: "中国历来流传着一句话：“国家兴亡，匹夫有责。”", exp: "Zhōngguó lìlái liúchuán zhe yí jù huà: “Guójiā xīngwáng, pǐfū yǒu zé.”", exv: "Trung Quốc xưa nay lưu truyền một câu: Quốc gia hưng vong, thất phu hữu trách." },
+            { h: "莫名其妙", p: "mòmíngqímiào", type: "成", m: "Kỳ lạ, không hiểu ra sao", cn: "表示发生的事情很奇怪，解释不出道理来。", ex: "偏偏莫名其妙地报考了北京广播学院。", exp: "Piānpiān mòmíngqímiào de bàokǎo le Běijīng Guǎngbō Xuéyuàn.", exv: "Lại cứ không hiểu tại sao báo danh thi vào Học viện Phát thanh Bắc Kinh." },
+            { h: "费尽心机", p: "fèijìn-xīnjī", type: "成", m: "Phí hết tâm cơ, nhọc công", cn: "挖空心思，想尽办法。心机：计谋。", ex: "很多富家子弟费尽心机进高考名校。", exp: "Hěn duō fùjiā zǐdì fèijìn-xīnjī jìn gāokǎo míngxiào.", exv: "Rất nhiều con nhà giàu phí hết tâm cơ để vào trường luyện thi danh tiếng." }
+        ];
+
+        const collocationDict = {
+            "国家尊严": "Tôn nghiêm quốc gia", "人格尊严": "Tôn nghiêm nhân cách", "历来如此": "Xưa nay đều như vậy",
+            "长期流传": "Lưu truyền lâu dài", "流传很广": "Lưu truyền rất rộng", "改动字体": "Thay đổi font chữ",
+            "课程改动": "Thay đổi chương trình học", "青年学子": "Thanh niên học sinh", "莘莘学子": "Vô vàn học sinh",
+            "考试科目": "Môn thi", "打满分": "Chấm điểm tối đa", "得满分": "Đạt điểm tối đa",
+            "高考状元": "Thủ khoa đại học", "文科状元": "Thủ khoa khối xã hội", "中立国": "Quốc gia trung lập",
+            "得到赞赏": "Nhận được sự tán thưởng", "赞赏的目光": "Ánh mắt tán thưởng", "职工子弟": "Con em công nhân viên",
+            "干部子弟": "Con em cán bộ", "门槛高": "Ngưỡng (tiêu chuẩn) cao", "设置门槛": "Đặt ra rào cản",
+            "富裕人家": "Gia đình giàu có", "生活富裕": "Cuộc sống sung绩", "身份卑微": "Thân phận thấp kém",
+            "卑微的态度": "Thái độ thấp kém", "轮流休息": "Luân phiên nghỉ ngơi", "轮流敬酒": "Luân phiên mời rượu",
+            "失去精神寄托": "Mất đi nơi gửi gắm tinh thần", "寄托哀思": "Gửi gắm niềm xót thương",
+            "可喜的成绩": "Thành tích đáng mừng", "可喜的收获": "Thu hoạch đáng mừng", "可喜的变化": "Thay đổi đáng mừng",
+            "受到嘲讽": "Bị mỉa mai", "嘲讽对方": "Mỉa mai đối phương", "嘲讽的语气": "Giọng điệu mỉa mai",
+            "政治体制": "Thể chế chính trị", "教育体制": "Thể chế giáo dục", "充满温情": "Tràn đầy sự ấm áp",
+            "温情的目光": "Ánh mắt ấm áp", "门路多": "Nhiều ngõ ngách / mánh khóe", "找门路": "Tìm đường chạy chọt",
+            "人脉资源": "Nguồn tài nguyên nhân mạch", "拓展人脉": "Mở rộng nhân mạch", "调转工作": "Chuyển công tác",
+            "调转岗位": "Chuyển vị trí", "希望渺茫": "Hy vọng mịt mờ", "出身寒门": "Xuất thân nhà nghèo",
+            "寒门子弟": "Con em nhà nghèo"
+        };
+
+        function extractCollocations(word, cnText) {
+            if (!cnText.includes('～')) return '';
+            let parts = cnText.split(/：|:/);
+            if (parts.length < 2) return '';
+            let examplesPart = parts[parts.length - 1].replace(/[。\.；;]/g, ''); 
+            let collocations = examplesPart.split(/｜|\||、/);
+            
+            let resultHtml = collocations.map(c => {
+                let phrase = c.trim().replace(/～/g, word);
+                let cleanPhrase = phrase.replace(/（.*?）|\(.*?\)/g, '').trim(); 
+                let meaning = collocationDict[cleanPhrase] || collocationDict[phrase] || "";
+                return `• <span class="chinese-text font-bold text-[var(--primary-dark)]">${phrase}</span>: ${meaning}`;
+            }).join('<br>');
+            
+            return `<div class="mt-2 border-t-2 pt-2 border-green-200"><b class="block mb-1 text-sm text-[var(--primary-dark)]">💡 Các cụm từ thường gặp:</b><div class="text-sm text-gray-800 leading-relaxed">${resultHtml}</div></div>`;
+        }
+
+        // ================= FLASHCARD =================
+        let currentFlashList = [], flashcardIdx = 0, learnedCount = 0, unlearnedItems = [];
+        let isTransitioningCard = false;
+
+        function resetVocabTab() {
+            document.getElementById('vocab-start').classList.remove('hidden');
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.add('hidden');
+        }
+
+        function startFlashcards(list = dsL1Vocab) {
+            playAudio('audio-click');
+            currentFlashList = [...list];
+            flashcardIdx = 0; learnedCount = 0; unlearnedItems = [];
+            document.getElementById('vocab-start').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.add('hidden');
+            document.getElementById('flashcard-screen').classList.remove('hidden');
+            document.getElementById('card-total').innerText = currentFlashList.length;
+            updateFlashcard();
+        }
+
+        function updateFlashcard() {
+            const card = currentFlashList[flashcardIdx];
+            document.getElementById('card-index').innerText = flashcardIdx + 1;
+            
+            const hanziElem = document.getElementById('card-hanzi');
+            hanziElem.innerText = card.h;
+            
+            document.getElementById('card-back-hanzi').innerText = card.h;
+            document.getElementById('card-pinyin').innerText = card.p;
+            document.getElementById('card-mean').innerText = `(${card.type}) ${card.m}`;
+            document.getElementById('card-cn-mean').innerText = card.cn;
+            document.getElementById('card-example-cn').innerText = card.ex;
+            document.getElementById('card-example-py').innerText = card.exp;
+            document.getElementById('card-example-vi').innerText = card.exv;
+            
+            let collocationsHtml = extractCollocations(card.h, card.cn);
+            document.getElementById('card-collocations-container').innerHTML = collocationsHtml;
+
+            document.getElementById('flashcard-inner').classList.remove('is-flipped');
+            isTransitioningCard = false;
+        }
+
+        function flipCard() { if(isTransitioningCard) return; playAudio('audio-click'); document.getElementById('flashcard-inner').classList.toggle('is-flipped'); }
+
+        function markCard(learned) {
+            if(isTransitioningCard) return;
+            isTransitioningCard = true;
+            if (learned) { learnedCount++; playAudio('audio-correct'); } 
+            else { unlearnedItems.push(currentFlashList[flashcardIdx]); }
+            const inner = document.getElementById('flashcard-inner');
+            const isFlipped = inner.classList.contains('is-flipped');
+            flashcardIdx++;
+            if (isFlipped) { inner.classList.remove('is-flipped'); setTimeout(() => checkNextCard(), 400); } 
+            else { checkNextCard(); }
+        }
+
+        function checkNextCard() {
+            if (flashcardIdx < currentFlashList.length) updateFlashcard();
+            else { showFlashcardStats(); isTransitioningCard = false; }
+        }
+
+        function showFlashcardStats() {
+            playAudio('audio-win');
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.remove('hidden');
+            const learnedPercent = Math.round((learnedCount / currentFlashList.length) * 100);
+            document.getElementById('stat-learned-percent').innerText = learnedPercent + "%";
+            document.getElementById('stat-unlearned-percent').innerText = (100 - learnedPercent) + "%";
+            const listContainer = document.getElementById('unlearned-list');
+            listContainer.innerHTML = unlearnedItems.length > 0 ? '' : '<p class="text-center py-4 font-bold text-lg" style="color: var(--primary-dark);">Tuyệt vời! Bạn đã thuộc hết từ.</p>';
+            unlearnedItems.forEach(item => {
+                listContainer.innerHTML += `<div class="flex justify-between border-b pb-2 text-sm md:text-base"><span class="font-bold text-gray-800">${item.h}</span><span class="text-gray-600">${item.m}</span></div>`;
+            });
+            document.getElementById('btn-relearn').classList.toggle('hidden', unlearnedItems.length === 0);
+        }
+
+        function relearnUnlearned() { startFlashcards(unlearnedItems); }
+
+        // ================= TRỌNG ĐIỂM (NGỮ PHÁP) =================
+        const grammarPointsData = [
+            {
+                sectionTitle: "一、重点句型与词汇",
+                items: [
+                    { title: "1. 按说", exp: "指依照事实或常理来说。类似的词语还有“按理”、“按理说”。", exs: [ { cn: "没有高考你拼得过富二代吗？按说这样的说法未免过于绝对，却是非常现实的话题，可换一个角度，你说我能不知道高考有多少毛病和问题吗？", vi: "Không có kỳ thi đại học, bạn cạnh tranh lại phú nhị đại không? Theo lý mà nói cách nói như vậy khó tránh khỏi quá tuyệt đối, nhưng lại là một chủ đề vô cùng thực tế, nhưng đổi một góc độ khác, bạn nói xem tôi có thể không biết kỳ thi đại học có bao nhiêu lỗi và vấn đề sao?" }, { cn: "按说现在是蔬菜供应淡季，可是这里的蔬菜种类还是不少。", vi: "Theo lý mà nói hiện tại là mùa thấp điểm cung ứng rau củ, nhưng các loại rau củ ở đây vẫn không ít." }, { cn: "按说这个时候应该下雪了，可今年一场雪都没下。", vi: "Theo lý mà nói lúc này nên có tuyết rơi rồi, nhưng năm nay một trận tuyết cũng chưa rơi." } ] },
+                    { title: "2. 未免", exp: "副词，实在是；不能不说是。", exs: [ { cn: "没有高考你拼得过富二代吗？按说这样的说法未免过于绝对，却是非常现实的话题……", vi: "Không có kỳ thi đại học, bạn cạnh tranh lại phú nhị đại không? Theo lý mà nói cách nói như vậy khó tránh khỏi quá tuyệt đối, nhưng lại là một chủ đề vô cùng thực tế..." }, { cn: "你这样当众指责他，未免也太过分了。", vi: "Bạn chỉ trích anh ấy trước mặt mọi người như vậy, khó tránh khỏi quá đáng rồi." }, { cn: "单纯用一次考试来判断人的能力，未免也太绝对化、片面化了。", vi: "Đơn thuần dùng một kỳ thi để đánh giá năng lực con người, thật khó tránh khỏi quá tuyệt đối hóa, phiến diện hóa rồi." } ] },
+                    { title: "3. 换一个角度（来看）", exp: "指从不同的方面去思考问题。", exs: [ { cn: "没有高考你拼得过富二代吗？按说这样的说法未免过于绝对，却是非常现实的话题，可换一个角度，你说我能不知道高考有多少毛病和问题吗？", vi: "Không có kỳ thi đại học, bạn cạnh tranh lại phú nhị đại không? Theo lý mà nói cách nói như vậy khó tránh khỏi quá tuyệt đối, nhưng lại là một chủ đề vô cùng thực tế, nhưng đổi một góc độ khác, bạn nói xem tôi có thể không biết kỳ thi đại học có bao nhiêu lỗi và vấn đề sao?" }, { cn: "他一直觉得没考上大学是自己的劣势，可换一个角度，正是因为没上过大学，他才会更努力。", vi: "Anh ấy luôn cho rằng không đỗ đại học là điểm yếu của mình, nhưng đổi một góc độ khác, chính vì chưa từng học đại học nên anh ấy mới càng nỗ lực hơn." }, { cn: "大量的作业有助于学生掌握知识，可换一个角度来看，为了让学生能够有好成绩，就非得采取这样的方式吗？", vi: "Khối lượng bài tập lớn giúp học sinh nắm vững kiến thức, nhưng nhìn từ một góc độ khác, để học sinh có thể đạt thành tích tốt, cứ nhất thiết phải áp dụng phương thức như vậy sao?" } ] },
+                    { title: "4. 不只是……，更是……", exp: "表示递进关系。", exs: [ { cn: "1977 年 9 月，中国教育部决定恢复停止了十余年的大学招生考试，这恢复的不只是高考，更是几代中国人对于公平、尊严的梦想。", vi: "Tháng 9 năm 1977, Bộ Giáo dục Trung Quốc quyết định khôi phục kỳ thi đại học đã bị đình chỉ hơn 10 năm, điều được khôi phục này không chỉ là kỳ thi đại học, mà còn là giấc mơ về sự công bằng, tôn nghiêm của mấy thế hệ." }, { cn: "结婚不只是两个人的事，更是两个家庭的事。", vi: "Kết hôn không chỉ là chuyện của hai người, mà còn là chuyện của hai gia đình." }, { cn: "互联网不只是一种技术，更是一种思想、一种理念。", vi: "Internet không chỉ là một loại công nghệ, mà còn là một loại tư tưởng, một loại triết lý." } ] },
+                    { title: "5. 历来", exp: "时间副词，指过去多年(次)以来；从来。", exs: [ { cn: "中国历来流传着一句话：“国家兴亡，匹夫有责。”", vi: "Trung Quốc xưa nay lưu truyền một câu nói: Quốc gia hưng vong, thất phu hữu trách." }, { cn: "王老师历来重视培养学生的动手能力。", vi: "Thầy Vương xưa nay luôn coi trọng việc bồi dưỡng năng lực thực hành của học sinh." }, { cn: "他做人做事历来是快人快语，从不拖泥带水。", vi: "Anh ấy làm người làm việc xưa nay luôn thẳng thắn nhanh gọn, không bao giờ dài dòng lê thê." } ] },
+                    { title: "6. 稍稍", exp: "程度副词，稍微、略微，表示数量少或程度浅。", exs: [ { cn: "我觉得有了“恢复高考”这事，应该稍稍对前面的话加以改动：“国家兴亡，学子有路，匹夫有责”。", vi: "Tôi cảm thấy có chuyện khôi phục kỳ thi đại học, nên sửa đổi một chút câu nói phía trước: Quốc gia hưng vong, sĩ tử có đường, thất phu hữu trách." }, { cn: "事情终于真相大白了，大家都稍稍松了一口气。", vi: "Sự việc cuối cùng cũng rõ chân tướng, mọi người đều thở phào nhẹ nhõm một chút." }, { cn: "上海的夏天又闷又热，稍稍一动就会满头大汗。", vi: "Mùa hè ở Thượng Hải vừa oi bức vừa nóng, hơi cử động một chút là sẽ mồ hôi đầm đìa." } ] },
+                    { title: "7. 偏偏", exp: "表示故意跟客观要求或现实情况相反。", exs: [ { cn: "后来我经常和我爱人开玩笑，她是镇江文科状元，明明能够去中国所有的名牌学校，但是偏偏莫名其妙地报考了北京广播学院。", vi: "Sau này tôi thường đùa với vợ, cô ấy là thủ khoa khối xã hội Trấn Giang, rõ ràng có thể đỗ tất cả các trường danh tiếng của TQ, nhưng lại cứ không hiểu sao báo danh thi Học viện Phát thanh Bắc Kinh." }, { cn: "周围这么多漂亮的女生，你怎么偏偏喜欢她？", vi: "Xung quanh nhiều bạn nữ xinh đẹp như vậy, sao bạn lại cứ thích cô ấy?" }, { cn: "明明可以靠脸吃饭，却偏偏要靠实力去奋斗。", vi: "Rõ ràng có thể dựa vào nhan sắc kiếm cơm, lại cứ khăng khăng phải dựa vào thực lực để phấn đấu." } ] },
+                    { title: "8. 反倒", exp: "语气副词，反而，指跟通常情况或预想的相反。", exs: [ { cn: "这反倒说明，那个时候大家更多的是挑选自己想去的学校和专业，不像今天已经变成了不管学生喜不喜欢，必须要去某所高校的现象。", vi: "Điều này trái lại đã chứng minh, lúc bấy giờ mọi người chọn trường và chuyên ngành mình muốn đi nhiều hơn, không giống như hiện nay đã biến thành hiện tượng mặc kệ học sinh có thích hay không, bắt buộc phải đi một trường đại học nào đó." }, { cn: "爸妈都很担心他走不出高考失利阴影，他自己反倒很想得开，决定复读明年再考。", vi: "Bố mẹ đều rất lo anh ấy không thoát khỏi bóng ma thi trượt đại học, bản thân anh ấy trái lại rất nghĩ thoáng, quyết định học lại năm sau thi tiếp." }, { cn: "爷爷用钢笔写字不顺手，用毛笔反倒得心应手。", vi: "Ông nội dùng bút máy viết chữ không thuận tay, dùng bút lông trái lại vô cùng quen tay (đắc tâm ứng thủ)." } ] },
+                    { title: "9. 并非", exp: "并不是。", exs: [ { cn: "然而毛坦厂中学并非如此，毛坦厂相当多的学生是打工者的孩子……", vi: "Thế nhưng trường trung học Mao Thản Xưởng hoàn toàn không phải như vậy, rất nhiều học sinh của trường là con cái của người làm thuê..." }, { cn: "他这样做并非发自内心。", vi: "Anh ấy làm như vậy hoàn toàn không phải xuất phát từ nội tâm." }, { cn: "生活中并非件件事都能称心如意。", vi: "Trong cuộc sống hoàn toàn không phải mỗi mỗi sự việc đều có thể vừa ý toại lòng." } ] },
+                    { title: "10. 无论如何……都", exp: "表示不管怎样，其结果都不变。", exs: [ { cn: "把高考作为人生梦想是可喜和值得鼓励的，无论如何我都做不出任何嘲讽毛坦厂中学的事情。", vi: "Việc lấy kỳ thi đại học làm ước mơ đời người là đáng mừng và đáng khích lệ, bất luận thế nào tôi cũng không thể làm chuyện mỉa mai trường Mao Thản Xưởng." }, { cn: "她知道你今天也出席这个会议，便找借口说身体不舒服，无论如何都不肯来了。", vi: "Cô ấy biết hôm nay bạn cũng tham dự hội nghị này, liền tìm cớ nói cơ thể không khỏe, bất luận thế nào cũng không chịu đến." }, { cn: "要成就一番事业，就必须抱有“无论如何都要干到底”的决心。", vi: "Muốn làm nên một sự nghiệp, thì bắt buộc phải mang quyết tâm 'cho dù thế nào cũng phải làm đến cùng'." } ] },
+                    { title: "11. 相反的是", exp: "表示与前面所说的情况相对立。", exs: [ { cn: "如果按现在的话来说，更多应该是谈高考、谈梦想，相反的是，那个时候更多谈人生，其中谈发财、物质只有一两个，少之又少。", vi: "Nếu theo lời hiện nay mà nói, nên là bàn luận kỳ thi, ước mơ nhiều hơn, trái lại, lúc bấy giờ bàn luận nhân sinh nhiều hơn, trong đó người nói đến chuyện phát tài, vật chất chỉ có một hai người, cực kỳ ít." }, { cn: "他从没有抱怨过任务多，相反的是一直在努力完成工作。", vi: "Anh ấy chưa từng phàn nàn nhiệm vụ nhiều, trái lại luôn nỗ lực hoàn thành công việc." }, { cn: "很多人觉得过度节食可以快速减肥，相反的是，它可能会导致身体虚弱。", vi: "Rất nhiều người cảm thấy ăn kiêng quá mức có thể giảm cân nhanh, trái lại, nó có thể sẽ dẫn đến cơ thể suy nhược." } ] }
+                ]
+            },
+            {
+                sectionTitle: "二、词语搭配",
+                items: [
+                    { title: "1. 改动+N", exp: "搭配：改动内容｜改动词句｜改动文字｜改动顺序", exs: [ { cn: "我觉得有了“恢复高考”这事，应该稍稍对前面的话加以改动：“国家兴亡，学子有路，匹夫有责”。", vi: "Tôi cảm thấy có chuyện khôi phục kỳ thi đại học, nên sửa đổi một chút câu nói phía trước: Quốc gia hưng vong, sĩ tử có đường, thất phu hữu trách." }, { cn: "你的这篇文章我只改动了个别词句。", vi: "Bài viết này của bạn tôi chỉ sửa đổi một vài câu chữ cá biệt." }, { cn: "这学期的课程安排会有大改动，我们又开发了很多新课程。", vi: "Lịch học kỳ này sẽ có sự thay đổi lớn, chúng tôi lại phát triển thêm nhiều khóa học mới." } ] },
+                    { title: "2. 持", exp: "搭配：持反对态度｜持不同政见者｜持相反观点｜持一致立场", exs: [ { cn: "对于部分高考名校，我持中立态度，不一定赞赏，但是也不便于直接批评。", vi: "Đối với một số trường chuyên luyện thi đại học, tôi giữ thái độ trung lập, chưa chắc đã tán thưởng, nhưng cũng không tiện trực tiếp phê bình." }, { cn: "调查显示，44%的受访者认为数字货币利大于弊，其他人持相反观点。", vi: "Khảo sát cho thấy, 44% người được phỏng vấn cho rằng tiền kỹ thuật số lợi nhiều hơn hại, những người khác giữ quan điểm ngược lại." }, { cn: "老板答应下月给我们 double 的薪水，可我们对他的承诺持怀疑态度。", vi: "Ông chủ hứa tháng sau trả cho chúng tôi mức lương gấp đôi, nhưng chúng tôi giữ thái độ hoài nghi đối với lời hứa của ông ấy." } ] },
+                    { title: "3. 门槛", exp: "搭配：门槛高｜门槛低｜没有门槛｜降低门槛", exs: [ { cn: "很多官家子弟、富家子弟费尽心机找人把孩子送到竞争门槛较高的高考名校。", vi: "Rất nhiều con em quan chức, con nhà giàu phí hết tâm cơ tìm người đưa con cái vào trường chuyên luyện thi đại học có ngưỡng cạnh tranh khá cao." }, { cn: "这个专业的门槛还是比较高的，报名考生需具备 HSK 六级考试成绩合格证书。", vi: "Tiêu chuẩn đầu vào của chuyên ngành này vẫn khá cao, thí sinh đăng ký cần có chứng chỉ đỗ HSK cấp 6." }, { cn: "政府为了鼓励毕业生创业，降低了中小企业注册的门槛。", vi: "Chính phủ để khuyến khích sinh viên tốt nghiệp khởi nghiệp, đã hạ thấp rào cản đăng ký doanh nghiệp vừa và nhỏ." } ] },
+                    { title: "4. 轮流+V.", exp: "搭配：轮流做饭｜轮流休息｜轮流开车｜轮流值班｜轮流发言", exs: [ { cn: "毛坦厂中学的背后是非常卑微的家庭，父亲在外打工，母亲轮流给三四个孩子做饭。", vi: "Đằng sau trường trung học Mao Thản Xưởng là những gia đình vô cùng thấp bé, cha đi làm thuê bên ngoài, mẹ luân phiên nấu cơm cho ba bốn đứa con." }, { cn: "暑假期间，有的城市流行起了“集体养娃”，孩子有伴玩得更尽兴，家长也能轮流休息，一举两得。", vi: "Trong dịp nghỉ hè, một số thành phố rộ lên phong trào 'cùng nhau nuôi con', trẻ em có bạn chơi đùa thỏa thích hơn, phụ huynh cũng có thể luân phiên nghỉ ngơi, một công đôi việc." }, { cn: "我们总行程约有近一千公里，四个人轮流开车，饿了就在高速公路服务站吃点东西，困了就在车上睡会。", vi: "Tổng hành trình của chúng tôi khoảng gần một nghìn km, bốn người luân phiên lái xe, đói thì ăn chút đồ ở trạm dừng nghỉ trên cao tốc, buồn ngủ thì ngủ trên xe một lát." } ] },
+                    { title: "5. 寄托+N.", exp: "搭配：寄托梦想｜寄托哀思｜寄托希望｜寄托感情", exs: [ { cn: "孩子出发去参加高考时，上万人守着大客车，这些孩子身上寄托着一个又一个非常普通甚至卑微的家庭梦想。", vi: "Khi những đứa trẻ xuất phát đi thi đại học, hàng vạn người túc trực bên xe khách, trên người những đứa trẻ này gửi gắm từng giấc mơ của các gia đình vô cùng bình thường thậm chí thấp bé." }, { cn: "赏月是中国自古以来的中秋节习俗，寄托着人们对“天上月儿圆，世间人团圆”的美好心愿。", vi: "Ngắm trăng là phong tục Tết Trung thu từ xưa đến nay của Trung Quốc, gửi gắm tâm nguyện tốt đẹp của mọi người về 'trăng trên trời tròn, người thế gian đoàn viên'." }, { cn: "在庄严的纪念日到来之际，我们建立这座纪念园，寄托我们对受害者的哀思。", vi: "Nhân dịp ngày tưởng niệm trang nghiêm đang đến, chúng tôi xây dựng công viên tưởng niệm này, gửi gắm niềm tiếc thương đối với những nạn nhân." } ] },
+                    { title: "6. 门路", exp: "搭配：走门路｜门路多｜门路广｜跑门路｜找门路", exs: [ { cn: "我们没有任何的门路，我母亲就是一名普通的老师，父亲在 76 年就去世了。", vi: "Chúng tôi không có bất kỳ cửa ô nào, mẹ tôi chỉ là một giáo viên bình thường, cha đã qua đời năm 76." }, { cn: "大山里的孩子没有别的门路，高考几乎是改变命运的唯一机会。", vi: "Trẻ em vùng núi sâu không có con đường nào khác, kỳ thi đại học gần như là cơ hội duy nhất để thay đổi vận mệnh." }, { cn: "当地生活贫困，就业机会少，老百姓只能纷纷跑到城市找门路。", vi: "Cuộc sống địa phương nghèo khó, cơ hội việc làm ít, dân chúng chỉ có thể đua nhau lên thành phố tìm con đường làm ăn." } ] },
+                    { title: "7. 渺茫", exp: "搭配：希望渺茫｜前途渺茫｜感觉很渺茫｜机会渺茫", exs: [ { cn: "如果你不用分数考出去，家里头帮助你进入名校的机会真的很渺茫。", vi: "Nếu bạn không dùng điểm số để đỗ ra ngoài, cơ hội gia đình giúp bạn vào trường danh tiếng thực sự rất mịt mờ." }, { cn: "地震后，由于天气情况恶劣，气温太低，找到受伤孩子的希望非常渺茫。", vi: "Sau trận động đất, do tình hình thời tiết khắc nghiệt, nhiệt độ quá thấp, hy vọng tìm thấy những đứa trẻ bị thương vô cùng mịt mờ." }, { cn: "马上就要毕业了，我还没有找到合适的工作，难免会觉得前途渺茫。", vi: "Sắp tốt nghiệp rồi, tôi vẫn chưa tìm được công việc phù hợp, khó tránh khỏi cảm thấy tiền đồ mịt mờ." } ] },
+                    { title: "8. 寒门", exp: "搭配：出身寒门｜寒门出贵子｜寒门学子", exs: [ { cn: "我希望高考能使很多寒门孩子有成为富一代的可能，一个人上了大学，改变了这个家庭。", vi: "Tôi hy vọng kỳ thi đại học có thể giúp nhiều đứa trẻ nhà nghèo có khả năng trở thành thế hệ giàu có thứ nhất, một người đỗ đại học, thay đổi cả gia đình này." }, { cn: "很多优秀的运动员出身寒门，他们通过努力成为世界冠军。", vi: "Rất nhiều vận động viên xuất sắc xuất thân bần hàn, họ thông qua nỗ lực trở thành nhà vô địch thế giới." }, { cn: "过去我们常说寒门出贵子，是因为他们有压力，也迫切需要改变自己和家人的生活。", vi: "Trước đây chúng ta thường nói nhà nghèo sinh con quý tử, là vì họ có áp lực, cũng vô cùng bức thiết cần thay đổi cuộc sống của bản thân và gia đình." } ] }
+                ]
+            },
+            {
+                sectionTitle: "三、成语",
+                items: [
+                    { title: "1. 国家兴亡，匹夫有责", exp: "指国家兴亡大事，每个平民都有责任。匹夫：平民男子。", exs: [ { cn: "中国历来流传着一句话：“国家兴亡，匹夫有责。”", vi: "Trung Quốc xưa nay lưu truyền một câu nói: Quốc gia hưng vong, thất phu hữu trách." }, { cn: "在战争年代，许多年轻人都抱着“国家兴亡，匹夫有责”的信念，扛起枪上了前线。", vi: "Trong những năm tháng chiến tranh, rất nhiều thanh niên đều mang niềm tin 'quốc gia hưng vong, thất phu hữu trách', vác súng ra tiền tuyến." }, { cn: "所谓“国家兴亡，匹夫有责”，就是每个人都要关心和参与国事，以负责任的态度来提出意见和看法。", vi: "Cái gọi là 'quốc gia hưng vong, thất phu hữu trách', chính là mỗi người đều phải quan tâm và tham gia vào việc nước, dùng thái độ có trách nhiệm để đưa ra ý kiến và góc nhìn." } ] },
+                    { title: "2. 莫名其妙", exp: "表示发生的事情很奇怪，解释不出道理来。名：说出。", exs: [ { cn: "明明能够去中国所有的学校，但是偏偏莫名其妙地报考了北京广播学院。", vi: "Rõ ràng có thể đỗ vào tất cả các trường học ở Trung Quốc, nhưng lại cứ không hiểu sao báo danh thi Học viện Phát thanh Bắc Kinh." }, { cn: "当我们在图书复习的时候，一个同学突然大喊一声，大家都莫名其妙地朝他望去。", vi: "Khi chúng tôi đang ôn tập trong thư viện, một bạn học bỗng hét lớn một tiếng, mọi người đều thấy khó hiểu mà nhìn về phía cậu ấy." }, { cn: "比赛即将开始，一名运动员突然离开赛场，他这一举动让在场所有观众都感到莫名其妙。", vi: "Trận đấu sắp bắt đầu, một vận động viên bỗng nhiên rời khỏi sân thi đấu, hành động này của anh ấy khiến tất cả khán giả có mặt đều cảm thấy khó hiểu." } ] },
+                    { title: "3. 费尽心机", exp: "挖空心思，想尽办法。心机：计谋。", exs: [ { cn: "很多官家子弟、富家子弟费尽心机找人把孩子送到竞争门槛较高的高考名校，而那些没有一定的财富、权力的家庭根本进不去这些学校的大门。", vi: "Rất nhiều con em quan chức, con nhà giàu phí hết tâm cơ tìm người đưa con cái vào trường chuyên luyện thi đại học có ngưỡng cạnh tranh khá cao, mà những gia đình không có tài phú, quyền lực nhất định thì căn bản không vào nổi cánh cửa của những ngôi trường này." }, { cn: "有的人费尽心机想出名，到头来还是竹篮打水一场空。", vi: "Có người phí hết tâm cơ muốn nổi tiếng, đến cuối cùng vẫn là dã tràng múc nước công dã tràng." }, { cn: "为了得到这份好工作，他费尽心机，到处托关系找人帮忙。", vi: "Để có được công việc tốt này, anh ấy đã phí hết tâm cơ, khắp nơi nhờ vả quan hệ tìm người giúp đỡ." } ] }
+                ]
+            }
+        ];
+
+        let isGrammarRendered = false;
+        
+        function highlightSentence(cnSentence, title) {
+            let kw = title.replace(/^[0-9]+\.\s*\*?/, '').replace(/（.*）|\(.*\)|\+N|\+V\./g, '').trim();
+            if(!kw) return cnSentence;
+            let parts = kw.split(/……|，|、|：|:/).map(p => p.trim()).filter(p => p);
+            let result = cnSentence;
+            parts.forEach(p => {
+                if(p.length > 0) {
+                    let safeP = p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    result = result.replace(new RegExp(safeP, 'g'), `<span class="text-[#f57c00] font-black">${p}</span>`);
+                }
+            });
+            return result;
+        }
+
+        function renderGrammarPoints() {
+            if (isGrammarRendered) return;
+            const container = document.getElementById('grammar-accordion-container');
+            container.innerHTML = '';
+
+            grammarPointsData.forEach((section) => {
+                const secTitle = document.createElement('h3');
+                secTitle.className = "chinese-text font-black text-xl md:text-2xl text-[var(--primary-dark)] mt-4 mb-2 pb-2 border-b-2 border-green-200 tracking-wider";
+                secTitle.innerText = section.sectionTitle;
+                container.appendChild(secTitle);
+
+                section.items.forEach((point) => {
+                    let examplesHtml = point.exs.map(ex => `
+                        <div class="bg-[#f8f9fa] p-4 rounded-xl border border-gray-200 mb-3 shadow-sm">
+                            <p class="chinese-text font-bold text-gray-800 text-lg md:text-xl leading-relaxed mb-2">${highlightSentence(ex.cn, point.title)}</p>
+                            <p class="text-base text-gray-600 font-semibold bg-white p-2 rounded border border-gray-100">🇻🇳 ${ex.vi}</p>
+                        </div>
+                    `).join('');
+
+                    const card = document.createElement('div');
+                    card.className = 'grammar-card bg-white rounded-2xl border border-[var(--border-light)] shadow-sm transition-all duration-300 mb-3';
+                    card.innerHTML = `
+                        <button class="grammar-header w-full text-left p-4 bg-gray-50 hover:bg-[#f1f8e9] font-bold text-lg md:text-xl text-[var(--primary-dark)] flex justify-between items-center outline-none" onclick="toggleGrammarCard(this)">
+                            <span class="chinese-text">${point.title}</span>
+                        </button>
+                        <div class="grammar-content">
+                            <div class="grammar-content-inner">
+                                <div class="p-4 bg-white border-t border-[var(--border-light)]">
+                                    <div class="mb-4 inline-block bg-[var(--bg-color)] px-4 py-2 rounded-xl border border-[var(--border-light)]">
+                                        <p class="chinese-text text-gray-800 font-bold text-base md:text-lg">💡 <span class="text-[var(--primary-dark)]">${point.exp}</span></p>
+                                    </div>
+                                    ${examplesHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+            isGrammarRendered = true;
+        }
+
+        function toggleGrammarCard(button) {
+            playAudio('audio-click');
+            const card = button.parentElement;
+            card.classList.toggle('open');
+        }
+
+        // ================= TAB BÀI TẬP =================
+        let meaningGameList = [];
+        let isMeaningLoaded = false;
+        
+        function shuffle(array) {
+            let ci = array.length, ri;
+            while (ci != 0) { ri = Math.floor(Math.random() * ci); ci--; [array[ci], array[ri]] = [array[ri], array[ci]]; }
+            return array;
+        }
+
+        function startMeaningGame() {
+            if (isMeaningLoaded) return;
+            meaningGameList = shuffle([...dsL1Vocab]);
+            exScores.ex0 = 0; 
+            updateGlobalScore();
+            document.getElementById('meaning-total').innerText = meaningGameList.length;
+            loadMeaningQuestion();
+            isMeaningLoaded = true;
+        }
+
+        function loadMeaningQuestion() {
+            const currentWord = meaningGameList[exIdx];
+            document.getElementById('meaning-current').innerText = exIdx + 1;
+            document.getElementById('meaning-word').innerText = currentWord.h;
+            
+            document.getElementById('btn-meaning-next').classList.add('hidden');
+            document.getElementById('meaning-inline-feedback').classList.add('hidden');
+            
+            let wrongOpts = dsL1Vocab.filter(item => item.h !== currentWord.h);
+            wrongOpts = shuffle(wrongOpts).slice(0, 3);
+            let opts = shuffle([...wrongOpts, currentWord]);
+            
+            const optsContainer = document.getElementById('meaning-options');
+            optsContainer.innerHTML = '';
+            opts.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option chinese-text transition-transform hover:scale-[1.02]';
+                btn.innerText = String.fromCharCode(65 + idx) + ". " + opt.cn;
+                btn.onclick = () => checkMeaningAnswer(opt, currentWord, btn, opts);
+                optsContainer.appendChild(btn);
+            });
+        }
+
+        function checkMeaningAnswer(selectedOpt, correctOpt, btnElement, allOptions) {
+            const isCorrect = (selectedOpt.h === correctOpt.h);
+            const allBtns = document.querySelectorAll('#meaning-options .quiz-option');
+            const feedbackBox = document.getElementById('meaning-inline-feedback');
+            
+            allBtns.forEach(b => b.disabled = true);
+            
+            if (isCorrect) {
+                playAudio('audio-correct');
+                btnElement.classList.add('opt-correct');
+                exScores.ex0++; 
+                updateGlobalScore();
+                document.getElementById('sum-ex0').innerText = exScores.ex0;
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-5 feedback-success block text-left';
+                document.getElementById('meaning-fb-title').innerText = '✨ Chính xác! (+1 điểm)';
+                document.getElementById('meaning-fb-title').style.color = 'var(--primary-dark)';
+            } else {
+                playAudio('audio-wrong');
+                btnElement.classList.add('opt-wrong');
+                allOptions.forEach((opt, idx) => { if(opt.h === correctOpt.h) allBtns[idx].classList.add('opt-correct'); });
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-5 feedback-error block text-left';
+                document.getElementById('meaning-fb-title').innerText = '🥺 Chưa đúng!';
+                document.getElementById('meaning-fb-title').style.color = '#e65100';
+            }
+
+            let collocationsHtml = extractCollocations(correctOpt.h, correctOpt.cn);
+            document.getElementById('meaning-fb-viet').innerHTML = 
+                `📌 <b class="text-xl text-[var(--primary-dark)]">${correctOpt.h}</b> (${correctOpt.p}): ${correctOpt.m}` + collocationsHtml;
+                
+            const nextBtn = document.getElementById('btn-meaning-next');
+            nextBtn.classList.remove('hidden');
+            
+            if (exIdx === meaningGameList.length - 1) {
+                nextBtn.innerText = "Chuyển sang phần Điền trống ❯";
+                nextBtn.onclick = () => switchEx('ex-1');
+            } else {
+                nextBtn.innerText = "Câu tiếp theo ❯";
+                nextBtn.onclick = nextMeaningEx;
+            }
+        }
+
+        function nextMeaningEx() {
+            playAudio('audio-click');
+            exIdx++;
+            loadMeaningQuestion();
+        }
+
+        const ex1Data = [
+            { q: "1. 为了劝说客户在这个项目上投资，他真的是<span class='blank-space'>____</span>。", ans: "费尽心机", opts: ["费尽心机", "莫名其妙", "稍稍", "赞赏"] },
+            { q: "2. 我们只在文章的结尾处做了<span class='blank-space'>____</span>，其他部分仍然保持原样。", ans: "稍稍改动", opts: ["稍稍改动", "赞赏", "人脉", "嘲讽"] },
+            { q: "3. 对犯错误的人，我们不应该<span class='blank-space'>____</span>他们。", ans: "嘲讽", opts: ["赞赏", "人脉", "嘲讽", "费尽心机"] },
+            { q: "4. 中国人常说“一个好汉三个帮”，也就是说，人要想做成大事，背后的<span class='blank-space'>____</span>关系非常重要。", ans: "人脉", opts: ["人脉", "门槛", "嘲讽", "门路"] },
+            { q: "5. 在学校举办的英语竞赛中，李明的演讲赢得现场评委和观众的一致<span class='blank-space'>____</span>。", ans: "赞赏", opts: ["赞赏", "人脉", "嘲讽", "改动"] },
+            { q: "6. 今天我刚一到家，妈妈就把我大骂一顿，真是<span class='blank-space'>____</span>。", ans: "莫名其妙", opts: ["莫名其妙", "费尽心机", "稍稍", "反倒"] }
+        ];
+
+        const ex2Data = [
+            { q: "1. 改变（  ）教育的体制不等于放弃考试，而是老师要更多地开发学生的潜能。", ans: "应试", opts: ["A. 应考", "B. 笔试", "C. 面试", "D. 应试"] },
+            { q: "2. 并不是每个人都能自由（  ）自己未来要走的路，许多孩子都因为家庭太贫穷而放弃了自己的梦想。", ans: "挑选", opts: ["A. 挑选", "B. 采取", "C. 抉择", "D. 判断"] },
+            { q: "3. 世界上有很多（  ）的事，我们还很难用科学的观点解释。", ans: "莫名其妙", opts: ["A. 莫名其妙", "B. 岂有此理", "C. 稀里糊涂", "D. 恍然大悟"] },
+            { q: "4. 这个观点（  ）是错误的，真不明白为什么还有那么多支持者？", ans: "明明", opts: ["A. 渐渐", "B. 稍稍", "C. 偏偏", "D. 明明"] },
+            { q: "5. 编辑帮他把已经写好的文章（  ）作了修改，没过多久文章就发表了。", ans: "稍稍", opts: ["A. 悄悄", "B. 偷偷", "C. 渐渐", "D. 稍稍"] },
+            { q: "6. “别让孩子输在起跑线上”是家长们挂在嘴边的一句话，孩子是家庭的未来，（  ）了全家人的期望。", ans: "寄托", opts: ["A. 期待", "B. 托付", "C. 寄托", "D. 依靠"] }
+        ];
+
+        const ex3Data = [
+            { q: "1. 学生在选择专业时要考虑哪些因素？ (Sử dụng: 不只是……更是)", ans: "学生在选择专业时，不只是要考虑自己的兴趣爱好，更是要结合未来的就业前景和社会需求。" },
+            { q: "2. 80 年代高考和当今高考有哪些异同点？ (Sử dụng: 反倒)", ans: "80年代大家更多的是挑选自己想去的学校，而现在很多人为了进名校，反倒不去管学生喜不喜欢那个专业了。" },
+            { q: "3. 有人说：“高考可以改变命运。”对此，你怎么看？ (Sử dụng: 持)", ans: "对于这种观点，我持赞同态度，因为高考给很多普通家庭的孩子提供了一个公平竞争的平台。" },
+            { q: "4. 对于出身寒门的学生，高考究竟能带给他们什么？ (Sử dụng: 历来)", ans: "中国历来流传着“知识改变命运”，高考能给寒门学子带来跨越阶层、改变自己和家庭生活的希望。" }
+        ];
+
+        let currentExList = [], currentExType = 'ex-0', exIdx = 0;
+
+        function switchEx(exType) {
+            playAudio('audio-click');
+            ['ex-0', 'ex-1', 'ex-2', 'ex-3', 'ex-4', 'ex-5'].forEach(id => {
+                let btn = document.getElementById('btn-' + id);
+                btn.classList.remove('active', '!bg-[var(--primary)]', '!text-white');
+                if(id !== 'ex-5') btn.classList.add('bg-white', '!text-[var(--primary-dark)]');
+            });
+            let actBtn = document.getElementById('btn-' + exType);
+            actBtn.classList.remove('bg-white', '!text-[var(--primary-dark)]');
+            actBtn.classList.add('active', '!bg-[var(--primary)]', '!text-white');
+
+            ['exercise-meaning-container', 'exercise-quiz-container', 'exercise-writing-container', 'exercise-cloze-container', 'exercise-summary-container'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+
+            currentExType = exType;
+            exIdx = 0;
+
+            if(exType === 'ex-0') {
+                document.getElementById('exercise-meaning-container').classList.remove('hidden');
+                if(!isMeaningLoaded) startMeaningGame();
+                else loadMeaningQuestion(); // Tải lại câu hỏi hiện tại nếu đã lỡ chuyển tab
+            }
+            else if(exType === 'ex-1' || exType === 'ex-2') {
+                document.getElementById('exercise-quiz-container').classList.remove('hidden');
+                currentExList = exType === 'ex-1' ? ex1Data : ex2Data;
+                document.getElementById('ex-title').innerText = exType === 'ex-1' ? "二、用所给的词语填空" : "三、单项选择";
+                document.getElementById('ex-total').innerText = currentExList.length;
+                const bank = document.getElementById('ex-word-bank');
+                bank.innerHTML = '';
+                if(exType === 'ex-1') {
+                    bank.classList.remove('hidden');
+                    const words = ["莫名其妙", "费尽心机", "人脉", "嘲讽", "稍稍改动", "赞赏"];
+                    words.forEach(w => { bank.innerHTML += `<span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg font-bold">${w}</span>`; });
+                } else { bank.classList.add('hidden'); }
+                loadExQuiz();
+            } 
+            else if(exType === 'ex-3') {
+                document.getElementById('exercise-writing-container').classList.remove('hidden');
+                loadExWriting();
+            }
+            else if(exType === 'ex-4') {
+                document.getElementById('exercise-cloze-container').classList.remove('hidden');
+                document.querySelectorAll('.cloze-select').forEach(sel => { sel.value = ""; sel.style.borderColor = "var(--primary)"; sel.style.backgroundColor = "transparent"; });
+                document.getElementById('cloze-result-msg').classList.add('hidden');
+            }
+            else if(exType === 'ex-5') {
+                document.getElementById('exercise-summary-container').classList.remove('hidden');
+                evaluateFinalScore();
+            }
+        }
+
+        function loadExQuiz() {
+            const currentQ = currentExList[exIdx];
+            document.getElementById('ex-current').innerText = exIdx + 1;
+            document.getElementById('ex-question').innerHTML = currentQ.q;
+            document.getElementById('btn-ex-next').classList.add('hidden');
+            document.getElementById('ex-inline-feedback').classList.add('hidden');
+            const optsContainer = document.getElementById('ex-options');
+            optsContainer.innerHTML = '';
+            currentQ.opts.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option chinese-text !mb-0';
+                btn.innerText = opt;
+                let optVal = currentExType === 'ex-2' ? opt.split('. ')[1] : opt;
+                btn.onclick = () => checkExAnswer(optVal, currentQ.ans, btn, currentQ.q);
+                optsContainer.appendChild(btn);
+            });
+        }
+
+        function checkExAnswer(selectedOpt, correctAns, btnElement, qText) {
+            const isCorrect = (selectedOpt === correctAns);
+            const allBtns = document.querySelectorAll('#ex-options .quiz-option');
+            const feedbackBox = document.getElementById('ex-inline-feedback');
+            allBtns.forEach(b => b.disabled = true);
+            
+            if (isCorrect) {
+                playAudio('audio-correct');
+                btnElement.classList.add('opt-correct');
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-5 feedback-success block';
+                document.getElementById('ex-fb-title').innerText = '✨ Chính xác! (+1 điểm)';
+                document.getElementById('ex-fb-title').style.color = 'var(--primary-dark)';
+                if(currentExType === 'ex-1') exScores.ex1++;
+                if(currentExType === 'ex-2') exScores.ex2++;
+                updateGlobalScore();
+                document.getElementById('sum-ex1').innerText = exScores.ex1;
+                document.getElementById('sum-ex2').innerText = exScores.ex2;
+            } else {
+                playAudio('audio-wrong');
+                btnElement.classList.add('opt-wrong');
+                allBtns.forEach(b => {
+                    let val = currentExType === 'ex-2' ? b.innerText.split('. ')[1] : b.innerText;
+                    if(val === correctAns) b.classList.add('opt-correct');
+                });
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-5 feedback-error block';
+                document.getElementById('ex-fb-title').innerText = `🥺 Chưa đúng! Đáp án là: ${correctAns}`;
+                document.getElementById('ex-fb-title').style.color = '#e65100';
+            }
+            if(currentExType === 'ex-1') {
+                document.getElementById('ex-question').innerHTML = qText.replace(/<span class='blank-space'>____<\/span>/g, `<span style="color:${isCorrect ? '#558b2f' : '#d84315'}; text-decoration: underline;">${correctAns}</span>`);
+            }
+            document.getElementById('btn-ex-next').classList.remove('hidden');
+            if (exIdx === currentExList.length - 1) {
+                let nextTab = currentExType === 'ex-1' ? 'ex-2' : 'ex-3';
+                document.getElementById('btn-ex-next').innerText = "Phần tiếp theo ❯";
+                document.getElementById('btn-ex-next').onclick = () => { switchEx(nextTab); };
+            } else {
+                document.getElementById('btn-ex-next').innerText = "Câu tiếp theo ❯";
+                document.getElementById('btn-ex-next').onclick = nextEx;
+            }
+        }
+
+        function nextEx() { playAudio('audio-click'); exIdx++; loadExQuiz(); }
+
+        function loadExWriting() {
+            const container = document.getElementById('writing-questions');
+            container.innerHTML = '';
+            ex3Data.forEach((qData, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'mb-6 p-4 border border-[var(--border-light)] rounded-xl bg-white shadow-sm';
+                qDiv.innerHTML = `
+                    <p class="font-bold text-lg text-[var(--primary-dark)] mb-3">${qData.q}</p>
+                    <textarea id="ai-input-${index}" class="w-full p-3 border-2 border-gray-300 rounded-lg outline-none focus:border-[var(--secondary)] mb-3 transition" rows="3" placeholder="Gõ câu trả lời bằng tiếng Trung của bạn vào đây..."></textarea>
+                    
+                    <div class="flex gap-2 flex-wrap mb-3">
+                        <button id="btn-ai-${index}" class="text-sm font-bold text-white bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 transition shadow-md" onclick="gradeWithAI(${index})">✨ Nhờ AI Chấm Điểm</button>
+                        <button class="text-sm font-bold text-gray-700 bg-gray-100 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-200 transition" onclick="this.nextElementSibling.classList.toggle('hidden')">👀 Xem đáp án mẫu</button>
+                        <div class="hidden w-full mt-2 p-3 bg-white border-2 border-green-300 rounded-lg">
+                            <p class="chinese-text text-green-800 font-semibold text-lg leading-relaxed">${qData.ans}</p>
+                        </div>
+                    </div>
+                    
+                    <div id="ai-feedback-${index}" class="hidden mt-3 p-4 bg-[#f0f9ff] border-2 border-blue-300 rounded-lg text-gray-800 text-sm leading-relaxed shadow-inner"></div>
+                `;
+                container.appendChild(qDiv);
+            });
+            
+            const nextDiv = document.createElement('div');
+            nextDiv.className = 'text-center border-t-2 border-gray-100 pt-6 mt-6';
+            nextDiv.innerHTML = `<button onclick="switchEx('ex-4')" class="btn-action shadow-lg">Chuyển sang phần Điền đoạn văn ❯</button>`;
+            container.appendChild(nextDiv);
+        }
+
+        async function gradeWithAI(qIndex) {
+            const btn = document.getElementById(`btn-ai-${qIndex}`);
+            const input = document.getElementById(`ai-input-${qIndex}`).value;
+            const resDiv = document.getElementById(`ai-feedback-${qIndex}`);
+            const qData = ex3Data[qIndex];
+
+            if(!input.trim()) {
+                resDiv.innerHTML = "<span class='text-red-600 font-bold'>Vui lòng nhập câu trả lời của bạn trước khi nhờ AI chấm điểm!</span>";
+                resDiv.classList.remove('hidden'); return;
+            }
+
+            btn.disabled = true; btn.innerHTML = "⏳ AI đang phân tích...";
+            resDiv.innerHTML = "<div class='flex justify-center items-center gap-2 text-blue-700'><div class='w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin'></div> <b>AI giáo viên đang đọc bài của bạn...</b></div>";
+            resDiv.classList.remove('hidden');
+
+            const promptText = `Bạn là một giáo viên dạy tiếng Trung HSK 7-9. Học viên đang học bài "没有高考，你怎么拼得过富二代？".
+            Câu hỏi: ${qData.q}
+            Đáp án chuẩn tham khảo: ${qData.ans}
+            Câu trả lời của học viên: ${input}
+            Hãy nhận xét câu trả lời của học viên bằng tiếng Việt.
+            Nhiệm vụ:
+            1. Chỉ ra lỗi sai ngữ pháp, từ vựng hoặc cấu trúc câu (nếu có).
+            2. Nếu học viên viết tốt, hãy khen ngợi. Nhận xét học viên đã dùng đúng từ khóa yêu cầu chưa.
+            3. Trả về đúng 1 con số điểm từ 0 đến 10 dựa trên chất lượng bài ở dòng cuối cùng với format: [ĐIỂM: X] (ví dụ [ĐIỂM: 8])
+            Yêu cầu định dạng: Trả lời ngắn gọn, thân thiện. Dùng HTML cơ bản (<b>, <br>). Không dùng ký tự markdown như **.`;
+
+            const apiKey = ""; 
+            
+            let retries = 5; let success = false; let delay = 1000;
+
+            while (retries > 0 && !success) {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+                    });
+                    const data = await response.json();
+                    if(data.candidates && data.candidates.length > 0) {
+                        let text = data.candidates[0].content.parts[0].text;
+                        
+                        let scoreMatch = text.match(/\[ĐIỂM:\s*(\d+)\]/i);
+                        let score = 0;
+                        if(scoreMatch && scoreMatch[1]) {
+                            score = parseInt(scoreMatch[1]);
+                            text = text.replace(scoreMatch[0], `<div class="mt-3 inline-block bg-white px-4 py-2 border-2 border-blue-400 rounded-xl font-black text-blue-700 text-lg shadow-sm">🎯 Điểm: ${score}/10</div>`);
+                            exScores.ex3[qIndex] = score;
+                            updateGlobalScore();
+                            document.getElementById('sum-ex3').innerText = exScores.ex3.reduce((a,b)=>a+b,0);
+                        }
+                        
+                        resDiv.innerHTML = `<b class="text-blue-800 text-lg">🤖 AI Nhận Xét:</b><br><br>${text.replace(/\n/g, '<br>')}`;
+                        success = true;
+                    } else throw new Error("Không lấy được kết quả từ AI");
+                } catch (e) {
+                    retries--;
+                    if(retries === 0) resDiv.innerHTML = "<span class='text-red-500 font-bold'>Đã có lỗi kết nối tới AI. Vui lòng thử lại sau.</span>";
+                    else { await new Promise(r => setTimeout(r, delay)); delay *= 2; }
+                }
+            }
+            btn.disabled = false; btn.innerHTML = "✨ Chấm lại";
+        }
+
+        function checkCloze() {
+            const selects = document.querySelectorAll('.cloze-select');
+            let score = 0;
+            selects.forEach(sel => {
+                if (sel.value === sel.dataset.ans) {
+                    sel.style.borderColor = "#8bc34a"; sel.style.backgroundColor = "#f1f8e9"; sel.style.color = "#33691e"; score++;
+                } else {
+                    sel.style.borderColor = "#ff9800"; sel.style.backgroundColor = "#fff3e0"; sel.style.color = "#e65100";
+                }
+            });
+            const msg = document.getElementById('cloze-result-msg');
+            msg.classList.remove('hidden');
+            
+            exScores.ex4 = score;
+            updateGlobalScore();
+            document.getElementById('sum-ex4').innerText = score;
+
+            if(score === 6) {
+                playAudio('audio-win');
+                msg.innerText = `🏆 Xuất sắc! Bạn đã điền đúng 6/6 từ!`;
+                msg.className = "mt-3 font-bold text-lg text-[#558b2f]";
+                
+                setTimeout(() => {
+                    msg.innerHTML += `<br><button onclick="switchEx('ex-5')" class="mt-4 btn-action w-full md:w-auto shadow-lg">Xem Tổng Kết Điểm ❯</button>`;
+                }, 1000);
+            } else {
+                playAudio('audio-click');
+                msg.innerText = `Bạn đã điền đúng ${score}/6 từ. Hãy xem lại các ô màu cam và sửa lại nhé!`;
+                msg.className = "mt-3 font-bold text-lg text-[#e65100]";
+            }
+        }
+        
+        function evaluateFinalScore() {
+            let sumAi = exScores.ex3.reduce((a, b) => a + b, 0);
+            let total = exScores.ex0 + exScores.ex1 + exScores.ex2 + sumAi + exScores.ex4;
+            document.getElementById('sum-total').innerText = total;
+            
+            const evalDiv = document.getElementById('final-evaluation');
+            let percent = (total / GLOBAL_MAX_SCORE) * 100;
+            
+            if(percent >= 90) { evalDiv.className = "text-xl font-bold p-4 rounded-xl border-2 bg-[#dcedc8] border-[#8bc34a] text-[#33691e]"; evalDiv.innerText = "🌟 Quá xuất sắc! Bạn đã nắm vững bài học này."; playAudio('audio-win'); }
+            else if(percent >= 70) { evalDiv.className = "text-xl font-bold p-4 rounded-xl border-2 bg-[#fff3e0] border-[#ffb74d] text-[#e65100]"; evalDiv.innerText = "🔥 Rất tốt! Cố gắng luyện tập thêm một chút nữa nhé."; }
+            else { evalDiv.className = "text-xl font-bold p-4 rounded-xl border-2 bg-gray-100 border-gray-300 text-gray-700"; evalDiv.innerText = "📚 Hãy ôn lại từ vựng và ngữ pháp để cải thiện điểm số nhé!"; }
+        }
+
+        // ================= DỮ LIỆU BÀI KHÓA =================
+        const lessonTextData = [
+            "没[méi]有[yǒu]高[gāo]考[kǎo]你[nǐ]拼[pīn]得[de]过[guò]^富[fù]二[èr]代[dài]|富二代^吗[ma]？^按[àn]说[shuō]|按说^这[zhè]样[yàng]的[de]说[shuō]法[fǎ]^未[wèi]免[miǎn]|未免^过[guò]于[yú]绝[jué]对[duì]，却[què]是[shì]非[fēi]常[cháng]现[xiàn]实[shí]的[de]话[huà]题[tí]，可[kě]换[huàn]一[yí]个[gè]角[jiǎo]度[dù]，你[nǐ]说[shuō]我[wǒ]能[néng]不[bù]知[zhī]道[dào]高[gāo]考[kǎo]有[yǒu]多[duō]少[shǎo]毛[máo]病[bìng]和[hé]问[wèn]题[tí]吗[ma]？1977年[nián]9月[yuè]，中[zhōng]国[guó]教[jiào]育[yù]部[bù]决[jué]定[dìng]恢[huī]复[fù]停[tíng]止[zhǐ]了[le]十[shí]余[yú]年[nián]的[de]大[dà]学[xué]招[zhāo]生[shēng]考[kǎo]试[shì]，这[zhè]恢[huī]复[fù]的[de]不[bù]只[zhǐ]是[shì]高[gāo]考[kǎo]，更[gèng]是[shì]几[jǐ]代[dài]中[zhōng]国[guó]人[rén]对[duì]于[yú]公[gōng]平[píng]、^尊[zūn]严[yán]|尊严^的[de]梦[mèng]想[xiǎng]。",
+            "中[zhōng]国[guó]^历[lì]来[lái]|历来^^流[liú]传[chuán]|流传^着[zhe]一[yí]句[jù]话[huà]：“^国[guó]家[jiā]兴[xīng]亡[wáng]，匹[pǐ]夫[fū]有[yǒu]责[zé]|国家兴亡，匹夫有责^。”我[wǒ]觉[jué]得[de]有[yǒu]了[le]“恢[huī]复[fù]高[gāo]考[kǎo]”这[zhè]事[shì]，应[yīng]该[gāi]^稍[shāo]稍[shāo]|稍稍^对[duì]前[qián]面[miàn]的[de]话[huà]加[jiā]以[yǐ]^改[gǎi]动[dòng]|改动^：“国[guó]家[jiā]兴[xīng]亡[wáng]，^学[xué]子[zǐ]|学子^有[yǒu]路[lù]，匹[pǐ]夫[fū]有[yǒu]责[zé]”。80年[nián]代[dài]的[de]高[gāo]考[kǎo]和[hé]当[dāng]代[dài]高[gāo]考[kǎo]概[gài]念[niàn]是[shì]不[bù]一[yí]样[yàng]的[de]，当[dāng]年[nián]我[wǒ]所[suǒ]有[yǒu]的[de]^科[kē]目[mù]|科目^都[dōu]是[shì]^满[mǎn]分[fēn]|满分^，我[wǒ]报[bào]考[kǎo]学[xué]校[xiào]的[de]第[dì]一[yī]志[zhì]愿[yuàn]就[jiù]是[shì]北[běi]京[jīng]广[guǎng]播[bō]学[xué]院[yuàn]，第[dì]二[èr]志[zhì]愿[yuàn]是[shì]武[wǔ]汉[hàn]大[dà]学[xué]，第[dì]三[sān]志[zhì]愿[yuàn]是[shì]北[běi]京[jīng]大[dà]学[xué]。后[hòu]来[lái]我[wǒ]经[jīng]常[cháng]和[hé]我[wǒ]爱[ài]人[rén]开[kāi]玩[wán]笑[xiào]，她[tā]是[shì]镇[zhèn]江[jiāng]^文[wén]科[kē]|文科^^状[zhuàng]元[yuán]|状元^，明[míng]明[míng]能[néng]够[gòu]去[qù]中[zhōng]国[guó]所[suǒ]有[yǒu]的[de]名[míng]牌[pái]学[xué]校[xiào]，但[dàn]是[shì]^偏[piān]偏[piān]|偏偏^^莫[mò]名[míng]其[qí]妙[miào]|莫名其妙^地[de]报[bào]考[kǎo]了[le]北[běi]京[jīng]广[guǎng]播[bō]学[xué]院[yuàn]。这[zhè]^反[fǎn]倒[dào]|反倒^说[shuō]明[míng]，那[nà]个[gè]时[shí]候[hòu]大[dà]家[jiā]更[gèng]多[duō]的[de]是[shì]挑[tiāo]选[xuǎn]自[zì]己[jǐ]想[xiǎng]去[qù]的[de]学[xué]校[xiào]和[hé]专[zhuān]业[yè]，不[bù]像[xiàng]今[jīn]天[tiān]已[yǐ]经[jīng]变[biàn]成[chéng]了[le]不[bù]管[guǎn]学[xué]生[shēng]喜[xǐ]不[bu]喜[xǐ]欢[huān]，必[bì]须[xū]要[yào]去[qù]某[mǒu]所[suǒ]高[gāo]校[xiào]的[de]现[xiàn]象[xiàng]。",
+            "对[duì]于[yú]部[bù]分[fēn]高[gāo]考[kǎo]名[míng]校[xiào]，我[wǒ]^持[chí]|持^^中[zhōng]立[lì]|中立^态[tài]度[dù]，不[bù]一[yí]定[dìng]^赞[zàn]赏[shǎng]|赞赏^，但[dàn]是[shì]也[yě]不[bù]便[biàn]于[yú]直[zhí]接[jiē]批[pī]评[píng]。毛[máo]坦[tǎn]厂[chǎng]我[wǒ]们[men]做[zuò]了[le]两[liǎng]期[qī]的[de]节[jié]目[mù]，回[huí]来[lái]改[gǎi]变[biàn]了[le]我[wǒ]的[de]态[tài]度[dù]。很[hěn]多[duō]^官[guān]家[jiā]子[zǐ]弟[dì]|官家子弟^、^富[fù]家[jiā]子[zǐ]弟[dì]|富家子弟^^费[fèi]尽[jìn]心[xīn]机[jī]|费尽心机^找[zhǎo]人[rén]把[bǎ]孩[hái]子[zi]送[sòng]到[dào]竞[jìng]争[zhēng]^门[mén]槛[kǎn]|门槛^较[jiào]高[gāo]的[de]高[gāo]考[kǎo]名[míng]校[xiào]，而[ér]那[nà]些[xiē]没[méi]有[yǒu]一[yí]定[dìng]的[de]财[cái]财[fù]、权[quán]力[lì]的[de]家[jiā]庭[tíng]根[gēn]本[běn]进[jìn]不[bu]去[qù]这[zhè]些[xiē]学[xué]校[xiào]的[de]大[dà]门[mén]。然[rán]而[ér]毛[máo]坦[tǎn]厂[chǎng]中[zhōng]学[xué]^并[bìng]非[fēi]|并非^如[rú]此[cǐ]，毛[máo]坦[tǎn]厂[chǎng]相[xiāng]当[dāng]多[duō]的[de]学[xué]生[shēng]是[shì]打[dǎ]工[gōng]者[zhě]的[de]孩[hái]子[zi]，把[bǎ]院[yuàn]墙[qiáng]外[wài]^柳[liǔ]树[shù]|柳树^当[dāng]神[shén]树[shù]^祭[jì]拜[bài]|祭拜^的[de]，都[dōu]不[bú]是[shì]^富[fù]裕[yù]|富裕^的[de]父[fù]母[mǔ]。",
+            "毛[máo]坦[tǎn]厂[chǎng]中[zhōng]学[xué]的[de]背[bèi]后[hòu]是[shì]非[fēi]常[cháng]^卑[bēi]微[wēi]|卑微^的[de]家[jiā]庭[tíng]，父[fù]亲[qīn]在[zài]外[wài]打[dǎ]工[gōng]，母[mǔ]亲[qīn]^轮[lún]流[liú]|轮流^给[gěi]三[sān]四[sì]个[gè]孩[hái]子[zi]做[zuò]饭[fàn]。孩[hái]子[zi]出[chū]发[fā]去[qù]参[cān]加[jiā]高[gāo]考[kǎo]时[shí]，上[shàng]万[wàn]人[rén]守[shǒu]着[zhe]大[dà]客[kè]车[chē]，这[zhè]些[xiē]孩[hái]子[zi]身[shēn]上[shang]^寄[jì]托[tuō]|寄托^着[zhe]一[yí]个[gè]又[yòu]一[yí]个[gè]非[fēi]常[cháng]普[pǔ]通[tōng]甚[shèn]至[zhì]卑[bēi]微[wēi]的[de]家[jiā]庭[tíng]梦[mèng]想[xiǎng]。",
+            "把[bǎ]高[gāo]考[kǎo]作[zuò]为[wéi]人[rén]生[shēng]梦[mèng]想[xiǎng]是[shì]^可[kě]喜[xǐ]|可喜^和[hé]值[zhí]得[de]鼓[gǔ]励[lì]的[de]，无[wú]论[lùn]如[rú]何[hé]我[wǒ]都[dōu]做[zuò]不[bù]出[chū]任[rèn]何[hé]^嘲[cháo]讽[fěng]|嘲讽^毛[máo]坦[tǎn]厂[chǎng]中[zhōng]学[xué]的[de]事[shì]情[qíng]。可[kě]能[néng]这[zhè]里[lǐ]有[yǒu]很[hěn]多[duō]我[wǒ]们[men]不[bù]一[yí]定[dìng]认[rèn]同[tóng]的[de]涉[shè]及[jí]到[dào]教[jiào]育[yù]^体[tǐ]制[zhì]|体制^、^应[yìng]试[shì]教[jiào]育[yù]|应试教育^的[de]东[dōng]西[xī]，但[dàn]是[shì]我[wǒ]愿[yuàn]意[yì]用[yòng]^温[wēn]情[qíng]|温情^去[qù]面[miàn]对[duì]这[zhè]样[yàng]的[de]事[shì]情[qíng]。更[gèng]重[zhòng]要[yào]的[de]是[shì]，我[wǒ]祝[zhù]福[fú]这[zhè]些[xiē]普[pǔ]通[tōng]的[de]家[jiā]庭[tíng]，希[xī]望[wàng]高[gāo]考[kǎo]能[néng]改[gǎi]变[biàn]他[tā]们[men]的[de]命[mìng]运[yùn]。",
+            "^回[huí]想[xiǎng]|回想^1985年[nián]的[de]时[shí]候[hòu]，我[wǒ]们[men]班[bān]同[tóng]学[xué]在[zài]高[gāo]考[kǎo]留[liú]言[yán]板[bǎn]上[shàng]的[de]留[liú]言[yán]，如[rú]果[guǒ]按[àn]现[xiàn]在[zài]的[de]话[huà]来[lái]说[shuō]，更[gèng]多[duō]应[yīng]该[gāi]是[shì]谈[tán]高[gāo]考[kǎo]、谈[tán]梦[mèng]想[xiǎng]，相[xiāng]反[fǎn]的[de]是[shì]，那[nà]个[gè]时[shí]候[hòu]更[gèng]多[duō]谈[tán]人[rén]生[shēng]，其[qí]中[zhōng]谈[tán]发[fā]财[cái]、物[wù]质[zhì]只[zhǐ]有[yǒu]一[yī]两[liǎng]个[gè]，^少[shǎo]之[zhī]又[yòu]少[shǎo]|少之又少^。",
+            "我[wǒ]们[men]没[méi]有[yǒu]任[rèn]何[hé]的[de]^门[mén]路[lù]|门路^，我[wǒ]母[mǔ]亲[qīn]就[jiù]是[shì]一[yì]名[míng]普[pǔ]通[tōng]的[de]老[lǎo]师[shī]，父[fù]亲[qīn]在[zài]76年[nián]就[jiù]去[qù]世[shì]了[le]。当[dāng]年[nián]在[zài]北[běi]京[jīng]我[wǒ]没[méi]有[yǒu]亲[qīn]戚[qi]和[hé]熟[shú]悉[xī]的[de]^人[rén]脉[mài]|人脉^，但[dàn]我[wǒ]走[zǒu]到[dào]今[jīn]天[tiān]，却[què]没[méi]有[yǒu]为[wèi]找[zhǎo]工[gōng]作[zuò]、^调[diào]转[zhuǎn]|调转^岗[gǎng]位[wèi]送[sòng]过[guò]一[yí]次[cì]礼[lǐ]，不[bù]也[yě]走[zǒu]到[dào]今[jīn]天[tiān]了[le]吗[ma]？如[rú]果[guǒ]现[xiàn]在[zài]的[de]年[nián]轻[qīng]人[rén]说[shuō]生[shēng]活[huó]中[zhōng]有[yǒu]很[hěn]多[duō]糟[zāo]糕[gāo]的[de]东[dōng]西[xī]，当[dāng]然[rán]有[yǒu]。但[dàn]是[shì]要[yào]去[qù]相[xiāng]信[xìn]还[hái]有[yǒu]另[lìng]外[wài]一[yì]种[zhǒng]方[fāng]式[shì]能[néng]够[gòu]改[gǎi]变[biàn]命[mìng]运[yùn]，那[nà]就[jiù]是[shì]高[gāo]考[kǎo]。如[rú]果[guǒ]你[nǐ]不[bù]用[yòng]分[fēn]数[shù]考[kǎo]出[chū]去[qù]，家[jiā]里[lǐ]头[tou]帮[bāng]助[zhù]你[nǐ]进[jìn]入[rù]名[míng]校[xiào]的[de]机[jī]会[huì]真[zhēn]的[de]很[hěn]^渺[miǎo]茫[máng]|渺茫^。我[wǒ]希[xī]望[wàng]高[gāo]考[kǎo]能[néng]使[shǐ]很[hěn]多[duō]^寒[hán]门[mén]|寒门^孩[hái]子[zi]有[yǒu]成[chéng]为[wéi]富[fù]一[yí]代[dài]的[de]可[kě]能[néng]，一[yí]个[gè]人[rén]上[shàng]了[大[dà]学[xué]，改[gǎi]变[biàn]了[le]这[zhè]个[gè]家[jiā]庭[tíng]。也[yě]许[xǔ]最[zuì]终[zhōng]你[nǐ]依[yī]然[rán]拼[pīn]不[bu]过[guò]^富[fù]二[èr]代[dài]|富二代^，但[dàn]是[shì]你[nǐ]可[kě]能[néng]改[gǎi]变[biàn]自[zì]己[jǐ]家[jiā]庭[tíng]的[de]生[shēng]活[huó]。"
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('sync-container');
+            let htmlContent = '';
+            lessonTextData.forEach(p => {
+                let pHtml = '<p class="indent-6 md:indent-8 mb-4">';
+                let i = 0;
+                while (i < p.length) {
+                    if (p[i] === '"' || p[i] === '”' || p[i] === '“' || p[i] === '、' || p[i] === '：' || p[i] === '？' || p[i] === '，' || p[i] === '。' || p[i] === '！' || p[i] === '……') {
+                        pHtml += p[i]; i++; continue;
+                    }
+                    if (p[i] === '^') {
+                        let endIdx = p.indexOf('^', i + 1);
+                        let content = p.substring(i + 1, endIdx);
+                        let parts = content.split('|');
+                        let rawText = parts[0];
+                        let wordKey = parts[1];
+                        
+                        let rubyHtml = '';
+                        let j = 0;
+                        while(j < rawText.length) {
+                            if (rawText[j+1] === '[') {
+                                let rEnd = rawText.indexOf(']', j+1);
+                                rubyHtml += `<ruby>${rawText[j]}<rt>${rawText.substring(j+2, rEnd)}</rt></ruby>`;
+                                j = rEnd + 1; 
+                            } else { rubyHtml += rawText[j]; j++; }
+                        }
+                        pHtml += `<span class="hl-word" onclick="showVocabPopup('${wordKey}')">${rubyHtml}</span>`;
+                        i = endIdx + 1;
+                        continue;
+                    }
+                    if (p[i+1] === '[') {
+                        let endIdx = p.indexOf(']', i+1);
+                        pHtml += `<ruby>${p[i]}<rt>${p.substring(i+2, endIdx)}</rt></ruby>`;
+                        i = endIdx + 1; 
+                    } else { pHtml += p[i]; i++; }
+                }
+                pHtml += '</p>';
+                htmlContent += pHtml;
+            });
+            container.innerHTML = htmlContent;
+        });
+
+        function togglePinyin() { document.getElementById('text-wrapper').classList.toggle('hide-pinyin'); }
+
+        function showVocabPopup(wordKey) {
+            playAudio('audio-click');
+            const wordData = dsL1Vocab.find(w => w.h === wordKey);
+            if(wordData) {
+                document.getElementById('vp-word').innerText = wordData.h;
+                document.getElementById('vp-pinyin').innerText = wordData.p;
+                document.getElementById('vp-meaning').innerText = `(${wordData.type}) ${wordData.m}`;
+                document.getElementById('vp-cn').innerText = wordData.cn;
+                document.getElementById('vocab-popup').classList.remove('hidden');
+                speakChinese(wordData.h);
+            }
+        }
+        function closeVocabPopup() { playAudio('audio-click'); document.getElementById('vocab-popup').classList.add('hidden'); window.speechSynthesis.cancel(); }
+
+    </script>
+</body>
+</html>

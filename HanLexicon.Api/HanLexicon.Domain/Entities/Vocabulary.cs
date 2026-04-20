@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Infrastructure.Postgres;
+
+public partial class Vocabulary
+{
+    public Guid Id { get; set; }
+
+    public Guid LessonId { get; set; }
+
+    public short SortOrder { get; set; }
+
+    public string Word { get; set; } = null!;
+
+    public string Pinyin { get; set; } = null!;
+
+    public string Meaning { get; set; } = null!;
+
+    public string? ExampleCn { get; set; }
+
+    public string? ExamplePy { get; set; }
+
+    public string? ExampleVn { get; set; }
+
+    public string? AudioUrl { get; set; }
+
+    public virtual Lesson Lesson { get; set; } = null!;
+}

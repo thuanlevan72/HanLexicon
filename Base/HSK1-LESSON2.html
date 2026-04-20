@@ -1,0 +1,483 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSK 1 - Bài 2: 谢谢 | Nga Học HSK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8bc34a; 
+            --primary-dark: #558b2f;
+            --secondary: #ffb74d; 
+            --bg-color: #f1f8e9; 
+            --card-bg: #ffffff;
+            --text-main: #33691e;
+            --text-muted: #5d4037;
+            --hanzi-color: #d84315;
+            --font-cn: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; 
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            font-family: 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#cddc39 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; padding-bottom: 50px;
+        }
+
+        /* --- BRANDING & HEADER --- */
+        .branding {
+            width: 100%; background: #fff; text-align: center; padding: 6px 0;
+            font-size: 0.8rem; font-weight: 800; color: var(--primary-dark);
+            letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-transform: uppercase;
+        }
+
+        .header {
+            width: 100%; max-width: 800px; padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(139, 195, 74, 0.3);
+        }
+
+        .btn-back {
+            background: rgba(255,255,255,0.2); color: white; text-decoration: none;
+            padding: 8px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .header h2 { font-size: 1.2rem; text-align: center; flex: 1; margin: 0 10px; }
+        .header-spacer { width: 80px; }
+
+        /* --- TABS (Fixed for Mobile) --- */
+        .tabs {
+            display: flex; justify-content: space-between; gap: 5px;
+            margin: 20px auto; background: white; padding: 6px;
+            border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 95%; max-width: 600px;
+        }
+
+        .tab-btn {
+            flex: 1; border: none; background: transparent;
+            padding: 10px 0; border-radius: 25px;
+            font-size: 0.9rem; font-weight: 700; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s;
+            text-align: center; white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--secondary); color: white;
+            box-shadow: 0 4px 10px rgba(255, 183, 77, 0.4);
+        }
+
+        /* --- CONTENT AREA --- */
+        .section { display: none; width: 100%; max-width: 800px; padding: 0 15px; animation: fadeIn 0.4s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- HÁN TỰ GRID (Cấu trúc mới rõ ràng hơn) --- */
+        .hanzi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .hanzi-card {
+            background: var(--card-bg); border-radius: 15px; padding: 20px;
+            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            border-top: 4px solid var(--primary);
+        }
+        .char-display { font-family: var(--font-cn); font-size: 4rem; color: var(--hanzi-color); line-height: 1.2; }
+        .pinyin {
+            background: #e3f2fd; color: #1565c0; padding: 4px 15px; border-radius: 12px;
+            font-weight: 800; font-size: 1.1rem; display: inline-block; margin-bottom: 10px;
+        }
+        .meaning { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; color: var(--text-muted); }
+        
+        .hanzi-details {
+            background: #f5f5f5; border-radius: 10px; padding: 12px; margin-bottom: 10px;
+            text-align: left; font-size: 0.95rem; color: #424242; border-left: 4px solid var(--primary);
+        }
+        .hanzi-details p { margin-bottom: 5px; }
+        .hanzi-details p:last-child { margin-bottom: 0; }
+        .hanzi-details b { color: var(--primary-dark); }
+
+        .memo { font-size: 0.95rem; background: #fff8e1; padding: 12px; border-radius: 10px; color: #5d4037; text-align: left; border-left: 4px solid var(--secondary); line-height: 1.4;}
+
+        /* --- FLASHCARDS --- */
+        .vocab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .flashcard { width: 100%; height: 260px; perspective: 1000px; cursor: pointer; }
+        .flashcard-inner {
+            position: relative; width: 100%; height: 100%; text-align: center;
+            transition: transform 0.5s; transform-style: preserve-3d;
+        }
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            border-radius: 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px;
+        }
+        .flashcard-front { background: #fff; border: 2px solid var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .flashcard-front .word-cn { font-family: var(--font-cn); font-size: 3.5rem; color: var(--text-main); }
+        .flashcard-front .hint { position: absolute; bottom: 10px; font-size: 0.8rem; color: #aaa; }
+        .flashcard-back { background: #fffde7; transform: rotateY(180deg); border: 2px solid var(--secondary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .flashcard-back .py { font-size: 1.3rem; font-weight: bold; color: #1976d2; margin-bottom: 5px; }
+        .flashcard-back .mn { font-size: 1.2rem; font-weight: 800; color: #e65100; margin-bottom: 15px; }
+        .example-box { background: white; padding: 10px; border-radius: 10px; width: 100%; }
+        .ex-cn { font-family: var(--font-cn); font-size: 1.1rem; color: #333; margin-bottom: 2px; }
+        .ex-py { font-size: 0.9rem; color: #666; margin-bottom: 2px; }
+        .ex-vn { font-size: 0.9rem; color: var(--primary-dark); font-style: italic; }
+
+        /* --- GAME LUYỆN TẬP --- */
+        .game-container { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); text-align: center; }
+        .game-header { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 800; color: var(--primary-dark); font-size: 1rem; }
+        .progress-bar { width: 100%; height: 10px; background: #eee; border-radius: 5px; margin-bottom: 25px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), #ff9800); width: 0%; transition: width 0.3s; }
+        .question-text { font-size: 1.2rem; font-weight: 700; margin-bottom: 25px; color: var(--text-muted); line-height: 1.4; }
+        .question-highlight { font-family: var(--font-cn); font-size: 2.5rem; color: var(--hanzi-color); display: block; margin: 10px 0; font-weight: normal; }
+        
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: #f8f9fa; border: 2px solid #e0e0e0; padding: 15px; border-radius: 12px;
+            font-size: 1.1rem; font-weight: bold; color: #424242; cursor: pointer; transition: all 0.2s; font-family: var(--font-cn);
+        }
+        .option-btn:active { transform: scale(0.98); }
+        .option-btn.correct { background: #4CAF50; color: white; border-color: #388E3C; }
+        .option-btn.wrong { background: #F44336; color: white; border-color: #D32F2F; }
+
+        /* --- MODAL GIẢI THÍCH --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 400px; padding: 25px;
+            border-radius: 20px; text-align: center; animation: popIn 0.3s;
+        }
+        .modal-icon { font-size: 4rem; margin-bottom: 10px; line-height: 1; }
+        .modal-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 10px; }
+        .modal-title.t-correct { color: #4CAF50; }
+        .modal-title.t-wrong { color: #F44336; }
+        .modal-desc { font-size: 1.05rem; color: #555; margin-bottom: 20px; line-height: 1.5; }
+        .btn-next {
+            background: var(--primary); color: white; border: none; padding: 12px 30px;
+            border-radius: 25px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%;
+        }
+
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* --- KẾT QUẢ GAME --- */
+        .game-result { display: none; flex-direction: column; align-items: center; gap: 15px; }
+        .score-circle {
+            width: 100px; height: 100px; border-radius: 50%; border: 5px solid var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: 900; color: var(--primary-dark); margin: 10px 0;
+        }
+        .btn-play-again {
+            background: var(--secondary); color: white; border: none; padding: 12px 30px;
+            border-radius: 25px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- BRANDING -->
+    <div class="branding">© Bản Quyền Thuộc Về Nga Học HSK</div>
+
+    <header class="header">
+        <a href="index.html" class="btn-back">❮ Về Vườn</a>
+        <h2>Bài 2: 谢谢</h2>
+        <div class="header-spacer"></div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('hanzi')">✏️ Hán Tự</button>
+        <button class="tab-btn" onclick="switchTab('vocab')">🃏 Từ Vựng</button>
+        <button class="tab-btn" onclick="switchTab('game')">🎮 Luyện Tập</button>
+    </div>
+
+    <!-- PHẦN 1: HÁN TỰ -->
+    <section id="hanzi" class="section active">
+        <div class="hanzi-grid" id="hanzi-container"></div>
+    </section>
+
+    <!-- PHẦN 2: TỪ VỰNG -->
+    <section id="vocab" class="section">
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
+            * Chạm vào thẻ để lật xem mặt sau
+        </p>
+        <div class="vocab-grid" id="vocab-container"></div>
+    </section>
+
+    <!-- PHẦN 3: LUYỆN TẬP -->
+    <section id="game" class="section">
+        <div class="game-container" id="quiz-area">
+            <div class="game-header">
+                <span id="score-display">Điểm: 0</span>
+                <span id="question-count">Câu: 1/15</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <div id="question-text" class="question-text"></div>
+            <div class="options-grid" id="options-container"></div>
+        </div>
+
+        <div class="game-container game-result" id="result-area">
+            <div style="font-size: 5rem;" id="medal-emoji">🏆</div>
+            <div class="score-circle" id="final-score">150</div>
+            <h2 id="result-title">Tuyệt cú mèo!</h2>
+            <p id="result-desc" style="color: #555;">Bạn đã hoàn thành bài kiểm tra.</p>
+            <button class="btn-play-again" onclick="startGame()">↻ Chơi lại nhé</button>
+        </div>
+    </section>
+
+    <!-- MODAL GIẢI THÍCH -->
+    <div id="explanation-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="modal-icon" class="modal-icon">✅</div>
+            <h3 id="modal-title" class="modal-title">Đúng rồi!</h3>
+            <p id="modal-desc" class="modal-desc">Giải thích chi tiết.</p>
+            <button class="btn-next" onclick="nextQuestion()">Tiếp tục ❯</button>
+        </div>
+    </div>
+
+    <script>
+        // === HỆ THỐNG ÂM THANH (Web Audio API) ===
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playSound(type) {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+            
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                osc.start(now); osc.stop(now + 0.1);
+            } 
+            else if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.linearRampToValueAtTime(0, now + 0.4);
+                osc.start(now); osc.stop(now + 0.4);
+            }
+            else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.linearRampToValueAtTime(150, now + 0.3);
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.linearRampToValueAtTime(0, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            }
+            else if (type === 'win') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(440, now); 
+                osc.frequency.setValueAtTime(554.37, now + 0.15); 
+                osc.frequency.setValueAtTime(659.25, now + 0.3); 
+                osc.frequency.setValueAtTime(880, now + 0.45); 
+                gainNode.gain.setValueAtTime(0.05, now);
+                gainNode.gain.linearRampToValueAtTime(0, now + 0.8);
+                osc.start(now); osc.stop(now + 0.8);
+            }
+        }
+
+        document.body.addEventListener('click', initAudio, { once: true });
+
+        // === DỮ LIỆU BÀI 2 (Dựa trên hình ảnh) ===
+        const hanziData = [
+            { char: '谢', pinyin: 'xiè', meaning: 'cảm ơn, cáo từ', type: 'Hình thanh', radical: '讠 (lời nói), 射 (bắn - âm phù)', memo: 'Bộ lời nói (讠) kết hợp với âm phù (射) → Dùng lời nói để bày tỏ lòng biết ơn, cảm ơn.' },
+            { char: '客', pinyin: 'kè', meaning: 'khách, người đến chơi', type: 'Hình thanh', radical: '宀 (mái nhà), 各 (mỗi, từng)', memo: 'Dưới mái nhà (宀) có mỗi người (各) đang ghé thăm → Nghĩa là khách.' },
+            { char: '气', pinyin: 'qì', meaning: 'khí, hơi thở', type: 'Tượng hình', radical: '气 (hơi, khí)', memo: 'Chữ mô phỏng hình ảnh luồng hơi đang bốc lên ngùn ngụt, tượng trưng cho khí hoặc hơi thở.' },
+            { char: '再', pinyin: 'zài', meaning: 'lại, lần nữa', type: 'Hội ý', radical: '一 (một, trên), 冂 (vùng biên), 土 (đất)', memo: 'Một nét ngang trên, khung 冂 ở giữa và đất 土 dưới cùng → Hình ảnh sự việc chồng chất, lặp lại thêm lần nữa.' },
+            { char: '见', pinyin: 'jiàn', meaning: 'thấy, gặp', type: 'Tượng hình', radical: '见 (thấy, nhìn)', memo: 'Chữ nguyên là hình con mắt (目) ở trên mọc thêm đôi chân (儿) ở dưới → Đi bộ lại gần để nhìn, để gặp.' },
+            { char: '不', pinyin: 'bù', meaning: 'không (phủ định)', type: 'Chỉ sự', radical: '一 (một, nét ngang)', memo: 'Hình dạng ban đầu giống bông hoa chưa nở, biểu thị ý phủ định. Nét ngang làm bộ thủ.' }
+        ];
+
+        const vocabData = [
+            { word: '谢谢', pinyin: 'xièxie', meaning: 'Cảm ơn', ex_cn: '谢谢老师！', ex_py: 'Xièxie lǎoshī!', ex_vn: 'Cảm ơn thầy/cô!' },
+            { word: '不客气', pinyin: 'bù kèqi', meaning: 'Không có gì (Đáp lại lời cảm ơn)', ex_cn: '你不客气！', ex_py: 'Nǐ bù kèqi!', ex_vn: 'Không có gì đâu!' },
+            { word: '再见', pinyin: 'zàijiàn', meaning: 'Tạm biệt', ex_cn: '朋友，再见！', ex_py: 'Péngyou, zàijiàn!', ex_vn: 'Tạm biệt bạn!' }
+        ];
+
+        const quizQuestions = [
+            { q: 'Nghĩa của từ <span class="question-highlight">谢谢</span> là gì?', options: ['Tạm biệt', 'Cảm ơn', 'Không có gì', 'Xin lỗi'], answer: 1, exp: '谢谢 (xièxie) nghĩa là Cảm ơn. Có thể ghép với đại từ phía sau như 谢谢你 (Cảm ơn bạn).' },
+            { q: 'Khi ai đó nói "谢谢", bạn nên đáp lại bằng câu nào lịch sự nhất?', options: ['再见 (zàijiàn)', '没关系 (méi guānxi)', '对不起 (duìbuqǐ)', '不客气 (bù kèqi)'], answer: 3, exp: '不客气 (bù kèqi) nghĩa là "Đừng khách sáo / Không có gì", chuyên dùng để đáp lại lời cảm ơn.' },
+            { q: 'Từ nào dùng để nói "Tạm biệt" khi chia tay ai đó?', options: ['你好 (nǐ hǎo)', '谢谢 (xièxie)', '再见 (zàijiàn)', '不客气 (bù kèqi)'], answer: 2, exp: '再见 (zàijiàn) ghép bởi chữ 再 (lại) và 见 (gặp), nghĩa gốc là "Hẹn gặp lại".' },
+            { q: 'Pinyin của từ <span class="question-highlight">不客气</span> là gì?', options: ['bù gèqì', 'bú kèqi', 'bù kèqi', 'bú gèqi'], answer: 2, exp: 'Phiên âm chuẩn là bù kèqi (Mặc dù trong thực tế chữ 不 đọc biến điệu thành bú khi đứng trước thanh 4, nhưng pinyin gốc vẫn viết là bù).' },
+            { q: 'Tình huống: Cuối buổi học, bạn muốn chào tạm biệt thầy giáo. Bạn sẽ nói:', options: ['老师，再见！', '老师，谢谢！', '对不起，老师！', '老师，不客气！'], answer: 0, exp: '老师，再见！(Lǎoshī, zàijiàn!) có nghĩa là "Tạm biệt thầy/cô ạ!".' },
+            { q: 'Chữ <span class="question-highlight">谢</span> (Cảm ơn) có chứa bộ thủ nào liên quan đến giao tiếp?', options: ['Bộ Nữ (女)', 'Bộ Ngôn/Lời nói (讠)', 'Bộ Tâm (心)', 'Bộ Thủy (氵)'], answer: 1, exp: 'Chữ 谢 gồm bộ 讠(Lời nói) ghép với chữ 射(Bắn). Dùng lời nói để bày tỏ lòng biết ơn.' },
+            { q: 'Điền từ còn thiếu vào chỗ trống:<br><span class="question-highlight">不 _ 气</span>', options: ['客 (kè)', '对 (duì)', '起 (qǐ)', '见 (jiàn)'], answer: 0, exp: 'Cụm từ hoàn chỉnh là 不客气 (bù kèqi) - Không có gì.' },
+            { q: 'Chữ <span class="question-highlight">见</span> (Gặp, thấy) được tạo thành từ hình ảnh gì?', options: ['Cái cây bị cắt đôi', 'Mặt trời mọc trên núi', 'Con mắt mọc thêm đôi chân', 'Bàn tay cầm vũ khí'], answer: 2, exp: 'Chữ 见 (jiàn) ban đầu là hình con mắt (目) và đôi chân (儿) -> Đi bộ lại gần để nhìn, gặp.' },
+            { q: 'Pinyin của chữ <span class="question-highlight">再</span> (lại, lần nữa) là gì?', options: ['zài', 'cài', 'zhài', 'sài'], answer: 0, exp: 'Chữ 再 đọc là "zài" (Thanh 4).' },
+            { q: 'Tình huống: Khi nhận được một món quà từ bạn bè, bạn nên nói câu gì?', options: ['没关系', '对不起', '再见', '谢谢'], answer: 3, exp: 'Nhận quà thì phải nói 谢谢 (Cảm ơn) nhé!' },
+            { q: 'Chữ <span class="question-highlight">客</span> (Khách) có bộ thủ nào nằm ở trên cùng?', options: ['Bộ Miên (宀 - Mái nhà)', 'Bộ Môn (门 - Cửa)', 'Bộ Nhân (亻 - Người)', 'Bộ Khẩu (口 - Miệng)'], answer: 0, exp: 'Bộ 宀 (Miên - Mái nhà) nằm trên chữ 各 (Các). Dưới mái nhà có các người đến chơi là Khách.' },
+            { q: 'Câu "Cảm ơn sự giúp đỡ của bạn" tiếng Trung là gì?', options: ['谢谢老师', '你们再见', '谢谢朋友的帮助', '你不客气'], answer: 2, exp: '谢谢 (Cảm ơn) + 朋友的帮助 (Sự giúp đỡ của bạn bè).' },
+            { q: 'Chữ tượng hình mô phỏng luồng hơi bốc lên là chữ nào?', options: ['客', '再', '见', '气'], answer: 3, exp: 'Chữ 气 (qì) chính là hình ảnh những luồng hơi/khí đang bốc lên cao.' },
+            { q: 'Logic giao tiếp: <br>Họ nói "对不起", bạn đáp "没关系".<br>Họ nói "谢谢", bạn đáp gì?', options: ['不客气', '再见', '你好', '对不起'], answer: 0, exp: 'Cặp câu giao tiếp chuẩn: 谢谢 (Cảm ơn) đi đôi với 不客气 (Không có gì).' },
+            { q: 'Điền từ còn thiếu vào chỗ trống:<br><span class="question-highlight">再 _</span>', options: ['见 (jiàn)', '气 (qì)', '客 (kè)', '谢 (xiè)'], answer: 0, exp: 'Cụm từ hoàn chỉnh là 再见 (zàijiàn) - Tạm biệt.' }
+        ];
+
+        // === INIT & RENDER ===
+        function renderContent() {
+            document.getElementById('hanzi-container').innerHTML = hanziData.map(item => `
+                <div class="hanzi-card">
+                    <div class="char-display">${item.char}</div>
+                    <div class="pinyin">${item.pinyin}</div>
+                    <div class="meaning">${item.meaning}</div>
+                    <div class="hanzi-details">
+                        <p><b>🏷️ Cấu tạo:</b> ${item.type}</p>
+                        <p><b>🧩 Bộ thủ:</b> ${item.radical}</p>
+                    </div>
+                    <div class="memo">💡 <b>Mẹo nhớ:</b> ${item.memo}</div>
+                </div>`).join('');
+
+            document.getElementById('vocab-container').innerHTML = vocabData.map(item => `
+                <div class="flashcard" onclick="playSound('click'); this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <div class="word-cn">${item.word}</div>
+                            <div class="hint">👆 Chạm để lật thẻ</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="py">${item.pinyin}</div>
+                            <div class="mn">${item.meaning}</div>
+                            <div class="example-box">
+                                <div class="ex-cn">${item.ex_cn}</div>
+                                <div class="ex-py">${item.ex_py}</div>
+                                <div class="ex-vn">${item.ex_vn}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        // === TAB LOGIC ===
+        function switchTab(tabId) {
+            playSound('click');
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            if(tabId === 'game' && currentQuestionIndex === 0 && score === 0) startGame();
+        }
+
+        // === QUIZ LOGIC ===
+        let currentQuestionIndex = 0, score = 0, isAnswering = false;
+
+        function startGame() {
+            currentQuestionIndex = 0; score = 0;
+            document.getElementById('quiz-area').style.display = 'block';
+            document.getElementById('result-area').style.display = 'none';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswering = false;
+            const q = quizQuestions[currentQuestionIndex];
+            document.getElementById('score-display').innerText = `Điểm: ${score}`;
+            document.getElementById('question-count').innerText = `Câu: ${currentQuestionIndex + 1}/15`;
+            document.getElementById('progress').style.width = `${(currentQuestionIndex / 15) * 100}%`;
+            document.getElementById('question-text').innerHTML = q.q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn'; btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            if (isAnswering) return; 
+            isAnswering = true;
+
+            const q = quizQuestions[currentQuestionIndex];
+            const allBtns = document.querySelectorAll('.option-btn');
+            const isCorrect = (selectedIndex === q.answer);
+
+            if (isCorrect) {
+                btnElement.classList.add('correct');
+                score += 10;
+                playSound('correct');
+            } else {
+                btnElement.classList.add('wrong');
+                allBtns[q.answer].classList.add('correct');
+                playSound('wrong');
+            }
+            document.getElementById('score-display').innerText = `Điểm: ${score}`;
+
+            setTimeout(() => {
+                const modal = document.getElementById('explanation-modal');
+                const title = document.getElementById('modal-title');
+                const icon = document.getElementById('modal-icon');
+                
+                document.getElementById('modal-desc').innerText = q.exp;
+                modal.querySelector('.modal-content').className = `modal-content ${isCorrect ? 'correct' : 'wrong'}`;
+                
+                if (isCorrect) {
+                    icon.innerText = "✅"; title.innerText = "Tuyệt vời!";
+                    title.className = "modal-title t-correct";
+                } else {
+                    icon.innerText = "❌"; title.innerText = "Rất tiếc!";
+                    title.className = "modal-title t-wrong";
+                }
+                modal.style.display = 'flex';
+            }, 500); 
+        }
+
+        function nextQuestion() {
+            playSound('click');
+            document.getElementById('explanation-modal').style.display = 'none';
+            currentQuestionIndex++;
+            if (currentQuestionIndex < 15) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            playSound('win');
+            document.getElementById('quiz-area').style.display = 'none';
+            document.getElementById('result-area').style.display = 'flex';
+            document.getElementById('progress').style.width = '100%';
+            document.getElementById('final-score').innerText = score;
+            const title = document.getElementById('result-title');
+            
+            if (score === 150) {
+                title.innerText = "Hoàn hảo! 150/150"; title.style.color = "#2e7d32";
+            } else if (score >= 100) {
+                title.innerText = "Rất Tốt!"; title.style.color = "#f57c00";
+            } else {
+                title.innerText = "Cố lên nhé!"; title.style.color = "#d84315";
+            }
+        }
+
+        window.onload = renderContent;
+    </script>
+</body>
+</html>
+
+```

@@ -1,0 +1,874 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSK6 Bài 4 - 完美的胜利 | Nga Học HSK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+SC:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8bc34a; 
+            --primary-dark: #558b2f;
+            --secondary: #ffb74d; 
+            --secondary-dark: #f57c00;
+            --bg-color: #f1f8e9; 
+            --card-bg: #ffffff;
+            --text-main: #33691e;
+            --text-muted: #5d4037;
+            --hanzi-color: #689f38;
+            --font-cn: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; 
+            --border-light: #dcedc8;
+            --pinyin-color: #0284c7;
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            font-family: 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--border-light) 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; padding-bottom: 50px;
+        }
+
+        .branding {
+            width: 100%; background: #fff; text-align: center; padding: 6px 0;
+            font-size: 0.8rem; font-weight: 800; color: var(--primary-dark);
+            letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-transform: uppercase; z-index: 10;
+        }
+
+        .header {
+            width: 100%; padding: 15px 20px;
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(139, 195, 74, 0.3);
+            min-height: 60px;
+        }
+
+        .btn-back {
+            position: absolute; left: 15px;
+            background: rgba(255,255,255,0.2); color: white; text-decoration: none;
+            padding: 6px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.5); cursor: pointer;
+            white-space: nowrap; z-index: 2;
+        }
+
+        .header h2 { 
+            font-size: 1.15rem; text-align: center; 
+            font-family: var(--font-cn); font-weight: 900; 
+            line-height: 1.3; padding: 0 85px; 
+            word-wrap: break-word;
+        }
+        @media (min-width: 768px) { .header h2 { font-size: 1.4rem; } .btn-back { padding: 8px 12px; font-size: 0.9rem;} }
+
+        .tabs {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
+            margin: 20px auto; background: white; padding: 8px;
+            border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 96%; max-width: 1000px;
+        }
+
+        .tab-btn {
+            flex: 1 1 calc(25% - 10px);
+            border: none; background: transparent;
+            padding: 8px 4px; border-radius: 12px;
+            font-size: 0.85rem; font-weight: 800; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s;
+            text-align: center; white-space: nowrap; min-width: 80px;
+        }
+        @media (min-width: 640px) {
+            .tab-btn { flex: 1; font-size: 0.95rem; padding: 12px 8px; border-radius: 25px; }
+            .tabs { border-radius: 30px; gap: 8px; }
+        }
+
+        .tab-btn.active {
+            background: var(--secondary); color: white;
+            box-shadow: 0 4px 10px rgba(255, 183, 77, 0.4);
+        }
+
+        .btn-primary, .btn-action {
+            color: white; border: none; padding: 12px 20px;
+            border-radius: 15px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.2s;
+            display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-primary { background: var(--secondary); box-shadow: 0 4px 0 var(--secondary-dark); }
+        .btn-action { background: var(--primary); box-shadow: 0 4px 0 var(--primary-dark); }
+        @media (min-width: 768px) { 
+            .btn-primary, .btn-action { font-size: 1.15rem; padding: 14px 24px; } 
+        }
+        .btn-primary:active, .btn-action:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+
+        .card-container {
+            background: white; border-radius: 20px; padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06); width: 100%;
+            border: 2px solid var(--border-light);
+            animation: fadeIn 0.4s ease-out;
+        }
+        @media (min-width: 768px) { .card-container { padding: 30px; border-radius: 25px; } }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .chinese-text { font-family: var(--font-cn); font-weight: 700; letter-spacing: 0.5px; }
+
+        .flashcard-inner {
+            position: relative; width: 100%; height: 320px;
+            transition: transform 0.4s ease-in-out; transform-style: preserve-3d; cursor: pointer;
+        }
+        @media (min-width: 768px) { .flashcard-inner { height: 380px; } }
+        
+        .flashcard-inner.is-flipped { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; border-radius: 15px;
+            padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .flashcard-front { background-color: #fff; border: 2px solid var(--primary); }
+        .flashcard-back { background-color: var(--bg-color); transform: rotateY(180deg); border: 2px solid var(--secondary); }
+        
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 10px; }
+
+        .circle-stat {
+            position: relative; width: 100px; height: 100px; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 8px solid var(--bg-color); background: white;
+        }
+        @media (min-width: 768px) { .circle-stat { width: 120px; height: 120px; } }
+        .stat-green { border-color: var(--primary); color: var(--primary-dark); }
+        .stat-red { border-color: #ffcc80; color: #e65100; }
+
+        .text-content-area { font-size: 1.4rem; line-height: 2.4; }
+        @media (min-width: 768px) { .text-content-area { font-size: 1.6rem; line-height: 2.6; } }
+        ruby { ruby-position: over; margin: 0 2px; }
+        rt { font-size: 0.85rem; color: var(--pinyin-color); font-family: 'Nunito', sans-serif; font-weight: 800; transform: translateY(-2px); transition: opacity 0.2s; }
+        @media (min-width: 768px) { rt { font-size: 0.95rem; } }
+        .hide-pinyin rt { opacity: 0; visibility: hidden; }
+        .hide-pinyin .text-content-area { line-height: 1.9; }
+
+        input:checked ~ .toggle-bg { background-color: var(--primary); }
+        input:checked ~ .toggle-dot { transform: translateX(100%); }
+
+        .quiz-option {
+            width: 100%; text-align: left; padding: 12px 16px; margin-bottom: 10px;
+            border: 2px solid var(--border-light); border-radius: 12px; font-weight: 700; font-size: 1rem;
+            background: white; color: var(--text-main); cursor: pointer; transition: all 0.2s;
+        }
+        @media (min-width: 768px) { .quiz-option { padding: 14px 20px; font-size: 1.1rem; } }
+        .quiz-option:hover:not(:disabled) { border-color: var(--secondary); background: #fff3e0; }
+        .quiz-option:disabled { cursor: not-allowed; opacity: 0.9; }
+        .opt-correct { background: #dcedc8 !important; border-color: #7cb342 !important; color: #33691e !important; box-shadow: 0 0 10px rgba(139,195,74,0.3); }
+        .opt-wrong { background: #ffcc80 !important; border-color: #ff9800 !important; color: #e65100 !important; }
+
+        .feedback-box { animation: fadeIn 0.3s ease-out; }
+        .feedback-success { background: #f1f8e9; border: 2px solid var(--primary); }
+        .feedback-error { background: #fff3e0; border: 2px solid #ffb74d; }
+
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+        /* Custom Highlight cho từ vựng trong bài khóa */
+        .hl-word {
+            color: var(--secondary-dark);
+            border-bottom: 2px dashed var(--secondary);
+            cursor: pointer;
+            padding: 0 2px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .hl-word:hover { background-color: rgba(255, 183, 77, 0.1); }
+    </style>
+</head>
+<body>
+
+    <div class="branding">© Bản Quyền Thuộc Về Nga Học HSK</div>
+
+    <header class="header">
+        <a href="index.html" class="btn-back">❮ Về Vườn</a>
+        <h2>HSK6 Bài 4: 完美的胜利</h2>
+    </header>
+
+    <div class="tabs">
+        <button id="tab-vocab" class="tab-btn active" onclick="switchTab('vocab')">🎴 Từ Vựng</button>
+        <button id="tab-meaning" class="tab-btn" onclick="switchTab('meaning')">🎯 Giải Nghĩa</button>
+        <button id="tab-text" class="tab-btn" onclick="switchTab('text')">📖 Bài Khóa</button>
+        <button id="tab-quiz" class="tab-btn" onclick="switchTab('quiz')">❓ Đọc Hiểu</button>
+    </div>
+
+    <div class="w-full max-w-[1200px] px-3 sm:px-6 lg:px-10 mb-10 mx-auto">
+
+        <div id="section-vocab" class="w-full">
+            <div id="vocab-start" class="card-container text-center max-w-2xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold mb-3" style="color: var(--primary-dark);">Từ Vựng HSK6 Bài 4</h2>
+                <div class="text-6xl md:text-7xl mb-6 mt-4">🎴</div>
+                <p class="text-[var(--text-muted)] text-base md:text-lg font-bold mb-8">Bài này có 68 từ vựng. Hãy học qua flashcards thật kỹ nhé!</p>
+                <button onclick="startFlashcards()" class="btn-primary w-full">Bắt đầu học ❯</button>
+            </div>
+
+            <div id="flashcard-screen" class="card-container hidden max-w-3xl mx-auto">
+                <div class="flex justify-between items-center mb-4 border-b pb-3" style="border-color: var(--border-light);">
+                    <button onclick="resetVocabTab()" class="text-sm font-bold hover:underline" style="color: var(--secondary-dark);">❮ Quay Lại</button>
+                    <div class="font-bold px-4 py-2 rounded-full text-xs md:text-sm" style="background: var(--bg-color); color: var(--primary-dark);">
+                        Thẻ: <span id="card-index">1</span> / <span id="card-total">0</span>
+                    </div>
+                </div>
+                
+                <div class="mb-6 relative pointer-events-none" id="flashcard-wrapper">
+                    <div id="flashcard-inner" class="flashcard-inner pointer-events-auto" onclick="flipCard()">
+                        <div class="flashcard-front">
+                            <h2 id="card-hanzi" class="chinese-text text-6xl md:text-8xl leading-tight text-center px-2" style="color: var(--hanzi-color);"></h2>
+                            <p class="absolute bottom-4 text-sm font-bold text-gray-400">Chạm để lật thẻ 👆</p>
+                        </div>
+                        <div class="flashcard-back overflow-y-auto custom-scroll">
+                            <h3 id="card-pinyin" class="text-2xl md:text-4xl font-bold mb-2" style="color: var(--primary-dark);"></h3>
+                            <p id="card-mean" class="text-lg md:text-xl mb-4 font-bold border-b-2 pb-2 w-full text-center" style="color: var(--secondary-dark); border-color: var(--border-light);"></p>
+                            <div class="text-left w-full space-y-2 px-2">
+                                <p id="card-example-cn" class="chinese-text text-lg md:text-xl leading-relaxed text-gray-800"></p>
+                                <p id="card-example-py" class="text-sm md:text-base italic font-semibold" style="color: var(--text-muted);"></p>
+                                <p id="card-example-vi" class="text-sm md:text-base bg-white p-2 rounded border" style="color: var(--primary-dark); border-color: var(--border-light);"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <button id="btn-unlearned" onclick="markCard(false)" class="bg-orange-100 border-2 border-orange-300 text-orange-800 p-3 rounded-xl text-sm md:text-base font-bold hover:bg-orange-200 transition-colors">❌ Chưa thuộc</button>
+                    <button id="btn-learned" onclick="markCard(true)" class="bg-[#dcedc8] border-2 border-[#8bc34a] text-[#33691e] p-3 rounded-xl text-sm md:text-base font-bold hover:bg-[#c5e1a5] transition-colors">✅ Đã thuộc</button>
+                </div>
+            </div>
+
+            <div id="flashcard-stat-screen" class="card-container text-center hidden max-w-2xl mx-auto">
+                 <h2 class="text-2xl font-bold mb-6" style="color: var(--primary-dark);">Kết quả ghi nhớ</h2>
+                 <div class="flex justify-center gap-8 md:gap-12 items-center mb-8">
+                    <div class="circle-stat stat-green">
+                        <span id="stat-learned-percent" class="text-xl md:text-2xl font-bold">0%</span>
+                        <span class="text-[10px] md:text-xs uppercase font-bold mt-1">Thuộc</span>
+                    </div>
+                    <div class="circle-stat stat-red">
+                        <span id="stat-unlearned-percent" class="text-xl md:text-2xl font-bold">0%</span>
+                        <span class="text-[10px] md:text-xs uppercase font-bold mt-1">Cần ôn</span>
+                    </div>
+                 </div>
+                 <div class="text-left mb-6">
+                    <p class="font-bold text-sm md:text-base mb-2" style="color: var(--text-muted);">Danh sách cần lưu ý:</p>
+                    <div id="unlearned-list" class="max-h-48 overflow-y-auto custom-scroll bg-white rounded-xl border-2 p-3 space-y-2" style="border-color: #ffb74d;"></div>
+                 </div>
+                 <div class="grid grid-cols-1 gap-3">
+                     <button id="btn-relearn" onclick="relearnUnlearned()" class="btn-primary" style="background: #f57c00; box-shadow: 0 4px 0 #e65100;">🔄 Học lại từ chưa thuộc</button>
+                     <button onclick="switchTab('meaning')" class="btn-action">🎯 Chuyển sang Giải Nghĩa ❯</button>
+                 </div>
+            </div>
+        </div>
+
+        <div id="section-meaning" class="w-full hidden">
+            <div id="meaning-start" class="card-container text-center max-w-2xl mx-auto">
+                <div class="text-6xl md:text-7xl mb-4">🎯</div>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4" style="color: var(--primary-dark);">Thử Thách Giải Nghĩa Từ</h2>
+                <p class="mb-6 font-semibold text-sm md:text-base text-[var(--text-muted)]">
+                    HSK6 yêu cầu bạn phải hiểu nghĩa tiếng Trung của từ vựng. Chọn đúng lời giải thích (đơn giản, dễ hiểu) cho từng từ nhé! (Chú ý: KHÔNG có Pinyin gợi ý)
+                </p>
+                <button onclick="startMeaningGame()" class="btn-primary w-full">Bắt Đầu Ngay ❯</button>
+            </div>
+
+            <div id="meaning-screen" class="card-container hidden relative max-w-3xl mx-auto">
+                <div class="flex justify-between items-center mb-5 border-b pb-2" style="border-color: var(--border-light);">
+                    <span class="font-bold text-sm md:text-base" style="color: var(--secondary-dark);">Điểm: <span id="meaning-score" class="text-xl">0</span></span>
+                    <div class="font-bold px-3 py-1 rounded-full text-xs md:text-sm" style="background: var(--bg-color); color: var(--primary-dark);">
+                        Câu: <span id="meaning-current">1</span> / 68
+                    </div>
+                </div>
+
+                <div class="text-center mb-6">
+                    <p class="text-sm font-bold text-gray-500 uppercase mb-2">Tìm giải nghĩa đúng cho từ:</p>
+                    <h3 id="meaning-word" class="chinese-text text-5xl md:text-6xl font-black mb-2" style="color: var(--primary-dark);"></h3>
+                </div>
+
+                <div id="meaning-options" class="flex flex-col mb-4 gap-3"></div>
+
+                <div id="meaning-inline-feedback" class="hidden feedback-box p-4 rounded-xl mb-5 text-center">
+                    <div id="meaning-fb-title" class="font-bold text-xl mb-2"></div>
+                    <div id="meaning-fb-viet" class="text-gray-700 font-bold text-sm md:text-base"></div>
+                </div>
+
+                <button id="btn-meaning-next" onclick="nextMeaningLevel()" class="btn-action w-full hidden">Tiếp tục ❯</button>
+            </div>
+
+            <div id="meaning-result" class="card-container text-center hidden max-w-2xl mx-auto">
+                <div class="text-6xl md:text-7xl mb-4 mt-2">🎓</div>
+                <h2 class="text-2xl md:text-3xl font-bold mb-3" style="color: var(--primary-dark);">Hoàn Thành!</h2>
+                <p class="text-base md:text-lg font-bold text-gray-600 mb-2">Điểm giải nghĩa của bạn:</p>
+                <div class="text-5xl font-black mb-6" style="color: var(--secondary-dark);"><span id="meaning-final-score"></span>/68</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button onclick="startMeaningGame()" class="btn-primary">🔄 Chơi lại</button>
+                    <button onclick="switchTab('text')" class="btn-action" style="background: var(--primary); box-shadow: 0 4px 0 var(--primary-dark);">📖 Vào Bài Khóa ❯</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="section-text" class="w-full hidden">
+            <div class="card-container max-w-4xl mx-auto" id="text-wrapper">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-2 chinese-text" style="color: var(--primary-dark);">完美的胜利</h2>
+                <p class="text-center text-sm font-bold text-orange-500 mb-4">(Chạm vào các từ được gạch chân để xem nghĩa)</p>
+                
+                <div class="sticky top-0 z-10 bg-white pb-3 pt-2 border-b-2 mb-4 flex flex-col gap-3" style="border-color: var(--primary);">
+                    <audio id="lesson-audio" controls class="w-full h-11 outline-none rounded-lg" src="https://raw.githubusercontent.com/nga-hoc-hsk/game-hoc-tieng-trung/main/audio/hsk6/lesson4/04-1.mp3"></audio>
+                    <div class="flex justify-end w-full px-2">
+                        <label class="flex items-center cursor-pointer select-none">
+                            <div class="relative">
+                                <input type="checkbox" id="toggle-pinyin" class="sr-only" checked onchange="togglePinyin()">
+                                <div class="block bg-gray-300 w-12 h-7 rounded-full toggle-bg transition"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition transform toggle-dot"></div>
+                            </div>
+                            <div class="ml-2 font-bold text-sm text-[var(--primary-dark)]">Hiện Pinyin</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="chinese-text text-gray-800 custom-scroll max-h-[60vh] overflow-y-auto pb-6 px-1 md:px-4 text-content-area transition-all duration-300" id="sync-container"></div>
+                
+                <div class="mt-6 border-t-2 pt-4 flex justify-center" style="border-color: var(--border-light);">
+                    <button onclick="switchTab('quiz')" class="btn-action w-full md:w-auto">❓ Làm bài Đọc hiểu ❯</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="section-quiz" class="w-full hidden">
+            <div id="quiz-start" class="card-container text-center max-w-2xl mx-auto">
+                <div class="text-6xl md:text-7xl mb-4">📜</div>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4" style="color: var(--primary-dark);">Thử Thách Đọc Hiểu</h2>
+                <p class="mb-6 font-semibold text-sm md:text-base text-[var(--text-muted)]">20 câu hỏi bám sát nội dung bài khóa để kiểm tra khả năng đọc hiểu chi tiết của bạn.</p>
+                <button onclick="startQuiz()" class="btn-primary w-full">Bắt đầu ngay ❯</button>
+            </div>
+
+            <div id="quiz-screen" class="card-container hidden relative max-w-3xl mx-auto">
+                <div class="flex justify-between items-center mb-5 border-b pb-2" style="border-color: var(--border-light);">
+                    <span class="font-bold text-sm md:text-base" style="color: var(--secondary-dark);">Điểm: <span id="quiz-score" class="text-xl">0</span></span>
+                    <div class="font-bold px-3 py-1 rounded-full text-xs md:text-sm" style="background: var(--bg-color); color: var(--primary-dark);">
+                        Câu: <span id="quiz-current">1</span> / 20
+                    </div>
+                </div>
+
+                <h3 id="quiz-question" class="chinese-text text-lg md:text-xl font-bold mb-5 text-gray-800 leading-relaxed"></h3>
+                <div id="quiz-options" class="flex flex-col mb-4 gap-2"></div>
+
+                <div id="quiz-inline-feedback" class="hidden feedback-box p-4 rounded-xl mb-5">
+                    <div id="quiz-fb-title" class="font-bold text-lg mb-2"></div>
+                    <div id="quiz-fb-exp" class="text-gray-700 font-semibold text-sm md:text-base leading-relaxed"></div>
+                </div>
+
+                <button id="btn-next-quiz" onclick="nextQuiz()" class="btn-action w-full hidden">Câu tiếp theo ❯</button>
+            </div>
+
+            <div id="quiz-result" class="card-container text-center hidden max-w-2xl mx-auto">
+                <div id="result-emoji" class="text-6xl md:text-7xl mb-4 mt-2">🏆</div>
+                <h2 class="text-2xl font-bold mb-2" style="color: var(--primary-dark);">Hoàn Thành!</h2>
+                <p class="text-lg font-bold text-gray-600 mb-2">Điểm của bạn:</p>
+                <div class="text-5xl font-black mb-5" style="color: var(--secondary-dark);"><span id="final-score"></span>/20</div>
+                <p id="result-evaluation" class="mb-6 text-sm md:text-base font-bold p-4 rounded-xl border-2 text-[var(--primary-dark)] bg-white leading-relaxed" style="border-color: var(--primary);"></p>
+                <button onclick="startQuiz()" class="btn-primary w-full max-w-xs">🔄 Làm lại</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="vocab-popup" class="fixed inset-0 bg-black bg-opacity-40 z-[100] flex justify-center items-center hidden backdrop-blur-sm transition-opacity">
+        <div class="bg-white p-6 rounded-3xl max-w-sm w-[90%] text-center shadow-2xl transform transition-transform duration-300 border-4 border-[var(--primary)]">
+            <h3 id="vp-word" class="chinese-text text-4xl font-black mb-1" style="color: var(--primary-dark);"></h3>
+            <p id="vp-pinyin" class="text-lg text-[var(--pinyin-color)] font-bold mb-3"></p>
+            <div class="bg-[var(--bg-color)] p-3 rounded-xl mb-6 border border-[var(--border-light)]">
+                <p id="vp-meaning" class="text-[var(--text-main)] font-bold text-lg"></p>
+            </div>
+            <button onclick="closeVocabPopup()" class="btn-primary w-full py-3 rounded-xl shadow-none">Đã hiểu 💖</button>
+        </div>
+    </div>
+
+    <audio id="audio-click" src="https://cdn.pixabay.com/audio/2022/10/16/audio_9302e1c981.mp3"></audio> 
+    <audio id="audio-correct" src="https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1539c.mp3"></audio> 
+    <audio id="audio-wrong" src="https://cdn.pixabay.com/audio/2022/03/24/audio_eb324aab56.mp3"></audio> 
+    <audio id="audio-win" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3"></audio> 
+
+    <script>
+        // ================= GLOBAL =================
+        function playAudio(audioId) {
+            const audio = document.getElementById(audioId);
+            if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+        }
+
+        function switchTab(tabId) {
+            playAudio('audio-click');
+            ['vocab', 'meaning', 'text', 'quiz'].forEach(id => {
+                document.getElementById('section-' + id).classList.add('hidden');
+                document.getElementById('tab-' + id).classList.remove('active');
+            });
+            document.getElementById('section-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            const lessonAudio = document.getElementById('lesson-audio');
+            if(lessonAudio && tabId !== 'text') lessonAudio.pause();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if(tabId === 'vocab') resetVocabTab();
+        }
+
+        // ================= DỮ LIỆU TỪ VỰNG =================
+        const hsk6L4Vocab = [
+            { h: "厌倦", p: "yànjuàn", m: "(đgt) Chán ngán", ex: "他厌倦了这种生活。", exp: "Tā yànjuàn le zhè zhǒng shēnghuó.", exv: "Anh ấy chán ngán cuộc sống này rồi.", cn: "对某种活动失去兴趣，不愿继续" },
+            { h: "厌恶", p: "yànwù", m: "(đgt) Chán ghét", ex: "我很厌恶这种行为。", exp: "Wǒ hěn yànwù zhè zhǒng xíngwéi.", exv: "Tôi rất chán ghét hành vi này.", cn: "极其反感，讨厌" },
+            { h: "倘若", p: "tǎngruò", m: "(liên) Nếu như", ex: "倘若明天下雨，我们就不去了。", exp: "Tǎngruò míngtiān xiàyǔ, wǒmen jiù bú qù le.", exv: "Nếu như ngày mai trời mưa, chúng ta sẽ không đi nữa.", cn: "假如，如果" },
+            { h: "发觉", p: "fājué", m: "(đgt) Phát hiện", ex: "我发觉他今天有点不对劲。", exp: "Wǒ fājué tā jīntiān yǒudiǎn bú duìjìn.", exv: "Tôi phát hiện anh ấy hôm nay có chút không bình thường.", cn: "开始知道（隐藏的或以前没注意到的事）" },
+            { h: "承诺", p: "chéngnuò", m: "(đgt/dt) Hứa, đồng ý", ex: "他兑现了自己的承诺。", exp: "Tā duìxiàn le zìjǐ de chéngnuò.", exv: "Anh ấy đã thực hiện lời hứa của mình.", cn: "答应照办" },
+            { h: "草率", p: "cǎoshuài", m: "(tt) Qua loa, cẩu thả", ex: "做决定不能太草率。", exp: "Zuò juédìng bùnéng tài cǎoshuài.", exv: "Ra quyết định không thể quá qua loa.", cn: "做事不认真，敷衍了事" },
+            { h: "对抗", p: "duìkàng", m: "(đgt) Đối chọi, chống lại", ex: "两国之间发生了激烈的对抗。", exp: "Liǎng guó zhī jiān fāshēng le jīliè de duìkàng.", exv: "Giữa hai nước đã xảy ra sự đối chọi gay gắt.", cn: "对立起来相持不下" },
+            { h: "尝试", p: "chángshì", m: "(đgt) Thử", ex: "我决定尝试一下新方法。", exp: "Wǒ juédìng chángshì yíxià xīn fāngfǎ.", exv: "Tôi quyết định thử một chút phương pháp mới.", cn: "试一试" },
+            { h: "盲目", p: "mángmù", m: "(tt) Mù quáng", ex: "我们不能盲目跟风。", exp: "Wǒmen bùnéng mángmù gēnfēng.", exv: "Chúng ta không thể chạy theo phong trào một cách mù quáng.", cn: "比喻认识不清，没有明确目标" },
+            { h: "乘", p: "chéng", m: "(giới) Thừa cơ, nhân (dịp)", ex: "乘大象不注意。", exp: "Chéng dàxiàng bú zhùyì.", exv: "Nhân lúc voi không chú ý.", cn: "利用（机会），趁着" },
+            { h: "喘气", p: "chuǎn qì", m: "(đgt) Thở dốc, thở hổn hển", ex: "他跑得直喘气。", exp: "Tā pǎo de zhí chuǎn qì.", exv: "Anh ấy chạy đến mức thở hổn hển.", cn: "急促地呼吸" },
+            { h: "饶恕", p: "ráoshù", m: "(đgt) Tha thứ, bỏ qua", ex: "请饶恕我的过错。", exp: "Qǐng ráoshù wǒ de guòcuò.", exv: "Xin hãy tha thứ cho lỗi lầm của tôi.", cn: "免于责罚，原谅" },
+            { h: "强迫", p: "qiǎngpò", m: "(đgt) Bắt buộc, ép buộc", ex: "不要强迫别人做不喜欢的事。", exp: "Búyào qiǎngpò biérén zuò bù xǐhuan de shì.", exv: "Đừng ép buộc người khác làm việc họ không thích.", cn: "施加压力使别人服从" },
+            { h: "实施", p: "shíshī", m: "(đgt) Thực hiện, thi thi", ex: "计划已经开始实施。", exp: "Jìhuà yǐjīng kāishǐ shíshī.", exv: "Kế hoạch đã bắt đầu được thực thi.", cn: "用实际行动去落实" },
+            { h: "不料", p: "búliào", m: "(liên) Không ngờ, chẳng dè", ex: "本以为会顺利，不料出了意外。", exp: "Běn yǐwéi huì shùnlì, búliào chū le yìwài.", exv: "Vốn tưởng sẽ thuận lợi, không ngờ lại xảy ra sự cố.", cn: "没想到，没有预料到" },
+            { h: "猛烈", p: "měngliè", m: "(tt) Mãnh liệt, mạnh", ex: "风势非常猛烈。", exp: "Fēngshì fēicháng měngliè.", exv: "Thế gió vô cùng mãnh liệt.", cn: "气势大，力量大" },
+            { h: "子弹", p: "zǐdàn", m: "(dt) Đạn", ex: "枪里没有子弹了。", exp: "Qiāng lǐ méiyǒu zǐdàn le.", exv: "Trong súng không còn đạn nữa.", cn: "步枪、手枪等发射的弹药" },
+            { h: "蔑视", p: "mièshì", m: "(đgt) Miệt thị, coi thường", ex: "他用蔑视的眼光看着对手。", exp: "Tā yòng mièshì de yǎnguāng kàn zhe duìshǒu.", exv: "Anh ta dùng ánh mắt coi thường nhìn đối thủ.", cn: "轻视，小看" },
+            { h: "眼光", p: "yǎnguāng", m: "(dt) Ánh mắt", ex: "大家的眼光都集中在他身上。", exp: "Dàjiā de yǎnguāng dōu jízhōng zài tā shēnshang.", exv: "Ánh mắt của mọi người đều tập trung vào anh ấy.", cn: "视线，观察事物的能力" },
+            { h: "盯", p: "dīng", m: "(đgt) Nhìn chằm chằm", ex: "他紧紧盯着屏幕。", exp: "Tā jǐnjǐn dīng zhe píngmù.", exv: "Anh ấy nhìn chằm chằm vào màn hình.", cn: "把视线集中在一点上，注视" },
+            { h: "愤怒", p: "fènnù", m: "(tt) Phẫn nộ, tức giận", ex: "听到这个消息，他感到十分愤怒。", exp: "Tīngdào zhè gè xiāoxi, tā gǎndào shífēn fènnù.", exv: "Nghe thấy tin này, anh ấy cảm thấy vô cùng tức giận.", cn: "非常生气，气愤" },
+            { h: "愚蠢", p: "yúchǔn", m: "(tt) Ngu đần, ngu xuẩn", ex: "这是一个愚蠢的错误。", exp: "Zhè shì yí gè yúchǔn de cuòwù.", exv: "Đây là một sai lầm ngu ngốc.", cn: "笨，没有智慧" },
+            { h: "家伙", p: "jiāhuo", m: "(dt) Thằng, gã, thằng cha", ex: "你这个愚蠢的家伙。", exp: "Nǐ zhè gè yúchǔn de jiāhuo.", exv: "Cái gã ngu ngốc nhà ngươi.", cn: "指人（含轻视或玩笑的语气）" },
+            { h: "可恶", p: "kěwù", m: "(tt) Đáng ghét", ex: "这种骗人的行为太可恶了。", exp: "Zhè zhǒng piàn rén de xíngwéi tài kěwù le.", exv: "Hành vi lừa đảo này quá đáng ghét.", cn: "令人讨厌，招人痛恨" },
+            { h: "耍", p: "shuǎ", m: "(đgt) Giở trò, đùa giỡn", ex: "不要在这里耍小聪明。", exp: "Búyào zài zhèlǐ shuǎ xiǎo cōngmíng.", exv: "Đừng có giở trò khôn vặt ở đây.", cn: "玩弄，施展（手段）" },
+            { h: "流氓", p: "liúmáng", m: "(dt) Lưu manh", ex: "他被几个流氓打伤了。", exp: "Tā bèi jǐ gè liúmáng dǎ shāng le.", exv: "Anh ta bị mấy tên lưu manh đánh bị thương.", cn: "指不务正业、经常寻衅闹事的人" },
+            { h: "扁", p: "biǎn", m: "(tt) Dẹt, bẹp", ex: "把这个盒子压扁。", exp: "Bǎ zhè gè hézi yā biǎn.", exv: "Ép bẹp cái hộp này đi.", cn: "物体平而薄" },
+            { h: "夕阳", p: "xīyáng", m: "(dt) Mặt trời chiều", ex: "夕阳无限好，只是近黄昏。", exp: "Xīyáng wúxiàn hǎo, zhǐ shì jìn huánghūn.", exv: "Mặt trời chiều rực rỡ vô vàn, chỉ tiếc hoàng hôn đã kề cận.", cn: "傍晚的太阳" },
+            { h: "留神", p: "liú shén", m: "(đgt) Chú ý, coi chừng", ex: "走路要留神。", exp: "Zǒulù yào liú shén.", exv: "Đi đường phải chú ý.", cn: "注意，小心" },
+            { h: "打猎", p: "dǎ liè", m: "(đgt) Đi săn", ex: "他们去森林里打猎了。", exp: "Tāmen qù sēnlín lǐ dǎ liè le.", exv: "Họ đi vào rừng săn bắn rồi.", cn: "在野外捕捉野生动物" },
+            { h: "不顾", p: "búgù", m: "(đgt) Bất chấp, không đếm xỉa tới", ex: "他不顾一切地冲了出去。", exp: "Tā búgù yíqiè de chōng le chūqù.", exv: "Anh ấy bất chấp tất cả lao ra ngoài.", cn: "不照顾，不考虑" },
+            { h: "挣扎", p: "zhèngzhá", m: "(đgt) Vùng vẫy", ex: "猎物在网里拼命挣扎。", exp: "Lièwù zài wǎng lǐ pīnmìng zhèngzhá.", exv: "Con mồi vùng vẫy liều mạng trong lưới.", cn: "尽力支撑或摆脱" },
+            { h: "窜", p: "cuàn", m: "(đgt) Tháo chạy, chạy trốn", ex: "老鼠四处乱窜。", exp: "Lǎoshǔ sìchù luàn cuàn.", exv: "Chuột chạy trốn toán loạn khắp nơi.", cn: "逃跑，乱跑" },
+            { h: "摆脱", p: "bǎituō", m: "(đgt) Thoát khỏi", ex: "他终于摆脱了困境。", exp: "Tā zhōngyú bǎituō le kùnjìng.", exv: "Cuối cùng anh ấy cũng thoát khỏi tình cảnh khó khăn.", cn: "脱离（牵制、束缚、困难等）" },
+            { h: "死亡", p: "sǐwáng", m: "(đgt) Chết, tử vong", ex: "意外事故导致两人死亡。", exp: "Yìwài shìgù dǎozhì liǎng rén sǐwáng.", exv: "Sự cố ngoài ý muốn khiến hai người tử vong.", cn: "丧失生命" },
+            { h: "恰巧", p: "qiàqiǎo", m: "(phó) Đúng lúc, vừa vặn", ex: "我正要找他，恰巧他来了。", exp: "Wǒ zhèng yào zhǎo tā, qiàqiǎo tā lái le.", exv: "Tôi đang định tìm anh ấy, vừa vặn anh ấy đến.", cn: "凑巧，正好" },
+            { h: "毫无", p: "háo wú", m: "(phó) Không một chút", ex: "他对这件事毫无兴趣。", exp: "Tā duì zhè jiàn shì háo wú xìngqù.", exv: "Anh ấy không có một chút hứng thú nào với chuyện này.", cn: "一点儿也没有" },
+            { h: "抵抗", p: "dǐkàng", m: "(đgt) Chống cự", ex: "毫无抵抗能力。", exp: "Háo wú dǐkàng nénglì.", exv: "Không có chút năng lực chống cự nào.", cn: "用力量制止对方的进攻" },
+            { h: "部位", p: "bùwèi", m: "(dt) Bộ phận (cơ thể)", ex: "身体的重要部位。", exp: "Shēntǐ de zhòngyào bùwèi.", exv: "Bộ phận quan trọng của cơ thể.", cn: "面目或人体的某一部分" },
+            { h: "悲惨", p: "bēicǎn", m: "(tt) Bi thảm, thảm thương", ex: "那个故事的结局很悲惨。", exp: "Nà gè gùshi de jiéjú hěn bēicǎn.", exv: "Kết cục của câu chuyện đó rất bi thảm.", cn: "处境或遭遇极其痛苦" },
+            { h: "未免", p: "wèimiǎn", m: "(phó) Có hơi, có phần", ex: "你这样做未免太过分了。", exp: "Nǐ zhèyàng zuò wèimiǎn tài guòfèn le.", exv: "Cậu làm như vậy có phần hơi quá đáng rồi.", cn: "表示觉得前面所说的情况不合适" },
+            { h: "残忍", p: "cánrěn", m: "(tt) Tàn nhẫn", ex: "这是一种残忍的行为。", exp: "Zhè shì yì zhǒng cánrěn de xíngwéi.", exv: "Đây là một hành vi tàn nhẫn.", cn: "狠毒，没有同情心" },
+            { h: "良心", p: "liángxīn", m: "(dt) Lương tâm", ex: "良心告诉它应该救大象。", exp: "Liángxīn gàosu tā yīnggāi jiù dàxiàng.", exv: "Lương tâm bảo nó nên cứu voi con.", cn: "内心对是非、善恶的正确认识" },
+            { h: "锋利", p: "fēnglì", m: "(tt) Sắc bén", ex: "这把刀非常锋利。", exp: "Zhè bǎ dāo fēicháng fēnglì.", exv: "Con dao này vô cùng sắc bén.", cn: "（工具、武器等）头尖或刃薄，容易刺入或切入物体" },
+            { h: "缠绕", p: "chánrào", m: "(đgt) Quấn quanh", ex: "藤蔓缠绕在树干上。", exp: "Téngmàn chánrào zài shùgàn shàng.", exv: "Dây leo quấn quanh thân cây.", cn: "条状物盘绕在别的物体上" },
+            { h: "耗费", p: "hàofèi", m: "(đgt) Hao tốn", ex: "耗费了大量的时间和精力。", exp: "Hàofèi le dàliàng de shíjiān hé jīnglì.", exv: "Hao tốn rất nhiều thời gian và công sức.", cn: "消耗，花费" },
+            { h: "缺口", p: "quēkǒu", m: "(dt) Lỗ hổng, chỗ hở", ex: "巨网出现了一个大缺口。", exp: "Jù wǎng chūxiàn le yí gè dà quēkǒu.", exv: "Tấm lưới khổng lồ xuất hiện một lỗ hổng lớn.", cn: "物体边缘缺损的地方" },
+            { h: "举世瞩目", p: "jǔshì zhǔmù", m: "(thành ngữ) Thu hút sự chú ý của cả thế giới", ex: "取得了举世瞩目的成就。", exp: "Qǔdé le jǔshì zhǔmù de chéngjiù.", exv: "Giành được thành tựu khiến cả thế giới chú mục.", cn: "全世界的人都注视着" },
+            { h: "俯视", p: "fǔshì", m: "(đgt) Nhìn xuống (Từ mở rộng)", ex: "从山顶俯视山谷。", exp: "Cóng shāndǐng fǔshì shāngǔ.", exv: "Từ trên đỉnh núi nhìn xuống thung lũng.", cn: "从高处往下看" },
+            { h: "偿还", p: "chánghuán", m: "(đgt) Bồi thường, hoàn trả", ex: "他终于偿还了所有的债务。", exp: "Tā zhōngyú chánghuán le suǒyǒu de zhàiwù.", exv: "Anh ta cuối cùng cũng hoàn trả hết mọi nợ nần.", cn: "归还所欠的债物" },
+            { h: "敌视", p: "díshì", m: "(đgt) Coi như kẻ thù, thù địch", ex: "不要敌视有不同意见的人。", exp: "Búyào díshì yǒu bùtóng yìjiàn de rén.", exv: "Đừng thù địch với những người có ý kiến khác biệt.", cn: "当做敌人看待" },
+            { h: "孤立", p: "gūlì", m: "(tt/đgt) Đơn độc, bị cô lập", ex: "他因为脾气不好，被大家孤立了。", exp: "Tā yīnwèi píqi bù hǎo, bèi dàjiā gūlì le.", exv: "Vì tính khí không tốt, anh ta bị mọi người cô lập.", cn: "得不到同情或援助" },
+            { h: "过奖", p: "guòjiǎng", m: "(đgt) Quá khen", ex: "您过奖了，我还差得远呢。", exp: "Nín guòjiǎng le, wǒ hái chà de yuǎn ne.", exv: "Ngài quá khen rồi, tôi còn kém xa lắm.", cn: "过分夸奖（客套话）" },
+            { h: "捍卫", p: "hànwèi", m: "(đgt) Bảo vệ, canh giữ", ex: "我们要捍卫祖国的尊严。", exp: "Wǒmen yào hànwèi zǔguó de zūnyán.", exv: "Chúng ta phải bảo vệ tôn nghiêm của Tổ quốc.", cn: "保护，防卫" },
+            { h: "草案", p: "cǎo'àn", m: "(dt) Bản thảo, dự thảo", ex: "这是新规定的草案。", exp: "Zhè shì xīn guīdìng de cǎo'àn.", exv: "Đây là dự thảo của quy định mới.", cn: "初步定出的计划或方案" },
+            { h: "畅通", p: "chàngtōng", m: "(tt) Thông suốt", ex: "道路畅通无阻。", exp: "Dàolù chàngtōng wú zǔ.", exv: "Đường sá thông suốt không bị cản trở.", cn: "毫无阻碍地通行或通过" },
+            { h: "巩固", p: "gǒnggù", m: "(đgt) Củng cố", ex: "我们需要巩固基础知识。", exp: "Wǒmen xūyào gǒnggù jīchǔ zhīshi.", exv: "Chúng ta cần củng cố kiến thức nền tảng.", cn: "使坚固，使力量更强" },
+            { h: "雇佣", p: "gùyōng", m: "(đgt) Thuê mướn", ex: "公司雇佣了五十名新员工。", exp: "Gōngsī gùyōng le wǔshí míng xīn yuángōng.", exv: "Công ty đã thuê 50 nhân viên mới.", cn: "出钱让人为自己做事" },
+            { h: "解雇", p: "jiěgù", m: "(đgt) Sa thải, cho thôi việc", ex: "他因为工作失误被解雇了。", exp: "Tā yīnwèi gōngzuò shīwù bèi jiěgù le.", exv: "Anh ấy bị sa thải do sai sót trong công việc.", cn: "停止雇佣" },
+            { h: "表态", p: "biǎotài", m: "(đgt) Bày tỏ thái độ", ex: "这件事你需要明确表态。", exp: "Zhè jiàn shì nǐ xūyào míngquè biǎotài.", exv: "Chuyện này bạn cần bày tỏ thái độ rõ ràng.", cn: "表示自己的态度或意见" },
+            { h: "磅", p: "bàng", m: "(lượng) Một cân Anh (pound)", ex: "一磅黄油。", exp: "Yì bàng huángyóu.", exv: "Một cân bơ (pound).", cn: "重量单位，约等于0.45公斤" },
+            { h: "筐", p: "kuāng", m: "(lượng) Một giỏ, một sọt", ex: "一筐蔬菜。", exp: "Yì kuāng shūcài.", exv: "Một sọt rau.", cn: "用竹子或柳条等编成的盛东西的器具" },
+            { h: "艘", p: "sōu", m: "(lượng) Chiếc (tàu, thuyền lớn)", ex: "一艘轮船。", exp: "Yì sōu lúnchuán.", exv: "Một chiếc tàu thủy.", cn: "用于船只的量词" },
+            { h: "丸", p: "wán", m: "(lượng) Viên (thuốc)", ex: "一丸药。", exp: "Yì wán yào.", exv: "Một viên thuốc.", cn: "小而圆的东西（多指药）" },
+            { h: "宠物", p: "chǒngwù", m: "(dt) Thú cưng", ex: "很多人喜欢养宠物。", exp: "Hěn duō rén xǐhuan yǎng chǒngwù.", exv: "Rất nhiều người thích nuôi thú cưng.", cn: "家里养的小动物" },
+            { h: "弱小", p: "ruòxiǎo", m: "(tt) Nhỏ yếu", ex: "它是那么弱小。", exp: "Tā shì nàme ruòxiǎo.", exv: "Nó nhỏ bé và yếu ớt như thế.", cn: "力量弱，体格小" },
+            { h: "悲痛", p: "bēitòng", m: "(tt) Đau buồn", ex: "听到这消息，他感到十分悲痛。", exp: "Tīngdào zhè xiāoxi, tā gǎndào shífēn bēitòng.", exv: "Nghe tin này, anh ấy cảm thấy vô cùng đau buồn.", cn: "极度伤心" },
+            { h: "费时", p: "fèi shí", m: "(đgt) Tốn thời gian", ex: "这个工作很费时。", exp: "Zhè gè gōngzuò hěn fèi shí.", exv: "Công việc này rất tốn thời gian.", cn: "耗费时间" }
+        ];
+
+        // ================= TAB 1: TỪ VỰNG FLASHCARD =================
+        let currentFlashList = [], flashcardIdx = 0, learnedCount = 0, unlearnedItems = [];
+        let isTransitioningCard = false;
+
+        function resetVocabTab() {
+            document.getElementById('vocab-start').classList.remove('hidden');
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.add('hidden');
+        }
+
+        function startFlashcards(list = hsk6L4Vocab) {
+            playAudio('audio-click');
+            currentFlashList = [...list];
+            flashcardIdx = 0; learnedCount = 0; unlearnedItems = [];
+            
+            document.getElementById('vocab-start').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.add('hidden');
+            document.getElementById('flashcard-screen').classList.remove('hidden');
+            document.getElementById('card-total').innerText = currentFlashList.length;
+            updateFlashcard();
+        }
+
+        function updateFlashcard() {
+            const card = currentFlashList[flashcardIdx];
+            document.getElementById('card-index').innerText = flashcardIdx + 1;
+            document.getElementById('card-hanzi').innerText = card.h;
+            document.getElementById('card-pinyin').innerText = card.p;
+            document.getElementById('card-mean').innerText = card.m;
+            document.getElementById('card-example-cn').innerText = card.ex;
+            document.getElementById('card-example-py').innerText = card.exp;
+            document.getElementById('card-example-vi').innerText = card.exv;
+            document.getElementById('flashcard-inner').classList.remove('is-flipped');
+            isTransitioningCard = false;
+        }
+
+        function flipCard() { 
+            if(isTransitioningCard) return;
+            playAudio('audio-click'); 
+            document.getElementById('flashcard-inner').classList.toggle('is-flipped'); 
+        }
+
+        function markCard(learned) {
+            if(isTransitioningCard) return;
+            isTransitioningCard = true;
+
+            if (learned) {
+                learnedCount++;
+                playAudio('audio-correct');
+            } else {
+                unlearnedItems.push(currentFlashList[flashcardIdx]);
+            }
+
+            const inner = document.getElementById('flashcard-inner');
+            const isFlipped = inner.classList.contains('is-flipped');
+            flashcardIdx++;
+
+            if (isFlipped) {
+                inner.classList.remove('is-flipped');
+                setTimeout(() => checkNextCard(), 400); 
+            } else {
+                checkNextCard();
+            }
+        }
+
+        function checkNextCard() {
+            if (flashcardIdx < currentFlashList.length) updateFlashcard();
+            else { showFlashcardStats(); isTransitioningCard = false; }
+        }
+
+        function showFlashcardStats() {
+            playAudio('audio-win');
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.remove('hidden');
+            const learnedPercent = Math.round((learnedCount / currentFlashList.length) * 100);
+            document.getElementById('stat-learned-percent').innerText = learnedPercent + "%";
+            document.getElementById('stat-unlearned-percent').innerText = (100 - learnedPercent) + "%";
+            
+            const listContainer = document.getElementById('unlearned-list');
+            listContainer.innerHTML = unlearnedItems.length > 0 ? '' : '<p class="text-center py-4 font-bold text-lg" style="color: var(--primary-dark);">Tuyệt vời! Bạn đã thuộc hết từ.</p>';
+            
+            unlearnedItems.forEach(item => {
+                listContainer.innerHTML += `<div class="flex justify-between border-b pb-2 text-sm md:text-base"><span class="font-bold text-gray-800">${item.h}</span><span class="text-gray-600">${item.m}</span></div>`;
+            });
+            document.getElementById('btn-relearn').classList.toggle('hidden', unlearnedItems.length === 0);
+        }
+
+        function relearnUnlearned() { startFlashcards(unlearnedItems); }
+
+        // ================= TAB 2: GIẢI NGHĨA (THAY THẾ SẮP XẾP) =================
+        let meaningIdx = 0, meaningScore = 0;
+        let meaningGameList = [];
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function startMeaningGame() {
+            playAudio('audio-click');
+            meaningGameList = shuffle([...hsk6L4Vocab]); 
+            meaningIdx = 0; meaningScore = 0;
+            document.getElementById('meaning-score').innerText = '0';
+            document.getElementById('meaning-start').classList.add('hidden');
+            document.getElementById('meaning-result').classList.add('hidden');
+            document.getElementById('meaning-screen').classList.remove('hidden');
+            loadMeaningLevel();
+        }
+
+        function loadMeaningLevel() {
+            const currentWord = meaningGameList[meaningIdx];
+            document.getElementById('meaning-current').innerText = meaningIdx + 1;
+            document.getElementById('meaning-word').innerText = currentWord.h;
+            
+            document.getElementById('btn-meaning-next').classList.add('hidden');
+            document.getElementById('meaning-inline-feedback').classList.add('hidden');
+            
+            let wrongOptions = hsk6L4Vocab.filter(item => item.h !== currentWord.h);
+            wrongOptions = shuffle(wrongOptions).slice(0, 3);
+            let options = [...wrongOptions, currentWord];
+            options = shuffle(options); 
+
+            const optionsContainer = document.getElementById('meaning-options');
+            optionsContainer.innerHTML = '';
+
+            options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option chinese-text';
+                btn.innerText = String.fromCharCode(65 + idx) + ". " + opt.cn;
+                btn.onclick = () => checkMeaningAnswer(opt, currentWord, btn, options);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkMeaningAnswer(selectedOpt, correctOpt, btnElement, allOptions) {
+            const isCorrect = (selectedOpt.h === correctOpt.h);
+            const allBtns = document.querySelectorAll('#meaning-options .quiz-option');
+            const feedbackBox = document.getElementById('meaning-inline-feedback');
+            
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                playAudio('audio-correct');
+                btnElement.classList.add('opt-correct');
+                meaningScore++;
+                document.getElementById('meaning-score').innerText = meaningScore;
+                
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-5 feedback-success block text-center';
+                document.getElementById('meaning-fb-title').innerText = '✨ Chính xác!';
+                document.getElementById('meaning-fb-title').style.color = 'var(--primary-dark)';
+            } else {
+                playAudio('audio-wrong');
+                btnElement.classList.add('opt-wrong');
+                allOptions.forEach((opt, idx) => {
+                    if(opt.h === correctOpt.h) allBtns[idx].classList.add('opt-correct');
+                });
+                
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-5 feedback-error block text-center';
+                document.getElementById('meaning-fb-title').innerText = `🥺 Chưa đúng!`;
+                document.getElementById('meaning-fb-title').style.color = '#e65100';
+            }
+            
+            document.getElementById('meaning-fb-viet').innerText = `Pinyin: ${correctOpt.p} | Nghĩa: ${correctOpt.m}`;
+            document.getElementById('btn-meaning-next').classList.remove('hidden');
+        }
+
+        function nextMeaningLevel() {
+            playAudio('audio-click');
+            if (meaningIdx < meaningGameList.length - 1) {
+                meaningIdx++;
+                loadMeaningLevel();
+            } else {
+                playAudio('audio-win');
+                document.getElementById('meaning-screen').classList.add('hidden');
+                document.getElementById('meaning-result').classList.remove('hidden');
+                document.getElementById('meaning-final-score').innerText = meaningScore;
+            }
+        }
+
+        // ================= TAB 3: BÀI KHÓA =================
+        const lessonTextData = [
+            "老[lǎo]鼠[shǔ]是[shì]山[shān]神[shén]的[de]^宠[chǒng]物[wù]|宠物^，它[tā]^厌[yàn]倦[juàn]|厌倦^了[le]^宠[chǒng]物[wù]|宠物^的[de]生[shēng]活[huó]，也[yě]很[hěn]^厌[yàn]恶[wù]|厌恶^宠[chǒng]物[wù]这[zhè]个[ge]角[jué]色[sè]，于[yú]是[shì]向[xiàng]山[shān]神[shén]请[qǐng]假[jià]，要[yào]求[qiú]到[dào]动[dòng]物[wù]世[shì]界[jiè]走[zǒu]一[yì]回[huí]，心[xīn]想[xiǎng]一[yí]定[dìng]要[yào]找[zhǎo]机[jī]会[huì]证[zhèng]明[míng]一[yí]下[xià]自[zì]己[jǐ]的[de]实[shí]力[lì]。",
+            "山[shān]神[shén]说[shuō]：“动[dòng]物[wù]世[shì]界[jiè]中[zhōng]，大[dà]象[xiàng]是[shì]最[zuì]强[qiáng]大[dà]的[de]，^倘[tǎng]若[ruò]|倘若^你[nǐ]还[hái]想[xiǎng]回[huí]来[lái]，必[bì]须[xū]战[zhàn]胜[shèng]大[dà]象[xiàng]，否[fǒu]则[zé]，你[nǐ]就[jiù]永[yǒng]远[yuǎn]留[liú]在[zài]动[dòng]物[wù]世[shì]界[jiè]吧[ba]。”老[lǎo]鼠[shǔ]答[dá]应[ying]了[le]山[shān]神[shén]的[de]条[tiáo]件[jiàn]，并[bìng]暗[àn]自[zì]把[bǎ]挑[tiǎo]战[zhàn]目[mù]标[biāo]定[dìng]为[wéi]了[le]大[dà]象[xiàng]。",
+            "老[lǎo]鼠[shǔ]一[yì]来[lái]到[dào]动[dòng]物[wù]界[jiè]，便[biàn]^发[fājué]觉[jué]|发觉^它[tā]对[duì]山[shān]神[shén]的[de]^承[chéng]诺[nuò]|承诺^是[shì]多[duō]么[me]^草[cǎo]率[shuài]|草率^，它[tā]是[shì]那[nà]么[me]^弱[ruò]小[xiǎo]|弱小^，丝[sī]毫[háo]没[méi]有[yǒu]^对[duì]抗[kàng]|对抗^大[dà]象[xiàng]的[de]力[lì]量[liàng]，但[dàn]老[lǎo]鼠[shǔ]还[hái]是[shì]决[jué]定[dìng]^尝[cháng]试[shì]|尝试^一[yí]下[xià]。它[tā]想[xiǎng]，我[wǒ]太[tài]小[xiǎo]了[le]，不[bù]可[kě]以[yǐ]^盲[máng]目[mù]|盲目^行[xíng]动[dòng]，但[dàn]我[wǒ]可[kě]以[yǐ]^乘[chéng]|乘^大[dà]象[xiàng]不[bú]注[zhù]意[yì]，进[jìn]到[dào]大[dà]象[xiàng]鼻[bí]子[zi]里[lǐ]去[qù]，大[dà]象[xiàng]不[bù]能[néng]^喘[chuǎn]气[qì]|喘气^了[le]，就[jiù]得[děi]请[qǐng]求[qiú]我[wǒ]^饶[ráo]恕[shù]|饶恕^，我[wǒ]就[jiù]可[kě]以[yǐ]^强[qiǎng]迫[pò]|强迫^它[tā]认[rèn]输[shū]。",
+            "这[zhè]天[tiān]，大[dà]象[xiàng]正[zhèng]在[zài]吃[chī]树[shù]叶[yè]，老[lǎo]鼠[shǔ]^乘[chéng]|乘^机[jī]跑[pǎo]进[jìn]大[dà]象[xiàng]的[de]鼻[bí]子[zi]中[zhōng]，准[zhǔn]备[bèi]^实[shí]施[shī]|实施^它[tā]的[de]计[jì]划[huà]。^不[bú]料[liào]|不料^，刚[gāng]进[jìn]去[qù]，大[dà]象[xiàng]痒[yǎng]得[de]难[nán]受[shòu]，^猛[měng]烈[liè]|猛烈^地[de]打[dǎ]起[qǐ]了[le]喷[pēn]嚏[tì]，老[lǎo]鼠[shǔ]像[xiàng]^子[zǐ]弹[dàn]|子弹^一[yí]样[yàng]被[bèi]射[shè]了[le]出[chū]来[lái]。",
+            "大[dà]象[xiàng]用[yòng]^蔑[miè]视[shì]|蔑视^的[de]^眼[yǎn]光[guāng]|眼光^^盯[dīng]|盯^着[zhe]它[tā]，^愤[fèn]怒[nù]|愤怒^地[de]说[shuō]: “你[nǐ]这[zhè]个[ge]^愚[yú]蠢[chǔn]|愚蠢^的[de]^家[jiā]伙[huo]|家伙^，太[tài]^可[kě]恶[wù]|可恶^了[le]，下[xià]次[cì]再[zài]^耍[shuǎ]|耍^^流[liú]氓[máng]|流氓^，我[wǒ]一[yí]定[dìng]踩[cǎi]^扁[biǎn]|扁^了[le]你[nǐ]。”从[cóng]此[cǐ]老[lǎo]鼠[shǔ]再[zài]也[yě]不[bù]敢[gǎn]挑[tiǎo]战[zhàn]大[dà]象[xiàng]了[le]。",
+            "那[nà]是[shì]一[yí]个[gè]^夕[xī]阳[yáng]|夕阳^将[jiāng]落[luò]的[de]傍[bàng]晚[wǎn]，大[dà]象[xiàng]不[bù]^留[liú]神[shén]|留神^落[luò]入[rù]了[le]^打[dǎ]猎[liè]|打猎^者[zhě]设[shè]下[xià]的[de]巨[jù]网[wǎng]中[zhōng]。它[tā]^不[bú]顾[gù]|不顾^一[yí]切[qiè]地[de]用[yòng]力[lì]^挣[zhèng]扎[zhá]|挣扎^，往[wǎng]外[wài]乱[luàn]^窜[cuàn]|窜^，想[xiǎng]^摆[bǎi]脱[tuō]|摆脱^巨[jù]网[wǎng]，可[kě]是[shì]，它[tā]的[de]一[yí]切[qiè]努[nǔ]力[lì]都[dōu]没[méi]用[yòng]。",
+            "大[dà]象[xiàng]又[yòu]悲[bēi]伤[shāng]又[yòu]害[hài]怕[pà]，它[tā]觉[jué]得[de]^死[sǐ]亡[wáng]|死亡^越[yuè]来[lái]越[yuè]近[jìn]了[le]。^恰[qià]巧[qiǎo]|恰巧^，老[lǎo]鼠[shǔ]看[kàn]到[dào]了[le]这[zhè]一[yí]切[qiè]，它[tā]想[xiǎng]，大[dà]象[xiàng]现[xiàn]在[zài]^毫[háo]无[wú]|毫无^^抵[dǐ]抗[kàng]|抵抗^能[néng]力[lì]，只[zhǐ]要[yào]我[wǒ]在[zài]它[tā]身[shēn]体[tǐ]的[de]重[zhòng]要[yào]^部[bù]位[wèi]|部位^咬[yǎo]几[jǐ]个[gè]洞[dòng]，它[tā]就[jiù]没[méi]命[mìng]了[le]，我[wǒ]不[bù]就[jiù]战[zhàn]胜[shèng]大[dà]象[xiàng]了[le]吗[ma]？",
+            "然[rán]而[ér]，看[kàn]到[dào]大[dà]象[xiàng]^悲[bēicǎn]惨[cǎn]|悲惨^的[de]样[yàng]子[zi]，老[lǎo]鼠[shǔ]不[bù]忍[rěn]下[xià]手[shǒu]，它[tā]觉[jué]得[de]那[nà]样[yàng]^未[wèimiǎn]免[miǎn]|未免^太[tài]过[guò]^残[cán]忍[rěn]|残忍^，^良[liáng]心[xīn]|良心^告[gào]诉[sù]它[tā]，应[yīng]该[gāi]救[jiù]大[dà]象[xiàng]，于[yú]是[shì]，它[tā]开[kāi]始[shǐ]用[yòng]^锋[fēng]利[lì]|锋利^的[de]牙[yá]齿[chǐ]咬[yǎo]^缠[chán]绕[rào]|缠绕^着[zhe]大[dà]象[xiàng]的[de]网[wǎng]和[hé]绳[shéng]子[zi]。",
+            "不[bù]知[zhī]过[guò]了[le]多[duō]久[jiǔ]，老[lǎo]鼠[shǔ]几[jī]乎[hū]^耗[hàofèi]费[fèi]|耗费^了[le]全[quán]部[bù]力[lì]气[qì]，绳[shéng]子[zi]终[zhōng]于[yú]被[bèi]咬[yǎo]断[duàn]了[le]，巨[jù]网[wǎng]出[chū]现[xiàn]了[le]一[yí]个[gè]大[dà]^缺[quēkǒu]口[kǒu]|缺口^，大[dà]象[xiàng]猛[měng]地[de]一[yí]用[yòng]力[lì]，脱[tuō]离[lí]了[le]巨[jù]网[wǎng]。",
+            "从[cóng]此[cǐ]，老[lǎo]鼠[shǔ]和[hé]大[dà]象[xiàng]成[chéng]了[le]好[hǎo]朋[péng]友[you]。",
+            "不[bù]久[jiǔ]，山[shān]神[shén]找[zhǎo]到[dào]了[le]老[lǎo]鼠[shǔ]，要[yào]它[tā]回[huí]到[dào]自[zì]己[jǐ]身[shēn]边[biān]。老[lǎo]鼠[shǔ]说[shuō]：“这[zhè]大[dà]概[gài]不[bù]可[kě]能[néng]了[le]，我[wǒ]无[wú]法[fǎ]战[zhàn]胜[shèng]大[dà]象[xiàng]。”",
+            "山[shān]神[shén]说[shuō]：“你[nǐ]化[huà]敌[dí]为[wéi]友[yǒu]，创[chuàng]造[zào]了[le]^举[jǔ]世[shì]瞩[zhǔ]目[mù]|举世瞩目^的[de]成[chéng]就[jiù]，世[shì]界[jiè]上[shàng]还[hái]有[yǒu]比[bǐ]这[zhè]更[gèng]完[wán]美[měi]的[de]胜[shèng]利[lì]吗[ma]？”"
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('sync-container');
+            let htmlContent = '';
+            
+            lessonTextData.forEach((p, index) => {
+                let pHtml = `<p class="${index === 0 ? 'text-center font-bold text-2xl text-[var(--primary-dark)]' : 'indent-6 md:indent-8'} mb-4">`;
+                let i = 0;
+                while (i < p.length) {
+                    if (p[i] === '"' || p[i] === '”' || p[i] === '“' || p[i] === '、' || p[i] === '：' || p[i] === '？' || p[i] === '，' || p[i] === '。' || p[i] === '！' || p[i] === '……') {
+                        pHtml += p[i]; i++; continue;
+                    }
+                    if (p[i] === '^') {
+                        let endIdx = p.indexOf('^', i + 1);
+                        let content = p.substring(i + 1, endIdx);
+                        let parts = content.split('|');
+                        let rawText = parts[0];
+                        let wordKey = parts[1];
+                        
+                        let rubyHtml = '';
+                        let j = 0;
+                        while(j < rawText.length) {
+                            if (rawText[j+1] === '[') {
+                                let rEnd = rawText.indexOf(']', j+1);
+                                rubyHtml += `<ruby>${rawText[j]}<rt>${rawText.substring(j+2, rEnd)}</rt></ruby>`;
+                                j = rEnd + 1; 
+                            } else { rubyHtml += rawText[j]; j++; }
+                        }
+                        pHtml += `<span class="hl-word" onclick="showVocabPopup('${wordKey}')">${rubyHtml}</span>`;
+                        i = endIdx + 1;
+                        continue;
+                    }
+                    if (p[i+1] === '[') {
+                        let endIdx = p.indexOf(']', i+1);
+                        pHtml += `<ruby>${p[i]}<rt>${p.substring(i+2, endIdx)}</rt></ruby>`;
+                        i = endIdx + 1; 
+                    } else { pHtml += p[i]; i++; }
+                }
+                pHtml += '</p>';
+                htmlContent += pHtml;
+            });
+            container.innerHTML = htmlContent;
+        });
+
+        function togglePinyin() { document.getElementById('text-wrapper').classList.toggle('hide-pinyin'); }
+
+        function showVocabPopup(wordKey) {
+            playAudio('audio-click');
+            const wordData = hsk6L4Vocab.find(w => w.h === wordKey);
+            if(wordData) {
+                document.getElementById('vp-word').innerText = wordData.h;
+                document.getElementById('vp-pinyin').innerText = wordData.p;
+                document.getElementById('vp-meaning').innerText = wordData.m;
+                document.getElementById('vocab-popup').classList.remove('hidden');
+            }
+        }
+        function closeVocabPopup() {
+            playAudio('audio-click');
+            document.getElementById('vocab-popup').classList.add('hidden');
+        }
+
+        // ================= TAB 4: ĐỌC HIỂU =================
+        const quizData = [
+            { q: "老鼠原本是谁的宠物？", opts: ["国王", "打猎者", "山神", "大象"], correct: 2, exp: "文中第一句：“老鼠是山神的宠物……”" },
+            { q: "老鼠为什么向山神请假？", opts: ["它想找朋友玩", "它厌倦了宠物的生活和角色", "它想去打猎", "山神对它不好"], correct: 1, exp: "文中提到：“它厌倦了宠物的生活，也很厌恶宠物这个角色，于是向山神请假……”" },
+            { q: "山神让老鼠回到自己身边的条件是什么？", opts: ["必须找到食物", "必须躲开猎人的网", "必须战胜大象", "必须交到好朋友"], correct: 2, exp: "山神说：“倘若你还想回来，必须战胜大象……”" },
+            { q: "老鼠来到动物界后发觉了什么？", opts: ["动物界很好玩", "大象其实很弱小", "自己对山神的承诺太草率，自己太弱小", "山神骗了它"], correct: 2, exp: "文中写道：“老鼠一来到动物界，便发觉它对山神的承诺是多么草率，它是那么弱小……”" },
+            { q: "尽管力量悬殊，老鼠还是决定怎么做？", opts: ["逃跑回山神那里", "盲目行动去咬大象", "放弃挑战", "决定尝试一下"], correct: 3, exp: "文中说：“但老鼠还是决定尝试一下。”" },
+            { q: "老鼠最初计划怎么战胜大象？", opts: ["咬断大象的腿", "趁大象睡觉时偷袭", "进到大象鼻子里让大象不能喘气，强迫它认输", "找猎人帮忙"], correct: 2, exp: "它想：“我可以乘大象不注意，进到大象鼻子里去，大象不能喘气了，就得请求我饶恕……”" },
+            { q: "老鼠实施计划时，大象正在干什么？", opts: ["正在睡觉", "正在喝水", "正在吃树叶", "正在打猎"], correct: 2, exp: "文中说：“这天，大象正在吃树叶，老鼠乘机跑进大象的鼻子中……”" },
+            { q: "老鼠刚进大象鼻子后发生了什么？", opts: ["大象认输了", "大象痒得难受，打喷嚏把老鼠像子弹一样射了出来", "大象被憋死了", "老鼠在里面睡着了"], correct: 1, exp: "文中描述：“刚进去，大象痒得难受，猛烈地打起了喷嚏，老鼠像子弹一样被射了出来。”" },
+            { q: "被老鼠钻进鼻子后，大象的态度是怎样的？", opts: ["非常害怕", "感到好笑", "蔑视、愤怒", "觉得无所谓"], correct: 2, exp: "文中写道：“大象用蔑视的眼光盯着它，愤怒地说……”" },
+            { q: "大象警告老鼠，下次再耍流氓会怎么做？", opts: ["用鼻子甩飞它", "踩扁了它", "用水喷死它", "叫猎人抓它"], correct: 1, exp: "大象说：“下次再耍流氓，我一定踩扁了你。”" },
+            { q: "后来，大象遭遇了什么不幸？", opts: ["生了重病", "掉下了悬崖", "找不到食物", "落入了打猎者设下的巨网中"], correct: 3, exp: "文中说：“大象不留神落入了打猎者设下的巨网中。”" },
+            { q: "大象落网时的天气或时间是怎样的？", opts: ["清晨", "夕阳将落的傍晚", "深夜", "正午"], correct: 1, exp: "文中写道：“那是一个夕阳将落的傍晚……”" },
+            { q: "大象落入巨网后有什么反应？", opts: ["安静地等死", "大声呼救", "不顾一切地用力挣扎，往外乱窜", "马上认输"], correct: 2, exp: "文中提到：“它不顾一切地用力挣扎，往外乱窜，想摆脱巨网……”" },
+            { q: "老鼠看到大象落网，最初心里是怎么想的？", opts: ["只要在大象重要部位咬几个洞，大象死了，自己就胜利了", "赶紧跑去叫山神", "嘲笑大象很愚蠢", "觉得大象罪有应得"], correct: 0, exp: "它想：“只要我在它身体的重要部位咬几个洞，它就没命了，我不就战胜大象了吗？”" },
+            { q: "为什么老鼠最终没有趁机咬死大象？", opts: ["因为老鼠牙齿不够锋利", "看到大象悲惨的样子觉得太残忍，良心发现", "老鼠害怕猎人回来", "老鼠觉得大象肉不好吃"], correct: 1, exp: "文中解释：“然而，看到大象悲惨的样子，老鼠不忍下手，它觉得那样未免太过残忍，良心告诉它，应该救大象……”" },
+            { q: "老鼠是怎么救出大象的？", opts: ["用锋利的牙齿咬缠绕着大象的网和绳子", "找其他动物来帮忙", "吓跑了猎人", "解开了网的绳结"], correct: 0, exp: "文中说：“于是，它开始用锋利的牙齿咬缠绕着大象的网和绳子。”" },
+            { q: "为了救出大象，老鼠付出了什么？", opts: ["失去了一颗牙齿", "受了重伤", "几乎耗费了全部力气", "被猎人抓住了"], correct: 2, exp: "文中提到：“老鼠几乎耗费了全部力气，绳子终于被咬断了……”" },
+            { q: "获救之后，老鼠和大象的关系变得怎样了？", opts: ["老鼠成为了大象的主人", "大象依旧蔑视老鼠", "成了好朋友", "各自离开再没见面"], correct: 2, exp: "文中明言：“从此，老鼠和大象成了好朋友。”" },
+            { q: "当山神要老鼠回去时，老鼠怎么回答的？", opts: ["我已经战胜大象了，马上回去", "大概不可能了，我无法战胜大象", "大象是我的朋友，我不回去了", "我还想在外面多玩几天"], correct: 1, exp: "老鼠说：“这大概不可能了，我无法战胜大象。”" },
+            { q: "山神认为这场“完美的胜利”指的是什么？", opts: ["老鼠把大象打败了", "大象终于死掉了", "老鼠化敌为友，创造了举世瞩目的成就", "老鼠成功逃出了动物界"], correct: 2, exp: "山神最后说：“你化敌为友，创造了举世瞩目的成就，世界上还有比这更完美的胜利吗？”" }
+        ];
+
+        let currentQuizIdx = 0, quizScore = 0;
+
+        function startQuiz() {
+            playAudio('audio-click');
+            currentQuizIdx = 0; quizScore = 0;
+            document.getElementById('quiz-score').innerText = '0';
+            document.getElementById('quiz-start').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            const qData = quizData[currentQuizIdx];
+            document.getElementById('quiz-current').innerText = currentQuizIdx + 1;
+            document.getElementById('quiz-question').innerText = qData.q;
+            
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+            document.getElementById('quiz-inline-feedback').classList.add('hidden');
+
+            qData.opts.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option chinese-text';
+                btn.innerText = String.fromCharCode(65 + idx) + ". " + opt;
+                btn.onclick = () => checkQuizAnswer(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(selectedIndex, btnElement) {
+            const qData = quizData[currentQuizIdx];
+            const isCorrect = (selectedIndex === qData.correct);
+            const allBtns = document.querySelectorAll('.quiz-option');
+            const feedbackBox = document.getElementById('quiz-inline-feedback');
+            
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                playAudio('audio-correct');
+                btnElement.classList.add('opt-correct');
+                quizScore++;
+                document.getElementById('quiz-score').innerText = quizScore;
+                
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-5 feedback-success block';
+                document.getElementById('quiz-fb-title').innerText = '✨ Chính xác!';
+                document.getElementById('quiz-fb-title').style.color = 'var(--primary-dark)';
+            } else {
+                playAudio('audio-wrong');
+                btnElement.classList.add('opt-wrong');
+                allBtns[qData.correct].classList.add('opt-correct');
+                
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-5 feedback-error block';
+                document.getElementById('quiz-fb-title').innerText = `🥺 Chưa đúng! Đáp án đúng là: ${String.fromCharCode(65 + qData.correct)}`;
+                document.getElementById('quiz-fb-title').style.color = '#e65100';
+            }
+            
+            document.getElementById('quiz-fb-exp').innerHTML = `<b>Trích đoạn bài khóa:</b> ${qData.exp}`;
+            
+            const nextBtn = document.getElementById('btn-next-quiz');
+            nextBtn.innerText = (currentQuizIdx === quizData.length - 1) ? "Xem kết quả 🏆" : "Câu tiếp theo ❯";
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuiz() {
+            playAudio('audio-click');
+            if (currentQuizIdx < quizData.length - 1) {
+                currentQuizIdx++;
+                loadQuizQuestion();
+            } else {
+                playAudio('audio-win');
+                document.getElementById('quiz-screen').classList.add('hidden');
+                document.getElementById('quiz-result').classList.remove('hidden');
+                document.getElementById('final-score').innerText = quizScore;
+
+                let evalText = "", emoji = "";
+                if (quizScore >= 18) {
+                    evalText = "Vô cùng xuất sắc! Bạn đã hiểu rất sâu sắc toàn bộ nội dung của HSK6 Bài 4."; emoji = "🏆";
+                } else if (quizScore >= 14) {
+                    evalText = "Bạn nắm bắt được đa số chi tiết quan trọng. Cố gắng thêm chút nữa nhé!"; emoji = "🌟";
+                } else if (quizScore >= 10) {
+                    evalText = "Bạn hãy đọc lại bài khóa một lần nữa để nắm rõ cốt truyện nhé."; emoji = "👍";
+                } else {
+                    evalText = "Bạn cần ôn tập kỹ hơn bài khóa nhé. Hãy ôn lại từ vựng và cố gắng thêm nha!"; emoji = "💪";
+                }
+                document.getElementById('result-evaluation').innerText = evalText;
+                document.getElementById('result-emoji').innerText = emoji;
+            }
+        }
+    </script>
+</body>
+</html>
+
+

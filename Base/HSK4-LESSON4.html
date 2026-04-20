@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSK4 Bài 4 - 不要太着急赚钱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Noto+Sans+SC:wght@500;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ghibli-green: #a8d5ba;
+            --ghibli-brown: #d4a373;
+            --ghibli-sky: #caf0f8;
+            --ghibli-wood: #6d4c41;
+            --ghibli-dark-green: #4f7942;
+        }
+
+        body {
+            font-family: 'Quicksand', 'Nunito', sans-serif;
+            background: linear-gradient(180deg, var(--ghibli-sky) 0%, #fff 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chinese-text { font-family: 'Noto Sans SC', sans-serif; font-weight: 700; }
+        .chinese-sub { font-family: 'Noto Sans SC', sans-serif; }
+
+        .ghibli-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid var(--ghibli-wood);
+            border-radius: 20px;
+            box-shadow: 0 10px 0 var(--ghibli-brown);
+        }
+
+        .btn-ghibli {
+            background-color: var(--ghibli-green);
+            color: var(--ghibli-wood);
+            border: 2px solid var(--ghibli-wood);
+            border-radius: 12px;
+            transition: all 0.2s;
+            font-weight: bold;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .btn-ghibli:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 0 var(--ghibli-brown);
+            background-color: #95c7a9;
+        }
+        
+        .btn-ghibli:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-home {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: white;
+            border: 2px solid var(--ghibli-wood);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 0 var(--ghibli-brown);
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%; height: 380px;
+            transition: transform 0.6s; transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .flashcard-inner.is-flipped { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; border-radius: 15px;
+            padding: 24px;
+            border: 2px solid var(--ghibli-wood);
+        }
+        .flashcard-front { background-color: #fff; }
+        .flashcard-back { background-color: #fef3c7; transform: rotateY(180deg); }
+        
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--ghibli-brown); border-radius: 10px; }
+        .hidden { display: none; }
+
+        .circle-stat {
+            position: relative;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            border: 6px solid #f3f4f6;
+        }
+        .stat-green { border-color: #a8d5ba; color: #4f7942; }
+        .stat-red { border-color: #fca5a5; color: #b91c1c; }
+
+        .dictation-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 3px dashed var(--ghibli-brown);
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .dictation-input:focus {
+            border-color: var(--ghibli-green);
+            background-color: #f0fdf4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SỬA NÚT HOME Ở ĐÂY ĐỂ VỀ INDEX.HTML -->
+    <button onclick="window.location.href='index.html'" class="btn-home" title="Về Vườn">🏡</button>
+
+    <div id="game-container" class="w-full max-w-xl px-4 mt-16 mb-10">
+        <!-- START SCREEN -->
+        <div id="start-screen" class="ghibli-card p-8 text-center">
+            <h1 class="text-3xl font-bold text-amber-900 mb-2">HSK4 - Bài 4</h1>
+            <h2 class="text-2xl text-emerald-700 font-bold mb-4 chinese-text">不要太着急赚钱</h2>
+            <p class="text-sm text-gray-600 mb-4 font-bold">Giáo viên: Nga Học HSK</p>
+            <div class="mx-auto mb-6 text-6xl">🌿</div>
+            
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="startFlashcards(vocabulary)" class="btn-ghibli text-lg relative">
+                    🎴 Phần 1: Học Từ Vựng  <span id="check-flashcard" class="absolute right-4 hidden">✅</span>
+                </button>
+                
+                <button onclick="openDictationMenu()" class="btn-ghibli text-lg relative" style="background-color: #fef3c7;">
+                    🎧 Phần 2: Nghe Chép Bài Khóa <span id="check-dictation" class="absolute right-4 hidden">✅</span>
+                </button>
+                
+                <button id="btn-form" class="btn-ghibli text-lg mt-2 transition-all duration-500" style="background-color: #e5e7eb; border-color: #9ca3af; color: #6b7280;" disabled>
+                    🔒 Phần 3: Bài Tập 
+                </button>
+            </div>
+        </div>
+
+        <!-- FLASHCARD SCREEN -->
+        <div id="flashcard-screen" class="ghibli-card p-6 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <button onclick="returnToStart()" class="text-amber-700 text-sm font-bold hover:underline">🔙 Về Menu</button>
+                <div class="text-amber-900 font-bold px-3 py-1 bg-amber-100 rounded-full text-xs">
+                    Thẻ: <span id="card-index">1</span> / <span id="card-total">37</span>
+                </div>
+            </div>
+            <div class="mb-6">
+                <div id="flashcard-inner" class="flashcard-inner" onclick="flipCard()">
+                    <div class="flashcard-front shadow-lg">
+                        <h2 id="card-hanzi" class="chinese-text text-6xl text-amber-900 leading-tight"></h2>
+                        <p class="mt-8 text-sm text-amber-600 animate-pulse font-bold">Chạm để lật thẻ 👆</p>
+                    </div>
+                    <div class="flashcard-back shadow-lg overflow-y-auto custom-scroll">
+                        <h3 id="card-pinyin" class="text-3xl font-bold text-emerald-700 mb-1"></h3>
+                        <p id="card-mean" class="text-xl text-amber-900 mb-4 font-bold border-b-2 border-amber-200 pb-2 w-full text-center"></p>
+                        <div class="text-left w-full space-y-3">
+                            <p id="card-example-cn" class="chinese-sub text-xl text-amber-800 leading-relaxed font-medium"></p>
+                            <p id="card-example-py" class="text-sm text-emerald-600 italic font-semibold"></p>
+                            <p id="card-example-vi" class="text-sm text-gray-600 bg-white p-2 rounded-lg border border-amber-100"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="markCard(false)" class="bg-rose-100 border-2 border-rose-400 text-rose-700 p-4 rounded-xl font-bold hover:bg-rose-200">Chưa thuộc</button>
+                <button onclick="markCard(true)" class="bg-emerald-100 border-2 border-emerald-400 text-emerald-700 p-4 rounded-xl font-bold hover:bg-emerald-200">Đã thuộc</button>
+            </div>
+        </div>
+
+        <!-- FLASHCARD STATS -->
+        <div id="flashcard-stat-screen" class="ghibli-card p-8 text-center hidden">
+             <h2 class="text-3xl font-bold text-amber-900 mb-8">Kết quả ghi nhớ</h2>
+             <div class="flex justify-around items-center mb-8">
+                <div class="circle-stat stat-green">
+                    <span id="stat-learned-percent" class="text-xl font-bold">0%</span>
+                    <span class="text-[10px] uppercase font-bold">Thuộc</span>
+                </div>
+                <div class="circle-stat stat-red">
+                    <span id="stat-unlearned-percent" class="text-xl font-bold">0%</span>
+                    <span class="text-[10px] uppercase font-bold">Cần ôn</span>
+                </div>
+             </div>
+             <div class="text-left mb-6">
+                <p class="font-bold text-amber-900 mb-2">Danh sách cần lưu ý:</p>
+                <div id="unlearned-list" class="max-h-48 overflow-y-auto custom-scroll bg-amber-50 rounded-lg border border-amber-200 p-2 space-y-2"></div>
+             </div>
+             <div class="grid grid-cols-1 gap-3">
+                 <button id="btn-relearn" onclick="relearnUnlearned()" class="btn-ghibli w-full bg-amber-500 text-white border-amber-700 hidden">🔄 Học lại các từ chưa thuộc</button>
+                 <button onclick="endFlashcardSession()" class="btn-ghibli w-full">🔙 Hoàn thành & Về Menu</button>
+             </div>
+        </div>
+
+        <!-- DICTATION MENU -->
+        <div id="dictation-menu-screen" class="ghibli-card p-6 hidden">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="returnToStart()" class="text-amber-700 text-sm font-bold hover:underline">🔙 Về Menu Chính</button>
+                <h2 class="text-xl font-bold text-emerald-800">Chọn Bài Khóa</h2>
+            </div>
+            <div id="lesson-list" class="grid grid-cols-1 gap-3"></div>
+        </div>
+
+        <!-- DICTATION GAME -->
+        <div id="dictation-screen" class="ghibli-card p-6 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <button onclick="backToDictationMenu()" class="text-amber-700 text-sm font-bold hover:underline">🔙 Về DS Bài khóa</button>
+                <div class="text-emerald-800 font-bold text-sm" id="dictation-title-display">Bài 4: <span id="dict-step">1</span>/10</div>
+            </div>
+            
+            <div class="flex flex-col items-center justify-center space-y-4 mt-2">
+                <div class="w-full bg-emerald-50 p-4 rounded-xl border-2 border-emerald-200 shadow-sm">
+                    <audio id="lesson-audio-player" controls class="w-full h-10 outline-none rounded-lg"></audio>
+                </div>
+
+                <div class="w-full bg-white border-2 border-dashed border-amber-300 p-3 rounded-xl text-center">
+                    <p class="text-xs text-amber-800 font-bold mb-1">GỢI Ý CÂU ĐANG NGHE:</p>
+                    <div id="sentence-range-hint" class="chinese-text text-2xl text-emerald-700 tracking-widest">-- ... --</div>
+                </div>
+                
+                <div class="w-full relative mt-2">
+                    <input type="text" id="dict-input" class="dictation-input chinese-text" placeholder="Nghe và gõ chữ Hán..." autocomplete="off">
+                </div>
+
+                <div id="dict-answer-box" class="w-full hidden space-y-3">
+                    <div id="dict-feedback" class="w-full p-2 rounded-lg text-center font-bold text-sm"></div>
+                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-center space-y-2">
+                        <p class="chinese-text text-2xl text-amber-900" id="ans-hanzi"></p>
+                        <p class="text-emerald-700 italic font-semibold text-lg" id="ans-pinyin"></p>
+                        <p class="text-gray-600 border-t border-amber-200 pt-2 text-sm" id="ans-vi"></p>
+                    </div>
+                </div>
+
+                <div class="w-full">
+                    <button id="btn-next-dict" onclick="nextDictation()" class="btn-ghibli w-full bg-emerald-500 border-emerald-700 text-white hidden py-3 text-lg">Câu tiếp theo ➡️</button>
+                    <p id="enter-instruction" class="text-[10px] text-gray-400 text-center mt-2 font-bold uppercase tracking-wider">Nhấn ENTER để kiểm tra</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FINAL SUCCESS -->
+        <div id="dictation-end-screen" class="ghibli-card p-8 text-center hidden">
+            <h2 class="text-3xl font-bold text-amber-900 mb-4">Tuyệt vời!</h2>
+            <div class="text-6xl mb-4">🏆</div>
+            <p class="text-amber-800 mb-6 font-bold text-xl">Bạn đã luyện xong tất cả bài khóa bài 4!</p>
+            <button onclick="endDictationSession()" class="btn-ghibli w-full py-3 text-lg bg-emerald-100 border-emerald-500 text-emerald-800">🔙 Về Menu Chính</button>
+        </div>
+    </div>
+
+    <!-- AUDIO ASSETS -->
+    <audio id="audio-click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="audio-correct" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+    <audio id="audio-wrong" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3"></audio>
+    <audio id="audio-flip" src="https://assets.mixkit.co/active_storage/sfx/2045/2045-preview.mp3"></audio>
+
+    <script>
+        const completedStatus = { flashcard: false, dictation: false };
+
+        function playAudio(audioId) {
+            const audio = document.getElementById(audioId);
+            if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+        }
+
+        function returnToStart() {
+            playAudio('audio-click');
+            const audioPlayer = document.getElementById('lesson-audio-player');
+            if (audioPlayer) audioPlayer.pause();
+            document.querySelectorAll('.ghibli-card').forEach(el => el.classList.add('hidden'));
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        // TỪ VỰNG BÀI 4
+        const vocabulary = [
+            { h: "提", p: "tí", m: "Nhắc đến, đề cập", ex: "一提起这件事，他就笑了。", exp: "Yī tíqǐ zhè jiàn shì, tā jiù xiào le.", exv: "Hễ nhắc đến chuyện này là anh ấy cười." },
+            { h: "提", p: "tí", m: "Xách, cầm", ex: "他手里提着一个黑色的包。", exp: "Tā shǒu lǐ tízhe yí gè hēisè de bāo.", exv: "Anh ấy đang xách một chiếc túi màu đen." },
+            { h: "提", p: "tí", m: "Đưa ra, nêu ra", ex: "老师请大家提出问题。", exp: "Lǎoshī qǐng dàjiā tí chū wèntí.", exv: "Giáo viên yêu cầu mọi người đưa ra câu hỏi." },
+            { h: "别提了", p: "bié tí le", m: "Đừng nhắc nữa", ex: "别提了，这件事太麻烦了。", exp: "Bié tí le, zhè jiàn shì tài máfan le.", exv: "Đừng nhắc nữa, chuyện này phiền phức quá." },
+            { h: "以为", p: "yǐwéi", m: "Tưởng là", ex: "我以为他会来，结果他没来。", exp: "Wǒ yǐwéi tā huì lái, jiéguǒ tā méi lái.", exv: "Tôi tưởng anh ấy sẽ đến, nhưng cuối cùng lại không." },
+            { h: "份", p: "fèn", m: "Lượng từ (cho công việc, tài liệu...)", ex: "我找到了一份新工作。", exp: "Wǒ zhǎodàole yí fèn xīn gōngzuò.", exv: "Tôi đã tìm được một công việc mới." },
+            { h: "完全", p: "wánquán", m: "Hoàn toàn", ex: "我完全同意你的看法。", exp: "Wǒ wánquán tóngyì nǐ de kànfǎ.", exv: "Tôi hoàn toàn đồng ý với quan điểm của bạn." },
+            { h: "赚", p: "zhuàn", m: "Kiếm tiền", ex: "他努力工作，所以赚了很多钱。", exp: "Tā nǔlì gōngzuò, suǒyǐ zhuànle hěn duō qián.", exv: "Anh ấy làm việc chăm chỉ nên kiếm được rất nhiều tiền." },
+            { h: "调查", p: "diàochá", m: "Điều tra", ex: "根据调查结果，大多数人喜欢在城市工作。", exp: "Gēnjù diàochá jiéguǒ, dà duōshù rén xǐhuan zài chéngshì gōngzuò.", exv: "Theo kết quả khảo sát, đa số mọi người thích làm việc ở thành phố." },
+            { h: "原来", p: "yuánlái", m: "Hóa ra", ex: "原来他已经知道这件事了。", exp: "Yuánlái tā yǐjīng zhīdào zhè jiàn shì le.", exv: "Hóa ra anh ấy đã biết chuyện này rồi." },
+            { h: "原来", p: "yuánlái", m: "Trước đây", ex: "现在的生活比原来好多了。", exp: "Xiànzài de shēnghuó bǐ yuánlái hǎo duō le.", exv: "Cuộc sống bây giờ tốt hơn trước đây nhiều." },
+            { h: "计划", p: "jìhuà", m: "Kế hoạch", ex: "我做了一份学习计划。", exp: "Wǒ zuòle yí fèn xuéxí jìhuà.", exv: "Tôi đã lập một kế hoạch học tập." },
+            { h: "计划", p: "jìhuà", m: "Lên kế hoạch", ex: "我们先计划一下再开始。", exp: "Wǒmen xiān jìhuà yíxià zài kāishǐ.", exv: "Chúng ta lên kế hoạch trước rồi bắt đầu." },
+            { h: "提前", p: "tíqián", m: "Làm sớm", ex: "我们要提前完成任务。", exp: "Wǒmen yào tíqián wánchéng rènwu.", exv: "Chúng ta phải hoàn thành nhiệm vụ sớm." },
+            { h: "提醒", p: "tíxǐng", m: "Nhắc nhở", ex: "妈妈提醒我别忘了带雨伞。", exp: "Māma tíxǐng wǒ bié wàngle dài yǔsǎn.", exv: "Mẹ nhắc tôi đừng quên mang ô." },
+            { h: "保证", p: "bǎozhèng", m: "Đảm bảo", ex: "我保证不会再迟到了。", exp: "Wǒ bǎozhèng bú huì zài chídào le.", exv: "Tôi đảm bảo sẽ không đến muộn nữa." },
+            { h: "乱", p: "luàn", m: "Lộn xộn", ex: "他的房间总是很乱。", exp: "Tā de fángjiān zǒngshì hěn luàn.", exv: "Phòng của anh ấy lúc nào cũng bừa bộn." },
+            { h: "生意", p: "shēngyì", m: "Kinh doanh", ex: "他在做服装生意。", exp: "Tā zài zuò fúzhuāng shēngyì.", exv: "Anh ấy đang kinh doanh quần áo." },
+            { h: "谈", p: "tán", m: "Nói chuyện, thảo luận", ex: "我们正在谈工作。", exp: "Wǒmen zhèngzài tán gōngzuò.", exv: "Chúng tôi đang bàn về công việc." },
+            { h: "并", p: "bìng", m: "Phó từ (nhấn mạnh phủ định)", ex: "这件事并不容易。", exp: "Zhè jiàn shì bìng bù róngyì.", exv: "Việc này không hề dễ." },
+            { h: "积累", p: "jīlěi", m: "Tích lũy", ex: "他在工作中积累了很多经验。", exp: "Tā zài gōngzuò zhōng jīlěile hěn duō jīngyàn.", exv: "Anh ấy đã tích lũy nhiều kinh nghiệm trong công việc." },
+            { h: "经验", p: "jīngyàn", m: "Kinh nghiệm", ex: "他有丰富的工作经验。", exp: "Tā yǒu fēngfù de gōngzuò jīngyàn.", exv: "Anh ấy có nhiều kinh nghiệm làm việc." },
+            { h: "一切", p: "yíqiè", m: "Tất cả", ex: "我相信一切都会好起来。", exp: "Wǒ xiāngxìn yíqiè dōu huì hǎo qǐlái.", exv: "Tôi tin mọi thứ sẽ tốt lên." },
+            { h: "按照", p: "ànzhào", m: "Theo", ex: "我们要按照计划进行。", exp: "Wǒmen yào ànzhào jìhuà jìnxíng.", exv: "Chúng ta phải tiến hành theo kế hoạch." },
+            { h: "成功", p: "chénggōng", m: "Thành công", ex: "他终于成功了。", exp: "Tā zhōngyú chénggōng le.", exv: "Cuối cùng anh ấy đã thành công." },
+            { h: "顺利", p: "shùnlì", m: "Thuận lợi", ex: "希望你考试顺利。", exp: "Xīwàng nǐ kǎoshì shùnlì.", exv: "Chúc bạn thi thuận lợi." },
+            { h: "感谢", p: "gǎnxiè", m: "Cảm ơn", ex: "非常感谢你的帮助。", exp: "Fēicháng gǎnxiè nǐ de bāngzhù.", exv: "Rất cảm ơn sự giúp đỡ của bạn." },
+            { h: "消息", p: "xiāoxi", m: "Tin tức", ex: "我听到一个好消息。", exp: "Wǒ tīngdào yí gè hǎo xiāoxi.", exv: "Tôi nghe được một tin tốt." },
+            { h: "按时", p: "ànshí", m: "Đúng hạn", ex: "我们必须按时完成作业。", exp: "Wǒmen bìxū ànshí wánchéng zuòyè.", exv: "Chúng ta phải hoàn thành bài tập đúng hạn." },
+            { h: "奖金", p: "jiǎngjīn", m: "Tiền thưởng", ex: "公司年底会发奖金。", exp: "Gōngsī niándǐ huì fā jiǎngjīn.", exv: "Công ty sẽ phát thưởng vào cuối năm." },
+            { h: "工资", p: "gōngzī", m: "Tiền lương", ex: "他每个月的工资很高。", exp: "Tā měi gè yuè de gōngzī hěn gāo.", exv: "Lương hàng tháng của anh ấy rất cao." },
+            { h: "方法", p: "fāngfǎ", m: "Phương pháp", ex: "我正在找更好的学习方法。", exp: "Wǒ zhèngzài zhǎo gèng hǎo de xuéxí fāngfǎ.", exv: "Tôi đang tìm phương pháp học tốt hơn." },
+            { h: "知识", p: "zhīshi", m: "Kiến thức", ex: "阅读能丰富我们的知识。", exp: "Yuèdú néng fēngfù wǒmen de zhīshi.", exv: "Đọc sách giúp làm phong phú kiến thức." },
+            { h: "不得不", p: "bù dé bù", m: "Buộc phải", ex: "我生病了，不得不请假。", exp: "Wǒ shēngbìng le, bù dé bù qǐngjià.", exv: "Tôi bị ốm nên buộc phải xin nghỉ." },
+            { h: "甚至", p: "shènzhì", m: "Thậm chí", ex: "他很忙，甚至没有时间吃饭。", exp: "Tā hěn máng, shènzhì méiyǒu shíjiān chīfàn.", exv: "Anh ấy rất bận, thậm chí không có thời gian ăn." },
+            { h: "责任", p: "zérèn", m: "Trách nhiệm", ex: "这是他的责任。", exp: "Zhè shì tā de zérèn.", exv: "Đây là trách nhiệm của anh ấy." },
+            { h: "责任心", p: "zérèn xīn", m: "Tinh thần trách nhiệm", ex: "他工作很认真，很有责任心。", exp: "Tā gōngzuò hěn rènzhēn, hěn yǒu zérèn xīn.", exv: "Anh ấy làm việc rất nghiêm túc và có trách nhiệm." }
+        ];
+
+        // BÀI KHÓA BÀI 4
+        const lessonsData = [
+            { id: 1, title: "Bài khóa 1", desc: "小林和小李聊小李的工作", audioSrc: "https://raw.githubusercontent.com/ngabui94-create/game-hoc-tieng-trung/main/audio/hsk4/lesson4/04-1.mp3", completed: false, sentences: [
+                { h: "听说你又换工作了？", p: "Tīngshuō nǐ yòu huàn gōngzuò le?", vi: "Nghe nói bạn lại đổi việc rồi?" },
+                { h: "今年已经换了三次工作了吧？", p: "Jīnnián yǐjīng huàn le sān cì gōngzuò le ba?", vi: "Năm nay đã đổi việc ba lần rồi nhỉ?" },
+                { h: "别提了！", p: "Bié tí le!", vi: "Đừng nhắc nữa!" },
+                { h: "我以为新工作比以前的好，", p: "Wǒ yǐwéi xīn gōngzuò bǐ yǐqián de hǎo,", vi: "Tôi tưởng công việc mới tốt hơn trước," },
+                { h: "没想到还不如以前好呢。", p: "méi xiǎngdào hái bùrú yǐqián hǎo ne.", vi: "không ngờ còn chẳng bằng trước đây." },
+                { h: "上次那份工作你只做了两个月就离开了，", p: "Shàng cì nà fèn gōngzuò nǐ zhǐ zuòle liǎng gè yuè jiù líkāi le,", vi: "Công việc lần trước bạn chỉ làm hai tháng rồi nghỉ," },
+                { h: "其实，完全适应一个新的工作需要一年时间，", p: "qíshí, wánquán shìyìng yí gè xīn de gōngzuò xūyào yī nián shíjiān,", vi: "Thực ra, để hoàn toàn thích nghi với một công việc mới cần một năm thời gian," },
+                { h: "所以，经常换工作不一定好。", p: "suǒyǐ, jīngcháng huàn gōngzuò bù yídìng hǎo.", vi: "vì vậy, thường xuyên đổi việc chưa chắc đã tốt." },
+                { h: "我也明白。但是那份工作的收入太少了！", p: "Wǒ yě míngbai. Dànshì nà fèn gōngzuò de shōurù tài shǎo le!", vi: "Tôi cũng hiểu. Nhưng thu nhập của công việc đó ít quá!" },
+                { h: "你才到新公司，不要太着急赚钱，", p: "Nǐ cái dào xīn gōngsī, búyào tài zháojí zhuànqián,", vi: "Bạn mới đến công ty mới, đừng quá nôn nóng kiếm tiền," },
+                { h: "多学习才是最重要的。", p: "duō xuéxí cái shì zuì zhòngyào de.", vi: "Học hỏi nhiều mới là quan trọng nhất." },
+                { h: "好。我一定会努力把现在这份工作做好。", p: "Hǎo. Wǒ yídìng huì nǔlì bǎ xiànzài zhè fèn gōngzuò zuò hǎo.", vi: "Được. Tôi nhất định sẽ nỗ lực làm tốt công việc hiện tại này." }
+            ]},
+            { id: 2, title: "Bài khóa 2", desc: "王经理和小李在说工作", audioSrc: "https://raw.githubusercontent.com/ngabui94-create/game-hoc-tieng-trung/main/audio/hsk4/lesson4/04-2.mp3", completed: false, sentences: [
+                { h: "那份调查还要多长时间才能做完？", p: "Nà fèn diàochá hái yào duō cháng shíjiān cái néng zuò wán?", vi: "Bản điều tra đó còn cần bao lâu nữa mới làm xong?" },
+                { h: "按原来的计划应该是两周，", p: "Àn yuánlái de jìhuà yīnggāi shì liǎng zhōu,", vi: "Theo kế hoạch ban đầu thì nên là hai tuần," },
+                { h: "但是我们可以提前完成，", p: "dànshì wǒmen kěyǐ tíqián wánchéng,", vi: "nhưng chúng tôi có thể hoàn thành sớm," },
+                { h: "周末保证做完。", p: "zhōumò bǎozhèng zuò wán.", vi: "đảm bảo cuối tuần làm xong." },
+                { h: "虽然最近工作很忙，", p: "Suīrán zuìjìn gōngzuò hěn máng,", vi: "Tuy dạo này công việc rất bận," },
+                { h: "但你们也要注意身体啊。", p: "dàn nǐmen yě yào zhùyì shēntǐ a.", vi: "nhưng các bạn cũng phải chú ý sức khỏe nhé." },
+                { h: "谢谢您！", p: "Xièxie nín!", vi: "Cảm ơn ngài!" },
+                { h: "现在有很多事情等着我做，", p: "Xiànzài yǒu hěn duō shìqíng děngzhe wǒ zuò,", vi: "Bây giờ có rất nhiều việc đang chờ tôi làm," },
+                { h: "真不知道该先做哪个好。", p: "zhēn bù zhīdào gāi xiān zuò nǎ ge hǎo.", vi: "thật không biết nên làm việc nào trước thì tốt." },
+                { h: "每天早上我都把当天计划要做的事情写在笔记本上，", p: "Měitiān zǎoshang wǒ dōu bǎ dāngtiān jìhuà yào zuò de shìqíng xiě zài bǐjìběn shàng,", vi: "Mỗi sáng tôi đều viết những việc dự định làm trong ngày vào sổ tay," },
+                { h: "提醒自己安排好时间。", p: "tíxǐng zìjǐ ānpái hǎo shíjiān.", vi: "nhắc nhở bản thân sắp xếp thời gian cho tốt." },
+                { h: "你也可以试试这样做。", p: "Nǐ yě kěyǐ shìshi zhèyàng zuò.", vi: "Cậu cũng có thể thử làm như vậy." },
+                { h: "这个办法真不错！", p: "Zhè ge bànfǎ zhēn búcuò!", vi: "Cách này thật không tồi!" },
+                { h: "这样我就不会手忙脚乱了。", p: "Zhèyàng wǒ jiù bú huì shǒumángjiǎoluàn le.", vi: "Như vậy tôi sẽ không bị cuống cuồng lên nữa." }
+            ]},
+            { id: 3, title: "Bài khóa 3", desc: "王经理和马经理在说工作", audioSrc: "https://raw.githubusercontent.com/ngabui94-create/game-hoc-tieng-trung/main/audio/hsk4/lesson4/04-3.mp3", completed: false, sentences: [
+                { h: "什么事让你这么高兴啊？", p: "Shénme shì ràng nǐ zhème gāoxìng a?", vi: "Chuyện gì khiến anh vui thế?" },
+                { h: "我们和上次那个公司的生意终于谈成了。", p: "Wǒmen hé shàng cì nà ge gōngsī de shēngyì zhōngyú tán chéng le.", vi: "Mối làm ăn của chúng ta với công ty lần trước cuối cùng cũng bàn bạc thành công rồi." },
+                { h: "太好了！", p: "Tài hǎo le!", vi: "Tốt quá rồi!" },
+                { h: "你工作那么努力，公司会越来越好的。", p: "Nǐ gōngzuò nàme nǔlì, gōngsī huì yuè lái yuè hǎo de.", vi: "Anh làm việc nỗ lực như vậy, công ty sẽ ngày càng tốt lên." },
+                { h: "我原来以为做生意很简单，", p: "Wǒ yuánlái yǐwéi zuò shēngyì hěn jiǎndān,", vi: "Trước đây tôi tưởng làm kinh doanh rất đơn giản," },
+                { h: "后来才发现其实不容易，", p: "hòulái cái fāxiàn qíshí bù róngyì,", vi: "sau này mới phát hiện ra thực ra không hề dễ dàng," },
+                { h: "现在赚钱越来越难了。", p: "xiànzài zhuànqián yuè lái yuè nán le.", vi: "Bây giờ kiếm tiền ngày càng khó." },
+                { h: "慢慢来，万事开头难，", p: "Mànman lái, wànshì kāitóu nán,", vi: "Cứ từ từ, vạn sự khởi đầu nan," },
+                { h: "重要的是要多积累经验。", p: "zhòngyào de shì yào duō jīlěi jīngyàn.", vi: "Quan trọng là phải tích lũy nhiều kinh nghiệm." },
+                { h: "我相信经过我们大家的努力，", p: "Wǒ xiāngxìn jīngguò wǒmen dàjiā de nǔlì,", vi: "Tôi tin rằng qua sự nỗ lực của tất cả chúng ta," },
+                { h: "公司的生意会越做越大，", p: "gōngsī de shēngyì huì yuè zuò yuè dà,", vi: "công việc kinh doanh của công ty sẽ ngày càng lớn mạnh," },
+                { h: "一切都会好的。", p: "yíqiè dōu huì hǎo de.", vi: "mọi thứ đều sẽ tốt đẹp." }
+            ]},
+            { id: 4, title: "Bài khóa 4", desc: "团队的努力与奖金", audioSrc: "https://raw.githubusercontent.com/ngabui94-create/game-hoc-tieng-trung/main/audio/hsk4/lesson4/04-4.mp3", completed: false, sentences: [
+                { h: "我们今年的工作都已经按照计划完成了。", p: "Wǒmen jīnnián de gōngzuò dōu yǐjīng ànzhào jìhuà wánchéng le.", vi: "Công việc năm nay của chúng ta đều đã hoàn thành theo kế hoạch." },
+                { h: "这一段时间，尽管工作很紧张，", p: "Zhè yī duàn shíjiān, jǐnguǎn gōngzuò hěn jǐnzhāng,", vi: "Trong khoảng thời gian này, mặc dù công việc rất căng thẳng," },
+                { h: "中间也遇到了很多困难，", p: "zhōngjiān yě yùdào le hěn duō kùnnan,", vi: "ở giữa cũng gặp phải rất nhiều khó khăn," },
+                { h: "但是因为有大家的努力，", p: "dànshì yīnwèi yǒu dàjiā de nǔlì,", vi: "nhưng nhờ có sự nỗ lực của mọi người," },
+                { h: "我们成功地解决了问题，", p: "wǒmen chénggōng de jiějué le wèntí,", vi: "chúng ta đã giải quyết vấn đề thành công," },
+                { h: "顺利地完成了工作，", p: "shùnlì de wánchéng le gōngzuò,", vi: "thuận lợi hoàn thành công việc," },
+                { h: "非常感谢大家对我的帮助！", p: "fēicháng gǎnxiè dàjiā duì wǒ de bāngzhù!", vi: "Vô cùng cảm ơn sự giúp đỡ của mọi người dành cho tôi!" },
+                { h: "另外，马经理让我告诉大家一个好消息，", p: "Lìngwài, Mǎ jīnglǐ ràng wǒ gàosu dàjiā yí gè hǎo xiāoxi,", vi: "Ngoài ra, giám đốc Mã bảo tôi thông báo cho mọi người một tin tốt," },
+                { h: "因为大家按时完成了工作，", p: "yīnwèi dàjiā ànshí wánchéng le gōngzuò,", vi: "bởi vì mọi người đã hoàn thành công việc đúng hạn," },
+                { h: "公司决定这个月给每人多发三千元奖金。", p: "gōngsī juédìng zhè ge yuè gěi měi rén duō fā sānqiān yuán jiǎngjīn.", vi: "Công ty quyết định tháng này sẽ phát thêm cho mỗi người 3000 tệ tiền thưởng." },
+                { h: "感谢大家这三个多月的努力工作，", p: "Gǎnxiè dàjiā zhè sān gè duō yuè de nǔlì gōngzuò,", vi: "Cảm ơn mọi người đã nỗ lực làm việc trong hơn ba tháng qua," },
+                { h: "希望明年能有更大的成绩！", p: "xīwàng míngnián néng yǒu gèng dà de chéngjì!", vi: "Hy vọng năm sau sẽ có được thành tích lớn hơn!" }
+            ]},
+            { id: 5, title: "Bài khóa 5", desc: "工作经验与责任心", audioSrc: "https://raw.githubusercontent.com/ngabui94-create/game-hoc-tieng-trung/main/audio/hsk4/lesson4/04-5.mp3", completed: false, sentences: [
+                { h: "年轻人刚开始工作的时候，不要太着急赚钱，", p: "Niánqīng rén gāng kāishǐ gōngzuò de shíhou, búyào tài zháojí zhuànqián,", vi: "Người trẻ khi mới bắt đầu làm việc, đừng quá nôn nóng kiếm tiền," },
+                { h: "不要眼睛里只有工资和奖金。", p: "búyào yǎnjīng lǐ zhǐyǒu gōngzī hé jiǎngjīn.", vi: "đừng trong mắt chỉ có tiền lương và tiền thưởng." },
+                { h: "在工作的前几年，重要的是丰富自己的工作经验，", p: "Zài gōngzuò de qián jǐ nián, zhòngyào de shì fēngfù zìjǐ de gōngzuò jīngyàn,", vi: "Trong vài năm đầu làm việc, điều quan trọng là làm phong phú kinh nghiệm làm việc của bản thân," },
+                { h: "学习与同事交流的方法，", p: "xuéxí yǔ tóngshì jiāoliú de fāngfǎ,", vi: "học cách giao tiếp với đồng nghiệp," },
+                { h: "积累专业知识，这些比收入重要多了。", p: "jīlěi zhuānyè zhīshi, zhèxiē bǐ shōurù zhòngyào duō le.", vi: "tích lũy kiến thức chuyên môn, những điều này quan trọng hơn thu nhập rất nhiều." },
+                { h: "但是很多时候，", p: "Dànshì hěn duō shíhou,", vi: "Tuy nhiên rất nhiều lúc," },
+                { h: "我们不得不去做一些自己不愿意做甚至是非常不喜欢的工作。", p: "wǒmen bù dé bù qù zuò yìxiē zìjǐ bú yuànyì zuò shènzhì shì fēicháng bù xǐhuan de gōngzuò.", vi: "chúng ta buộc phải làm những công việc mình không muốn làm, thậm chí là rất không thích." },
+                { h: "这时，我们最需要的就是对工作的责任心。", p: "Zhè shí, wǒmen zuì xūyào de jiùshì duì gōngzuò de zérèn xīn.", vi: "Lúc này, thứ chúng ta cần nhất chính là tinh thần trách nhiệm với công việc." },
+                { h: "一个人即使能力再高，经验再丰富，", p: "Yí gè rén jíshǐ nénglì zài gāo, jīngyàn zài fēngfù,", vi: "Một người cho dù năng lực cao đến đâu, kinh nghiệm phong phú đến đâu," },
+                { h: "如果对工作没有责任心，也很难把工作做好。", p: "rúguǒ duì gōngzuò méiyǒu zérèn xīn, yě hěn nán bǎ gōngzuò zuò hǎo.", vi: "nếu không có trách nhiệm với công việc, cũng rất khó làm tốt công việc." }
+            ]}
+        ];
+
+        let currentFlashList = [], flashcardIdx = 0, learnedCount = 0, unlearnedItems = [];
+        function startFlashcards(list) {
+            playAudio('audio-click');
+            currentFlashList = [...list];
+            flashcardIdx = 0; learnedCount = 0; unlearnedItems = [];
+            document.querySelectorAll('.ghibli-card').forEach(el => el.classList.add('hidden'));
+            document.getElementById('flashcard-screen').classList.remove('hidden');
+            document.getElementById('card-total').innerText = currentFlashList.length;
+            updateFlashcard();
+        }
+        function updateFlashcard() {
+            const card = currentFlashList[flashcardIdx];
+            document.getElementById('card-index').innerText = flashcardIdx + 1;
+            document.getElementById('card-hanzi').innerText = card.h;
+            document.getElementById('card-pinyin').innerText = card.p;
+            document.getElementById('card-mean').innerText = card.m;
+            document.getElementById('card-example-cn').innerText = card.ex;
+            document.getElementById('card-example-py').innerText = card.exp;
+            document.getElementById('card-example-vi').innerText = card.exv;
+            document.getElementById('flashcard-inner').classList.remove('is-flipped');
+        }
+        function flipCard() { playAudio('audio-flip'); document.getElementById('flashcard-inner').classList.toggle('is-flipped'); }
+        function markCard(learned) {
+            if (learned) learnedCount++; else unlearnedItems.push(currentFlashList[flashcardIdx]);
+            flashcardIdx++;
+            if (flashcardIdx < currentFlashList.length) updateFlashcard(); else showFlashcardStats();
+        }
+        function showFlashcardStats() {
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.remove('hidden');
+            const learnedPercent = Math.round((learnedCount / currentFlashList.length) * 100);
+            document.getElementById('stat-learned-percent').innerText = learnedPercent + "%";
+            document.getElementById('stat-unlearned-percent').innerText = (100 - learnedPercent) + "%";
+            const listContainer = document.getElementById('unlearned-list');
+            listContainer.innerHTML = unlearnedItems.length > 0 ? '' : '<p class="text-center py-4 font-bold text-emerald-700">Tuyệt vời! Bạn đã thuộc hết.</p>';
+            unlearnedItems.forEach(item => {
+                listContainer.innerHTML += `<div class="flex justify-between border-b border-amber-200 pb-1 text-sm"><span class="font-bold text-amber-900">${item.h}</span><span class="text-gray-600">${item.m}</span></div>`;
+            });
+            document.getElementById('btn-relearn').classList.toggle('hidden', unlearnedItems.length === 0);
+        }
+        function relearnUnlearned() { startFlashcards(unlearnedItems); }
+        function endFlashcardSession() { completedStatus.flashcard = true; document.getElementById('check-flashcard').classList.remove('hidden'); checkUnlockForm(); returnToStart(); }
+
+        let currentLessonIdx = -1, dictStep = 0;
+        function openDictationMenu() {
+            playAudio('audio-click');
+            document.querySelectorAll('.ghibli-card').forEach(el => el.classList.add('hidden'));
+            document.getElementById('dictation-menu-screen').classList.remove('hidden');
+            renderLessonList();
+        }
+        function renderLessonList() {
+            const listContainer = document.getElementById('lesson-list');
+            listContainer.innerHTML = '';
+            let allCompleted = true;
+            lessonsData.forEach((lesson, index) => {
+                if (!lesson.completed) allCompleted = false;
+                const btn = document.createElement('button');
+                btn.className = `btn-ghibli text-left py-4 relative flex flex-col ${lesson.completed ? 'opacity-80 bg-emerald-100' : ''}`;
+                btn.onclick = () => startDictationLesson(index);
+                btn.innerHTML = `<span class="font-bold">${lesson.title}</span><span class="text-xs">${lesson.desc}</span>${lesson.completed ? '<span class="absolute right-4 text-xl">✅</span>' : ''}`;
+                listContainer.appendChild(btn);
+            });
+            if (allCompleted && lessonsData.length > 0) {
+                document.getElementById('dictation-menu-screen').classList.add('hidden');
+                document.getElementById('dictation-end-screen').classList.remove('hidden');
+            }
+        }
+        function startDictationLesson(index) {
+            playAudio('audio-click');
+            currentLessonIdx = index;
+            dictStep = 0;
+            document.getElementById('dictation-menu-screen').classList.add('hidden');
+            document.getElementById('dictation-screen').classList.remove('hidden');
+            document.getElementById('lesson-audio-player').src = lessonsData[currentLessonIdx].audioSrc;
+            loadDictationStep();
+        }
+        function backToDictationMenu() { 
+            const player = document.getElementById('lesson-audio-player');
+            player.pause();
+            openDictationMenu(); 
+        }
+        function loadDictationStep() {
+            const lesson = lessonsData[currentLessonIdx];
+            const sentenceObj = lesson.sentences[dictStep];
+            document.getElementById('dictation-title-display').innerHTML = `Bài 4: Câu <span id="dict-step">${dictStep + 1}</span>/${lesson.sentences.length}`;
+            const rawH = sentenceObj.h.replace(/[，。？！、\s]/g, '');
+            document.getElementById('sentence-range-hint').innerText = `${rawH.substring(0, 2)} ... ${rawH.substring(rawH.length - 2)}`;
+            const inputField = document.getElementById('dict-input');
+            inputField.value = ""; inputField.disabled = false;
+            document.getElementById('dict-answer-box').classList.add('hidden');
+            document.getElementById('btn-next-dict').classList.add('hidden');
+            inputField.focus();
+        }
+        function cleanChineseText(text) { return text.replace(/[^\u4e00-\u9fa5]/g, '').trim(); }
+        function checkDictation() {
+            const sentenceObj = lessonsData[currentLessonIdx].sentences[dictStep];
+            const feedback = document.getElementById('dict-feedback');
+            const userInput = cleanChineseText(document.getElementById('dict-input').value);
+            const correctInput = cleanChineseText(sentenceObj.h);
+            
+            if (userInput === correctInput) {
+                playAudio('audio-correct');
+                feedback.innerText = "Chính xác! 🌟";
+                feedback.className = "w-full p-2 rounded-lg text-center bg-emerald-100 text-emerald-700 font-bold";
+            } else {
+                playAudio('audio-wrong');
+                feedback.innerText = "Chưa đúng! Đáp án:";
+                feedback.className = "w-full p-2 rounded-lg text-center bg-rose-100 text-rose-700 font-bold";
+            }
+            document.getElementById('ans-hanzi').innerText = sentenceObj.h;
+            document.getElementById('ans-pinyin').innerText = sentenceObj.p;
+            document.getElementById('ans-vi').innerText = sentenceObj.vi;
+            document.getElementById('dict-answer-box').classList.remove('hidden');
+            document.getElementById('dict-input').disabled = true;
+            
+            const btnNext = document.getElementById('btn-next-dict');
+            btnNext.innerText = (dictStep === lessonsData[currentLessonIdx].sentences.length - 1) ? "Hoàn thành Bài khóa 🏆" : "Câu tiếp theo ➡️";
+            btnNext.classList.remove('hidden');
+        }
+        function nextDictation() {
+            if (dictStep < lessonsData[currentLessonIdx].sentences.length - 1) {
+                dictStep++;
+                loadDictationStep();
+            } else {
+                lessonsData[currentLessonIdx].completed = true;
+                openDictationMenu();
+            }
+        }
+        function endDictationSession() { completedStatus.dictation = true; document.getElementById('check-dictation').classList.remove('hidden'); checkUnlockForm(); returnToStart(); }
+
+        function checkUnlockForm() {
+            const allDictDone = lessonsData.every(l => l.completed);
+            if (completedStatus.flashcard && allDictDone) {
+                const btn = document.getElementById('btn-form');
+                btn.disabled = false;
+                btn.className = "btn-ghibli text-lg mt-2 bg-emerald-100 border-emerald-500 text-emerald-800 shadow-md";
+                btn.innerHTML = '📝 Phần 3: Bài Tập (Đã mở khóa)';
+                btn.onclick = () => window.open('https://forms.gle/KninNTAi99ZFSqASA', '_blank');
+            }
+        }
+
+        document.addEventListener("keydown", function(e) {
+            const dictScreen = document.getElementById('dictation-screen');
+            if (e.key === "Enter" && !dictScreen.classList.contains('hidden')) {
+                e.preventDefault();
+                const btnNext = document.getElementById('btn-next-dict');
+                const inputField = document.getElementById('dict-input');
+                if (!btnNext.classList.contains('hidden')) nextDictation();
+                else if (!inputField.disabled) checkDictation();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Game Bộ Thủ 2 | Nga Học HSK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+SC:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8bc34a; 
+            --primary-dark: #558b2f;
+            --secondary: #ffb74d; 
+            --bg-color: #f1f8e9; 
+            --card-bg: #ffffff;
+            --text-main: #33691e;
+            --text-muted: #5d4037;
+            --hanzi-color: #d84315;
+            --font-cn: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; -webkit-tap-highlight-color: transparent;}
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#cddc39 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
+            color: var(--text-main); display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; padding-bottom: 50px;
+        }
+
+        .branding { width: 100%; background: #fff; text-align: center; padding: 6px 0; font-size: 0.8rem; font-weight: 800; color: var(--primary-dark); letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-transform: uppercase; z-index: 10;}
+        .header { width: 100%; max-width: 800px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 0 0 20px 20px; box-shadow: 0 5px 15px rgba(139, 195, 74, 0.3); z-index: 10;}
+        .btn-back { background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 8px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.5); transition: 0.2s;}
+        
+        .screen { display: none; width: 100%; max-width: 800px; padding: 20px 15px; animation: fadeIn 0.4s; flex-direction: column; align-items: center;}
+        .screen.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* STUDY SECTION */
+        .study-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%;}
+        .study-card {
+            background: var(--card-bg); border-radius: 15px; padding: 20px; display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-left: 5px solid var(--secondary);
+        }
+        .st-hz-box {
+            width: 70px; height: 70px; background: #fff8e1; border-radius: 12px; border: 2px solid #ffe082;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; flex-shrink: 0;
+        }
+        .st-hz { font-family: var(--font-cn); font-size: 2.2rem; color: var(--hanzi-color); font-weight: bold; line-height: 1;}
+        .st-info { flex: 1; }
+        .st-name { font-size: 1.1rem; font-weight: 900; color: var(--primary-dark); }
+        .st-mean { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 5px;}
+
+        /* QUIZ SECTION */
+        .game-container { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); text-align: center; width: 100%; }
+        .progress-bar { width: 100%; height: 10px; background: #eee; border-radius: 5px; margin-bottom: 25px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), #ff9800); width: 0%; transition: width 0.3s; }
+        .hz-py-inline { display: inline-flex; align-items: baseline; gap: 4px; color: var(--primary-dark); background: #f1f8e9; padding: 2px 8px; border-radius: 8px;}
+        .hz-char { font-family: var(--font-cn); font-weight: 700; font-size: 1.5rem; color: var(--hanzi-color);}
+        
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
+        
+        .option-btn {
+            background: #f8f9fa; border: 2px solid #e0e0e0; padding: 15px; border-radius: 12px;
+            font-size: 1rem; font-weight: bold; color: #424242; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; text-align: left; gap: 10px;
+        }
+        .option-btn.selected { background: #fff8e1; border-color: var(--secondary); }
+        .btn-check {
+            background: var(--primary); color: white; border: none; padding: 15px; border-radius: 15px;
+            font-size: 1.1rem; font-weight: 900; width: 100%; margin-top: 20px; box-shadow: 0 4px 0 var(--primary-dark); cursor: pointer;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 15px;
+        }
+        .modal-content {
+            background: white; width: 100%; max-width: 400px; padding: 25px;
+            border-radius: 20px; text-align: center; border: 4px solid var(--primary);
+        }
+
+        .btn-large {
+            background: linear-gradient(135deg, var(--secondary), #f57c00); color: white; border: none;
+            padding: 15px 30px; border-radius: 30px; font-size: 1.1rem; font-weight: 900;
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4); cursor: pointer; transition: 0.3s; margin-top: 25px; width: 100%; max-width: 350px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="branding">© Bản Quyền Thuộc Về Nga Học HSK</div>
+    <header class="header">
+        <a href="index.html" class="btn-back">❮ Về Vườn</a>
+        <h2>Khu Vườn Bộ Thủ 2</h2>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <!-- MÀN HÌNH HỌC LÝ THUYẾT -->
+    <section id="screen-study" class="screen active">
+        <h1 style="font-size: 1.5rem; font-weight: 900; color: var(--primary-dark); margin-bottom: 5px; text-align: center;">Nhóm 2: Nhà Cửa & Đồ Vật</h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted); font-weight: 600; margin-bottom: 20px; text-align: center;">Khám phá các bộ thủ gắn liền với đời sống hàng ngày.</p>
+        
+        <div class="study-grid" id="study-container"></div>
+        <button class="btn-large" onclick="startQuiz()">Sẵn Sàng Kiểm Tra ➔</button>
+    </section>
+
+    <!-- MÀN HÌNH QUIZ -->
+    <section id="screen-quiz" class="screen">
+        <div class="game-container">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 800; color: var(--primary-dark);">
+                <span id="score-display">Điểm: 0</span>
+                <span id="question-count">Câu: 1/15</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div id="question-text" style="font-size: 1.2rem; font-weight: 700; margin-bottom: 25px; color: var(--text-muted);"></div>
+            <div class="options-grid" id="options-container"></div>
+            <button id="btn-submit" class="btn-check" onclick="checkAnswer()">CHỐT ĐÁP ÁN</button>
+        </div>
+    </section>
+
+    <!-- KẾT QUẢ -->
+    <section id="screen-result" class="screen">
+        <div class="game-container" style="display: flex; flex-direction: column; align-items: center; padding: 40px 20px;">
+            <div style="font-size: 5rem;">🏠</div>
+            <h2 style="font-size: 1.8rem; color: var(--primary-dark); font-weight: 900; margin-top: 10px;">KẾT QUẢ</h2>
+            <div id="final-score" style="width: 120px; height: 120px; border-radius: 50%; border: 6px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 900; color: var(--primary-dark); margin: 15px 0; background: #f1f8e9;">0</div>
+            <p id="result-msg" style="color: var(--text-muted); font-weight: 700; margin-bottom: 25px; text-align: center;"></p>
+            <button class="btn-large" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));" onclick="location.href='BO THU 3.html'">Sang Game Tiếp Theo: Bộ Thủ 3 ➔</button>
+        </div>
+    </section>
+
+    <div id="explanation-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="modal-icon" style="font-size: 4rem; margin-bottom: 10px;">🌸</div>
+            <h3 id="modal-title" style="font-size: 1.5rem; font-weight: 900; margin-bottom: 10px;"></h3>
+            <p id="modal-desc" style="font-size: 1.05rem; color: #555; margin-bottom: 20px; font-weight: 600;"></p>
+            <button class="btn-check" style="margin-top: 0;" onclick="nextQuestion()">Tiếp tục ❯</button>
+        </div>
+    </div>
+
+    <script>
+        const studyData = [
+            { name: "Bộ Miên", hz: "宀", py: "mián", mean: "Mái nhà", ex: "<span>家</span> (jiā: nhà), <span>安</span> (ān: an)" },
+            { name: "Bộ Nghiễm", hz: "广", py: "guǎng", mean: "Mái che, tòa nhà", ex: "<span>店</span> (diàn: cửa hàng)" },
+            { name: "Bộ Môn", hz: "门", py: "mén", mean: "Cửa hai cánh", ex: "<span>问</span> (wèn: hỏi), <span>间</span> (jiān: gian)" },
+            { name: "Bộ Đao", hz: "刀", hz2: "刂", py: "dāo", mean: "Con dao, vũ khí", ex: "<span>别</span> (bié: đừng), <span>到</span> (dào: đến)" },
+            { name: "Bộ cung", hz: "弓", py: "gōng", mean: "Cái cung", ex: "<span>张</span> (zhāng: họ Trương)" },
+            { name: "Bộ Xa", hz: "车", py: "chē", mean: "Xe cộ", ex: "<span>辆</span> (liàng: lượng từ xe)" },
+            { name: "Bộ Y", hz: "衣", hz2: "衤", py: "yī", mean: "Quần áo", ex: "<span>裤</span> (kù: quần), <span>衫</span> (shān: áo)" },
+            { name: "Bộ Cân", hz: "巾", py: "jīn", mean: "Cái khăn", ex: "<span>帮</span> (bāng: giúp)" },
+            { name: "Bộ Bối", hz: "贝", py: "bèi", mean: "Vỏ sò, tiền bạc", ex: "<span>贵</span> (guì: đắt), <span>买</span> (mǎi: mua)" },
+            { name: "Bộ Ngọc", hz: "玉", hz2: "王", py: "yù", mean: "Ngọc báu", ex: "<span>现</span> (xiàn: hiện), <span>玩</span> (wán: chơi)" }
+        ];
+
+        function hp(hanzi, pinyin) { return `<span class="hz-py-inline"><span class="hz-char">${hanzi}</span><span class="py-text">${pinyin}</span></span>`; }
+
+        const quizData = [
+            { q: `Chữ 'Nhà' ${hp('家', 'jiā')} có bộ Miên ${hp('宀', 'mián')} ở trên vì sao?`, options: ["Nghĩa là con heo", "Nghĩa là mái nhà che chở", "Nghĩa là con người", "Nghĩa là con dao"], correct: 1, explain: "Bộ Miên tượng trưng cho mái nhà, bên dưới là con heo." },
+            { q: `Bộ Môn ${hp('门', 'mén')} trong chữ 'Hỏi' ${hp('问', 'wèn')} mang ý nghĩa?`, options: ["Cái cửa để gõ", "Cái miệng để hỏi", "Mái nhà", "Tiền bạc"], correct: 0, explain: "Muốn hỏi điều gì, người xưa phải đến cửa nhà người khác." },
+            { q: `Chữ 'Tiền' ${hp('钱', 'qián')} và 'Đắt' ${hp('贵', 'guì')} thường chứa bộ nào?`, options: ["Bộ Đao", "Bộ Y", "Bộ Bối", "Bộ Miên"], correct: 2, explain: "Vỏ sò (Bối) được dùng làm tiền tệ thời cổ đại." },
+            { q: `Bộ Đao đứng ${hp('刂', 'dāo')} trong chữ 'Đến' ${hp('到', 'dào')} gợi hình ảnh?`, options: ["Cái xe", "Con dao/vũ khí", "Quần áo", "Mái hiên"], correct: 1, explain: "Bộ Đao liên quan đến các hành động cắt, phân chia hoặc vũ khí." },
+            { q: `Chữ 'Quần' ${hp('裤', 'kù')} có bộ Y ${hp('衤', 'yī')} vì nó liên quan đến?`, options: ["Nhà cửa", "Tiền bạc", "Quần áo, vải vóc", "Xe cộ"], correct: 2, explain: "Tất cả các loại trang phục thường mang bộ Y." },
+            { q: `Tại sao chữ 'Cửa hàng' ${hp('店', 'diàn')} có bộ Nghiễm ${hp('广', 'guǎng')}?`, options: ["Vì cửa hàng là một tòa nhà", "Vì bán dao", "Vì bán xe", "Vì bán ngọc"], correct: 0, explain: "Bộ Nghiễm chỉ các công trình, tòa nhà công cộng." },
+            { q: `Bộ Xa ${hp('车', 'chē')} xuất hiện trong các chữ liên quan đến?`, options: ["Đồ ăn", "Phương tiện giao thông", "Vải vóc", "Cây cối"], correct: 1, explain: "Xa có nghĩa là cái xe." },
+            { q: `Bộ Ngọc ${hp('王', 'yù')} thường xuất hiện trong các chữ chỉ?`, options: ["Đồ vật quý giá, đá quý", "Nhà vệ sinh", "Con dao", "Con đường"], correct: 0, explain: "Vương thực chất là biến thể của bộ Ngọc (đá quý)." },
+            { q: `Bộ Cân ${hp('巾', 'jīn')} trong chữ 'Giúp' ${hp('帮', 'bāng')} gợi hình ảnh gì?`, options: ["Con dao", "Cái khăn/mảnh vải", "Mái nhà", "Vỏ sò"], correct: 1, explain: "Bộ Cân chỉ các vật phẩm làm bằng vải." },
+            { q: `Chữ 'Mua' ${hp('买', 'mǎi')} chứa bộ Bối vì cần có cái gì để mua?`, options: ["Sức mạnh", "Tiền bạc", "Quần áo", "Mái nhà"], correct: 1, explain: "Mua bán gắn liền với vỏ sò (tiền tệ)." }
+        ];
+
+        let currentIdx = 0, score = 0, selectedOption = null;
+
+        window.onload = () => {
+            const studyHtml = studyData.map(item => `
+                <div class="study-card">
+                    <div class="st-hz-box"><div class="st-hz">${item.hz}</div></div>
+                    <div class="st-info">
+                        <div class="st-name">${item.name} (${item.py})</div>
+                        <div class="st-mean">${item.mean}</div>
+                        <div style="font-size:0.85rem; color:#777;">VD: ${item.ex}</div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('study-container').innerHTML = studyHtml;
+        };
+
+        function startQuiz() {
+            switchScreen('screen-quiz');
+            loadQuestion();
+        }
+
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function loadQuestion() {
+            const q = quizData[currentIdx];
+            document.getElementById('question-count').innerText = `Câu: ${currentIdx + 1}/${quizData.length}`;
+            document.getElementById('progress').style.width = `${(currentIdx / quizData.length) * 100}%`;
+            document.getElementById('question-text').innerHTML = q.q;
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            selectedOption = null;
+            ['A', 'B', 'C', 'D'].forEach((l, i) => {
+                if(!q.options[i]) return;
+                const b = document.createElement('div');
+                b.className = 'option-btn';
+                b.innerHTML = `<div class="opt-label" style="background:var(--secondary); color:white; width:25px; height:25px; border-radius:50%; display:flex; justify-content:center; align-items:center;">${l}</div><div>${q.options[i]}</div>`;
+                b.onclick = () => {
+                    document.querySelectorAll('.option-btn').forEach(opt => opt.classList.remove('selected'));
+                    b.classList.add('selected');
+                    selectedOption = i;
+                };
+                container.appendChild(b);
+            });
+        }
+
+        function checkAnswer() {
+            if (selectedOption === null) return;
+            const q = quizData[currentIdx];
+            const isCorrect = (selectedOption === q.correct);
+            if (isCorrect) { score += 10; document.getElementById('modal-icon').innerText = "🏠"; document.getElementById('modal-title').innerText = "Chính xác!"; }
+            else { document.getElementById('modal-icon').innerText = "☁️"; document.getElementById('modal-title').innerText = "Sai rồi!"; }
+            document.getElementById('modal-desc').innerText = q.explain;
+            document.getElementById('explanation-modal').style.display = 'flex';
+        }
+
+        function nextQuestion() {
+            document.getElementById('explanation-modal').style.display = 'none';
+            currentIdx++;
+            if (currentIdx < quizData.length) loadQuestion(); else showFinal();
+        }
+
+        function showFinal() {
+            switchScreen('screen-result');
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('result-msg').innerText = score >= 80 ? "Bạn quả là chuyên gia về nhà cửa!" : "Cần cố gắng thêm một chút nữa nhé!";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Core/">
+    <Project Path="HanLexicon.Application/HanLexicon.Application.csproj" Id="6a942976-75eb-4e06-8880-4672c7d0c485" />
+  </Folder>
+  <Folder Name="/Domain/">
+    <Project Path="HanLexicon.Domain/HanLexicon.Domain.csproj" Id="a054a765-82e8-4da3-be87-c87f4460ce0b" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Infrastructure.Postgres/Infrastructure.Postgres.csproj" Id="4f198f98-39f4-4a0f-b748-326cb6658103" />
+  </Folder>
+  <Folder Name="/Presentation/">
+    <Project Path="HanLexicon.Api/HanLexicon.Api.csproj" Id="b68cf14b-80af-4ec3-8897-400af9ce8598" />
+  </Folder>
+</Solution>

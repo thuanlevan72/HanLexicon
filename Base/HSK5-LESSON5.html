@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSK5 Bài 5 - 济南的泉水 | Nga Học HSK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+SC:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8bc34a; 
+            --primary-dark: #558b2f;
+            --secondary: #ffb74d; 
+            --secondary-dark: #f57c00;
+            --bg-color: #f1f8e9; 
+            --card-bg: #ffffff;
+            --text-main: #33691e;
+            --text-muted: #5d4037;
+            --hanzi-color: #689f38;
+            --font-cn: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; 
+            --border-light: #dcedc8;
+            --pinyin-color: #0284c7;
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            font-family: 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--border-light) 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; padding-bottom: 50px;
+        }
+
+        .branding {
+            width: 100%; background: #fff; text-align: center; padding: 6px 0;
+            font-size: 0.8rem; font-weight: 800; color: var(--primary-dark);
+            letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-transform: uppercase; z-index: 10;
+        }
+
+        .header {
+            width: 100%; padding: 15px 20px;
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(139, 195, 74, 0.3);
+            min-height: 60px;
+        }
+
+        .btn-back {
+            position: absolute; left: 15px;
+            background: rgba(255,255,255,0.2); color: white; text-decoration: none;
+            padding: 6px 10px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.5); cursor: pointer;
+            white-space: nowrap; z-index: 2;
+        }
+
+        .header h2 { 
+            font-size: 1.15rem; text-align: center; 
+            font-family: var(--font-cn); font-weight: 900; 
+            line-height: 1.3; padding: 0 85px; 
+            word-wrap: break-word;
+        }
+        @media (min-width: 768px) { .header h2 { font-size: 1.4rem; } .btn-back { padding: 8px 12px; font-size: 0.9rem;} }
+
+        .tabs {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
+            margin: 20px auto; background: white; padding: 8px;
+            border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 96%; max-width: 1000px;
+        }
+
+        .tab-btn {
+            flex: 1 1 calc(33% - 10px);
+            border: none; background: transparent;
+            padding: 8px 4px; border-radius: 12px;
+            font-size: 0.85rem; font-weight: 800; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s;
+            text-align: center; white-space: nowrap; min-width: 80px;
+        }
+        @media (min-width: 640px) {
+            .tab-btn { flex: 1; font-size: 0.95rem; padding: 12px 8px; border-radius: 25px; }
+            .tabs { border-radius: 30px; gap: 8px; }
+        }
+
+        .tab-btn.active {
+            background: var(--secondary); color: white;
+            box-shadow: 0 4px 10px rgba(255, 183, 77, 0.4);
+        }
+
+        .btn-primary, .btn-action {
+            color: white; border: none; padding: 12px 20px;
+            border-radius: 15px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.2s;
+            display: inline-flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-primary { background: var(--secondary); box-shadow: 0 4px 0 var(--secondary-dark); }
+        .btn-action { background: var(--primary); box-shadow: 0 4px 0 var(--primary-dark); }
+        @media (min-width: 768px) { 
+            .btn-primary, .btn-action { font-size: 1.15rem; padding: 14px 24px; } 
+        }
+        .btn-primary:active, .btn-action:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+
+        .card-container {
+            background: white; border-radius: 20px; padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06); width: 100%;
+            border: 2px solid var(--border-light);
+            animation: fadeIn 0.4s ease-out;
+        }
+        @media (min-width: 768px) { .card-container { padding: 30px; border-radius: 25px; } }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .chinese-text { font-family: var(--font-cn); font-weight: 700; letter-spacing: 0.5px; }
+
+        .flashcard-inner {
+            position: relative; width: 100%; height: 320px;
+            transition: transform 0.4s ease-in-out; transform-style: preserve-3d; cursor: pointer;
+        }
+        @media (min-width: 768px) { .flashcard-inner { height: 380px; } }
+        
+        .flashcard-inner.is-flipped { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; border-radius: 15px;
+            padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .flashcard-front { background-color: #fff; border: 2px solid var(--primary); }
+        .flashcard-back { background-color: var(--bg-color); transform: rotateY(180deg); border: 2px solid var(--secondary); }
+        
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 10px; }
+
+        .circle-stat {
+            position: relative; width: 100px; height: 100px; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 8px solid var(--bg-color); background: white;
+        }
+        @media (min-width: 768px) { .circle-stat { width: 120px; height: 120px; } }
+        .stat-green { border-color: var(--primary); color: var(--primary-dark); }
+        .stat-red { border-color: #ffcc80; color: #e65100; }
+
+        .text-content-area { font-size: 1.4rem; line-height: 2.4; }
+        @media (min-width: 768px) { .text-content-area { font-size: 1.6rem; line-height: 2.6; } }
+        ruby { ruby-position: over; margin: 0 2px; }
+        rt { font-size: 0.85rem; color: var(--pinyin-color); font-family: 'Nunito', sans-serif; font-weight: 800; transform: translateY(-2px); transition: opacity 0.2s; }
+        @media (min-width: 768px) { rt { font-size: 0.95rem; } }
+        .hide-pinyin rt { opacity: 0; visibility: hidden; }
+        .hide-pinyin .text-content-area { line-height: 1.9; }
+
+        input:checked ~ .toggle-bg { background-color: var(--primary); }
+        input:checked ~ .toggle-dot { transform: translateX(100%); }
+
+        .quiz-option {
+            width: 100%; text-align: left; padding: 12px 16px; margin-bottom: 10px;
+            border: 2px solid var(--border-light); border-radius: 12px; font-weight: 700; font-size: 1rem;
+            background: white; color: var(--text-main); cursor: pointer; transition: all 0.2s;
+        }
+        @media (min-width: 768px) { .quiz-option { padding: 14px 20px; font-size: 1.1rem; } }
+        .quiz-option:hover:not(:disabled) { border-color: var(--secondary); background: #fff3e0; }
+        .quiz-option:disabled { cursor: not-allowed; opacity: 0.9; }
+        .opt-correct { background: #dcedc8 !important; border-color: #7cb342 !important; color: #33691e !important; box-shadow: 0 0 10px rgba(139,195,74,0.3); }
+        .opt-wrong { background: #ffcc80 !important; border-color: #ff9800 !important; color: #e65100 !important; }
+
+        .puzzle-piece {
+            display: inline-block; padding: 8px 12px; margin: 4px;
+            background: white; border: 2px solid var(--primary);
+            border-radius: 10px; font-weight: bold; font-size: 1rem; color: var(--primary-dark);
+            cursor: pointer; box-shadow: 0 3px 0 var(--primary);
+            transition: transform 0.1s; user-select: none;
+        }
+        @media (min-width: 768px) { .puzzle-piece { padding: 10px 16px; font-size: 1.1rem; } }
+        
+        .puzzle-piece:active { transform: translateY(3px); box-shadow: none; }
+        .puzzle-piece.used { opacity: 0; pointer-events: none; visibility: hidden; position: absolute; }
+        
+        .answer-area {
+            min-height: 100px; border: 3px dashed var(--border-light); border-radius: 15px;
+            padding: 10px; margin-bottom: 20px; background: #fafafa;
+            display: flex; flex-wrap: wrap; align-content: flex-start;
+        }
+        .answer-piece {
+            display: inline-block; padding: 8px 12px; margin: 4px;
+            background: var(--primary); border: 2px solid var(--primary-dark);
+            border-radius: 10px; font-weight: bold; font-size: 1rem; color: white;
+            cursor: pointer; box-shadow: 0 3px 0 var(--primary-dark);
+            animation: popIn 0.2s ease-out;
+        }
+        @media (min-width: 768px) { .answer-piece { padding: 10px 16px; font-size: 1.1rem; } }
+
+        .feedback-box {
+            animation: fadeIn 0.3s ease-out;
+        }
+        .feedback-success { background: #f1f8e9; border: 2px solid var(--primary); }
+        .feedback-error { background: #fff3e0; border: 2px solid #ffb74d; }
+
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+    </style>
+</head>
+<body>
+
+    <div class="branding">© Bản Quyền Thuộc Về Nga Học HSK</div>
+
+    <header class="header">
+        <a href="index.html" class="btn-back">❮ Về Vườn</a>
+        <h2>Bài 5: 济南的泉水</h2>
+    </header>
+
+    <div class="tabs">
+        <button id="tab-vocab" class="tab-btn active" onclick="switchTab('vocab')">🎴 Từ Vựng</button>
+        <button id="tab-text" class="tab-btn" onclick="switchTab('text')">📖 Bài Khóa</button>
+        <button id="tab-game" class="tab-btn" onclick="switchTab('game')">🧩 Sắp Xếp</button>
+        <button id="tab-quiz" class="tab-btn" onclick="switchTab('quiz')">❓ Đọc Hiểu</button>
+        <button id="tab-exercise" class="tab-btn" onclick="switchTab('exercise')">📝 Bài Tập</button>
+    </div>
+
+    <div class="w-full max-w-[1200px] px-3 sm:px-6 lg:px-10 mb-10 mx-auto">
+
+        <!-- ================= TỪ VỰNG ================= -->
+        <div id="section-vocab" class="w-full">
+            <div id="vocab-start" class="card-container text-center max-w-2xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold mb-3" style="color: var(--primary-dark);">Từ Vựng Bài 5</h2>
+                <div class="text-6xl md:text-7xl mb-6 mt-4">⛲</div>
+                <p class="text-[var(--text-muted)] text-base md:text-lg font-bold mb-8">Bài này có 59 từ vựng chuyên ngành về địa lý và tự nhiên. Hãy tập trung ôn luyện nhé!</p>
+                <button onclick="startFlashcards()" class="btn-primary w-full">Bắt đầu học ❯</button>
+            </div>
+
+            <div id="flashcard-screen" class="card-container hidden max-w-3xl mx-auto">
+                <div class="flex justify-between items-center mb-4 border-b pb-3" style="border-color: var(--border-light);">
+                    <button onclick="resetVocabTab()" class="text-sm font-bold hover:underline" style="color: var(--secondary-dark);">❮ Quay Lại</button>
+                    <div class="font-bold px-4 py-2 rounded-full text-xs md:text-sm" style="background: var(--bg-color); color: var(--primary-dark);">
+                        Thẻ: <span id="card-index">1</span> / <span id="card-total">0</span>
+                    </div>
+                </div>
+                
+                <div class="mb-6 relative pointer-events-none" id="flashcard-wrapper">
+                    <div id="flashcard-inner" class="flashcard-inner pointer-events-auto" onclick="flipCard()">
+                        <div class="flashcard-front">
+                            <h2 id="card-hanzi" class="chinese-text text-6xl md:text-8xl leading-tight text-center px-2" style="color: var(--hanzi-color);"></h2>
+                            <p class="absolute bottom-4 text-sm font-bold text-gray-400">Chạm để lật thẻ 👆</p>
+                        </div>
+                        <div class="flashcard-back overflow-y-auto custom-scroll">
+                            <h3 id="card-pinyin" class="text-2xl md:text-4xl font-bold mb-2" style="color: var(--primary-dark);"></h3>
+                            <p id="card-mean" class="text-lg md:text-xl mb-4 font-bold border-b-2 pb-2 w-full text-center" style="color: var(--secondary-dark); border-color: var(--border-light);"></p>
+                            <div class="text-left w-full space-y-2 px-2">
+                                <p id="card-example-cn" class="chinese-text text-lg md:text-xl leading-relaxed text-gray-800"></p>
+                                <p id="card-example-py" class="text-sm md:text-base italic font-semibold" style="color: var(--text-muted);"></p>
+                                <p id="card-example-vi" class="text-sm md:text-base bg-white p-2 rounded border" style="color: var(--primary-dark); border-color: var(--border-light);"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <button id="btn-unlearned" onclick="markCard(false)" class="bg-orange-100 border-2 border-orange-300 text-orange-800 p-3 rounded-xl text-sm md:text-base font-bold hover:bg-orange-200 transition-colors">❌ Chưa thuộc</button>
+                    <button id="btn-learned" onclick="markCard(true)" class="bg-[#dcedc8] border-2 border-[#8bc34a] text-[#33691e] p-3 rounded-xl text-sm md:text-base font-bold hover:bg-[#c5e1a5] transition-colors">✅ Đã thuộc</button>
+                </div>
+            </div>
+
+            <div id="flashcard-stat-screen" class="card-container text-center hidden max-w-2xl mx-auto">
+                 <h2 class="text-2xl font-bold mb-6" style="color: var(--primary-dark);">Kết quả ghi nhớ</h2>
+                 <div class="flex justify-center gap-8 md:gap-12 items-center mb-8">
+                    <div class="circle-stat stat-green">
+                        <span id="stat-learned-percent" class="text-xl md:text-2xl font-bold">0%</span>
+                        <span class="text-[10px] md:text-xs uppercase font-bold mt-1">Thuộc</span>
+                    </div>
+                    <div class="circle-stat stat-red">
+                        <span id="stat-unlearned-percent" class="text-xl md:text-2xl font-bold">0%</span>
+                        <span class="text-[10px] md:text-xs uppercase font-bold mt-1">Cần ôn</span>
+                    </div>
+                 </div>
+                 <div class="text-left mb-6">
+                    <p class="font-bold text-sm md:text-base mb-2" style="color: var(--text-muted);">Danh sách cần lưu ý:</p>
+                    <div id="unlearned-list" class="max-h-48 overflow-y-auto custom-scroll bg-white rounded-xl border-2 p-3 space-y-2" style="border-color: #ffb74d;"></div>
+                 </div>
+                 <div class="grid grid-cols-1 gap-3">
+                     <button id="btn-relearn" onclick="relearnUnlearned()" class="btn-primary" style="background: #f57c00; box-shadow: 0 4px 0 #e65100;">🔄 Học lại từ chưa thuộc</button>
+                     <button onclick="switchTab('text')" class="btn-action">📖 Chuyển sang Bài Khóa ❯</button>
+                 </div>
+            </div>
+        </div>
+
+        <!-- ================= BÀI KHÓA ================= -->
+        <div id="section-text" class="w-full hidden">
+            <div class="card-container max-w-4xl mx-auto" id="text-wrapper">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-4 chinese-text" style="color: var(--primary-dark);">济南的泉水</h2>
+                
+                <div class="sticky top-0 z-10 bg-white pb-3 pt-2 border-b-2 mb-4 flex flex-col gap-3" style="border-color: var(--primary);">
+                    <audio id="lesson-audio" controls class="w-full h-11 outline-none rounded-lg" src="audio/hsk5/lesson5/05-1.mp3"></audio>
+                    <div class="flex justify-end w-full px-2">
+                        <label class="flex items-center cursor-pointer select-none">
+                            <div class="relative">
+                                <input type="checkbox" id="toggle-pinyin" class="sr-only" checked onchange="togglePinyin()">
+                                <div class="block bg-gray-300 w-12 h-7 rounded-full toggle-bg transition"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition transform toggle-dot"></div>
+                            </div>
+                            <div class="ml-2 font-bold text-sm text-[var(--primary-dark)]">Hiện Pinyin</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="chinese-text text-gray-800 custom-scroll max-h-[60vh] overflow-y-auto pb-6 px-1 md:px-4 text-content-area transition-all duration-300" id="sync-container"></div>
+                
+                <div class="mt-6 border-t-2 pt-4 flex justify-center" style="border-color: var(--border-light);">
+                    <button onclick="switchTab('game')" class="btn-action w-full md:w-auto">🧩 Luyện tập Sắp xếp câu ❯</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= GAME SẮP XẾP ================= -->
+        <div id="section-game" class="w-full hidden">
+            <div id="game-start" class="card-container text-center max-w-2xl mx-auto">
+                <div class="text-6xl md:text-7xl mb-4">🧩</div>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4" style="color: var(--primary-dark);">Thử Thách Sắp Xếp Câu</h2>
+                <p class="mb-6 font-semibold text-sm md:text-base text-[var(--text-muted)]">
+                    Hoàn thành 20 câu để nắm vững ngữ pháp và trật tự từ của bài khóa. Chạm vào các mảnh ghép bên dưới để xếp thành câu hoàn chỉnh!
+                </p>
+                <button onclick="startGame()" class="btn-primary w-full">Bắt Đầu Ngay ❯</button>
+            </div>
+
+            <div id="game-screen" class="card-container hidden relative max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-4 border-b pb-3" style="border-color: var(--border-light);">
+                    <h3 class="font-bold text-lg md:text-xl" style="color: var(--primary-dark);">Câu <span id="game-current">1</span>/20</h3>
+                </div>
+
+                <div class="mb-2 text-sm md:text-base font-bold text-gray-500 uppercase">Khung đáp án của bạn:</div>
+                <div id="game-answer-area" class="answer-area"></div>
+
+                <div class="mb-2 text-sm md:text-base font-bold text-gray-500 uppercase">Kho từ (Chạm để chọn):</div>
+                <div id="game-bank-area" class="mb-6 min-h-[80px] bg-white p-3 border rounded-xl flex flex-wrap relative" style="border-color: var(--border-light);"></div>
+
+                <div id="game-inline-feedback" class="hidden feedback-box p-4 rounded-xl mb-6">
+                    <div id="game-fb-icon" class="text-2xl mb-1"></div>
+                    <div id="game-fb-title" class="font-bold text-lg mb-2"></div>
+                    <div id="game-fb-correct-sentence" class="chinese-text text-xl md:text-2xl font-bold mb-1" style="color: var(--primary-dark);"></div>
+                    <div id="game-fb-translation" class="text-gray-600 font-semibold italic text-sm md:text-base"></div>
+                </div>
+
+                <button id="btn-game-check" onclick="checkGameAnswer()" class="btn-primary w-full">Kiểm tra đáp án ✔️</button>
+                <button id="btn-game-next" onclick="nextGameLevel()" class="btn-action w-full hidden">Câu tiếp theo ❯</button>
+            </div>
+
+            <div id="game-result" class="card-container text-center hidden max-w-2xl mx-auto">
+                <div class="text-6xl md:text-7xl mb-4 mt-2">🎉</div>
+                <h2 class="text-2xl md:text-3xl font-bold mb-3" style="color: var(--primary-dark);">Tuyệt Vời!</h2>
+                <p class="text-base md:text-lg font-bold text-gray-600 mb-6">Bạn đã hoàn thành toàn bộ 20 thử thách sắp xếp câu của Bài 5!</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button onclick="startGame()" class="btn-primary">🔄 Chơi lại</button>
+                    <button onclick="switchTab('quiz')" class="btn-action" style="background: var(--secondary); box-shadow: 0 4px 0 var(--secondary-dark);">❓ Chuyển sang Đọc hiểu ❯</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= ĐỌC HIỂU ================= -->
+        <div id="section-quiz" class="w-full hidden">
+            <div id="quiz-start" class="card-container text-center max-w-2xl mx-auto">
+                <div class="text-6xl md:text-7xl mb-4">📜</div>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4" style="color: var(--primary-dark);">Thử Thách Đọc Hiểu</h2>
+                <p class="mb-6 font-semibold text-sm md:text-base text-[var(--text-muted)]">20 câu hỏi đánh giá mức độ hiểu sâu bài khóa, kèm theo giải thích chi tiết cho từng câu.</p>
+                <button onclick="startQuiz()" class="btn-primary w-full">Bắt đầu ngay ❯</button>
+            </div>
+
+            <div id="quiz-screen" class="card-container hidden relative max-w-3xl mx-auto">
+                <div class="flex justify-between items-center mb-5 border-b pb-2" style="border-color: var(--border-light);">
+                    <span class="font-bold text-sm md:text-base" style="color: var(--secondary-dark);">Điểm: <span id="quiz-score" class="text-xl">0</span></span>
+                    <div class="font-bold px-3 py-1 rounded-full text-xs md:text-sm" style="background: var(--bg-color); color: var(--primary-dark);">
+                        Câu: <span id="quiz-current">1</span> / 20
+                    </div>
+                </div>
+
+                <h3 id="quiz-question" class="chinese-text text-lg md:text-xl font-bold mb-5 text-gray-800 leading-relaxed"></h3>
+                <div id="quiz-options" class="flex flex-col mb-4 gap-2"></div>
+
+                <div id="quiz-inline-feedback" class="hidden feedback-box p-4 rounded-xl mb-5">
+                    <div id="quiz-fb-title" class="font-bold text-lg mb-2"></div>
+                    <div id="quiz-fb-exp" class="text-gray-700 font-semibold text-sm md:text-base leading-relaxed"></div>
+                </div>
+
+                <button id="btn-next-quiz" onclick="nextQuiz()" class="btn-action w-full hidden">Câu tiếp theo ❯</button>
+            </div>
+
+            <div id="quiz-result" class="card-container text-center hidden max-w-2xl mx-auto">
+                <div id="result-emoji" class="text-6xl md:text-7xl mb-4 mt-2">🏆</div>
+                <h2 class="text-2xl font-bold mb-2" style="color: var(--primary-dark);">Hoàn Thành!</h2>
+                <p class="text-lg font-bold text-gray-600 mb-2">Điểm của bạn:</p>
+                <div class="text-5xl font-black mb-5" style="color: var(--secondary-dark);"><span id="final-score"></span>/20</div>
+                <p id="result-evaluation" class="mb-6 text-sm md:text-base font-bold p-4 rounded-xl border-2 text-[var(--primary-dark)] bg-white leading-relaxed" style="border-color: var(--primary);"></p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button onclick="startQuiz()" class="btn-primary">🔄 Làm lại</button>
+                    <button onclick="switchTab('exercise')" class="btn-action bg-gray-200 text-gray-800 border-gray-300" style="box-shadow: 0 4px 0 #bdbdbd; color:#333; background:#e0e0e0;">📝 Xem bài tập ❯</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= BÀI TẬP ================= -->
+        <div id="section-exercise" class="w-full hidden">
+            <div class="card-container text-center mt-6 max-w-2xl mx-auto">
+                <div class="text-6xl md:text-7xl mb-4">📝</div>
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--primary-dark);">Bài Tập Tổng Hợp</h2>
+                <p class="mb-6 font-semibold text-sm md:text-base leading-relaxed" style="color: var(--text-muted);">Củng cố lại toàn bộ ngữ pháp và từ vựng Bài 5 (HSK5).</p>
+                <button onclick="window.open('https://forms.google.com', '_blank')" class="btn-primary w-full">Đi Tới Bài Tập ❯</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Popup cảnh báo -->
+    <div id="cute-popup" class="fixed inset-0 bg-black bg-opacity-40 z-[100] flex justify-center items-center hidden backdrop-blur-sm transition-opacity">
+        <div class="bg-white p-6 rounded-3xl max-w-sm w-[90%] text-center shadow-2xl transform transition-transform duration-300" id="popup-content-box">
+            <div id="popup-emoji" class="text-6xl mb-4"></div>
+            <h3 id="popup-title" class="text-2xl font-black mb-2"></h3>
+            <div id="popup-msg" class="text-gray-600 font-bold mb-6 text-sm md:text-base"></div>
+            <button onclick="closePopup()" class="btn-primary w-full py-3 rounded-xl shadow-none">Đã hiểu 💖</button>
+        </div>
+    </div>
+
+    <!-- Âm thanh chuẩn nén từ Pixabay (Không lọt gió, không watermark) -->
+    <audio id="audio-click" src="https://cdn.pixabay.com/audio/2022/10/16/audio_9302e1c981.mp3"></audio> <!-- Click nhẹ -->
+    <audio id="audio-correct" src="https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1539c.mp3"></audio> <!-- Chuông đúng -->
+    <audio id="audio-wrong" src="https://cdn.pixabay.com/audio/2022/03/24/audio_eb324aab56.mp3"></audio> <!-- Báo lỗi -->
+    <audio id="audio-pop" src="https://cdn.pixabay.com/audio/2022/03/15/audio_24e3d36b8e.mp3"></audio> <!-- Bóp bóng khí -->
+    <audio id="audio-win" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3"></audio> <!-- Fanfare chiến thắng -->
+
+    <script>
+        // ================= GLOBAL =================
+        function playAudio(audioId) {
+            const audio = document.getElementById(audioId);
+            if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+        }
+
+        function switchTab(tabId) {
+            playAudio('audio-click');
+            ['vocab', 'text', 'game', 'quiz', 'exercise'].forEach(id => {
+                document.getElementById('section-' + id).classList.add('hidden');
+                document.getElementById('tab-' + id).classList.remove('active');
+            });
+            document.getElementById('section-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            const lessonAudio = document.getElementById('lesson-audio');
+            if(lessonAudio && tabId !== 'text') lessonAudio.pause();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if(tabId === 'vocab') resetVocabTab();
+        }
+
+        function showPopup(type, title, msg) {
+            const popup = document.getElementById('cute-popup');
+            const emoji = document.getElementById('popup-emoji');
+            const titleEl = document.getElementById('popup-title');
+            const msgEl = document.getElementById('popup-msg');
+            const box = document.getElementById('popup-content-box');
+
+            emoji.innerText = type === 'warning' ? '🤔' : '💡';
+            titleEl.style.color = 'var(--secondary-dark)';
+            box.style.border = '4px solid var(--secondary)';
+
+            titleEl.innerText = title;
+            msgEl.innerHTML = msg;
+            popup.classList.remove('hidden');
+        }
+
+        function closePopup() {
+            playAudio('audio-click');
+            document.getElementById('cute-popup').classList.add('hidden');
+        }
+
+        // ================= TAB 1: TỪ VỰNG =================
+        const hsk5L5Vocab = [
+            { h: "悠久", p: "yōujiǔ", m: "Lâu đời", ex: "济南的泉水，历史悠久。", exp: "Jǐnán de quánshuǐ, lìshǐ yōujiǔ.", exv: "Nước suối Tế Nam có lịch sử lâu đời." },
+            { h: "文字", p: "wénzì", m: "Văn tự, chữ viết", ex: "最早的文字记载。", exp: "Zuìzǎo de wénzì jìzǎi.", exv: "Ghi chép bằng văn tự sớm nhất." },
+            { h: "记载", p: "jìzǎi", m: "Ghi chép (Đt/Dt)", ex: "这段历史有文字记载。", exp: "Zhè duàn lìshǐ yǒu wénzì jìzǎi.", exv: "Giai đoạn lịch sử này có ghi chép bằng văn tự." },
+            { h: "形状", p: "xíngzhuàng", m: "Hình dạng", ex: "描写泉水的形状。", exp: "Miáoxiě quánshuǐ de xíngzhuàng.", exv: "Miêu tả hình dạng của nước suối." },
+            { h: "描写", p: "miáoxiě", m: "Miêu tả", ex: "许多文人都对它进行过描写。", exp: "Xǔduō wénrén dōu duì tā jìnxíng guò miáoxiě.", exv: "Rất nhiều văn nhân đều từng tiến hành miêu tả về nó." },
+            { h: "赞美", p: "zànměi", m: "Ca ngợi, tán dương", ex: "留下了许多赞美泉水的诗文。", exp: "Liúxià le xǔduō zànměi quánshuǐ de shīwén.", exv: "Để lại rất nhiều bài thơ ca ngợi nước suối." },
+            { h: "诗", p: "shī", m: "Thơ", ex: "他写了一首诗。", exp: "Tā xiě le yì shǒu shī.", exv: "Anh ấy đã viết một bài thơ." },
+            { h: "老百姓", p: "lǎobǎixìng", m: "Thường dân, người dân", ex: "济南的老百姓住在泉边。", exp: "Jǐnán de lǎobǎixìng zhù zài quán biān.", exv: "Người dân Tế Nam sống bên cạnh bờ suối." },
+            { h: "充满", p: "chōngmǎn", m: "Tràn đầy, chan chứa", ex: "自然对它充满感激之情。", exp: "Zìrán duì tā chōngmǎn gǎnjī zhī qíng.", exv: "Tự nhiên sẽ tràn đầy tình cảm biết ơn đối với nó." },
+            { h: "感激", p: "gǎnjī", m: "Cảm kích, biết ơn", ex: "非常感激您的帮助。", exp: "Fēicháng gǎnjī nín de bāngzhù.", exv: "Vô cùng biết ơn sự giúp đỡ của ngài." },
+            { h: "从而", p: "cóng'ér", m: "Từ đó, do đó (Liên từ)", ex: "从而也产生了许多传说。", exp: "Cóng'ér yě chǎnshēng le xǔduō chuánshuō.", exv: "Từ đó cũng nảy sinh ra rất nhiều truyền thuyết." },
+            { h: "产生", p: "chǎnshēng", m: "Sản sinh, nảy sinh", ex: "产生了一个美丽的传说。", exp: "Chǎnshēng le yí gè měilì de chuánshuō.", exv: "Nảy sinh một truyền thuyết tươi đẹp." },
+            { h: "传说", p: "chuánshuō", m: "Truyền thuyết", ex: "这是一个古老的传说。", exp: "Zhè shì yí gè gǔlǎo de chuánshuō.", exv: "Đây là một truyền thuyết cổ xưa." },
+            { h: "善良", p: "shànliáng", m: "Lương thiện, tốt bụng", ex: "有个善良的青年。", exp: "Yǒu gè shànliáng de qīngnián.", exv: "Có một thanh niên lương thiện." },
+            { h: "救", p: "jiù", m: "Cứu", ex: "他学习医术，救了很多人。", exp: "Tā xuéxí yīshù, jiù le hěn duō rén.", exv: "Anh ấy học y thuật, đã cứu rất nhiều người." },
+            { h: "晕", p: "yūn", m: "Hôn mê, ngất xỉu", ex: "救了一位晕倒的老人。", exp: "Jiù le yí wèi yūndǎo de lǎorén.", exv: "Đã cứu một ông lão bị ngất xỉu." },
+            { h: "龙", p: "lóng", m: "Rồng", ex: "他是东海龙王的哥哥。", exp: "Tā shì Dōnghǎi lóngwáng de gēge.", exv: "Ông ấy là anh trai của Đông Hải Long Vương." },
+            { h: "治疗", p: "zhìliáo", m: "Điều trị, chữa trị", ex: "求到了治病救人的白玉壶。", exp: "Qiú dào le zhìbìng jiùrén de báiyùhú.", exv: "Đã xin được chiếc bình bạch ngọc chữa bệnh cứu người." },
+            { h: "玉", p: "yù", m: "Ngọc", ex: "这是一块好玉。", exp: "Zhè shì yí kuài hǎo yù.", exv: "Đây là một miếng ngọc tốt." },
+            { h: "壶", p: "hú", m: "Ấm, bình", ex: "把壶埋入地下。", exp: "Bǎ hú mái rù dìxià.", exv: "Đem chiếc ấm chôn xuống dưới đất." },
+            { h: "抢", p: "qiǎng", m: "Cướp, giành", ex: "为了不被坏人抢走。", exp: "Wèile bú bèi huàirén qiǎng zǒu.", exv: "Để không bị người xấu cướp đi." },
+            { h: "埋", p: "mái", m: "Chôn, vùi", ex: "他把东西埋了起来。", exp: "Tā bǎ dōngxi mái le qǐlai.", exv: "Anh ấy đã đem đồ chôn giấu đi." },
+            { h: "藏", p: "cáng", m: "Giấu, ẩn nấp", ex: "藏了起来。", exp: "Cáng le qǐlai.", exv: "Đã giấu đi rồi." },
+            { h: "如今", p: "rújīn", m: "Ngày nay, hiện nay", ex: "如今的济南市区内。", exp: "Rújīn de Jǐnán shìqū nèi.", exv: "Trong khu vực nội thành Tế Nam ngày nay." },
+            { h: "分布", p: "fēnbù", m: "Phân bố", ex: "分布着七百多个天然泉。", exp: "Fēnbù zhe qībǎi duō gè tiānrán quán.", exv: "Phân bố hơn bảy trăm con suối tự nhiên." },
+            { h: "天然", p: "tiānrán", m: "Tự nhiên, thiên nhiên", ex: "天然泉水非常甜美。", exp: "Tiānrán quánshuǐ fēicháng tiánměi.", exv: "Nước suối tự nhiên vô cùng ngọt ngào." },
+            { h: "优美", p: "yōuměi", m: "Đẹp đẽ, ưu mỹ", ex: "济南泉水的优美。", exp: "Jǐnán quánshuǐ de yōuměi.", exv: "Vẻ đẹp của nước suối Tế Nam." },
+            { h: "独特", p: "dútè", m: "Độc đáo, đặc biệt", ex: "从那独特的名字上反映出来。", exp: "Cóng nà dútè de míngzi shàng fǎnyìng chūlái.", exv: "Được phản ánh ra từ những cái tên độc đáo đó." },
+            { h: "反映", p: "fǎnyìng", m: "Phản ánh, thể hiện", ex: "这反映了一个问题。", exp: "Zhè fǎnyìng le yí gè wèntí.", exv: "Điều này đã phản ánh một vấn đề." },
+            { h: "珍珠", p: "zhēnzhū", m: "Trân châu, ngọc trai", ex: "以形状命名的珍珠泉。", exp: "Yǐ xíngzhuàng mìngmíng de Zhēnzhūquán.", exv: "Suối Trân Châu được đặt tên theo hình dáng." },
+            { h: "形成", p: "xíngchéng", m: "Hình thành", ex: "这么好的泉水是如何形成的呢？", exp: "Zhème hǎo de quánshuǐ shì rúhé xíngchéng de ne?", exv: "Nước suối tốt như vậy được hình thành như thế nào?" },
+            { h: "于", p: "yú", m: "Ở, tại, từ (Giới từ)", ex: "济南的泉水来自于山区。", exp: "Jǐnán de quánshuǐ láizì yú shānqū.", exv: "Nước suối Tế Nam bắt nguồn từ vùng núi." },
+            { h: "广大", p: "guǎngdà", m: "Rộng lớn, bao la", ex: "广大山区。", exp: "Guǎngdà shānqū.", exv: "Vùng núi rộng lớn." },
+            { h: "岩石", p: "yánshí", m: "Nham thạch, đá", ex: "山区的岩石。", exp: "Shānqū de yánshí.", exv: "Nham thạch (đá) của vùng núi." },
+            { h: "亿", p: "yì", m: "Trăm triệu", ex: "大约四亿年前。", exp: "Dàyuē sì yì nián qián.", exv: "Khoảng bốn trăm triệu năm trước." },
+            { h: "石灰岩", p: "shíhuīyán", m: "Đá vôi", ex: "一层厚厚的石灰岩。", exp: "Yì céng hòuhòu de shíhuīyán.", exv: "Một lớp đá vôi dày." },
+            { h: "地区", p: "dìqū", m: "Khu vực, vùng", ex: "在这种石灰岩地区。", exp: "Zài zhè zhǒng shíhuīyán dìqū.", exv: "Ở trong khu vực đá vôi này." },
+            { h: "表面", p: "biǎomiàn", m: "Bề mặt", ex: "陆地表面的水。", exp: "Lùdì biǎomiàn de shuǐ.", exv: "Nước trên bề mặt đất liền." },
+            { h: "角度", p: "jiǎodù", m: "Góc độ", ex: "以大约三十度的角度。", exp: "Yǐ dàyuē sānshí dù de jiǎodù.", exv: "Với một góc khoảng ba mươi độ." },
+            { h: "斜", p: "xié", m: "Nghiêng, xiên", ex: "由南向北斜。", exp: "Yóu nán xiàng běi xié.", exv: "Nghiêng từ Nam sang Bắc." },
+            { h: "为", p: "wéi", m: "Trở thành, làm", ex: "地下岩石变为火成岩。", exp: "Dìxià yánshí biàn wéi huǒchéngyán.", exv: "Đá dưới lòng đất biến thành đá magma." },
+            { h: "火成岩", p: "huǒchéngyán", m: "Đá phún xuất, đá magma", ex: "碰到了火成岩。", exp: "Pèngdào le huǒchéngyán.", exv: "Đã chạm phải đá magma." },
+            { h: "碰", p: "pèng", m: "Đụng, chạm, gặp phải", ex: "碰到火成岩挡住了路。", exp: "Pèngdào huǒchéngyán dǎngzhù le lù.", exv: "Gặp phải đá magma chặn mất đường." },
+            { h: "挡", p: "dǎng", m: "Chặn, cản", ex: "挡住了水流。", exp: "Dǎngzhù le shuǐliú.", exv: "Đã chặn lại dòng nước." },
+            { h: "地势", p: "dìshì", m: "Địa thế", ex: "旧城一带地势低。", exp: "Jiùchéng yídài dìshì dī.", exv: "Khu vực thành cổ địa thế thấp." },
+            { h: "冲", p: "chōng", m: "Xông thẳng, phun, vọt", ex: "地下水就冲出地表。", exp: "Dìxiàshuǐ jiù chōng chū dìbiǎo.", exv: "Nước ngầm liền phun trào lên khỏi mặt đất." },
+            { h: "济南", p: "Jǐ'nán", m: "Tế Nam", ex: "济南是山东的省会。", exp: "Jǐ'nán shì Shāndōng de shěnghuì.", exv: "Tế Nam là tỉnh lỵ của Sơn Đông." },
+            { h: "鲍全", p: "Bào Quán", m: "Bào Toàn", ex: "名叫鲍全。", exp: "Míng jiào Bào Quán.", exv: "Tên là Bào Toàn." },
+            { h: "东海龙王", p: "Dōnghǎi Lóngwáng", m: "Đông Hải Long Vương", ex: "东海龙王在海里。", exp: "Dōnghǎi lóngwáng zài hǎilǐ.", exv: "Đông Hải Long vương ở biển." },
+            { h: "趵突泉", p: "Bàotūquán", m: "Suối Bào Đột", ex: "天下第一泉趵突泉。", exp: "Tiānxià dì yī quán Bàotūquán.", exv: "Đệ nhất thiên hạ suối Bào Đột." },
+            { h: "舜", p: "Shùn", m: "Vua Thuấn", ex: "以人名命名的舜泉。", exp: "Yǐ rénmíng mìngmíng de Shùnquán.", exv: "Suối Thuấn đặt theo tên người." },
+            { h: "作品", p: "zuòpǐn", m: "Tác phẩm", ex: "优秀的文学作品。", exp: "Yōuxiù de wénxué zuòpǐn.", exv: "Tác phẩm văn học xuất sắc." },
+            { h: "神话", p: "shénhuà", m: "Thần thoại", ex: "中国神话故事。", exp: "Zhōngguó shénhuà gùshi.", exv: "Câu chuyện thần thoại Trung Quốc." },
+            { h: "戏剧", p: "xìjù", m: "Hí kịch, kịch", ex: "他喜欢看戏剧。", exp: "Tā xǐhuan kàn xìjù.", exv: "Ông ấy thích xem kịch." },
+            { h: "风格", p: "fēnggé", m: "Phong cách", ex: "独特的艺术风格。", exp: "Dútè de yìshù fēnggé.", exv: "Phong cách nghệ thuật độc đáo." },
+            { h: "形象", p: "xíngxiàng", m: "Hình tượng", ex: "生动的人物形象。", exp: "Shēngdòng de rénwù xíngxiàng.", exv: "Hình tượng nhân vật sinh động." },
+            { h: "魅力", p: "mèilì", m: "Sức hấp dẫn, mị lực", ex: "充满魅力的城市。", exp: "Chōngmǎn mèilì de chéngshì.", exv: "Thành phố tràn đầy sức hấp dẫn." },
+            { h: "生动", p: "shēngdòng", m: "Sinh động", ex: "描写得很生动。", exp: "Miáoxiě de hěn shēngdòng.", exv: "Miêu tả rất sinh động." }
+        ];
+
+        let currentFlashList = [], flashcardIdx = 0, learnedCount = 0, unlearnedItems = [];
+        let isTransitioningCard = false;
+
+        function resetVocabTab() {
+            document.getElementById('vocab-start').classList.remove('hidden');
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.add('hidden');
+        }
+
+        function startFlashcards(list = hsk5L5Vocab) {
+            playAudio('audio-click');
+            currentFlashList = [...list];
+            flashcardIdx = 0; learnedCount = 0; unlearnedItems = [];
+            
+            document.getElementById('vocab-start').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.add('hidden');
+            document.getElementById('flashcard-screen').classList.remove('hidden');
+            document.getElementById('card-total').innerText = currentFlashList.length;
+            updateFlashcard();
+        }
+
+        function updateFlashcard() {
+            const card = currentFlashList[flashcardIdx];
+            document.getElementById('card-index').innerText = flashcardIdx + 1;
+            document.getElementById('card-hanzi').innerText = card.h;
+            document.getElementById('card-pinyin').innerText = card.p;
+            document.getElementById('card-mean').innerText = card.m;
+            document.getElementById('card-example-cn').innerText = card.ex;
+            document.getElementById('card-example-py').innerText = card.exp;
+            document.getElementById('card-example-vi').innerText = card.exv;
+            document.getElementById('flashcard-inner').classList.remove('is-flipped');
+            isTransitioningCard = false;
+        }
+
+        function flipCard() { 
+            if(isTransitioningCard) return;
+            playAudio('audio-click'); // Thay vì swoosh giống gió thổi, mình dùng click cho gọn
+            document.getElementById('flashcard-inner').classList.toggle('is-flipped'); 
+        }
+
+        function markCard(learned) {
+            if(isTransitioningCard) return;
+            isTransitioningCard = true;
+
+            if (learned) {
+                learnedCount++;
+                playAudio('audio-correct');
+            } else {
+                unlearnedItems.push(currentFlashList[flashcardIdx]);
+            }
+
+            const inner = document.getElementById('flashcard-inner');
+            const isFlipped = inner.classList.contains('is-flipped');
+            
+            flashcardIdx++;
+
+            if (isFlipped) {
+                inner.classList.remove('is-flipped');
+                setTimeout(() => {
+                    checkNextCard();
+                }, 400); 
+            } else {
+                checkNextCard();
+            }
+        }
+
+        function checkNextCard() {
+            if (flashcardIdx < currentFlashList.length) {
+                updateFlashcard();
+            } else {
+                showFlashcardStats();
+                isTransitioningCard = false;
+            }
+        }
+
+        function showFlashcardStats() {
+            playAudio('audio-win');
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.remove('hidden');
+            const learnedPercent = Math.round((learnedCount / currentFlashList.length) * 100);
+            document.getElementById('stat-learned-percent').innerText = learnedPercent + "%";
+            document.getElementById('stat-unlearned-percent').innerText = (100 - learnedPercent) + "%";
+            
+            const listContainer = document.getElementById('unlearned-list');
+            listContainer.innerHTML = unlearnedItems.length > 0 ? '' : '<p class="text-center py-4 font-bold text-lg" style="color: var(--primary-dark);">Tuyệt vời! Bạn đã thuộc hết từ.</p>';
+            
+            unlearnedItems.forEach(item => {
+                listContainer.innerHTML += `<div class="flex justify-between border-b pb-2 text-sm md:text-base"><span class="font-bold text-gray-800">${item.h}</span><span class="text-gray-600">${item.m}</span></div>`;
+            });
+            document.getElementById('btn-relearn').classList.toggle('hidden', unlearnedItems.length === 0);
+        }
+
+        function relearnUnlearned() { startFlashcards(unlearnedItems); }
+
+        // ================= TAB 2: BÀI KHÓA =================
+        const lessonTextData = [
+            "济[Jǐ]南[nán]的[de]泉[quán]水[shuǐ]，历[lì]史[shǐ]悠[yōu]久[jiǔ]，最[zuì]早[zǎo]的[de]文[wén]字[zì]记[jì]载[zǎi]可[kě]以[yǐ]推[tuī]到[dào]3000多[duō]年[nián]前[qián]。许[xǔ]多[duō]文[wén]人[rén]都[dōu]对[duì]它[tā]的[de]声[shēng]音[yīn]、颜[yán]色[sè]、形[xíng]状[zhuàng]、味[wèi]道[dào]进[jìn]行[xíng]过[guò]描[miáo]写[xiě]，留[liú]下[xià]了[le]许[xǔ]多[duō]赞[zàn]美[měi]泉[quán]水[shuǐ]的[de]诗[shī]文[wén]。而[ér]济[Jǐ]南[nán]的[de]老[lǎo]百[bǎi]姓[xìng]住[zhù]在[zài]泉[quán]边[biān]，喝[hē]着[zhe]这[zhè]甜[tián]美[měi]的[de]泉[quán]水[shuǐ]，自[zì]然[rán]对[duì]它[tā]充[chōng]满[mǎn]感[gǎn]激[jī]之[zhī]情[qíng]，从[cóng]而[ér]也[yě]产[chǎn]生[shēng]了[le]许[xǔ]多[duō]关[guān]于[yú]泉[quán]水[shuǐ]的[de]美[měi]丽[lì]传[chuán]说[shuō]。",
+            "相[Xiāng]传[chuán]很[hěn]久[jiǔ]以[yǐ]前[qián]，济[Jǐ]南[nán]城[chéng]里[lǐ]有[yǒu]个[gè]善[shàn]良[liáng]的[de]青[qīng]年[nián]，名[míng]叫[jiào]鲍[Bào]全[Quán]，他[tā]学[xué]习[xí]医[yī]术[shù]，救[jiù]了[le]很[hěn]多[duō]人[rén]。一[yí]次[cì]，他[tā]在[zài]路[lù]边[biān]救[jiù]了[le]一[yí]位[wèi]晕[yūn]倒[dǎo]的[de]老[lǎo]人[rén]，并[bìng]把[bǎ]老[lǎo]人[rén]接[jiē]回[huí]家[jiā]照[zhào]顾[gù]。这[zhè]老[lǎo]人[rén]其[qí]实[shí]是[shì]东[Dōng]海[hǎi]龙[lóng]王[wáng]的[de]哥[gē]哥[gē]。通[tōng]过[guò]老[lǎo]人[rén]的[de]介[jiè]绍[shào]，鲍[Bào]全[Quán]从[cóng]龙[lóng]王[wáng]那[nà]儿[ér]求[qiú]到[dào]了[le]治[zhì]病[bìng]救[jiù]人[rén]的[de]白[bái]玉[yù]壶[hú]。为[wèi]了[le]不[bú]被[bèi]坏[huài]人[rén]抢[qiǎng]走[zǒu]，他[tā]把[bǎ]壶[hú]埋[mái]入[rù]地[dì]下[xià]藏[cáng]了[le]起[qǐ]来[lái]，于[yú]是[shì]就[jiù]变[biàn]成[chéng]了[le]今[jīn]天[tiān]有[yǒu]“天[tiān]下[xià]第[dì]一[yī]泉[quán]”美[měi]名[míng]的[de]趵[Bào]突[tū]泉[quán]。",
+            "如[Rú]今[jīn]的[de]济[Jǐ]南[nán]市[shì]区[qū]内[nèi]，分[fēn]布[bù]着[zhe]大[dà]大[dà]小[xiǎo]小[xiǎo]七[qī]百[bǎi]多[duō]个[gè]天[tiān]然[rán]泉[quán]，这[zhè]在[zài]国[guó]内[nèi]外[wài]城[chéng]市[shì]中[zhōng]是[shì]极[jí]为[wéi]少[shǎo]有[yǒu]的[de]。有[yǒu]如[rú]此[cǐ]之[zhī]多[duō]的[de]泉[quán]，名[míng]字[zì]当[dāng]然[rán]也[yě]少[shǎo]不[bù]了[le]。济[Jǐ]南[nán]泉[quán]水[shuǐ]的[de]优[yōu]美[měi]，还[hái]可[kě]以[yǐ]从[cóng]那[nà]独[dú]特[tè]的[de]名[míng]字[zì]上[shàng]反[fǎn]映[yìng]出[chū]来[lái]，如[rú]：以[yǐ]人[rén]名[míng]命[mìng]名[míng]的[de]舜[Shùn]泉[quán]，以[yǐ]动[dòng]物[wù]命[mìng]名[míng]的[de]黑[Hēi]虎[hǔ]泉[quán]，以[yǐ]形[xíng]状[zhuàng]命[mìng]名[míng]的[de]珍[Zhēn]珠[zhū]泉[quán]，等[děng]等[děng]。",
+            "说[Shuō]到[dào]这[zhè]里[lǐ]，您[nín]也[yě]许[xǔ]要[yào]问[wèn]，这[zhè]么[me]多[duō]、这[zhè]么[me]好[hǎo]的[de]泉[quán]水[shuǐ]是[shì]如[rú]何[hé]形[xíng]成[chéng]的[de]呢[ne]？济[Jǐ]南[nán]的[de]泉[quán]水[shuǐ]，来[lái]自[zì]于[yú]济[Jǐ]南[nán]市[shì]以[yǐ]南[nán]的[de]广[guǎng]大[dà]山[shān]区[qū]，这[zhè]些[xiē]山[shān]区[qū]的[de]岩[yán]石[shí]是[shì]大[dà]约[yuē]四[sì]亿[yì]年[nián]前[qián]形[xíng]成[chéng]的[de]一[yì]层[céng]厚[hòu]厚[hòu]的[de]石[shí]灰[huī]岩[yán]。在[zài]这[zhè]种[zhǒng]石[shí]灰[huī]岩[yán]地[dì]区[qū]，陆[lù]地[dì]表[biǎo]面[miàn]的[de]水[shuǐ]很[hěn]容[róng]易[yì]进[jìn]入[rù]地[dì]下[xià]。山[shān]区[qū]的[de]石[shí]灰[huī]岩[yán]层[céng]，以[yǐ]大[dà]约[yuē]三[sān]十[shí]度[dù]的[de]角[jiǎo]度[dù]，由[yóu]南[nán]向[xiàng]北[běi]斜[xié]，因[yīn]此[cǐ]大[dà]量[liàng]的[de]地[dì]下[xià]水[shuǐ]向[xiàng]济[Jǐ]南[nán]运[yùn]动[dòng]。而[ér]济[Jǐ]南[nán]市[shì]区[qū]的[de]地[dì]下[xià]岩[yán]石[shí]变[biàn]为[wéi]火[huǒ]成[chéng]岩[yán]，地[dì]下[xià]水[shuǐ]流[liú]到[dào]这[zhè]里[lǐ]，碰[pèng]到[dào]火[huǒ]成[chéng]岩[yán]挡[dǎng]住[zhù]了[le]路[lù]，就[jiù]积[jī]蓄[xù]起[qǐ]来[lái]，越[yuè]积[jī]越[yuè]多[duō]。它[tā]无[wú]处[chù]可[kě]流[liú]，就[jiù]得[děi]另[lìng]找[zhǎo]回[huí]路[lù]。济[Jǐ]南[nán]旧[jiù]城[chéng]一[yí]带[dài]，地[dì]势[shì]低[dī]，有[yǒu]的[de]地[dì]方[fāng]甚[shèn]至[zhì]低[dī]过[guò]了[le]地[dì]下[xià]水[shuǐ]的[de]海[hǎi]面[miàn]，地[dì]下[xià]水[shuǐ]就[jiù]冲[chōng]出[chū]地[dì]表[biǎo]，形[xíng]成[chéng]了[le]众[zhòng]多[duō]的[de]泉[quán]水[shuǐ]。这[zhè]就[jiù]是[shì]济[Jǐ]南[nán]“泉[quán]城[chéng]”美[měi]名[míng]得[dé]来[lái]的[de]原[yuán]因[yīn]。"
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('sync-container');
+            let htmlContent = '';
+            lessonTextData.forEach(p => {
+                let pHtml = '<p class="indent-6 md:indent-8 mb-4">';
+                for(let i = 0; i < p.length; i++) {
+                    if (p[i] === '"' || p[i] === '”' || p[i] === '“' || p[i] === '、' || p[i] === '：' || p[i] === '？') {
+                        pHtml += p[i]; continue;
+                    }
+                    if (p[i+1] === '[') {
+                        let endIdx = p.indexOf(']', i+1);
+                        pHtml += `<ruby>${p[i]}<rt>${p.substring(i+2, endIdx)}</rt></ruby>`;
+                        i = endIdx; 
+                    } else { pHtml += p[i]; }
+                }
+                pHtml += '</p>';
+                htmlContent += pHtml;
+            });
+            container.innerHTML = htmlContent;
+        });
+
+        function togglePinyin() {
+            document.getElementById('text-wrapper').classList.toggle('hide-pinyin');
+        }
+
+        // ================= TAB 3: GAME SẮP XẾP CÂU =================
+        const sentenceGameData = [
+            { pieces: ['济南的泉水', '历史', '悠久'], full: '济南的泉水历史悠久。', trans: 'Nước suối Tế Nam có lịch sử lâu đời.' },
+            { pieces: ['最早的', '文字记载', '可以', '推到', '三千多年前'], full: '最早的文字记载可以推到三千多年前。', trans: 'Những ghi chép bằng văn tự sớm nhất có thể lùi về hơn 3000 năm trước.' },
+            { pieces: ['许多文人', '都', '对泉水', '进行过', '描写'], full: '许多文人都对泉水进行过描写。', trans: 'Rất nhiều văn nhân đều từng miêu tả về nước suối.' },
+            { pieces: ['留下了', '许多', '赞美泉水的', '诗文'], full: '留下了许多赞美泉水的诗文。', trans: 'Để lại rất nhiều bài thơ văn ca ngợi nước suối.' },
+            { pieces: ['济南的老百姓', '住在', '泉边'], full: '济南的老百姓住在泉边。', trans: 'Người dân Tế Nam sống bên bờ suối.' },
+            { pieces: ['喝着', '这甜美的', '泉水', '生活'], full: '喝着这甜美的泉水生活。', trans: 'Uống dòng nước suối ngọt ngào này để sinh sống.' },
+            { pieces: ['自然', '对泉水', '充满', '感激之情'], full: '自然对泉水充满感激之情。', trans: 'Tự nhiên sẽ tràn đầy tình cảm biết ơn đối với nước suối.' },
+            { pieces: ['从而', '产生了', '许多', '关于泉水的', '美丽传说'], full: '从而产生了许多关于泉水的美丽传说。', trans: 'Từ đó nảy sinh ra rất nhiều truyền thuyết tươi đẹp về nước suối.' },
+            { pieces: ['济南城里', '有个', '善良的青年', '名叫', '鲍全'], full: '济南城里有个善良的青年名叫鲍全。', trans: 'Trong thành Tế Nam có một thanh niên lương thiện tên là Bào Toàn.' },
+            { pieces: ['他', '在路边', '救了', '一位晕倒的', '老人'], full: '他在路边救了一位晕倒的老人。', trans: 'Anh ấy đã cứu một ông lão bị ngất xỉu ở ven đường.' },
+            { pieces: ['通过老人的介绍', '他', '从龙王那儿', '求到了', '白玉壶'], full: '通过老人的介绍他从龙王那儿求到了白玉壶。', trans: 'Thông qua sự giới thiệu của ông lão, anh ấy đã xin được bình bạch ngọc từ Long Vương.' },
+            { pieces: ['白玉壶', '是', '一个', '治病救人的', '宝物'], full: '白玉壶是一个治病救人的宝物。', trans: 'Bình bạch ngọc là một báu vật chữa bệnh cứu người.' },
+            { pieces: ['为了不被坏人抢走', '他', '把壶', '埋入地下', '藏了起来'], full: '为了不被坏人抢走他把壶埋入地下藏了起来。', trans: 'Để không bị kẻ xấu cướp đi, anh ấy đã đem chiếc bình chôn xuống đất giấu đi.' },
+            { pieces: ['于是', '变成了', '有天下第一泉美名的', '趵突泉'], full: '于是变成了有天下第一泉美名的趵突泉。', trans: 'Thế là biến thành suối Bào Đột mang mỹ danh đệ nhất thiên hạ.' },
+            { pieces: ['如今', '济南市区内', '分布着', '大大小小', '七百多个', '天然泉'], full: '如今济南市区内分布着大大小小七百多个天然泉。', trans: 'Ngày nay trong khu vực nội thành Tế Nam phân bố hơn 700 con suối tự nhiên.' },
+            { pieces: ['这', '在国内外城市中', '是', '极为少有的', '现象'], full: '这在国内外城市中是极为少有的现象。', trans: 'Đây là một hiện tượng cực kỳ hiếm thấy trong các thành phố ở cả trong và ngoài nước.' },
+            { pieces: ['济南泉水的优美', '可以', '从独特的名字上', '反映出来'], full: '济南泉水的优美可以从独特的名字上反映出来。', trans: 'Vẻ đẹp của nước suối Tế Nam có thể được phản ánh qua những cái tên độc đáo.' },
+            { pieces: ['济南的泉水', '来自于', '市以南的', '广大山区'], full: '济南的泉水来自于市以南的广大山区。', trans: 'Nước suối Tế Nam bắt nguồn từ vùng núi rộng lớn ở phía nam thành phố.' },
+            { pieces: ['地下水', '碰到', '火成岩', '挡住了路', '就', '积蓄起来'], full: '地下水碰到火成岩挡住了路就积蓄起来。', trans: 'Nước ngầm đụng phải đá magma chặn đường thì tích tụ lại.' },
+            { pieces: ['这就是', '济南泉城', '美名', '得来的原因'], full: '这就是济南泉城美名得来的原因。', trans: 'Đây chính là lý do mà Tế Nam có được mỹ danh "Tuyền Thành".' }
+        ];
+
+        let gameCurrentIdx = 0;
+        let gameCurrentChunks = [];
+        let gameUserAnswer = [];
+        let isGameAnswerChecked = false;
+
+        function startGame() {
+            playAudio('audio-click');
+            gameCurrentIdx = 0;
+            document.getElementById('game-start').classList.add('hidden');
+            document.getElementById('game-result').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            loadGameLevel();
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function loadGameLevel() {
+            const data = sentenceGameData[gameCurrentIdx];
+            document.getElementById('game-current').innerText = gameCurrentIdx + 1;
+            document.getElementById('btn-game-next').classList.add('hidden');
+            document.getElementById('btn-game-check').classList.remove('hidden');
+            document.getElementById('game-inline-feedback').classList.add('hidden');
+            
+            isGameAnswerChecked = false;
+            gameUserAnswer = [];
+            document.getElementById('game-answer-area').innerHTML = '';
+            document.getElementById('game-answer-area').classList.remove('feedback-error');
+            const bankArea = document.getElementById('game-bank-area');
+            bankArea.innerHTML = '';
+
+            gameCurrentChunks = data.pieces.map((text, id) => ({ id, text }));
+            let shuffledChunks = shuffle([...gameCurrentChunks]);
+
+            shuffledChunks.forEach(chunk => {
+                let piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                piece.innerText = chunk.text;
+                piece.id = `piece-bank-${chunk.id}`;
+                piece.onclick = () => moveToAnswer(chunk.id);
+                bankArea.appendChild(piece);
+            });
+        }
+
+        function moveToAnswer(id) {
+            if(isGameAnswerChecked) return;
+            playAudio('audio-pop');
+            document.getElementById(`piece-bank-${id}`).classList.add('used');
+            gameUserAnswer.push(id);
+            renderAnswerArea();
+        }
+
+        function moveBackToBank(id) {
+            if(isGameAnswerChecked) return;
+            playAudio('audio-pop');
+            gameUserAnswer = gameUserAnswer.filter(item => item !== id);
+            document.getElementById(`piece-bank-${id}`).classList.remove('used');
+            renderAnswerArea();
+        }
+
+        function renderAnswerArea() {
+            const ansArea = document.getElementById('game-answer-area');
+            ansArea.innerHTML = '';
+            ansArea.classList.remove('feedback-error'); 
+            document.getElementById('game-inline-feedback').classList.add('hidden');
+
+            gameUserAnswer.forEach(id => {
+                let chunkText = gameCurrentChunks.find(c => c.id === id).text;
+                let piece = document.createElement('div');
+                piece.className = 'answer-piece';
+                piece.innerText = chunkText;
+                piece.onclick = () => moveBackToBank(id);
+                ansArea.appendChild(piece);
+            });
+        }
+
+        function checkGameAnswer() {
+            const data = sentenceGameData[gameCurrentIdx];
+            
+            if (gameUserAnswer.length !== data.pieces.length) {
+                showPopup('warning', 'Chú ý xíu nha!', 'Vui lòng xếp hết các khối trước khi kiểm tra nhé! 🤔');
+                return;
+            }
+
+            let isCorrect = gameUserAnswer.every((id, idx) => id === idx);
+            const ansArea = document.getElementById('game-answer-area');
+            const feedbackBox = document.getElementById('game-inline-feedback');
+
+            if (isCorrect) {
+                playAudio('audio-correct');
+                isGameAnswerChecked = true;
+                document.getElementById('btn-game-check').classList.add('hidden');
+                document.getElementById('btn-game-next').classList.remove('hidden');
+                
+                Array.from(ansArea.children).forEach(child => {
+                    child.onclick = null;
+                    child.style.cursor = 'default';
+                }); 
+                
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-6 feedback-success block';
+                document.getElementById('game-fb-icon').innerText = '✨🎉✨';
+                document.getElementById('game-fb-title').innerText = 'Chính xác! Bạn giỏi quá!';
+                document.getElementById('game-fb-title').style.color = 'var(--primary-dark)';
+                document.getElementById('game-fb-correct-sentence').innerText = data.full;
+                document.getElementById('game-fb-translation').innerText = data.trans;
+            } else {
+                playAudio('audio-wrong');
+                ansArea.classList.remove('shake');
+                void ansArea.offsetWidth; 
+                ansArea.classList.add('shake');
+                ansArea.classList.add('feedback-error');
+
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-6 feedback-error block';
+                document.getElementById('game-fb-icon').innerText = '🥺💦';
+                document.getElementById('game-fb-title').innerText = 'Chưa đúng rồi! Hãy chạm vào mảnh ghép để gỡ và xếp lại nhé!';
+                document.getElementById('game-fb-title').style.color = '#e65100';
+                document.getElementById('game-fb-correct-sentence').innerText = ''; 
+                document.getElementById('game-fb-translation').innerText = '';
+            }
+        }
+
+        function nextGameLevel() {
+            playAudio('audio-click');
+            if (gameCurrentIdx < sentenceGameData.length - 1) {
+                gameCurrentIdx++;
+                loadGameLevel();
+            } else {
+                playAudio('audio-win');
+                document.getElementById('game-screen').classList.add('hidden');
+                document.getElementById('game-result').classList.remove('hidden');
+            }
+        }
+
+        // ================= TAB 4: ĐỌC HIỂU =================
+        const quizData = [
+            { q: "关于济南的泉水，最早的文字记载是在什么时候？", opts: ["1000多年前", "2000多年前", "3000多年前", "4000多年前"], correct: 2, exp: "Dựa vào câu đầu tiên trong đoạn 1: \"最早的文字记载可以推到3000多年前。\" (Những ghi chép bằng văn tự sớm nhất có thể lùi về hơn 3000 năm trước)." },
+            { q: "许多文人对济南的泉水进行过哪些方面的描写？", opts: ["只描写了颜色", "声音、颜色、形状、味道", "只描写了声音和形状", "深度、温度、颜色"], correct: 1, exp: "Trong đoạn 1 tác giả có viết: \"许多文人都对它的声音、颜色、形状、味道进行过描写。\" (Nhiều văn nhân từng miêu tả về âm thanh, màu sắc, hình dáng và hương vị của nó)." },
+            { q: "济南的老百姓住在泉边，喝着泉水，自然对它充满什么？", opts: ["抱怨之情", "害怕之情", "感激之情", "好奇之情"], correct: 2, exp: "Đoạn 1 nêu rõ: \"喝着这甜美的泉水，自然对它充满感激之情。\" (Uống dòng nước suối ngọt ngào này, tự nhiên sẽ tràn đầy tình cảm biết ơn đối với nó)." },
+            { q: "老百姓对泉水充满感激，从而产生了什么？", opts: ["许多美丽的传说", "很多诗歌", "很多历史书", "很多神话动物"], correct: 0, exp: "Cuối đoạn 1: \"从而也产生了许多关于泉水的美丽传说。\" (Từ đó cũng nảy sinh ra rất nhiều truyền thuyết tươi đẹp về nước suối)." },
+            { q: "传说中的青年叫什么名字？", opts: ["鲍全", "李白", "孔子", "舜"], correct: 0, exp: "Mở đầu đoạn 2 nhắc đến nhân vật: \"有个善良的青年，名叫鲍全。\" (Có một thanh niên lương thiện, tên là Bào Toàn)." },
+            { q: "鲍全是做什么的？", opts: ["种地的", "做生意的", "学习医术，救了很多人的", "当官的"], correct: 2, exp: "Đoạn 2 miêu tả: \"他学习医术，救了很多人。\" (Anh ấy học y thuật, đã cứu rất nhiều người)." },
+            { q: "鲍全在路边救的那位老人其实是谁？", opts: ["一个普通的农民", "皇帝", "东海龙王的哥哥", "神仙"], correct: 2, exp: "Theo truyền thuyết đoạn 2: \"这老人其实是东海龙王的哥哥。\" (Ông lão này thực chất là anh trai của Đông Hải Long Vương)." },
+            { q: "鲍全从龙王那里求到了什么？", opts: ["很多金银财宝", "治病救人的白玉壶", "一把宝剑", "长生不老的药"], correct: 1, exp: "Đoạn 2: \"鲍全从龙王那儿求到了治病救人的白玉壶。\" (Bào Toàn từ chỗ Long Vương đã xin được chiếc bình bạch ngọc chữa bệnh cứu người)." },
+            { q: "鲍全为什么把白玉壶埋入地下？", opts: ["为了好玩", "为了不被坏人抢走", "因为他不想要了", "因为壶坏了"], correct: 1, exp: "Đoạn 2 nêu lý do chôn bình: \"为了不被坏人抢走，他把壶埋入地下藏了起来。\" (Để không bị kẻ xấu cướp đi, anh đem chôn xuống đất giấu đi)." },
+            { q: "“天下第一泉”指的是哪一个泉？", opts: ["黑虎泉", "舜泉", "趵突泉", "珍珠泉"], correct: 2, exp: "Cuối đoạn 2: \"变成了今天有‘天下第一泉’美名的趵突泉。\" (Thế là biến thành suối Bào Đột mang mỹ danh Đệ nhất thiên hạ ngày nay)." },
+            { q: "如今的济南市区内大约分布着多少个天然泉？", opts: ["七百多个", "一百多个", "一千多个", "五十多个"], correct: 0, exp: "Đoạn 3 có số liệu rõ ràng: \"分布着大大小小七百多个天然泉。\" (Phân bố lớn nhỏ hơn 700 con suối tự nhiên)." },
+            { q: "这种情况在国内外城市中是怎样的？", opts: ["很常见", "极为少有", "每个城市都有", "不奇怪"], correct: 1, exp: "Ngay sau câu trên đoạn 3 nhận xét: \"这在国内外城市中是极为少有的。\" (Điều này ở các thành phố trong và ngoài nước là cực kỳ hiếm có)." },
+            { q: "“黑虎泉”是以什么命名的？", opts: ["人名", "动物", "形状", "颜色"], correct: 1, exp: "Đoạn 3 lấy ví dụ đặt tên: \"以动物命名的黑虎泉。\" (Suối Hắc Hổ được đặt tên theo động vật)." },
+            { q: "“舜泉”和“珍珠泉”分别是以什么命名的？", opts: ["人名和形状", "动物和颜色", "植物和人名", "形状和动物"], correct: 0, exp: "Đoạn 3: \"以人名命名的舜泉...以形状命名的珍珠泉。\" (Suối Thuấn lấy theo tên người, suối Trân Châu lấy theo hình dáng)." },
+            { q: "济南泉水的水源来自于哪里？", opts: ["黄河", "济南市以北的平原", "济南市以南的广大山区", "地下河"], correct: 2, exp: "Đầu đoạn 4: \"济南的泉水，来自于济南市以南的广大山区。\" (Nước suối Tế Nam bắt nguồn từ vùng núi rộng lớn phía nam thành phố)." },
+            { q: "济南南部山区的岩石主要是哪种岩石？", opts: ["火成岩", "大理岩", "花岗岩", "石灰岩"], correct: 3, exp: "Đoạn 4 nhắc đến: \"这些山区的岩石是大约四亿年前形成的一层厚厚的石灰岩。\" (Đá của khu vực này là lớp đá vôi dày)." },
+            { q: "这种石灰岩有什么特点？", opts: ["水很难进入", "陆地表面的水很容易进入地下", "没有水", "水会蒸发"], correct: 1, exp: "Đoạn 4 miêu tả đặc điểm đá vôi: \"在这种石灰岩地区，陆地表面的水很容易进入地下。\" (Nước trên bề mặt rất dễ ngấm xuống đất)." },
+            { q: "山区地下水为什么会向济南市区运动？", opts: ["因为水往低处流", "因为有人工水渠", "因为山区的石灰岩层由南向北斜", "因为有风力推动"], correct: 2, exp: "Đoạn 4 giải thích địa hình: \"石灰岩层，以大约三十度的角度，由南向北斜，因此大量的地下水向济南运动。\" (Tầng đá vôi nghiêng từ Nam sang Bắc... nên nước ngầm di chuyển về Tế Nam)." },
+            { q: "地下水流到济南市区后，遇到了什么挡住了路？", opts: ["大石头", "火成岩", "很厚的泥土", "高楼大厦"], correct: 1, exp: "Đoạn 4 nói về vật cản: \"地下水流到这里，碰到火成岩挡住了路。\" (Nước ngầm đến đây đụng phải đá magma chặn đường)." },
+            { q: "地下水最后为什么会冲出地表形成泉水？", opts: ["因为地震", "因为人类挖掘", "因为无处可流且旧城地势低", "因为温度太高"], correct: 2, exp: "Cuối đoạn 4: \"它无处可流...济南旧城一带地势低...地下水就冲出地表。\" (Nước không có chỗ chảy, vùng nội thành lại có địa thế thấp nên trào lên mặt đất)." }
+        ];
+
+        let currentQuizIdx = 0, quizScore = 0;
+
+        function startQuiz() {
+            playAudio('audio-click');
+            currentQuizIdx = 0; quizScore = 0;
+            document.getElementById('quiz-score').innerText = '0';
+            document.getElementById('quiz-start').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            const qData = quizData[currentQuizIdx];
+            document.getElementById('quiz-current').innerText = currentQuizIdx + 1;
+            document.getElementById('quiz-question').innerText = qData.q;
+            
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+            document.getElementById('quiz-inline-feedback').classList.add('hidden');
+
+            qData.opts.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option chinese-text';
+                btn.innerText = String.fromCharCode(65 + idx) + ". " + opt;
+                btn.onclick = () => checkQuizAnswer(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(selectedIndex, btnElement) {
+            const qData = quizData[currentQuizIdx];
+            const isCorrect = (selectedIndex === qData.correct);
+            const allBtns = document.querySelectorAll('.quiz-option');
+            const feedbackBox = document.getElementById('quiz-inline-feedback');
+            
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                playAudio('audio-correct');
+                btnElement.classList.add('opt-correct');
+                quizScore++;
+                document.getElementById('quiz-score').innerText = quizScore;
+                
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-5 feedback-success block';
+                document.getElementById('quiz-fb-title').innerText = '✨ Chính xác!';
+                document.getElementById('quiz-fb-title').style.color = 'var(--primary-dark)';
+            } else {
+                playAudio('audio-wrong');
+                btnElement.classList.add('opt-wrong');
+                allBtns[qData.correct].classList.add('opt-correct');
+                
+                feedbackBox.className = 'feedback-box p-4 rounded-xl mb-5 feedback-error block';
+                document.getElementById('quiz-fb-title').innerText = `🥺 Chưa đúng! Đáp án đúng là: ${String.fromCharCode(65 + qData.correct)}`;
+                document.getElementById('quiz-fb-title').style.color = '#e65100';
+            }
+            
+            document.getElementById('quiz-fb-exp').innerHTML = `<b>Giải thích:</b> ${qData.exp}`;
+            
+            const nextBtn = document.getElementById('btn-next-quiz');
+            nextBtn.innerText = (currentQuizIdx === quizData.length - 1) ? "Xem kết quả 🏆" : "Câu tiếp theo ❯";
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuiz() {
+            playAudio('audio-click');
+            if (currentQuizIdx < quizData.length - 1) {
+                currentQuizIdx++;
+                loadQuizQuestion();
+            } else {
+                playAudio('audio-win');
+                document.getElementById('quiz-screen').classList.add('hidden');
+                document.getElementById('quiz-result').classList.remove('hidden');
+                document.getElementById('final-score').innerText = quizScore;
+
+                let evalText = "", emoji = "";
+                if (quizScore >= 18) {
+                    evalText = "Vô cùng xuất sắc! Bạn đã hiểu rất sâu sắc toàn bộ cấu trúc và nội dung của Bài 5."; emoji = "🏆";
+                } else if (quizScore >= 14) {
+                    evalText = "Bạn nắm bắt được đa số chi tiết quan trọng. Cố gắng thêm chút nữa nhé!"; emoji = "🌟";
+                } else if (quizScore >= 10) {
+                    evalText = "Bạn hãy xem lại bài khóa một lần nữa, đặc biệt phần cuối về địa lý nhé."; emoji = "👍";
+                } else {
+                    evalText = "Bạn cần ôn tập kỹ hơn bài khóa nhé. Hãy ôn lại từ vựng và chơi xếp câu thêm nha!"; emoji = "💪";
+                }
+                document.getElementById('result-evaluation').innerText = evalText;
+                document.getElementById('result-emoji').innerText = emoji;
+            }
+        }
+    </script>
+</body>
+</html>

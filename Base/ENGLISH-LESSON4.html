@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Lesson 4 - Prepositions Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ghibli-green: #9dc183;
+            --ghibli-dark-green: #4f7942;
+            --ghibli-sky: #d0f0f7;
+            --ghibli-pink: #ffb7c5;
+            --ghibli-wood: #8b5a2b;
+        }
+
+        body {
+            margin: 0; padding: 20px;
+            font-family: 'Quicksand', sans-serif;
+            background: var(--ghibli-sky);
+            background-image: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0)), url('https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-attachment: fixed;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px; border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px; width: 95%;
+            text-align: center; border: 3px solid var(--ghibli-green);
+            backdrop-filter: blur(10px); margin-top: 20px;
+            position: relative;
+        }
+
+        h1 { color: var(--ghibli-dark-green); font-size: 1.5rem; margin-bottom: 20px; }
+
+        /* Phần chỉnh tốc độ mới: 0.5x - 2.0x */
+        .speed-control {
+            margin-bottom: 15px;
+            background: rgba(157, 193, 131, 0.15);
+            padding: 12px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid rgba(157, 193, 131, 0.3);
+        }
+        .speed-control label { font-size: 0.9rem; color: var(--ghibli-dark-green); font-weight: 600; margin-right: 10px; }
+        #speedRange { 
+            vertical-align: middle; 
+            cursor: pointer; 
+            accent-color: var(--ghibli-dark-green);
+            width: 150px;
+        }
+        #speedValue { 
+            display: inline-block;
+            min-width: 40px;
+            font-size: 0.9rem; 
+            font-weight: bold; 
+            color: var(--ghibli-wood);
+            margin-left: 10px;
+        }
+
+        .audio-btn {
+            background: var(--ghibli-green);
+            border: none; width: 70px; height: 70px;
+            border-radius: 50%; cursor: pointer;
+            font-size: 28px; color: white;
+            margin-bottom: 15px; transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(157, 193, 131, 0.4);
+            display: block; margin-left: auto; margin-right: auto;
+        }
+
+        .audio-btn:hover { transform: scale(1.1); background: var(--ghibli-dark-green); }
+
+        .input-area { width: 100%; margin: 15px 0; }
+
+        input[type="text"] {
+            width: 90%; padding: 15px;
+            border: 2px solid #ddd; border-radius: 15px;
+            font-size: 1.1rem; font-family: inherit;
+            text-align: center; outline: none; transition: 0.3s;
+        }
+
+        input[type="text"]:focus { border-color: var(--ghibli-green); box-shadow: 0 0 10px rgba(157, 193, 131, 0.2); }
+
+        .feedback-container { min-height: 120px; margin: 10px 0; }
+        .main-feedback { font-weight: 600; font-size: 1.1rem; margin-bottom: 8px; }
+        .correct { color: #2ecc71; }
+        .incorrect { color: #e74c3c; }
+
+        .detail-info { 
+            background: rgba(157, 193, 131, 0.15); 
+            padding: 12px; border-radius: 15px;
+            display: none; animation: fadeIn 0.5s;
+            text-align: center;
+        }
+        .ipa { color: var(--ghibli-wood); font-style: italic; font-size: 1rem; margin: 4px 0; }
+        .translation { color: var(--ghibli-dark-green); font-weight: 600; font-size: 1rem; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .progress { font-size: 0.8rem; color: #666; margin-bottom: 10px; }
+
+        .btn-nav {
+            background: white; border: 2px solid var(--ghibli-green);
+            color: var(--ghibli-dark-green); padding: 8px 20px;
+            border-radius: 20px; cursor: pointer; font-weight: bold;
+            margin: 5px; transition: 0.3s;
+        }
+
+        .btn-nav:hover { background: var(--ghibli-green); color: white; }
+
+        .back-home { margin-top: 20px; text-decoration: none; color: var(--ghibli-dark-green); font-size: 0.9rem; font-weight: bold; display: block; }
+        
+        #congrats-overlay {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.98); border-radius: 22px;
+            flex-direction: column; align-items: center; justify-content: center; z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div id="congrats-overlay">
+        <h2>🎉 Chúc mừng! 🎉</h2>
+        <p>Bạn đã hoàn thành Bài 4 xuất sắc!</p>
+        <button class="btn-nav" onclick="window.location.href='index.html'" style="margin-top: 20px;">Quay về Khu Vườn 🌿</button>
+    </div>
+
+    <div class="progress" id="progress">Câu 1 / 35</div>
+    <h1>English: Lesson 4 🎧</h1>
+
+    <div class="speed-control">
+        <label>Tốc độ: </label>
+        <input type="range" id="speedRange" min="0.5" max="2.0" step="0.1" value="0.8">
+        <span id="speedValue">0.8x</span>
+    </div>
+    
+    <button class="audio-btn" onclick="playAudio()">🔊</button>
+    
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Nghe và gõ lại câu..." autocomplete="off">
+    </div>
+
+    <div class="feedback-container">
+        <div id="mainFeedback" class="main-feedback"></div>
+        <div id="detailInfo" class="detail-info">
+            <div id="displayScript" style="font-weight: bold;"></div>
+            <div id="displayIpa" class="ipa"></div>
+            <div id="displayTrans" class="translation"></div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button class="btn-nav" onclick="checkAnswer()">Kiểm tra</button>
+        <button class="btn-nav" onclick="showHint()">Gợi ý</button>
+        <button class="btn-nav" onclick="nextQuestion()" id="nextBtn" style="display:none;">Câu tiếp theo ➔</button>
+    </div>
+
+    <a href="index.html" class="back-home">🌿 Quay về trang chủ</a>
+</div>
+
+<script>
+    const data = [
+        { s: "I am in the park.", p: "/aɪ æm ɪn ðə pɑːk/", t: "Tôi ở trong công viên" },
+        { s: "The cat is in the garden.", p: "/ðə kæt ɪz ɪn ðə ˈɡɑːdn/", t: "Con mèo ở trong vườn" },
+        { s: "My jeans are in the wardrobe.", p: "/maɪ dʒiːnz ɑː ɪn ðə ˈwɔːdrəʊb/", t: "Quần bò của tôi ở trong tủ" },
+        { s: "She is at the shopping centre.", p: "/ʃiː ɪz æt ðə ˈʃɒpɪŋ sentə/", t: "Cô ấy ở trung tâm mua sắm" },
+        { s: "The book is on the table.", p: "/ðə bʊk ɪz ɒn ðə ˈteɪbl/", t: "Quyển sách ở trên bàn" },
+        { s: "The clock is on the wall.", p: "/ðə klɒk ɪz ɒn ðə wɔːl/", t: "Đồng hồ ở trên tường" },
+        { s: "The socks are on the floor.", p: "/ðə sɒks ɑː ɒn ðə flɔː/", t: "Tất ở trên sàn" },
+        { s: "The cat is on the sofa.", p: "/ðə kæt ɪz ɒn ðə ˈsəʊfə/", t: "Con mèo ở trên ghế sofa" },
+        { s: "I am at school.", p: "/aɪ æm æt skuːl/", t: "Tôi ở trường" },
+        { s: "He is at work.", p: "/hiː ɪz æt wɜːk/", t: "Anh ấy ở chỗ làm" },
+        { s: "They are at home.", p: "/ðeɪ ɑː æt həʊm/", t: "Họ ở nhà" },
+        { s: "She is at the supermarket.", p: "/ʃiː ɪz æt ðə ˈsuːpəmɑːkɪt/", t: "Cô ấy ở siêu thị" },
+        { s: "He is at a party.", p: "/hiː ɪz æt ə ˈpɑːti/", t: "Anh ấy ở bữa tiệc" },
+        { s: "They are at the airport.", p: "/ðeɪ ɑː æt ði ˈeəpɔːt/", t: "Họ ở sân bay" },
+        { s: "We are at the train station.", p: "/wiː ɑː æt ðə treɪn ˈsteɪʃn/", t: "Chúng tôi ở nhà ga" },
+        { s: "The clock is on the wall.", p: "/ðə klɒk ɪz ɒn ðə wɔːl/", t: "Đồng hồ ở trên tường" },
+        { s: "The class is at school.", p: "/ðə klɑːs ɪz æt skuːl/", t: "Lớp học ở trường" },
+        { s: "The English class is at 3.00.", p: "/ði ˈɪŋɡlɪʃ klɑːs ɪz æt θriː/", t: "Lớp tiếng Anh lúc 3 giờ" },
+        { s: "The maths class is in the morning.", p: "/ðə mæθs klɑːs ɪz ɪn ðə ˈmɔːnɪŋ/", t: "Lớp toán buổi sáng" },
+        { s: "The exam is on Monday.", p: "/ði ɪɡˈzæm ɒn ˈmʌndeɪ/", t: "Kỳ thi vào thứ 2" },
+        { s: "My birthday is on Friday.", p: "/maɪ ˈbɜːθdeɪ ɪz ɒn ˈfraɪdeɪ/", t: "Sinh nhật tôi vào thứ 6" },
+        { s: "I study in the morning.", p: "/aɪ ˈstʌdi ɪn ðə ˈmɔːnɪŋ/", t: "Tôi học vào buổi sáng" },
+        { s: "The class is in the afternoon.", p: "/ðə klɑːs ɪz ɪn ði ˌɑːftəˈnuːn/", t: "Lớp học buổi chiều" },
+        { s: "We have a party in the evening.", p: "/wiː hæv ə ˈpɑːti ɪn ði ˈiːvnɪŋ/", t: "Chúng tôi có tiệc buổi tối" },
+        { s: "I eat at lunchtime.", p: "/aɪ iːt æt ˈlʌntʃtaɪm/", t: "Tôi ăn vào giờ trưa" },
+        { s: "The class is at noon.", p: "/ðə klɑːs ɪz æt nuːn/", t: "Lớp học lúc 12h" },
+        { s: "We meet at midday.", p: "/wiː miːt æt ˌmɪdˈdeɪ/", t: "Chúng tôi gặp lúc trưa" },
+        { s: "I study at night.", p: "/aɪ ˈstʌdi æt naɪt/", t: "Tôi học buổi tối" },
+        { s: "He sleeps at midnight.", p: "/hiː sliːps æt ˈmɪdnaɪt/", t: "Anh ấy ngủ lúc nửa đêm" },
+        { s: "The exam is on Monday.", p: "/ði ɪɡˈzæm ɒn ˈmʌndeɪ/", t: "Thi vào thứ 2" },
+        { s: "I work on Tuesday.", p: "/aɪ wɜːk ɒn ˈtjuːzdeɪ/", t: "Tôi làm việc thứ 3" },
+        { s: "The class is on Wednesday.", p: "/ðə klɑːs ɪz ɒn ˈwenzdeɪ/", t: "Lớp vào thứ 4" },
+        { s: "The party is on Thursday.", p: "/ðə ˈpɑːti ɪz ɒn ˈθɜːzdeɪ/", t: "Tiệc vào thứ 5" },
+        { s: "My birthday is on Friday.", p: "/maɪ ˈbɜːθdeɪ ɪz ɒn ˈfraɪdeɪ/", t: "Sinh nhật thứ 6" },
+        { s: "We go to the park on Saturday.", p: "/wiː ɡəʊ tuː ðə pɑːk ɒn ˈsætədeɪ/", t: "Đi công viên thứ 7" },
+        { s: "I stay at home on Sunday.", p: "/aɪ steɪ æt həʊm ɒn ˈsʌndeɪ/", t: "Tôi ở nhà chủ nhật" }
+    ];
+
+    let currentIndex = 0;
+
+    // Cập nhật nhãn hiển thị tốc độ
+    document.getElementById('speedRange').addEventListener('input', function() {
+        document.getElementById('speedValue').innerText = this.value + 'x';
+    });
+
+    function playAudio() {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = data[currentIndex].s;
+        msg.lang = 'en-US';
+        // Lấy tốc độ từ 0.5 đến 2.0
+        msg.rate = parseFloat(document.getElementById('speedRange').value);
+        window.speechSynthesis.speak(msg);
+    }
+
+    function updateUI() {
+        document.getElementById('progress').innerText = `Câu ${currentIndex + 1} / ${data.length}`;
+        document.getElementById('userInput').value = "";
+        document.getElementById('mainFeedback').innerText = "";
+        document.getElementById('detailInfo').style.display = "none";
+        document.getElementById('nextBtn').style.display = "none";
+        document.getElementById('userInput').focus();
+        setTimeout(playAudio, 400);
+    }
+
+    function checkAnswer() {
+        const userCleaned = document.getElementById('userInput').value.trim().toLowerCase().replace(/[.,!?;'-]/g, "");
+        const correctCleaned = data[currentIndex].s.toLowerCase().replace(/[.,!?;'-]/g, "");
+        
+        const mainFeedback = document.getElementById('mainFeedback');
+        const detailInfo = document.getElementById('detailInfo');
+        
+        if (userCleaned === correctCleaned) {
+            mainFeedback.innerText = "Tuyệt quá! ✨";
+            mainFeedback.className = "main-feedback correct";
+            
+            document.getElementById('displayScript').innerText = data[currentIndex].s;
+            document.getElementById('displayIpa').innerText = data[currentIndex].p;
+            document.getElementById('displayTrans').innerText = "→ " + data[currentIndex].t;
+            detailInfo.style.display = "block";
+            
+            document.getElementById('nextBtn').style.display = "inline-block";
+        } else {
+            mainFeedback.innerText = "Nghe lại một chút nhé!";
+            mainFeedback.className = "main-feedback incorrect";
+            playAudio();
+        }
+    }
+
+    function showHint() {
+        document.getElementById('mainFeedback').innerText = "Gợi ý: " + data[currentIndex].s;
+        document.getElementById('mainFeedback').className = "main-feedback";
+    }
+
+    function nextQuestion() {
+        if (currentIndex < data.length - 1) {
+            currentIndex++;
+            updateUI();
+        } else {
+            document.getElementById('congrats-overlay').style.display = 'flex';
+        }
+    }
+
+    document.getElementById('userInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            if (document.getElementById('nextBtn').style.display === "inline-block") {
+                nextQuestion();
+            } else {
+                checkAnswer();
+            }
+        }
+    });
+
+    window.onload = updateUI;
+</script>
+
+</body>
+</html>

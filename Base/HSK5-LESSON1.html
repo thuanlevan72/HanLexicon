@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSK5 Bài 1 - 爱的细节 | Nga Học HSK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Nunito:wght@400;600;700;800&family=Noto+Sans+SC:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8bc34a; 
+            --primary-dark: #558b2f;
+            --secondary: #ffb74d; 
+            --secondary-dark: #f57c00;
+            --bg-color: #f1f8e9; 
+            --card-bg: #ffffff;
+            --text-main: #33691e;
+            --text-muted: #5d4037;
+            --hanzi-color: #d84315;
+            /* Cập nhật font chữ Hán bo tròn, dễ đọc */
+            --font-cn: "Varela Round", "Nunito", "Noto Sans SC", "Microsoft YaHei", sans-serif; 
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            font-family: 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#cddc39 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; padding-bottom: 50px;
+        }
+
+        /* --- THEME HEADER & TABS --- */
+        .branding {
+            width: 100%; background: #fff; text-align: center; padding: 6px 0;
+            font-size: 0.8rem; font-weight: 800; color: var(--primary-dark);
+            letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-transform: uppercase;
+        }
+
+        .header {
+            width: 100%; max-width: 896px; /* Mở rộng max-width tương đương max-w-4xl */
+            padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(139, 195, 74, 0.3);
+        }
+
+        .btn-back {
+            background: rgba(255,255,255,0.2); color: white; text-decoration: none;
+            padding: 8px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.5); cursor: pointer;
+        }
+
+        .header h2 { font-size: 1.25rem; text-align: center; flex: 1; margin: 0 10px; font-family: var(--font-cn); font-weight: 900; }
+        @media (min-width: 768px) { .header h2 { font-size: 1.5rem; } }
+        .header-spacer { width: 80px; }
+
+        .tabs {
+            display: flex; justify-content: space-between; gap: 5px;
+            margin: 20px auto; background: white; padding: 6px;
+            border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 95%; max-width: 700px; /* Mở rộng thanh tab */
+        }
+
+        .tab-btn {
+            flex: 1; border: none; background: transparent;
+            padding: 10px 0; border-radius: 25px;
+            font-size: 0.9rem; font-weight: 800; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s;
+            text-align: center; white-space: nowrap;
+        }
+        @media (min-width: 768px) { .tab-btn { font-size: 1rem; padding: 12px 0; } }
+
+        .tab-btn.active {
+            background: var(--secondary); color: white;
+            box-shadow: 0 4px 10px rgba(255, 183, 77, 0.4);
+        }
+
+        /* --- BUTTONS & CARDS --- */
+        .btn-primary {
+            background: var(--secondary); color: white; border: none; padding: 12px 20px;
+            border-radius: 15px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.2s;
+            box-shadow: 0 4px 0 var(--secondary-dark);
+        }
+        .btn-primary:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+        
+        .btn-action {
+            background: var(--primary); color: white; border: none; padding: 12px 20px;
+            border-radius: 15px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.2s;
+            box-shadow: 0 4px 0 var(--primary-dark);
+        }
+        .btn-action:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+
+        .card-container {
+            background: white; border-radius: 20px; padding: 24px; /* Tăng padding */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08); width: 100%;
+            border: 2px solid #e0e0e0;
+        }
+        @media (min-width: 768px) { .card-container { padding: 32px; } }
+
+        /* --- FLASHCARD SPECIFIC --- */
+        .chinese-text { font-family: var(--font-cn); font-weight: 700; letter-spacing: 0.5px; }
+        .chinese-sub { font-family: var(--font-cn); }
+
+        .flashcard-inner {
+            position: relative; width: 100%; height: 100%; /* Height quản lý bằng Tailwind */
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .flashcard-inner.is-flipped { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; border-radius: 15px;
+            padding: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        @media (min-width: 768px) {
+            .flashcard-front, .flashcard-back { padding: 40px; }
+        }
+        .flashcard-front { background-color: #fff; border: 2px solid var(--primary); }
+        .flashcard-back { background-color: #fffde7; transform: rotateY(180deg); border: 2px solid var(--secondary); }
+        
+        .custom-scroll::-webkit-scrollbar { width: 8px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 10px; }
+
+        .circle-stat {
+            position: relative; width: 120px; height: 120px; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 8px solid #f3f4f6; background: white;
+        }
+        .stat-green { border-color: var(--primary); color: var(--primary-dark); }
+        .stat-red { border-color: #fca5a5; color: #b91c1c; }
+
+        /* --- RUBY (PINYIN) SPECIFIC CHO BÀI KHÓA (PHÓNG TO 1.3X) --- */
+        .text-content-area {
+            line-height: 2.6; 
+            font-size: 1.6rem; /* Tăng từ 1.25rem */
+        }
+        ruby { ruby-position: over; margin: 0 2px; }
+        rt { 
+            font-size: 0.85rem; /* Tăng từ 0.65rem */
+            color: #1565c0; 
+            font-family: 'Nunito', sans-serif; 
+            font-weight: 700; 
+            transform: translateY(-2px);
+            transition: opacity 0.2s;
+        }
+        @media (min-width: 768px) {
+            .text-content-area { font-size: 1.9rem; line-height: 2.8; }
+            rt { font-size: 1rem; }
+        }
+        
+        /* Khi tắt Pinyin */
+        .hide-pinyin rt {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .hide-pinyin .text-content-area {
+            line-height: 2.0; /* Tự thu gọn khoảng cách khi tắt Pinyin */
+        }
+        @media (min-width: 768px) {
+            .hide-pinyin .text-content-area { line-height: 2.2; }
+        }
+
+        /* --- TOGGLE BUTTON SPECIFIC --- */
+        input:checked ~ .toggle-bg { background-color: var(--primary); }
+        input:checked ~ .toggle-dot { transform: translateX(100%); }
+
+        /* --- QUIZ SPECIFIC --- */
+        .quiz-option {
+            width: 100%; text-align: left; padding: 14px 18px; margin-bottom: 12px;
+            border: 2px solid #e0e0e0; border-radius: 12px; font-weight: 700;
+            background: white; color: var(--text-muted); cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+        }
+        @media (min-width: 768px) {
+            .quiz-option { font-size: 1.3rem; padding: 18px 24px; border-radius: 16px; margin-bottom: 16px; border-width: 3px; }
+        }
+        .quiz-option:hover:not(:disabled) { border-color: var(--secondary); background: #fff8e1; }
+        .quiz-option:disabled { cursor: not-allowed; opacity: 0.9; }
+        
+        .opt-correct { background: #e8f5e9 !important; border-color: var(--primary) !important; color: var(--primary-dark) !important; }
+        .opt-wrong { background: #ffebee !important; border-color: #f44336 !important; color: #c62828 !important; }
+
+    </style>
+</head>
+<body>
+
+    <div class="branding">© Bản Quyền Thuộc Về Nga Học HSK</div>
+
+    <header class="header">
+        <div class="btn-back" onclick="window.location.href='index.html'">❮ Về Vườn</div>
+        <h2>Bài 1: 爱的细节</h2>
+        <div class="header-spacer"></div>
+    </header>
+
+    <div class="tabs">
+        <button id="tab-vocab" class="tab-btn active" onclick="switchTab('vocab')">🎴 Từ Vựng</button>
+        <button id="tab-text" class="tab-btn" onclick="switchTab('text')">📖 Bài Khóa</button>
+        <button id="tab-quiz" class="tab-btn" onclick="switchTab('quiz')">❓ Đọc Hiểu</button>
+        <button id="tab-exercise" class="tab-btn" onclick="switchTab('exercise')">📝 Bài Tập</button>
+    </div>
+
+    <!-- Tăng max-w-xl lên max-w-4xl để màn hình máy tính hiển thị rộng hơn -->
+    <div class="w-full max-w-4xl px-4 md:px-8 mb-10">
+
+        <!-- ============================================== -->
+        <!-- TAB 1: TỪ VỰNG (FLASHCARD) -->
+        <!-- ============================================== -->
+        <div id="section-vocab" class="w-full">
+            <div id="vocab-start" class="card-container text-center max-w-2xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4" style="color: var(--primary-dark);">Từ Vựng Bài 1</h2>
+                <div class="text-7xl md:text-8xl mb-8 mt-6">🚀</div>
+                <p class="text-lg md:text-xl text-[var(--text-muted)] font-bold mb-8">Hãy đọc cả từ vựng và câu ví dụ để hiểu rõ cách dùng từ nhé!</p>
+                <button onclick="startFlashcards()" class="btn-primary w-full py-4 text-xl">Bắt đầu học ❯</button>
+            </div>
+
+            <div id="flashcard-screen" class="card-container hidden">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
+                    <button onclick="resetVocabTab()" class="text-base md:text-lg font-bold hover:underline" style="color: var(--secondary-dark);">❮ Quay Lại</button>
+                    <div class="font-bold px-4 py-2 rounded-full text-sm md:text-base" style="background: #e8f5e9; color: var(--primary-dark);">
+                        Thẻ: <span id="card-index">1</span> / <span id="card-total">0</span>
+                    </div>
+                </div>
+                
+                <!-- Set chiều cao cho khung flashcard to hơn -->
+                <div class="mb-8 h-[420px] md:h-[520px]">
+                    <div id="flashcard-inner" class="flashcard-inner" onclick="flipCard()">
+                        <div class="flashcard-front">
+                            <!-- Chữ Hán to hơn (1.3x - 1.5x) -->
+                            <h2 id="card-hanzi" class="chinese-text text-7xl md:text-[6.5rem] leading-tight text-center px-2" style="color: var(--hanzi-color);"></h2>
+                            <p class="absolute bottom-6 text-base md:text-lg font-bold text-gray-400">Chạm để lật thẻ 👆</p>
+                        </div>
+                        <div class="flashcard-back overflow-y-auto custom-scroll">
+                            <h3 id="card-pinyin" class="text-4xl md:text-5xl font-bold mb-2" style="color: #1565c0;"></h3>
+                            <p id="card-mean" class="text-2xl md:text-3xl mb-6 font-bold border-b-4 pb-4 w-full text-center" style="color: #e65100; border-color: #ffe082;"></p>
+                            <div class="text-left w-full space-y-4">
+                                <p id="card-example-cn" class="chinese-sub text-2xl md:text-[1.75rem] leading-relaxed font-bold text-gray-800"></p>
+                                <p id="card-example-py" class="text-base md:text-lg italic font-semibold text-gray-600"></p>
+                                <p id="card-example-vi" class="text-base md:text-lg bg-white p-3 md:p-4 rounded-xl border-2" style="color: var(--primary-dark); border-color: #ffe082;"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6 max-w-2xl mx-auto">
+                    <button onclick="markCard(false)" class="bg-rose-100 border-2 border-rose-400 text-rose-700 p-4 md:p-5 text-lg md:text-xl rounded-2xl font-bold hover:bg-rose-200 transition-colors">❌ Chưa thuộc</button>
+                    <button onclick="markCard(true)" class="bg-emerald-100 border-2 border-emerald-400 text-emerald-700 p-4 md:p-5 text-lg md:text-xl rounded-2xl font-bold hover:bg-emerald-200 transition-colors">✅ Đã thuộc</button>
+                </div>
+            </div>
+
+            <div id="flashcard-stat-screen" class="card-container text-center hidden">
+                 <h2 class="text-3xl md:text-4xl font-bold mb-10" style="color: var(--primary-dark);">Kết quả ghi nhớ</h2>
+                 <div class="flex justify-center gap-12 md:gap-24 items-center mb-10">
+                    <div class="circle-stat stat-green">
+                        <span id="stat-learned-percent" class="text-2xl md:text-3xl font-bold">0%</span>
+                        <span class="text-xs md:text-sm uppercase font-bold mt-1">Thuộc</span>
+                    </div>
+                    <div class="circle-stat stat-red">
+                        <span id="stat-unlearned-percent" class="text-2xl md:text-3xl font-bold">0%</span>
+                        <span class="text-xs md:text-sm uppercase font-bold mt-1">Cần ôn</span>
+                    </div>
+                 </div>
+                 <div class="text-left mb-8 max-w-2xl mx-auto">
+                    <p class="font-bold text-xl mb-4" style="color: var(--text-muted);">Danh sách cần lưu ý:</p>
+                    <div id="unlearned-list" class="max-h-64 overflow-y-auto custom-scroll bg-white rounded-xl border-2 p-4 space-y-3" style="border-color: #fca5a5;"></div>
+                 </div>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                     <button id="btn-relearn" onclick="relearnUnlearned()" class="btn-primary py-4 text-lg" style="background: #f44336; box-shadow: 0 4px 0 #d32f2f;">🔄 Học lại từ chưa thuộc</button>
+                     <button onclick="resetVocabTab()" class="btn-action md:col-span-2 py-4 text-lg">🔙 Hoàn thành</button>
+                 </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 2: BÀI KHÓA (RUBY PINYIN & TOGGLE) -->
+        <!-- ============================================== -->
+        <div id="section-text" class="w-full hidden">
+            <div class="card-container md:p-10" id="text-wrapper">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 chinese-text" style="color: var(--primary-dark);">爱的细节</h2>
+                
+                <!-- Audio Player & Pinyin Toggle -->
+                <div class="sticky top-0 z-10 bg-white pb-4 pt-2 border-b-2 mb-8 flex justify-between items-center gap-4" style="border-color: var(--primary);">
+                    <audio id="lesson-audio" controls class="h-12 outline-none rounded-lg flex-1" src="https://raw.githubusercontent.com/ngabui94-create/game-hoc-tieng-trung/main/audio/hsk5/lesson1/01-1.mp3"></audio>
+                    
+                    <label class="flex items-center cursor-pointer select-none">
+                        <div class="relative">
+                            <input type="checkbox" id="toggle-pinyin" class="sr-only" checked onchange="togglePinyin()">
+                            <div class="block bg-gray-300 w-14 h-8 rounded-full toggle-bg transition"></div>
+                            <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform toggle-dot"></div>
+                        </div>
+                        <div class="ml-3 font-bold text-base md:text-lg text-[var(--primary-dark)]">Pinyin</div>
+                    </label>
+                </div>
+
+                <!-- Text Content (Rendered via JS) -->
+                <!-- Thêm md:max-h-[65vh] để khung chứa to hơn trên PC -->
+                <div class="chinese-text text-gray-800 custom-scroll max-h-[55vh] md:max-h-[65vh] overflow-y-auto pb-6 px-2 md:px-6 text-content-area transition-all duration-300" id="sync-container">
+                    <!-- Nội dung bài khóa sẽ được render vào đây -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 3: ĐỌC HIỂU (20 QUIZ) -->
+        <!-- ============================================== -->
+        <div id="section-quiz" class="w-full hidden">
+            <!-- Màn hình bắt đầu Quiz -->
+            <div id="quiz-start" class="card-container text-center max-w-2xl mx-auto mt-6">
+                <div class="text-7xl md:text-8xl mb-6">🕵️‍♂️</div>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6" style="color: var(--primary-dark);">Thử Thách Đọc Hiểu</h2>
+                <p class="mb-10 text-lg md:text-xl font-semibold" style="color: var(--text-muted);">Gồm 20 câu hỏi khai thác chi tiết bài khóa. </p>
+                <button onclick="startQuiz()" class="btn-primary w-full py-5 text-xl md:text-2xl rounded-2xl">Bắt đầu ngay ❯</button>
+            </div>
+
+            <!-- Màn hình làm Quiz -->
+            <div id="quiz-screen" class="card-container hidden relative md:p-10">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
+                    <span class="font-bold text-base md:text-lg text-gray-500">Điểm: <span id="quiz-score" class="text-orange-500 text-xl">0</span></span>
+                    <div class="font-bold px-4 py-2 rounded-full text-sm md:text-base" style="background: #e8f5e9; color: var(--primary-dark);">
+                        Câu: <span id="quiz-current">1</span> / 20
+                    </div>
+                </div>
+
+                <!-- Chữ câu hỏi to hơn -->
+                <h3 id="quiz-question" class="chinese-text text-2xl md:text-3xl font-bold mb-8 text-gray-800 leading-relaxed md:leading-snug"></h3>
+                
+                <div id="quiz-options" class="flex flex-col mb-6">
+                    <!-- Các nút đáp án sẽ được tạo bằng JS (đã thêm CSS phóng to) -->
+                </div>
+
+                <!-- Box Giải thích -->
+                <div id="quiz-explanation" class="hidden mb-8 p-5 md:p-6 rounded-2xl border-2" style="background: #fffde7; border-color: #ffe082;">
+                    <p class="font-bold text-base md:text-lg mb-2 uppercase" style="color: #f57c00;">💡 Giải thích chi tiết:</p>
+                    <p id="quiz-explain-text" class="text-gray-700 text-base md:text-xl leading-relaxed font-semibold"></p>
+                </div>
+
+                <button id="btn-next-quiz" onclick="nextQuiz()" class="btn-action w-full hidden py-4 md:py-5 text-xl md:text-2xl rounded-2xl">Câu tiếp theo ❯</button>
+            </div>
+
+            <!-- Màn hình Kết quả -->
+            <div id="quiz-result" class="card-container text-center hidden max-w-2xl mx-auto mt-6">
+                <div id="result-emoji" class="text-8xl mb-6 mt-4">🏆</div>
+                <h2 class="text-4xl font-bold mb-4" style="color: var(--primary-dark);">Hoàn Thành!</h2>
+                <p class="text-xl font-bold text-gray-600 mb-4">Điểm của bạn:</p>
+                <div class="text-7xl font-black mb-8" style="color: var(--secondary-dark);"><span id="final-score"></span><span class="text-4xl text-gray-400">/20</span></div>
+                <p id="result-evaluation" class="mb-10 text-lg md:text-xl font-bold p-5 rounded-xl border-2 text-[var(--primary-dark)] bg-[#e8f5e9] border-[var(--primary)]"></p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="startQuiz()" class="btn-primary py-4 text-xl">🔄 Làm lại</button>
+                    <button onclick="switchTab('text')" class="btn-action py-4 text-xl bg-gray-200 text-gray-800 border-gray-300" style="box-shadow: 0 4px 0 #bdbdbd; color:#333; background:#e0e0e0;">📖 Xem lại bài khóa</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 4: BÀI TẬP TỔNG HỢP -->
+        <!-- ============================================== -->
+        <div id="section-exercise" class="w-full hidden">
+            <div class="card-container text-center mt-6 max-w-2xl mx-auto md:p-12">
+                <div class="text-7xl md:text-8xl mb-6">📝</div>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6" style="color: var(--primary-dark);">Bài Tập Tổng Hợp</h2>
+                <p class="mb-10 text-lg md:text-xl font-semibold leading-relaxed" style="color: var(--text-muted);">Củng cố lại toàn bộ ngữ pháp và từ vựng Bài 1 (HSK5) thông qua bài trắc nghiệm Google Form.</p>
+                <button onclick="window.open('https://forms.google.com/', '_blank')" class="btn-primary w-full py-5 text-xl md:text-2xl rounded-2xl">Làm Bài Tập Ngay ❯</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- AUDIO ASSETS -->
+    <audio id="audio-click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="audio-correct" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+    <audio id="audio-wrong" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3"></audio>
+    <audio id="audio-flip" src="https://assets.mixkit.co/active_storage/sfx/2045/2045-preview.mp3"></audio>
+
+    <script>
+        // --- SOUND LOGIC ---
+        function playAudio(audioId) {
+            const audio = document.getElementById(audioId);
+            if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+        }
+
+        // --- TAB SWITCHING LOGIC ---
+        function switchTab(tabId) {
+            playAudio('audio-click');
+            ['vocab', 'text', 'quiz', 'exercise'].forEach(id => {
+                document.getElementById('section-' + id).classList.add('hidden');
+                document.getElementById('tab-' + id).classList.remove('active');
+            });
+            document.getElementById('section-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            const lessonAudio = document.getElementById('lesson-audio');
+            if(lessonAudio && tabId !== 'text') lessonAudio.pause();
+
+            if(tabId === 'vocab') resetVocabTab();
+        }
+
+        // --- VOCABULARY DATA (UPDATED) ---
+        const hsk5L1Vocab = [
+            { h: "细节", p: "xìjié", m: "Chi tiết", ex: "这本书描写了很多爱的细节。", exp: "Zhè běn shū miáoxiě le hěn duō ài de xìjié.", exv: "Cuốn sách này miêu tả rất nhiều chi tiết của tình yêu." },
+            { h: "电台", p: "diàntái", m: "Đài phát thanh", ex: "电台正在举办一个活动。", exp: "Diàntái zhèngzài jǔbàn yí gè huódòng.", exv: "Đài phát thanh đang tổ chức một sự kiện." },
+            { h: "恩爱", p: "ēn'ài", m: "Ân ái, đằm thắm", ex: "他们是一对恩爱夫妻。", exp: "Tāmen shì yí duì ēn'ài fūqī.", exv: "Họ là một cặp vợ chồng ân ái." },
+            { h: "对比", p: "duìbǐ", m: "So sánh", ex: "对比之后，我们做出了决定。", exp: "Duìbǐ zhīhòu, wǒmen zuò chū le juédìng.", exv: "Sau khi so sánh, chúng tôi đã đưa ra quyết định." },
+            { h: "入围", p: "rùwéi", m: "Vượt qua vòng sơ tuyển", ex: "有三对夫妻入围了决赛。", exp: "Yǒu sān duì fūqī rùwéi le juésài.", exv: "Có ba cặp vợ chồng đã lọt vào chung kết." },
+            { h: "评委", p: "píngwěi", m: "Ban giám khảo", ex: "评委被他们的故事感动了。", exp: "Píngwěi bèi tāmen de gùshi gǎndòng le.", exv: "Giám khảo đã bị câu chuyện của họ làm cảm động." },
+            { h: "如何", p: "rúhé", m: "Như thế nào", ex: "评委问他们是如何恩爱的。", exp: "Píngwěi wèn tāmen shì rúhé ēn'ài de.", exv: "Giám khảo hỏi họ đã yêu thương nhau như thế nào." },
+            { h: "如", p: "rú", m: "Giống như", ex: "他几年如一日地照顾她。", exp: "Tā jǐ nián rú yī rì de zhàogù tā.", exv: "Anh ấy chăm sóc cô ấy mấy năm như một ngày." },
+            { h: "瘫痪", p: "tānhuàn", m: "Bị liệt", ex: "前几年她全身瘫痪了。", exp: "Qián jǐ nián tā quánshēn tānhuàn le.", exv: "Mấy năm trước cô ấy bị liệt toàn thân." },
+            { h: "离婚", p: "líhūn", m: "Ly hôn", ex: "别人以为丈夫会跟她离婚。", exp: "Biérén yǐwéi zhàngfu huì gēn tā líhūn.", exv: "Người khác tưởng rằng chồng sẽ ly hôn với cô ấy." },
+            { h: "自杀", p: "zìshā", m: "Tự tử", ex: "她曾经想过自杀。", exp: "Tā céngjīng xiǎng guò zìshā.", exv: "Cô ấy từng nghĩ đến việc tự sát." },
+            { h: "抱怨", p: "bàoyuàn", m: "Oán trách, phàn nàn", ex: "丈夫照顾她，从不抱怨。", exp: "Zhàngfu zhàogù tā, cóng bù bàoyuàn.", exv: "Chồng chăm sóc cô ấy, chưa từng phàn nàn." },
+            { h: "爱护", p: "àihù", m: "Yêu quý, quý trọng", ex: "在丈夫的爱护下她站了起来。", exp: "Zài zhàngfu de àihù xià tā zhàn le qǐlái.", exv: "Dưới sự yêu thương chăm sóc của chồng, cô ấy đã đứng lên được." },
+            { h: "婚姻", p: "hūnyīn", m: "Hôn nhân", ex: "他们的婚姻很幸福。", exp: "Tāmen de hūnyīn hěn xìngfú.", exv: "Hôn nhân của họ rất hạnh phúc." },
+            { h: "吵架", p: "chǎojià", m: "Cãi nhau", ex: "他们从来不吵架。", exp: "Tāmen cónglái bù chǎojià.", exv: "Họ chưa bao giờ cãi nhau." },
+            { h: "相敬如宾", p: "xiāngjìng rúbīn", m: "Tôn trọng nhau như khách", ex: "他们结婚多年，一直相敬如宾。", exp: "Tāmen jiéhūn duōnián, yìzhí xiāngjìng rúbīn.", exv: "Họ kết hôn nhiều năm, luôn tôn trọng nhau như khách." },
+            { h: "暗暗", p: "àn'àn", m: "Thầm, ngầm", ex: "评委听了暗暗点头。", exp: "Píngwěi tīng le àn'àn diǎntóu.", exv: "Giám khảo nghe xong âm thầm gật đầu." },
+            { h: "轮", p: "lún", m: "Luân phiên, thay phiên", ex: "现在轮到第三对夫妻了。", exp: "Xiànzài lún dào dì sān duì fūqī le.", exv: "Bây giờ đến lượt cặp vợ chồng thứ ba rồi." },
+            { h: "不耐烦", p: "bù nàifán", m: "Sốt ruột, bực mình", ex: "评委们等得有些不耐烦。", exp: "Píngwěi men děng de yǒuxiē bù nàifán.", exv: "Các giám khảo chờ đến có chút mất kiên nhẫn." },
+            { h: "看个究竟", p: "kàn gè jiūjìng", m: "Xem cho rõ ràng, xem thực hư", ex: "评委走出来看个究竟。", exp: "Píngwěi zǒuchūlái kàn gè jiūjìng.", exv: "Giám khảo bước ra ngoài để xem thực hư ra sao." },
+            { h: "靠", p: "kào", m: "Dựa, tựa", ex: "他靠在椅子上睡着了。", exp: "Tā kào zài yǐzi shàng shuì zháo le.", exv: "Anh ấy dựa vào ghế ngủ thiếp đi." },
+            { h: "肩膀", p: "jiānbǎng", m: "Bờ vai", ex: "男人的头靠在女人的肩膀上。", exp: "Nánrén de tóu kào zài nǚrén de jiānbǎng shàng.", exv: "Đầu của người đàn ông tựa lên vai người phụ nữ." },
+            { h: "喊", p: "hǎn", m: "Gọi, hét lên", ex: "评委正要开口喊他们。", exp: "Píngwěi zhèng yào kāikǒu hǎn tāmen.", exv: "Giám khảo đang định mở miệng gọi họ." },
+            { h: "伸", p: "shēn", m: "Duỗi, chìa", ex: "她伸出手指，做了个小声的动作。", exp: "Tā shēnchū shǒuzhǐ, zuò le gè xiǎoshēng de dòngzuò.", exv: "Cô ấy đưa ngón tay ra, làm động tác giữ im lặng." },
+            { h: "手指", p: "shǒuzhǐ", m: "Ngón tay", ex: "他不小心弄伤了手指。", exp: "Tā bù xiǎoxīn nòng shāng le shǒuzhǐ.", exv: "Anh ấy không cẩn thận làm thương ngón tay." },
+            { h: "歪歪扭扭", p: "wāiwāiniǔniǔ", m: "Xiêu vẹo, nguệch ngoạc", ex: "字写得歪歪扭扭的。", exp: "Zì xiě de wāiwāiniǔniǔ de.", exv: "Chữ viết ngoằn ngoèo xiêu vẹo." },
+            { h: "递", p: "dì", m: "Đưa, chuyền", ex: "她写下一行字递给评委。", exp: "Tā xiě xià yì háng zì dì gěi píngwěi.", exv: "Cô ấy viết một dòng chữ rồi đưa cho giám khảo." },
+            { h: "脑袋", p: "nǎodai", m: "Cái đầu", ex: "丈夫的脑袋一直靠在她的肩上。", exp: "Zhàngfu de nǎodai yìzhí kào zài tā de jiān shàng.", exv: "Đầu của chồng vẫn luôn tựa lên vai cô ấy." },
+            { h: "女士", p: "nǚshì", m: "Bà (lịch sự)", ex: "女士，请这边走。", exp: "Nǚshì, qǐng zhèbiān zǒu.", exv: "Thưa bà, mời đi lối này." },
+            { h: "叙述", p: "xùshù", m: "Thuật lại", ex: "请叙述一下事情的经过。", exp: "Qǐng xùshù yíxià shìqíng de jīngguò.", exv: "Vui lòng thuật lại quá trình sự việc." },
+            { h: "居然", p: "jūrán", m: "Lại có thể (bất ngờ)", ex: "评委们听了居然一时语塞。", exp: "Píngwěimen tīng le jūrán yìshí yǔsè.", exv: "Giám khảo nghe xong lại bất ngờ cạn lời." },
+            { h: "催", p: "cuī", m: "Thúc giục", ex: "你别一直催我。", exp: "Nǐ bié yìzhí cuī wǒ.", exv: "Bạn đừng liên tục giục tôi." },
+            { h: "等待", p: "děngdài", m: "Đợi, chờ", ex: "大家都在等待结果。", exp: "Dàjiā dōu zài děngdài jiéguǒ.", exv: "Mọi người đều đang chờ đợi kết quả." },
+            { h: "蚊子", p: "wénzi", m: "Con muỗi", ex: "夏天蚊子很多。", exp: "Xiàtiān wénzi hěn duō.", exv: "Mùa hè có rất nhiều muỗi." },
+            { h: "半夜", p: "bànyè", m: "Nửa đêm", ex: "昨晚半夜我被吵醒了。", exp: "Zuówǎn bànyè wǒ bèi chǎoxǐng le.", exv: "Nửa đêm qua tôi bị đánh thức." },
+            { h: "叮", p: "dīng", m: "Đốt, chích", ex: "我被蚊子叮了一下。", exp: "Wǒ bèi wénzi dīng le yí xià.", exv: "Tôi bị muỗi đốt một phát." },
+            { h: "老婆", p: "lǎopo", m: "Vợ", ex: "我老婆对我很好。", exp: "Wǒ lǎopo duì wǒ hěn hǎo.", exv: "Vợ tôi đối xử với tôi rất tốt." },
+            { h: "吵", p: "chǎo", m: "Làm ồn, ồn ào", ex: "别吵，他昨晚没睡好。", exp: "Bié chǎo, tā zuówǎn méi shuì hǎo.", exv: "Đừng làm ồn, tối qua anh ấy ngủ không ngon." },
+            { h: "项", p: "xiàng", m: "Hạng mục (Lượng từ)", ex: "电台增加了一项奖项。", exp: "Diàntái zēngjiā le yí xiàng jiǎngxiàng.", exv: "Đài phát thanh đã thêm một hạng mục giải thưởng." },
+            { h: "将", p: "jiāng", m: "Đem, lấy (giới từ)", ex: "将第一对夫妻评为患难与共。", exp: "Jiāng dì yī duì fūqī píng wéi huànnàn yǔgòng.", exv: "Bình chọn cặp vợ chồng thứ nhất là hoạn nạn có nhau." },
+            { h: "患难与共", p: "huànnàn yǔgòng", m: "Hoạn nạn có nhau", ex: "他们是一对患难与共的夫妻。", exp: "Tāmen shì yí duì huànnàn yǔgòng de fūqī.", exv: "Họ là một cặp vợ chồng hoạn nạn có nhau." },
+            { h: "眼泪", p: "yǎnlèi", m: "Nước mắt", ex: "她感动得流下了眼泪。", exp: "Tā gǎndòng de liúxià le yǎnlèi.", exv: "Cô ấy cảm động đến rơi nước mắt." },
+            { h: "脖子", p: "bózi", m: "Cổ", ex: "我的脖子有点疼。", exp: "Wǒ de bózi yǒudiǎn téng.", exv: "Cổ của tôi hơi đau." },
+            { h: "胸", p: "xiōng", m: "Ngực", ex: "他觉得胸口闷。", exp: "Tā juéde xiōngkǒu mèn.", exv: "Anh ấy cảm thấy tức ngực." },
+            { h: "腰", p: "yāo", m: "Eo, thắt lưng", ex: "我弯下腰捡东西。", exp: "Wǒ wānxià yāo jiǎn dōngxi.", exv: "Tôi cúi eo xuống nhặt đồ." },
+            { h: "后背", p: "hòubèi", m: "Lưng", ex: "他的后背受了伤。", exp: "Tā de hòubèi shòu le shāng.", exv: "Lưng của anh ấy bị thương." },
+            { h: "眉毛", p: "méimao", m: "Lông mày", ex: "她的眉毛很浓。", exp: "Tā de méimao hěn nóng.", exv: "Lông mày của cô ấy rất đậm." },
+            { h: "嗓子", p: "sǎngzi", m: "Cổ họng, giọng", ex: "我感冒了，嗓子疼。", exp: "Wǒ gǎnmào le, sǎngzi téng.", exv: "Tôi bị cảm rồi, đau họng." },
+            { h: "牙齿", p: "yáchǐ", m: "Răng", ex: "每天都要刷牙齿。", exp: "Měitiān dōu yào shuā yáchǐ.", exv: "Mỗi ngày đều phải đánh răng." }
+        ];
+
+        // FLASHCARD VARIABLES
+        let currentFlashList = [], flashcardIdx = 0, learnedCount = 0, unlearnedItems = [];
+
+        function resetVocabTab() {
+            document.getElementById('vocab-start').classList.remove('hidden');
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.add('hidden');
+        }
+
+        function startFlashcards(list = hsk5L1Vocab) {
+            playAudio('audio-click');
+            currentFlashList = [...list];
+            flashcardIdx = 0; learnedCount = 0; unlearnedItems = [];
+            
+            document.getElementById('vocab-start').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.add('hidden');
+            document.getElementById('flashcard-screen').classList.remove('hidden');
+            document.getElementById('card-total').innerText = currentFlashList.length;
+            updateFlashcard();
+        }
+
+        function updateFlashcard() {
+            const card = currentFlashList[flashcardIdx];
+            document.getElementById('card-index').innerText = flashcardIdx + 1;
+            document.getElementById('card-hanzi').innerText = card.h;
+            document.getElementById('card-pinyin').innerText = card.p;
+            document.getElementById('card-mean').innerText = card.m;
+            document.getElementById('card-example-cn').innerText = card.ex;
+            document.getElementById('card-example-py').innerText = card.exp;
+            document.getElementById('card-example-vi').innerText = card.exv;
+            document.getElementById('flashcard-inner').classList.remove('is-flipped');
+        }
+
+        function flipCard() { 
+            playAudio('audio-flip'); 
+            document.getElementById('flashcard-inner').classList.toggle('is-flipped'); 
+        }
+
+        function markCard(learned) {
+            if (learned) learnedCount++; else unlearnedItems.push(currentFlashList[flashcardIdx]);
+            flashcardIdx++;
+            if (flashcardIdx < currentFlashList.length) updateFlashcard(); else showFlashcardStats();
+        }
+
+        function showFlashcardStats() {
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.remove('hidden');
+            
+            const learnedPercent = Math.round((learnedCount / currentFlashList.length) * 100);
+            document.getElementById('stat-learned-percent').innerText = learnedPercent + "%";
+            document.getElementById('stat-unlearned-percent').innerText = (100 - learnedPercent) + "%";
+            
+            const listContainer = document.getElementById('unlearned-list');
+            listContainer.innerHTML = unlearnedItems.length > 0 ? '' : '<p class="text-center py-4 font-bold text-emerald-700 text-lg">Tuyệt vời! Bạn đã thuộc hết.</p>';
+            
+            unlearnedItems.forEach(item => {
+                listContainer.innerHTML += `<div class="flex justify-between border-b pb-2 text-base md:text-lg border-gray-200"><span class="font-bold text-gray-800">${item.h}</span><span class="text-gray-600">${item.m}</span></div>`;
+            });
+            
+            document.getElementById('btn-relearn').classList.toggle('hidden', unlearnedItems.length === 0);
+        }
+
+        function relearnUnlearned() { startFlashcards(unlearnedItems); }
+
+        // --- RENDER BÀI KHÓA VÀ PINYIN CHUYÊN SÂU ---
+        
+        // Dữ liệu bài khóa mới đã được gán Pinyin chuẩn xác từng chữ
+        const lessonTextData = [
+            "电[diàn]台[tái]要[yào]选[xuǎn]出[chū]一[yí]对[duì]最[zuì]恩[ēn]爱[ài]的[de]夫[fū]妻[qī]。对[duì]比[bǐ]后[hòu]，有[yǒu]三[sān]对[duì]夫[fū]妻[qī]入[rù]围[wéi]。评[píng]委[wěi]叫[jiào]第[dì]一[yī]对[duì]夫[fū]妻[qī]说[shuō]说[shuō]他[tā]俩[liǎng]是[shì]如[rú]何[hé]恩[ēn]爱[ài]的[de]。妻[qī]子[zi]说[shuō]，前[qián]几[jǐ]年[nián]她[tā]全[quán]身[shēn]瘫[tān]痪[huàn]了[le]，医[yī]生[shēng]说[shuō]她[tā]站[zhàn]起[qǐ]来[lái]的[de]可[kě]能[néng]性[xìng]很[hěn]小[xiǎo]。别[bié]人[rén]都[dōu]觉[jué]得[de]她[tā]的[de]丈[zhàng]夫[fu]会[huì]跟[gēn]她[tā]离[lí]婚[hūn]，她[tā]也[yě]想[xiǎng]过[guò]要[yào]自[zì]杀[shā]。但[dàn]丈[zhàng]夫[fu]一[yì]直[zhí]鼓[gǔ]励[lì]她[tā]，为[wèi]她[tā]不[bù]知[zhī]找[zhǎo]了[le]多[duō]少[shǎo]家[jiā]医[yī]院[yuàn]，并[bìng]且[qiě]几[jǐ]年[nián]如[rú]一[yì]日[rì]地[de]照[zhào]顾[gù]她[tā]，从[cóng]不[bú]抱[bào]怨[yuàn]。在[zài]丈[zhàng]夫[fu]的[de]爱[ài]护[hù]和[hé]努[nǔ]力[lì]下[xià]，她[tā]终[zhōng]于[yú]又[yòu]站[zhàn]了[le]起[qǐ]来[lái]。她[tā]的[de]故[gù]事[shi]十[shí]分[fēn]感[gǎn]人[rén]，评[píng]委[wěi]们[men]听[tīng]了[le]都[dōu]很[hěn]感[gǎn]动[dòng]。",
+            
+            "随[suí]后[hòu]进[jìn]来[lái]的[de]是[shì]第[dì]二[èr]对[duì]夫[fū]妻[qī]，他[tā]俩[liǎng]十[shí]几[jǐ]年[nián]的[de]婚[hūn]姻[yīn]生[shēng]活[huó]中[zhōng]，他[tā]们[men]从[cóng]来[lái]没[méi]为[wèi]任[rèn]何[hé]事[shì]红[hóng]过[guò]脸[liǎn]、吵[chǎo]过[guò]架[jià]，一[yì]直[zhí]相[xiāng]亲[qīn]相[xiāng]爱[ài]、相[xiāng]敬[jìng]如[rú]宾[bīn]。评[píng]委[wěi]们[men]听[tīng]了[le]暗[àn]暗[àn]点[diǎn]头[tóu]。",
+
+            "轮[lún]到[dào]第[dì]三[sān]对[duì]夫[fū]妻[qī]了[le]，却[què]很[hěn]长[cháng]时[shí]间[jiān]不[bú]见[jiàn]人[rén]。评[píng]委[wěi]们[men]等[děng]得[de]有[yǒu]些[xiē]不[bú]耐[nài]烦[fán]，就[jiù]走[zǒu]出[chū]来[lái]看[kàn]个[gè]究[jiū]竟[jìng]。只[zhǐ]见[jiàn]第[dì]三[sān]对[duì]夫[fū]妻[qī]仍[réng]然[rán]坐[zuò]在[zài]门[mén]口[kǒu]，男[nán]人[rén]的[de]头[tóu]靠[kào]在[zài]女[nǚ]人[rén]的[de]肩[jiān]膀[bǎng]上[shàng]，睡[shuì]着[zháo]了[le]。一[yí]个[gè]评[píng]委[wěi]要[yào]上[shàng]前[qián]喊[hǎn]醒[xǐng]那[nà]个[gè]男[nán]的[de]，女[nǚ]的[de]却[què]伸[shēn]出[chū]手[shǒu]指[zhǐ]做[zuò]了[le]个[gè]小[xiǎo]声[shēng]的[de]动[dòng]作[zuò]，然[rán]后[hòu]小[xiǎo]心[xīn]地[de]从[cóng]包[bāo]里[lǐ]拿[ná]出[chū]纸[zhǐ]笔[bǐ]，用[yòng]左[zuǒ]手[shǒu]歪[wāi]歪[wāi]扭[niǔ]扭[niǔ]写[xiě]下[xià]一[yì]行[háng]字[zì]递[dì]给[gěi]评[píng]委[wěi]，而[ér]她[tā]的[de]右[yòu]肩[jiān]一[yì]直[zhí]让[ràng]丈[zhàng]夫[fu]的[de]脑[nǎo]袋[dai]靠[kào]着[zhe]。评[píng]委[wěi]们[men]看[kàn]那[nà]纸[zhǐ]条[tiáo]上[shàng]面[miàn]写[xiě]着[zhe]：别[bié]出[chū]声[shēng]，他[tā]昨[zuó]晚[wǎn]没[méi]睡[shuì]好[hǎo]。一[yí]个[gè]评[píng]委[wěi]提[tí]起[qǐ]笔[bǐ]在[zài]后[hòu]面[miàn]续[xù]写[xiě]了[le]一[yí]句[jù]话[huà]：但[dàn]是[shì]女[nǚ]士[shì]，我[wǒ]们[men]得[děi]听[tīng]你[nǐ]们[men]夫[fū]妻[qī]俩[liǎng]的[de]叙[xù]述[shù]啊[a]！女[nǚ]人[rén]又[yòu]写[xiě]：那[nà]我[wǒ]们[men]就[jiù]不[bù]参[cān]加[jiā]了[le]。大[dà]家[jiā]很[hěn]吃[chī]惊[jīng]，这[zhè]个[gè]女[nǚ]人[rén]为[wèi]了[le]不[bù]影[yǐng]响[xiǎng]丈[zhàng]夫[fu]睡[shuì]觉[jiào]，居[jū]然[rán]放[fàng]弃[qì]这[zhè]次[cì]机[jī]会[huì]！但[dàn]评[píng]委[wěi]们[men]还[hái]是[shì]决[jué]定[dìng]先[xiān]不[bù]催[cuī]他[tā]们[men]，而[ér]是[shì]再[zài]等[děng]待[dài]一[yí]段[duàn]时[shí]间[jiān]。",
+
+            "过[guò]了[le]一[yí]会[huì]儿[r]，男[nán]人[rén]醒[xǐng]了[le]。评[píng]委[wěi]们[men]问[wèn]他[tā]怎[zěn]么[me]那[nà]么[me]累[lèi]。男[nán]人[rén]不[bù]好[hǎo]意[yì]思[si]地[de]笑[xiào]笑[xiào]说[shuō]：“我[wǒ]家[jiā]住[zhù]一[yī]楼[lóu]，蚊[wén]子[zi]多[duō]。昨[zuó]晚[wǎn]半[bàn]夜[yè]我[wǒ]被[bèi]蚊[wén]子[zi]叮[dīng]醒[xǐng]了[le]，我[wǒ]怕[pà]我[wǒ]老[lǎo]婆[po]再[zài]被[bèi]吵[chǎo]醒[xǐng]，所[suǒ]以[yǐ]后[hòu]半[bàn]夜[yè]就[jiù]在[zài]为[wèi]她[tā]赶[gǎn]蚊[wén]子[zi]。”最[zuì]后[hòu]的[de]结[jié]果[guǒ]是[shì]电[diàn]台[tái]增[zēng]加[jiā]了[le]两[liǎng]项[xiàng]奖[jiǎng]项[xiàng]，将[jiāng]第[dì]一[yī]对[duì]夫[fū]妻[qī]评[píng]为[wéi]患[huàn]难[nàn]与[yǔ]共[gòng]夫[fū]妻[qī]，将[jiāng]第[dì]二[èr]对[duì]夫[fū]妻[qī]评[píng]为[wéi]相[xiāng]敬[jìng]如[rú]宾[bīn]夫[fū]妻[qī]，而[ér]真[zhēn]正[zhèng]的[de]最[zuì]恩[ēn]爱[ài]夫[fū]妻[qī]奖[jiǎng]却[què]给[gěi]了[le]第[dì]三[sān]对[duì]夫[fū]妻[qī]。"
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('sync-container');
+            let htmlContent = '';
+            
+            lessonTextData.forEach(p => {
+                let pHtml = '<p class="indent-8 mb-8">';
+                for(let i = 0; i < p.length; i++) {
+                    // Nếu là dấu ngoặc kép hoặc các dấu câu thông thường
+                    if (p[i] === '"' || p[i] === '”' || p[i] === '“') {
+                        pHtml += p[i];
+                        continue;
+                    }
+                    
+                    // Nếu có Pinyin đi kèm [pinyin]
+                    if (p[i+1] === '[') {
+                        let endIdx = p.indexOf(']', i+1);
+                        let pinyin = p.substring(i+2, endIdx);
+                        pHtml += `<ruby>${p[i]}<rt>${pinyin}</rt></ruby>`;
+                        i = endIdx; // Nhảy qua đoạn Pinyin
+                    } else {
+                        // Chữ không có Pinyin (thường là dấu câu)
+                        pHtml += p[i];
+                    }
+                }
+                pHtml += '</p>';
+                htmlContent += pHtml;
+            });
+            
+            container.innerHTML = htmlContent;
+        });
+
+        // Hàm bật tắt Pinyin
+        function togglePinyin() {
+            const wrapper = document.getElementById('text-wrapper');
+            const checkbox = document.getElementById('toggle-pinyin');
+            if (checkbox.checked) {
+                wrapper.classList.remove('hide-pinyin');
+            } else {
+                wrapper.classList.add('hide-pinyin');
+            }
+        }
+
+
+        // --- QUIZ DATA & LOGIC ---
+        // Giữ nguyên 100% quiz gốc
+        const quizData = [
+            { q: "电台举办活动是为了选出什么？", opts: ["最漂亮的夫妻", "最恩爱的夫妻", "最富有的夫妻", "最聪明的夫妻"], correct: 1, exp: "Đoạn 1 có ghi: '电台要选出一对最恩爱的夫妻' (Đài phát thanh muốn chọn ra một cặp vợ chồng ân ái nhất)." },
+            { q: "经过对比后，共有几对夫妻入围？", opts: ["两对", "三对", "四对", "五对"], correct: 1, exp: "Bài khóa nhắc đến: '对比后，有三对夫妻入围' (Sau khi đối chiếu, có 3 cặp lọt vào vòng trong)." },
+            { q: "第一对夫妻中，谁的身体出了严重问题？", opts: ["丈夫瘫痪了", "妻子瘫痪了", "丈夫有心脏病", "妻子有心脏病"], correct: 1, exp: "Vợ của cặp đầu tiên nói: '前几年她全身瘫痪了' (Mấy năm trước cô ấy bị liệt toàn thân)." },
+            { q: "医生认为第一对夫妻中的妻子能重新站起来的可能性大吗？", opts: ["很大", "一定能站起来", "很小", "完全不可能"], correct: 2, exp: "Chi tiết: '医生说她站起来的可能性很小' (Bác sĩ nói khả năng cô ấy đứng lên được là rất nhỏ)." },
+            { q: "在妻子瘫痪时，别人以为丈夫会怎么做？", opts: ["会跟她离婚", "会和她一起自杀", "会去外地工作", "会找护工照顾她"], correct: 0, exp: "Chi tiết: '别人都觉得她的丈夫会跟她离婚' (Người khác đều cảm thấy chồng cô sẽ ly hôn với cô)." },
+            { q: "瘫痪的妻子曾经有过什么极端的想法？", opts: ["离家出走", "跟丈夫离婚", "想过自杀", "再也不去医院"], correct: 2, exp: "Chi tiết: '她也想过自杀' (Cô ấy cũng từng nghĩ đến việc tự sát)." },
+            { q: "第一对夫妻的丈夫是如何照顾妻子的？", opts: ["偶尔照顾，经常抱怨", "几年如一日地照顾，从不抱怨", "花钱请护士照顾", "只找了一家医院治疗"], correct: 1, exp: "Chi tiết: '几年如一日地照顾她，从不抱怨' (Chăm sóc cô vài năm như một ngày, không hề oán than)." },
+            { q: "听到第一对夫妻的故事后，评委有什么反应？", opts: ["感动得流下了眼泪", "暗暗点头", "一时语塞", "觉得很普通"], correct: 0, exp: "Chi tiết: Câu chuyện rất cảm động, giám khảo nghe đều rất cảm động." },
+            { q: "第二对夫妻的婚姻生活最大的特点是什么？", opts: ["经常浪漫地旅行", "一起经历了生死", "从来没红过脸、吵过架", "妻子照顾生病的丈夫"], correct: 2, exp: "Cặp thứ 2 chia sẻ: '从来没为任何事红过脸、吵过架' (Chưa từng vì chuyện gì mà đỏ mặt, cãi vã)." },
+            { q: "课文用哪个成语来形容第二对夫妻的关系？", opts: ["白头偕老", "相敬如宾", "恩重如山", "马马虎虎"], correct: 1, exp: "Họ luôn '相敬如宾' (Tương kính như tân - Tôn trọng nhau như khách)." },
+            { q: "为什么第三对夫妻很长时间没有进门接受采访？", opts: ["他们迟到了", "他们走错房间了", "丈夫睡着了", "妻子生病了"], correct: 2, exp: "Khi giám khảo ra ngoài xem, thấy '男人的头靠在女人的肩膀上，睡着了' (Đầu người đàn ông tựa vào vai vợ ngủ thiếp đi)." },
+            { q: "评委走出来时，看到了什么场景？", opts: ["两人在热烈地聊天", "两人在吃东西", "男人的头靠在女人的肩膀上", "两人在吵架"], correct: 2, exp: "Chi tiết: '男人的头靠在女人的肩膀上，睡着了' (Người đàn ông tựa đầu lên vai người phụ nữ ngủ)." },
+            { q: "评委想喊他们时，女人做了什么动作？", opts: ["大声叫醒丈夫", "伸出手指，做了个小声的动作", "马上站起来", "向评委招手"], correct: 1, exp: "Chi tiết: '女的却伸出手指，做了个小声的动作' (Người phụ nữ đưa ngón tay ra, làm động tác ra hiệu nhỏ tiếng)." },
+            { q: "女人为什么用左手写字？", opts: ["因为她是左撇子", "因为右肩让丈夫的脑袋靠着", "因为右手受伤了", "因为左手写字好看"], correct: 1, exp: "Vì vai phải đang để cho chồng tựa vào ngủ: '而右肩一直让丈夫的脑袋靠着'." },
+            { q: "女人递给评委的纸条上面写了什么？", opts: ["我们弃权了", "别出声，他昨晚没睡好", "请再等我们十分钟", "他生病了，需要休息"], correct: 1, exp: "Trên giấy viết: '别出声，他昨晚没睡好' (Đừng lên tiếng, tối qua ông ấy ngủ không ngon)." },
+            { q: "为什么第三对夫妻中的丈夫昨晚没睡好？", opts: ["因为他看电视看晚了", "因为他一直在工作", "因为他在为妻子赶蚊子", "因为他有失眠症"], correct: 2, exp: "Chồng kể lại lý do: '半夜蚊子叮我，他一直为我赶蚊子' (Nửa đêm muỗi đốt tôi, ông ấy cứ thức đuổi muỗi cho tôi)." },
+            { q: "一个评委开玩笑地提出了什么要求？", opts: ["要求叫醒丈夫", "要求他们退出比赛", "要求听他们叙述如何恩爱", "要求他们回家睡觉"], correct: 2, exp: "Giám khảo viết: '但是女士，我们得听你们夫妻俩的叙述啊!' (Nhưng thưa bà, chúng tôi phải nghe hai người kể chuyện ân ái chứ)." },
+            { q: "女人对评委的玩笑是怎么回答的？", opts: ["等他醒了再说", "难道这还不够吗？", "我们没什么好说的", "那我们就不参加了"], correct: 3, exp: "Lần này người phụ nữ lại viết: '那我们就不参加了' (Vậy chúng tôi không tham gia nữa)." },
+            { q: "听到女人的回答后，评委们的反应是什么？", opts: ["哈哈大笑", "非常生气", "居然一时语塞", "继续追问"], correct: 2, exp: "Trong bài gốc: '评委们听了，居然一时语塞' (Giám khảo nghe xong, lại bất ngờ cạn lời/không biết nói gì thêm)." },
+            { q: "最终哪对夫妻获得了“最恩爱夫妻”奖？", opts: ["第一对", "第二对", "第三对", "没有选出"], correct: 2, exp: "Chi tiết cuối bài: '真正的最恩爱夫妻奖却给了第三对夫妻' (Trao giải 'Vợ chồng ân ái nhất' cho cặp thứ 3)." }
+        ];
+
+        let currentQuizIdx = 0, quizScore = 0;
+
+        function startQuiz() {
+            playAudio('audio-click');
+            currentQuizIdx = 0; quizScore = 0;
+            document.getElementById('quiz-score').innerText = '0';
+            document.getElementById('quiz-start').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            const qData = quizData[currentQuizIdx];
+            document.getElementById('quiz-current').innerText = currentQuizIdx + 1;
+            document.getElementById('quiz-question').innerText = qData.q;
+            
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            document.getElementById('quiz-explanation').classList.add('hidden');
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+
+            qData.opts.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option chinese-text';
+                btn.innerText = String.fromCharCode(65 + idx) + ". " + opt;
+                btn.onclick = () => checkQuizAnswer(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(selectedIndex, btnElement) {
+            const qData = quizData[currentQuizIdx];
+            const isCorrect = (selectedIndex === qData.correct);
+            const allBtns = document.querySelectorAll('.quiz-option');
+            
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                playAudio('audio-correct');
+                btnElement.classList.add('opt-correct');
+                quizScore++;
+                document.getElementById('quiz-score').innerText = quizScore;
+            } else {
+                playAudio('audio-wrong');
+                btnElement.classList.add('opt-wrong');
+                allBtns[qData.correct].classList.add('opt-correct');
+            }
+
+            document.getElementById('quiz-explain-text').innerText = qData.exp;
+            document.getElementById('quiz-explanation').classList.remove('hidden');
+            
+            const nextBtn = document.getElementById('btn-next-quiz');
+            nextBtn.innerText = (currentQuizIdx === quizData.length - 1) ? "Xem kết quả 🏆" : "Câu tiếp theo ❯";
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuiz() {
+            playAudio('audio-click');
+            if (currentQuizIdx < quizData.length - 1) {
+                currentQuizIdx++;
+                loadQuizQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('quiz-result').classList.remove('hidden');
+            document.getElementById('final-score').innerText = quizScore;
+
+            let evalText = "", emoji = "";
+            if (quizScore >= 18) {
+                evalText = "Xuất sắc! Bạn đã hiểu rất sâu sắc từng chi tiết tinh tế của bài khóa. Trình độ đọc hiểu của bạn cực kỳ tốt!";
+                emoji = "🏆";
+            } else if (quizScore >= 14) {
+                evalText = "Bạn nắm được nội dung chính và hầu hết các chi tiết quan trọng. Cố gắng một chút nữa là hoàn hảo!";
+                emoji = "🌟";
+            } else if (quizScore >= 10) {
+                evalText = "Khá ổn! Tuy nhiên bạn còn nhầm lẫn ở một số chi tiết nhỏ. Hãy xem lại bài khóa và đọc kỹ phần giải thích nhé!";
+                emoji = "👍";
+            } else {
+                evalText = "Có vẻ bạn chưa nắm vững nội dung bài khóa này. Hãy đọc đi đọc lại văn bản, nghe audio nhiều lần để hiểu rõ hơn nhé!";
+                emoji = "💪";
+            }
+
+            document.getElementById('result-evaluation').innerText = evalText;
+            document.getElementById('result-emoji').innerText = emoji;
+        }
+
+    </script>
+</body>
+</html>

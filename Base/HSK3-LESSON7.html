@@ -1,0 +1,1266 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSK3 Bài 7 - 我跟她都认识五年了 | Nga Học HSK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8bc34a; 
+            --primary-dark: #558b2f;
+            --secondary: #ffb74d; 
+            --secondary-dark: #f57c00;
+            --bg-color: #f1f8e9; 
+            --card-bg: #ffffff;
+            --text-main: #33691e;
+            --text-muted: #5d4037;
+            --hanzi-color: #d84315;
+            --font-cn: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; 
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            font-family: 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#cddc39 1.5px, transparent 1.5px);
+            background-size: 25px 25px;
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; padding-bottom: 50px;
+        }
+
+        /* --- THEME HEADER & TABS --- */
+        .branding {
+            width: 100%; background: #fff; text-align: center; padding: 6px 0;
+            font-size: 0.8rem; font-weight: 800; color: var(--primary-dark);
+            letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-transform: uppercase;
+        }
+
+        .header {
+            width: 100%; max-width: 800px; padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(139, 195, 74, 0.3);
+        }
+
+        .btn-back {
+            background: rgba(255,255,255,0.2); color: white; text-decoration: none;
+            padding: 8px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.5); cursor: pointer;
+        }
+
+        .header h2 { font-size: 1.1rem; text-align: center; flex: 1; margin: 0 10px; font-family: var(--font-cn); font-weight: bold; }
+        .header-spacer { width: 80px; }
+
+        .tabs {
+            display: flex; justify-content: space-between; gap: 5px;
+            margin: 20px auto; background: white; padding: 6px;
+            border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 95%; max-width: 600px; overflow-x: auto;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            flex: 1; min-width: 80px; border: none; background: transparent;
+            padding: 10px 5px; border-radius: 25px;
+            font-size: 0.85rem; font-weight: 800; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s;
+            text-align: center; white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--secondary); color: white;
+            box-shadow: 0 4px 10px rgba(255, 183, 77, 0.4);
+        }
+
+        /* --- BUTTONS & CARDS --- */
+        .btn-primary {
+            background: var(--secondary); color: white; border: none; padding: 12px 20px;
+            border-radius: 15px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.2s;
+            box-shadow: 0 4px 0 var(--secondary-dark); width: 100%; display: block; text-align: center;
+        }
+        .btn-primary:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+        
+        .btn-action {
+            background: var(--primary); color: white; border: none; padding: 12px 20px;
+            border-radius: 15px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.2s;
+            box-shadow: 0 4px 0 var(--primary-dark); width: 100%; display: block; text-align: center;
+        }
+        .btn-action:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+
+        .card-container {
+            background: white; border-radius: 20px; padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08); width: 100%;
+            border: 2px solid #e0e0e0; margin-bottom: 20px;
+        }
+
+        .chinese-text { font-family: var(--font-cn); font-weight: 700; }
+        .chinese-sub { font-family: var(--font-cn); }
+
+        /* --- FLASHCARD SPECIFIC --- */
+        .flashcard-inner {
+            position: relative; width: 100%; height: 380px;
+            transition: transform 0.5s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .flashcard-inner.is-flipped { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; border-radius: 15px;
+            padding: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .flashcard-front { background-color: #fff; border: 2px solid var(--primary); }
+        .flashcard-back { background-color: #fffde7; transform: rotateY(180deg); border: 2px solid var(--secondary); }
+        
+        /* --- REORDER GAME --- */
+        .word-tag {
+            display: inline-block; padding: 8px 16px; margin: 4px;
+            background: white; border: 2px solid var(--primary); color: var(--primary-dark);
+            border-radius: 12px; cursor: pointer; font-family: var(--font-cn); font-weight: bold;
+            font-size: 1.2rem; transition: all 0.2s; user-select: none;
+            box-shadow: 0 3px 0 var(--primary-dark);
+        }
+        .word-tag:active { transform: translateY(3px); box-shadow: 0 0 0 transparent; }
+        .drop-zone {
+            min-height: 80px; border: 3px dashed #cddc39; border-radius: 15px;
+            background: #f1f8e9; display: flex; flex-wrap: wrap; align-items: center;
+            justify-content: center; padding: 10px; margin-bottom: 20px;
+        }
+
+        /* --- SCROLL & STATS --- */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 10px; }
+
+        .circle-stat {
+            position: relative; width: 80px; height: 80px; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 6px solid #f3f4f6; background: white;
+        }
+        .stat-green { border-color: var(--primary); color: var(--primary-dark); }
+        .stat-red { border-color: #fca5a5; color: #b91c1c; }
+        .stat-blue { border-color: #90caf9; color: #1565c0; }
+
+        /* --- DICTATION SPECIFIC --- */
+        .dictation-input {
+            width: 100%; padding: 15px; font-size: 1.5rem; text-align: center;
+            border: 3px dashed var(--text-muted); border-radius: 12px; outline: none; transition: all 0.3s;
+            font-family: var(--font-cn); font-weight: bold; color: var(--text-main);
+        }
+        .dictation-input:focus { border-color: var(--primary); background-color: #f1f8e9; }
+        .dictation-input:disabled { background: #f5f5f5; border-color: #ddd; color: #777; }
+        
+        .dict-lesson-btn {
+            background: #f1f8e9; border: 2px solid var(--primary); padding: 15px; border-radius: 12px;
+            margin-bottom: 12px; cursor: pointer; text-align: left; display: flex; flex-direction: column;
+            transition: transform 0.2s;
+        }
+        .dict-lesson-btn:active { transform: scale(0.98); }
+        .dict-lesson-btn.completed { opacity: 0.8; background: #e8f5e9; border-color: #a5d6a7; }
+
+        #toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--text-muted); color: #fff; padding: 12px 24px;
+            border-radius: 30px; font-weight: bold; opacity: 0; transition: opacity 0.3s;
+            pointer-events: none; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        #toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="branding">© Bản Quyền Thuộc Về Nga Học HSK</div>
+
+    <header class="header">
+        <div class="btn-back" onclick="window.location.href='index.html'">❮ Về Vườn</div>
+        <h2>Bài 7: 我跟她都认识五年了</h2>
+        <div class="header-spacer"></div>
+    </header>
+
+    <!-- TABS REORDERED -->
+    <div class="tabs">
+        <button id="tab-vocab" class="tab-btn active" onclick="switchTab('vocab')">🎴 Từ Vựng</button>
+        <button id="tab-grammar" class="tab-btn" onclick="switchTab('grammar')">🎮 Ngữ Pháp</button>
+        <button id="tab-exercise" class="tab-btn" onclick="switchTab('exercise')">🔒 Bài Tập</button>
+        <button id="tab-dictation" class="tab-btn" onclick="switchTab('dictation')">🎧 Nghe Chép</button>
+    </div>
+
+    <div class="w-full max-w-xl px-4 mb-10">
+
+        <!-- ============================================== -->
+        <!-- TAB 1: TỪ VỰNG -->
+        <!-- ============================================== -->
+        <div id="section-vocab" class="w-full">
+            
+            <!-- MENU TỪ VỰNG -->
+            <div id="vocab-menu" class="card-container text-center">
+                <h2 class="text-2xl font-bold mb-2" style="color: var(--primary-dark);">Học Từ Vựng Bài 7</h2>
+                <div class="text-6xl mb-6 mt-4">🎴</div>
+                <p class="text-[var(--text-muted)] font-bold mb-6">Bộ từ vựng gồm 14 từ. Hãy ghi nhớ và luyện tập nhé!</p>
+                <div class="space-y-3">
+                    <button onclick="startFlashcards(vocabulary)" class="btn-primary">🎴 Học Flashcards</button>
+                    <button onclick="startVocabGame()" class="btn-action bg-white border-2 border-[var(--primary)] text-[var(--primary-dark)]" style="background: white; box-shadow: 0 4px 0 var(--primary-dark);">🎮 Game Từ Vựng</button>
+                </div>
+            </div>
+
+            <!-- FLASHCARD SCREEN -->
+            <div id="flashcard-screen" class="card-container hidden">
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                    <button onclick="showVocabMenu()" class="text-sm font-bold hover:underline" style="color: var(--secondary-dark);">❮ Quay lại</button>
+                    <div class="font-bold px-3 py-1 rounded-full text-xs" style="background: #e8f5e9; color: var(--primary-dark);">
+                        Thẻ: <span id="card-index">1</span> / <span id="card-total">14</span>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <div id="flashcard-inner" class="flashcard-inner" onclick="flipCard()">
+                        <div class="flashcard-front">
+                            <h2 id="card-hanzi" class="chinese-text text-6xl leading-tight" style="color: var(--hanzi-color);"></h2>
+                            <p class="absolute bottom-4 text-sm font-bold text-gray-400">Chạm để lật thẻ 👆</p>
+                        </div>
+                        <div class="flashcard-back overflow-y-auto custom-scroll">
+                            <h3 id="card-pinyin" class="text-3xl font-bold mb-1" style="color: #1565c0;"></h3>
+                            <p id="card-mean" class="text-xl mb-4 font-bold border-b-2 pb-2 w-full text-center" style="color: #e65100; border-color: #ffe082;"></p>
+                            <div class="text-left w-full space-y-3">
+                                <p id="card-example-cn" class="chinese-sub text-xl leading-relaxed font-bold text-gray-800"></p>
+                                <p id="card-example-vi" class="text-sm bg-white p-2 rounded-lg border" style="color: var(--primary-dark); border-color: #ffe082;"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <button onclick="markCard(false)" class="bg-rose-100 border-2 border-rose-400 text-rose-700 p-3 rounded-xl font-bold hover:bg-rose-200 transition-colors">❌ Chưa thuộc</button>
+                    <button onclick="markCard(true)" class="bg-emerald-100 border-2 border-emerald-400 text-emerald-700 p-3 rounded-xl font-bold hover:bg-emerald-200 transition-colors">✅ Đã thuộc</button>
+                </div>
+            </div>
+
+            <!-- FLASHCARD STATS -->
+            <div id="flashcard-stat-screen" class="card-container text-center hidden">
+                 <h2 class="text-2xl font-bold mb-6" style="color: var(--primary-dark);">Kết quả ghi nhớ</h2>
+                 <div class="flex justify-around items-center mb-8">
+                    <div class="circle-stat stat-green">
+                        <span id="stat-learned-percent" class="text-xl font-bold">0%</span>
+                        <span class="text-[10px] uppercase font-bold">Thuộc</span>
+                    </div>
+                    <div class="circle-stat stat-red">
+                        <span id="stat-unlearned-percent" class="text-xl font-bold">0%</span>
+                        <span class="text-[10px] uppercase font-bold">Cần ôn</span>
+                    </div>
+                 </div>
+                 
+                 <div class="text-left mb-6" id="fc-review-section">
+                    <p class="font-bold mb-2" style="color: var(--text-muted);">Danh sách cần lưu ý:</p>
+                    <div id="unlearned-list" class="max-h-48 overflow-y-auto custom-scroll bg-white rounded-lg border-2 p-2 space-y-2" style="border-color: #fca5a5;"></div>
+                 </div>
+                 
+                 <div class="grid grid-cols-1 gap-3">
+                     <button id="btn-relearn" onclick="relearnUnlearned()" class="btn-primary" style="background: #f44336; box-shadow: 0 4px 0 #d32f2f;">🔄 Học lại từ chưa thuộc</button>
+                     <button onclick="showVocabMenu()" class="btn-action">🔙 Hoàn thành</button>
+                 </div>
+            </div>
+
+            <!-- VOCAB GAME SCREEN -->
+            <div id="vocab-game-screen" class="card-container hidden">
+                <div class="flex justify-between items-center mb-6 border-b pb-2">
+                    <button onclick="showVocabMenu()" class="text-sm font-bold hover:underline" style="color: var(--secondary-dark);">❮ Quay lại</button>
+                    <div id="vg-progress" class="font-bold px-3 py-1 rounded-full text-xs" style="background: #e8f5e9; color: var(--primary-dark);"></div>
+                </div>
+                <div class="text-center mb-8">
+                    <div id="vg-hanzi" class="chinese-text text-7xl mb-8" style="color: var(--hanzi-color);"></div>
+                    <div id="vg-options" class="grid grid-cols-2 gap-3"></div>
+                </div>
+                <div id="vg-feedback" class="mt-4 p-3 rounded-lg hidden text-center font-bold"></div>
+                <div class="mt-6 flex gap-2">
+                    <button id="vg-check-btn" onclick="checkVocabAnswer()" class="btn-primary">Kiểm tra</button>
+                    <button id="vg-next-btn" onclick="nextVocabQuestion()" class="btn-action hidden">Tiếp theo ❯</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 2: NGỮ PHÁP -->
+        <!-- ============================================== -->
+        <div id="section-grammar" class="w-full hidden">
+            
+            <!-- GRAMMAR MENU -->
+            <div id="grammar-menu" class="card-container text-center">
+                <h2 class="text-2xl font-bold mb-4" style="color: var(--primary-dark);">Luyện Tập Ngữ Pháp</h2>
+                <div class="text-6xl mb-6">🎮</div>
+                <div class="space-y-3">
+                    <button onclick="startQuiz('p3')" class="btn-primary flex justify-center items-center gap-2" style="background: #42a5f5; box-shadow: 0 4px 0 #1565c0;">
+                        <span>✨ V + 了 + Time + O</span> <span id="check-p3" class="hidden text-xl">✅</span>
+                    </button>
+                    <button onclick="startQuiz('p4')" class="btn-primary flex justify-center items-center gap-2" style="background: #ab47bc; box-shadow: 0 4px 0 #6a1b9a;">
+                        <span>📍 V + 了 + Time + O + 了</span> <span id="check-p4" class="hidden text-xl">✅</span>
+                    </button>
+                    <button onclick="startQuiz('p5')" class="btn-primary flex justify-center items-center gap-2" style="background: #ef5350; box-shadow: 0 4px 0 #c62828;">
+                        <span>⏱️ 对...感兴趣</span> <span id="check-p5" class="hidden text-xl">✅</span>
+                    </button>
+                    <button onclick="startQuiz('p6')" class="btn-primary flex justify-center items-center gap-2" style="background: #26a69a; box-shadow: 0 4px 0 #00695c;">
+                        <span>🕰️ Thời gian 半/刻/差</span> <span id="check-p6" class="hidden text-xl">✅</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- QUIZ SCREEN -->
+            <div id="quiz-screen" class="card-container hidden">
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                    <button onclick="showGrammarMenu()" class="text-sm font-bold hover:underline" style="color: var(--secondary-dark);">❮ Quay lại</button>
+                    <div class="font-bold px-3 py-1 rounded-full text-xs" style="background: #e8f5e9; color: var(--primary-dark);">
+                        Câu: <span id="quiz-idx">1</span>/10
+                    </div>
+                </div>
+                
+                <!-- Multiple Choice (Không dùng ở Bài 7 nhưng giữ cấu trúc phòng hờ) -->
+                <div id="multiple-choice-container" class="hidden">
+                    <div class="p-4 bg-[#fffde7] rounded-xl border-2 border-dashed mb-6 text-center" style="border-color: var(--secondary);">
+                        <p id="quiz-question" class="chinese-text text-2xl" style="color: var(--text-main);"></p>
+                    </div>
+                    <div id="quiz-options" class="grid grid-cols-1 gap-3"></div>
+                </div>
+
+                <!-- Reorder -->
+                <div id="reorder-container" class="hidden">
+                    <p class="text-sm font-bold mb-4 text-center" style="color: var(--text-muted);">Chạm vào từ để sắp xếp, chạm lại để xóa:</p>
+                    <div id="answer-zone" class="drop-zone"></div>
+                    <div id="words-pool" class="flex flex-wrap justify-center"></div>
+                    <button id="btn-check-reorder" onclick="checkReorderAnswer()" class="btn-primary mt-6">Kiểm tra kết quả</button>
+                </div>
+
+                <!-- Feedback -->
+                <div id="quiz-explanation" class="mt-4 p-4 border-2 hidden rounded-xl shadow-sm" style="background: #f1f8e9; border-color: #dcedc8;">
+                    <p id="quiz-feedback-text" class="font-bold mb-2 text-lg"></p>
+                    <p id="quiz-full-sentence" class="chinese-text text-xl mb-1" style="color: var(--text-main);"></p>
+                    <p id="quiz-pinyin" class="font-medium text-sm mb-1" style="color: #1565c0;"></p> 
+                    <p id="quiz-translate" class="text-sm italic mb-4" style="color: var(--text-muted);"></p>
+                    <button onclick="nextQuizQuestion()" class="btn-action w-full">Tiếp theo ❯</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 3: BÀI TẬP -->
+        <!-- ============================================== -->
+        <div id="section-exercise" class="w-full hidden">
+            <div class="card-container mb-6">
+                <h2 class="text-2xl font-bold mb-4 text-center" style="color: var(--primary-dark);">📝 Bài Tập Tổng Hợp</h2>
+                
+                <div class="overflow-y-auto max-h-[65vh] custom-scroll pr-2 space-y-8">
+                    <!-- Điền từ -->
+                    <div>
+                        <h3 class="font-bold mb-3 p-2 rounded" style="background: #e8f5e9; color: var(--primary-dark);">1. Chọn từ thích hợp điền vào chỗ trống</h3>
+                        
+                        <div class="p-3 rounded-lg mb-4 text-sm font-bold text-center" style="background: #fff3e0; color: var(--secondary-dark);">以前 / 同事 / 兴趣 / 欢迎 / 差</div>
+                        <div class="space-y-4 chinese-text text-lg" id="fill-questions-1" style="color: var(--text-main);"></div>
+                        
+                        <div class="p-3 rounded-lg mb-4 mt-6 text-sm font-bold text-center" style="background: #fff3e0; color: var(--secondary-dark);">银行 / 结婚 / 迟到 / 接 / 半</div>
+                        <div class="space-y-4 chinese-text text-lg" id="fill-questions-2" style="color: var(--text-main);"></div>
+                    </div>
+                    
+                    <!-- Mô tả ảnh -->
+                    <div>
+                        <h3 class="font-bold mb-3 p-2 rounded" style="background: #e8f5e9; color: var(--primary-dark);">2. Mô tả hình ảnh</h3>
+                        <div class="space-y-6 chinese-text" id="img-desc-questions" style="color: var(--text-main);">
+                            <div class="bg-white p-3 border-2 border-dashed rounded" style="border-color: #dcedc8;">
+                                <p class="mb-2">1. A: 都 <input type="text" class="border-b-2 border-[var(--secondary)] w-20 text-center bg-transparent outline-none"> 了，快去睡觉吧。</p>
+                                <p class="mb-2">B: 我再玩儿十分钟。</p>
+                                <p class="mb-2">A: 你已经玩儿了好几个小时了，不累吗？</p>
+                                <p>B: 我 <input type="text" class="border-b-2 border-[var(--secondary)] w-24 text-center bg-transparent outline-none"> 特别感兴趣，一点儿也不累。</p>
+                            </div>
+                            <div class="bg-white p-3 border-2 border-dashed rounded" style="border-color: #dcedc8;">
+                                <p class="mb-2">2. A: 你一直在这家公司工作吗？</p>
+                                <p class="mb-2">B: 对，我已经 <input type="text" class="border-b-2 border-[var(--secondary)] w-24 text-center bg-transparent outline-none">。</p>
+                                <p class="mb-2">A: 你 <input type="text" class="border-b-2 border-[var(--secondary)] w-24 text-center bg-transparent outline-none">？</p>
+                                <p>B: 我特别喜欢我的工作。</p>
+                            </div>
+                            <div class="bg-white p-3 border-2 border-dashed rounded" style="border-color: #dcedc8;">
+                                <p class="mb-2">3. A: 喂，你在哪儿呢？ B: 我可能会晚 <input type="text" class="border-b-2 border-[var(--secondary)] w-20 text-center bg-transparent outline-none">。</p>
+                                <p class="mb-2">A: 快点儿吧，我已经等了 <input type="text" class="border-b-2 border-[var(--secondary)] w-20 text-center bg-transparent outline-none">。</p>
+                                <p>B: 好，你别着急，我快到了。</p>
+                            </div>
+                            <div class="bg-white p-3 border-2 border-dashed rounded" style="border-color: #dcedc8;">
+                                <p class="mb-2">4. A: 你们结婚 <input type="text" class="border-b-2 border-[var(--secondary)] w-24 text-center bg-transparent outline-none">？ B: 快50年了。</p>
+                                <p>A: 你们身体怎么这么好？ B: 我们都对 <input type="text" class="border-b-2 border-[var(--secondary)] w-24 text-center bg-transparent outline-none">。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="submitExercise()" class="btn-primary mt-6">📤 Copy Kết Quả Ngữ Pháp & Bài Tập</button>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 4: NGHE CHÉP -->
+        <!-- ============================================== -->
+        <div id="section-dictation" class="w-full hidden">
+            
+            <!-- DICTATION MENU -->
+            <div id="dictation-menu-screen" class="card-container">
+                <h2 class="text-xl font-bold mb-4 text-center" style="color: var(--primary-dark);">Chọn Bài Khóa</h2>
+                <div id="lesson-list" class="grid grid-cols-1 gap-2 max-h-[60vh] overflow-y-auto custom-scroll pr-1"></div>
+                <button id="btn-finish-all" onclick="showFinalStats()" class="btn-primary mt-4 hidden">🎉 Xem Kết Quả Tổng</button>
+            </div>
+
+            <!-- DICTATION GAME -->
+            <div id="dictation-screen" class="card-container hidden">
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                    <button onclick="backToDictationMenu()" class="text-sm font-bold hover:underline" style="color: var(--secondary-dark);">❮ Về DS Bài khóa</button>
+                    <div class="font-bold text-sm px-3 py-1 rounded-full" style="background: #e8f5e9; color: var(--primary-dark);" id="dictation-title-display">
+                        Bài 7: <span id="dict-step">1</span>/10
+                    </div>
+                </div>
+                
+                <div class="flex flex-col items-center justify-center space-y-4 mt-2">
+                    <div class="w-full p-3 rounded-xl border-2" style="background: #f1f8e9; border-color: #dcedc8;">
+                        <audio id="lesson-audio-player" controls class="w-full h-10 outline-none rounded-lg"></audio>
+                    </div>
+
+                    <div class="w-full bg-white border-2 border-dashed p-3 rounded-xl text-center" style="border-color: var(--secondary);">
+                        <p class="text-xs font-bold mb-1 uppercase" style="color: var(--secondary-dark);">Gợi ý câu đang nghe</p>
+                        <div id="sentence-range-hint" class="chinese-text text-2xl tracking-widest" style="color: var(--primary-dark);">-- ... --</div>
+                    </div>
+                    
+                    <div class="w-full relative mt-2">
+                        <input type="text" id="dict-input" class="dictation-input" placeholder="Nghe và gõ chữ Hán..." autocomplete="off">
+                    </div>
+
+                    <div id="dict-answer-box" class="w-full hidden space-y-3">
+                        <div id="dict-feedback" class="w-full p-2 rounded-lg text-center font-bold text-sm"></div>
+                        <div class="border p-4 rounded-xl text-center space-y-2" style="background: #fffde7; border-color: #ffe082;">
+                            <p class="chinese-text text-2xl" id="ans-hanzi" style="color: var(--hanzi-color);"></p>
+                            <p class="italic font-bold text-lg" id="ans-pinyin" style="color: #1565c0;"></p>
+                            <p class="border-t pt-2 text-sm font-semibold" id="ans-vi" style="color: var(--text-muted); border-color: #ffe082;"></p>
+                        </div>
+                    </div>
+
+                    <div class="w-full">
+                        <button id="btn-next-dict" onclick="nextDictation()" class="btn-action w-full hidden py-3 text-lg mt-2">Tiếp theo ❯</button>
+                        <p id="enter-instruction" class="text-[11px] text-gray-500 text-center mt-3 font-bold uppercase tracking-wider">Nhấn <span style="background:#e0e0e0; padding:2px 6px; border-radius:4px; color:#333;">ENTER</span> để kiểm tra</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DICTATION END STATS -->
+            <div id="dictation-end-screen" class="card-container hidden">
+                <h2 class="text-2xl font-bold mb-6 text-center" style="color: var(--primary-dark);">Thống Kê Nghe Chép</h2>
+                
+                <div class="flex justify-around items-center mb-8">
+                    <div class="circle-stat stat-blue">
+                        <span id="stat-total" class="text-2xl font-bold">0</span>
+                        <span class="text-[10px] uppercase font-bold text-gray-500">Tổng câu</span>
+                    </div>
+                    <div class="circle-stat stat-green">
+                        <span id="stat-correct" class="text-2xl font-bold">0</span>
+                        <span class="text-[10px] uppercase font-bold">Đúng</span>
+                    </div>
+                    <div class="circle-stat stat-red">
+                        <span id="stat-wrong" class="text-2xl font-bold">0</span>
+                        <span class="text-[10px] uppercase font-bold">Sai</span>
+                    </div>
+                </div>
+
+                <div class="w-full bg-gray-200 rounded-full h-4 mb-2 overflow-hidden">
+                    <div id="progress-bar" class="h-4 rounded-full transition-all duration-1000" style="background: var(--primary); width: 0%"></div>
+                </div>
+                <p class="text-center text-sm font-bold mb-8" style="color: var(--primary-dark);" id="stat-percentage">Tỉ lệ đúng: 0%</p>
+
+                <div class="grid grid-cols-1 gap-3">
+                    <button onclick="copyDictationResults()" class="btn-primary">📋 Copy kết quả Nghe Chép</button>
+                    <button onclick="resetDictationGame()" class="btn-action" style="background: #e0e0e0; color: #333; box-shadow: 0 4px 0 #bdbdbd;">🔄 Làm lại từ đầu</button>
+                    <button onclick="backToDictationMenu()" class="btn-action bg-white border-2 border-[var(--primary)] text-[var(--primary-dark)]" style="background: white; box-shadow: 0 4px 0 var(--primary-dark);">🔙 Về DS Bài Khóa</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- AUDIO ASSETS -->
+    <audio id="audio-click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="audio-correct" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+    <audio id="audio-wrong" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3"></audio>
+    <audio id="audio-flip" src="https://assets.mixkit.co/active_storage/sfx/2045/2045-preview.mp3"></audio>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast">Thông báo</div>
+
+    <script>
+        // --- DATA & STATE ---
+        const vocabulary = [
+            { h: "同事", p: "tóngshì", m: "đồng nghiệp", ex: "这是我的新同事。", vi: "Đây là đồng nghiệp mới của tôi." },
+            { h: "以前", p: "yǐqián", m: "trước đây, trước kia", ex: "我以前没来过中国。", vi: "Trước đây tôi chưa từng đến Trung Quốc." },
+            { h: "银行", p: "yínháng", m: "ngân hàng", ex: "他在银行工作。", vi: "Anh ấy làm việc ở ngân hàng." },
+            { h: "久", p: "jiǔ", m: "lâu, lâu dài", ex: "好久不见。", vi: "Đã lâu không gặp." },
+            { h: "感兴趣", p: "gǎn xìngqù", m: "có hứng thú, thích", ex: "我对历史很感兴趣。", vi: "Tôi rất hứng thú với lịch sử." },
+            { h: "结婚", p: "jié hūn", m: "kết hôn, cưới", ex: "他们下个月结婚。", vi: "Tháng sau họ kết hôn." },
+            { h: "欢迎", p: "huānyíng", m: "hoan nghênh, chào mừng", ex: "欢迎来我们家。", vi: "Chào mừng bạn đến nhà chúng tôi." },
+            { h: "迟到", p: "chídào", m: "đến muộn", ex: "对不起，我迟到了。", vi: "Xin lỗi, tôi đến muộn rồi." },
+            { h: "半", p: "bàn", m: "một nửa, rưỡi", ex: "现在三点半。", vi: "Bây giờ là 3 giờ rưỡi." },
+            { h: "接", p: "jiē", m: "đón", ex: "我去机场接朋友。", vi: "Tôi đi sân bay đón bạn." },
+            { h: "刻", p: "kè", m: "mười lăm phút", ex: "现在两点一刻。", vi: "Bây giờ là 2 giờ 15 phút." },
+            { h: "差", p: "chà", m: "kém, thiếu", ex: "差五分八点。", vi: "8 giờ kém 5 phút." },
+            { h: "以后", p: "yǐhòu", m: "Sau này, về sau", ex: "以后别迟到了。", vi: "Sau này đừng đến muộn nữa." },
+            { h: "到时候", p: "dào shíhou", m: "Đến lúc đó", ex: "到时候我给你打电话。", vi: "Đến lúc đó tôi sẽ gọi cho bạn." }
+        ];
+
+        const quizData = {
+            p3: [
+                { type: 'ro', w: ["工作了", "她", "银行", "三年", "在", "。"], c: "她在银行工作了三年。", p: "Tā zài yínháng gōngzuò le sān nián.", v: "Cô ấy làm việc ở ngân hàng 3 năm." },
+                { type: 'ro', w: ["我们", "认识", "了", "两年", "同事", "。"], c: "我们认识了两年同事。", p: "Wǒmen rènshi le liǎng nián tóngshì.", v: "Chúng tôi đã quen đồng nghiệp được 2 năm." },
+                { type: 'ro', w: ["他", "结婚", "了", "五年", "以前", "。"], c: "他五年以前结婚了。", p: "Tā wǔ nián yǐqián jiéhūn le.", v: "Anh ấy đã kết hôn 5 năm trước." },
+                { type: 'ro', w: ["学习", "我", "了", "汉语", "一年", "。"], c: "我学习了一年汉语。", p: "Wǒ xuéxí le yī nián hànyǔ.", v: "Tôi đã học tiếng Trung 1 năm." },
+                { type: 'ro', w: ["他们", "在", "工作", "了", "银行", "很久", "。"], c: "他们在银行工作了很久。", p: "Tāmen zài yínháng gōngzuò le hěn jiǔ.", v: "Họ đã làm việc ở ngân hàng rất lâu." },
+                { type: 'ro', w: ["我", "等", "了", "你", "一刻钟", "。"], c: "我等了你一刻钟。", p: "Wǒ děng le nǐ yī kè zhōng.", v: "Tôi đã đợi bạn 15 phút." },
+                { type: 'ro', w: ["她", "在", "这里", "住", "了", "三年", "。"], c: "她在这里住了三年。", p: "Tā zài zhèlǐ zhù le sān nián.", v: "Cô ấy đã sống ở đây 3 năm." },
+                { type: 'ro', w: ["我们", "做", "了", "同事", "两年", "。"], c: "我们做了两年同事。", p: "Wǒmen zuò le liǎng nián tóngshì.", v: "Chúng tôi làm đồng nghiệp được 2 năm." },
+                { type: 'ro', w: ["他", "学习", "了", "汉语", "很久", "。"], c: "他学习了很久汉语。", p: "Tā xuéxí le hěn jiǔ hànyǔ.", v: "Anh ấy đã học tiếng Trung rất lâu." },
+                { type: 'ro', w: ["我", "在", "银行", "工作", "了", "五年", "。"], c: "我在银行工作了五年。", p: "Wǒ zài yínháng gōngzuò le wǔ nián.", v: "Tôi đã làm việc ở ngân hàng 5 năm." }
+            ],
+            p4: [
+                { type: 'ro', w: ["我", "学习", "了", "汉语", "一年", "了", "。"], c: "我学习了一年汉语了。", p: "Wǒ xuéxí le yī nián hànyǔ le.", v: "Tôi đã học tiếng Trung được 1 năm rồi." },
+                { type: 'ro', w: ["他", "在", "银行", "工作", "了", "三年", "了", "。"], c: "他在银行工作了三年了。", p: "Tā zài yínháng gōngzuò le sān nián le.", v: "Anh ấy đã làm việc ở ngân hàng 3 năm rồi." },
+                { type: 'ro', w: ["我们", "认识", "了", "很久", "了", "。"], c: "我们认识了很久了。", p: "Wǒmen rènshi le hěn jiǔ le.", v: "Chúng tôi đã quen nhau rất lâu rồi." },
+                { type: 'ro', w: ["她", "等", "了", "你", "一刻钟", "了", "。"], c: "她等了你一刻钟了。", p: "Tā děng le nǐ yī kè zhōng le.", v: "Cô ấy đã đợi bạn 15 phút rồi." },
+                { type: 'ro', w: ["他们", "做", "了", "同事", "两年", "了", "。"], c: "他们做了两年同事了。", p: "Tāmen zuò le liǎng nián tóngshì le.", v: "Họ đã làm đồng nghiệp 2 năm rồi." },
+                { type: 'ro', w: ["我", "在", "这里", "住", "了", "三年", "了", "。"], c: "我在这里住了三年了。", p: "Wǒ zài zhèlǐ zhù le sān nián le.", v: "Tôi đã sống ở đây 3 năm rồi." },
+                { type: 'ro', w: ["他", "结婚", "了", "五年", "了", "。"], c: "他结婚了五年了。", p: "Tā jiéhūn le wǔ nián le.", v: "Anh ấy đã kết hôn được 5 năm rồi." },
+                { type: 'ro', w: ["我们", "学习", "了", "汉语", "很久", "了", "。"], c: "我们学习了很久汉语了。", p: "Wǒmen xuéxí le hěn jiǔ hànyǔ le.", v: "Chúng tôi đã học tiếng Trung rất lâu rồi." },
+                { type: 'ro', w: ["她", "在", "银行", "工作", "了", "很久", "了", "。"], c: "她在银行工作了很久了。", p: "Tā zài yínháng gōngzuò le hěn jiǔ le.", v: "Cô ấy đã làm việc ở ngân hàng rất lâu rồi." },
+                { type: 'ro', w: ["我", "等", "了", "你", "很久", "了", "。"], c: "我等了你很久了。", p: "Wǒ děng le nǐ hěn jiǔ le.", v: "Tôi đã đợi bạn rất lâu rồi." }
+            ],
+            p5: [
+                { type: 'ro', w: ["我", "对", "汉语", "感兴趣", "。"], c: "我对汉语感兴趣。", p: "Wǒ duì hànyǔ gǎn xìngqù.", v: "Tôi có hứng thú với tiếng Trung." },
+                { type: 'ro', w: ["他们", "对", "电影", "很", "感兴趣", "。"], c: "他们对电影很感兴趣。", p: "Tāmen duì diànyǐng hěn gǎn xìngqù.", v: "Họ rất hứng thú với phim ảnh." },
+                { type: 'ro', w: ["他", "对", "银行", "工作", "不", "感兴趣", "。"], c: "他对银行工作不感兴趣。", p: "Tā duì yínháng gōngzuò bù gǎn xìngqù.", v: "Anh ấy không hứng thú với công việc ngân hàng." },
+                { type: 'ro', w: ["我", "对", "这个", "工作", "有兴趣", "。"], c: "我对这个工作有兴趣。", p: "Wǒ duì zhège gōngzuò yǒu xìngqù.", v: "Tôi có hứng thú với công việc này." },
+                { type: 'ro', w: ["我们", "对", "学习", "汉语", "非常", "感兴趣", "。"], c: "我们对学习汉语非常感兴趣。", p: "Wǒmen duì xuéxí hànyǔ fēicháng gǎn xìngqù.", v: "Chúng tôi vô cùng hứng thú với việc học tiếng Trung." },
+                { type: 'ro', w: ["她", "对", "同事", "没", "兴趣", "。"], c: "她对同事没兴趣。", p: "Tā duì tóngshì méi xìngqù.", v: "Cô ấy không hứng thú với đồng nghiệp." },
+                { type: 'ro', w: ["他", "对", "结婚", "不", "感兴趣", "。"], c: "他对结婚不感兴趣。", p: "Tā duì jiéhūn bù gǎn xìngqù.", v: "Anh ấy không có hứng thú với việc kết hôn." },
+                { type: 'ro', w: ["他们", "对", "这个", "电影", "很", "有兴趣", "。"], c: "他们对这个电影很有兴趣。", p: "Tāmen duì zhège diànyǐng hěn yǒu xìngqù.", v: "Họ rất có hứng thú với bộ phim này." },
+                { type: 'ro', w: ["我", "以前", "对", "汉语", "不", "感兴趣", "。"], c: "我以前对汉语不感兴趣。", p: "Wǒ yǐqián duì hànyǔ bù gǎn xìngqù.", v: "Trước đây tôi không hứng thú với tiếng Trung." },
+                { type: 'ro', w: ["他", "现在", "对", "银行", "工作", "很", "感兴趣", "。"], c: "他现在对银行工作很感兴趣。", p: "Tā xiànzài duì yínháng gōngzuò hěn gǎn xìngqù.", v: "Bây giờ anh ấy rất hứng thú với công việc ngân hàng." }
+            ],
+            p6: [
+                { type: 'ro', w: ["现在", "一点", "半", "。"], c: "现在一点半。", p: "Xiànzài yī diǎn bàn.", v: "Bây giờ là một rưỡi." },
+                { type: 'ro', w: ["现在", "十二点", "一刻", "。"], c: "现在十二点一刻。", p: "Xiànzài shí'èr diǎn yī kè.", v: "Bây giờ là mười hai giờ mười lăm." },
+                { type: 'ro', w: ["现在", "十二点", "三刻", "。"], c: "现在十二点三刻。", p: "Xiànzài shí'èr diǎn sān kè.", v: "Bây giờ là mười hai giờ bốn lăm." },
+                { type: 'ro', w: ["现在", "差", "一刻", "一点", "。"], c: "现在差一刻一点。", p: "Xiànzài chà yī kè yī diǎn.", v: "Bây giờ là một giờ kém mười lăm." },
+                { type: 'ro', w: ["现在", "差", "五分", "十二点", "。"], c: "现在差五分十二点。", p: "Xiànzài chà wǔ fēn shí'èr diǎn.", v: "Bây giờ là mười hai giờ kém năm." },
+                { type: 'ro', w: ["我们", "一点半", "见面", "。"], c: "我们一点半见面。", p: "Wǒmen yī diǎn bàn jiànmiàn.", v: "Chúng ta gặp nhau lúc một rưỡi." },
+                { type: 'ro', w: ["他", "十二点一刻", "来", "。"], c: "他十二点一刻来。", p: "Tā shí'èr diǎn yī kè lái.", v: "Anh ấy đến lúc mười hai giờ mười lăm." },
+                { type: 'ro', w: ["我", "等", "你", "一刻钟", "了", "。"], c: "我等你一刻钟了。", p: "Wǒ děng nǐ yī kè zhōng le.", v: "Tôi đợi bạn mười lăm phút rồi." },
+                { type: 'ro', w: ["我们", "差", "十分", "两点", "见", "。"], c: "我们差十分两点见。", p: "Wǒmen chà shí fēn liǎng diǎn jiàn.", v: "Chúng ta gặp nhau lúc hai giờ kém mười." },
+                { type: 'ro', w: ["到时候", "我", "一点半", "去", "接", "你", "。"], c: "到时候我一点半去接你。", p: "Dào shíhou wǒ yī diǎn bàn qù jiē nǐ.", v: "Đến lúc đó một rưỡi tôi sẽ đi đón bạn." }
+            ]
+        };
+
+        const fillData1 = [
+            {q: "1. 小明每天都听歌，对音乐有 ____。", o: ["以前", "同事", "兴趣", "欢迎", "差"]},
+            {q: "2. 我给你介绍一下，这是我的 ____ 小王。", o: ["以前", "同事", "兴趣", "欢迎", "差"]},
+            {q: "3. ____ 你来我家玩儿。", o: ["以前", "同事", "兴趣", "欢迎", "差"]},
+            {q: "4. 我是 ____ 十分八点到公司的。", o: ["以前", "同事", "兴趣", "欢迎", "差"]},
+            {q: "5. 来中国 ____，我学了一年汉语。", o: ["以前", "同事", "兴趣", "欢迎", "差"]}
+        ];
+
+        const fillData2 = [
+            {q: "6. A: 你今天怎么 ____ 了？ B: 对不起，我起晚了。", o: ["银行", "结婚", "迟到", "接", "半"]},
+            {q: "7. A: 你现在要去哪儿？ B: 我去机场 ____ 一个朋友。", o: ["银行", "结婚", "迟到", "接", "半"]},
+            {q: "8. A: 比赛什么时候开始？ B: 十点 ____。", o: ["银行", "结婚", "迟到", "接", "半"]},
+            {q: "9. A: 请问，哪儿有 ____？ B: 一直往前走，超市的旁边。", o: ["银行", "结婚", "迟到", "接", "半"]},
+            {q: "10. A: 下个月我们就 ____ 了。 B: 什么？你们不是刚认识吗？", o: ["银行", "结婚", "迟到", "接", "半"]}
+        ];
+
+        const lessonsData = [
+            { id: 1, title: "Bài khóa 1", desc: "在办公室 (Trong văn phòng)", audioSrc: "https://raw.githubusercontent.com/ngabui94-create/game-hoc-tieng-trung/main/audio/hsk3/lesson7/07-1.mp3", completed: false, sentences: [
+                { h: "那个漂亮的新同事是谁？", p: "Nàge piàoliang de xīn tóngshì shì shuí?", vi: "Đồng nghiệp mới xinh đẹp kia là ai vậy?" },
+                { h: "那是小丽。", p: "Nà shì Xiǎolì.", vi: "Đó là Tiểu Lệ." },
+                { h: "她刚来北京吗？", p: "Tā gāng lái Běijīng ma?", vi: "Cô ấy vừa đến Bắc Kinh à?" },
+                { h: "不，她在北京工作三年了。", p: "Bù, tā zài Běijīng gōngzuò sān nián le.", vi: "Không, cô ấy làm việc ở Bắc Kinh được 3 năm rồi." },
+                { h: "以前她在哪儿工作？", p: "Yǐqián zài nǎr gōngzuò?", vi: "Trước kia cô ấy làm việc ở đâu?" },
+                { h: "她在银行工作了两年以后来的我们公司。", p: "Tā zài yínháng gōngzuò le liǎng nián yǐhòu lái de wǒmen gōngsī.", vi: "Cô ấy làm việc ở ngân hàng 2 năm sau đó mới đến công ty chúng ta." }
+            ]},
+            { id: 2, title: "Bài khóa 2", desc: "在休息室 (Trong phòng giải lao)", audioSrc: "https://raw.githubusercontent.com/ngabui94-create/game-hoc-tieng-trung/main/audio/hsk3/lesson7/07-2.mp3", completed: false, sentences: [
+                { h: "周末你跟小丽去哪儿玩儿了？", p: "Zhōumò nǐ gēn Xiǎolì qù nǎr wánr le?", vi: "Cuối tuần cậu và Tiểu Lệ đi đâu chơi vậy?" },
+                { h: "我们去唱歌了。", p: "Wǒmen qù chànggē le.", vi: "Bọn tớ đi hát." },
+                { h: "你们唱了多久？", p: "Nǐmen chàng le duōjiǔ?", vi: "Các cậu hát bao lâu?" },
+                { h: "我们唱了两个小时，晚上还去听音乐会了。", p: "Wǒmen chàng le liǎng gè xiǎoshí, wǎnshang hái qù tīng yīnyuèhuì le.", vi: "Bọn tớ hát 2 tiếng, buổi tối còn đi nghe hòa nhạc nữa." },
+                { h: "你们都对音乐感兴趣吗？", p: "Nǐmen dōu duì yīnyuè gǎn xìngqù ma?", vi: "Các cậu đều có hứng thú với âm nhạc à?" },
+                { h: "她对音乐感兴趣，我对她更感兴趣。", p: "Tā duì yīnyuè gǎn xìngqù, wǒ duì tā gèng gǎn xìngqù.", vi: "Cô ấy hứng thú với âm nhạc, còn tớ thì hứng thú với cô ấy hơn." }
+            ]},
+            { id: 3, title: "Bài khóa 3", desc: "在休息室 (Trong phòng giải lao)", audioSrc: "https://raw.githubusercontent.com/ngabui94-create/game-hoc-tieng-trung/main/audio/hsk3/lesson7/07-3.mp3", completed: false, sentences: [
+                { h: "我跟小丽下个月结婚，到时候欢迎你来。", p: "Wǒ gēn Xiǎolì xià gè yuè jiéhūn, dào shíhou huānyíng nǐ lái.", vi: "Tháng sau tớ và Tiểu Lệ kết hôn, đến lúc đó hoan nghênh cậu tới." },
+                { h: "什么？结婚？", p: "Shénme? Jiéhūn?", vi: "Cái gì? Kết hôn?" },
+                { h: "对啊，突然吗？", p: "Duì a, tūrán ma?", vi: "Đúng vậy, bất ngờ không?" },
+                { h: "你们不是刚认识吗？", p: "Nǐmen bú shì gāng rènshi ma?", vi: "Không phải hai người mới quen sao?" },
+                { h: "我跟她都认识五年了。", p: "Wǒ gēn tā dōu rènshi wǔ nián le.", vi: "Tớ và cô ấy đã quen nhau được 5 năm rồi." },
+                { h: "你跟她结婚，那我怎么办啊？", p: "Nǐ gēn tā jiéhūn, nà wǒ zěnme bàn a?", vi: "Cậu kết hôn với cô ấy, vậy tớ phải làm sao đây?" }
+            ]},
+            { id: 4, title: "Bài khóa 4", desc: "在公司门口 (Ở trước cửa công ty)", audioSrc: "https://raw.githubusercontent.com/ngabui94-create/game-hoc-tieng-trung/main/audio/hsk3/lesson7/07-4.mp3", completed: false, sentences: [
+                { h: "你看看手表，怎么迟到了？", p: "Nǐ kànkan shǒubiǎo, zěnme chídào le?", vi: "Anh xem đồng hồ đi, sao lại đến muộn vậy?" },
+                { h: "没迟到啊。", p: "Méi chídào a.", vi: "Đâu có muộn." },
+                { h: "你不是说七点半来接我吗？你迟到了一刻钟。", p: "Nǐ bú shì shuō qī diǎn bàn lái jiē wǒ ma? Nǐ chídào le yí kè zhōng.", vi: "Chẳng phải anh nói 7 rưỡi đến đón em sao? Anh đến muộn 15 phút rồi." },
+                { h: "现在不是七点半吗？", p: "Xiànzài bú shì qī diǎn bàn ma?", vi: "Bây giờ chẳng phải 7 rưỡi sao?" },
+                { h: "已经差一刻八点了！我都在这儿坐了半个小时了。", p: "Yǐjīng chà yí kè bā diǎn le! Wǒ dōu zài zhèr zuò le bàn gè xiǎoshí le.", vi: "Đã 8 giờ kém 15 rồi! Em ngồi đây cả nửa tiếng rồi." },
+                { h: "不是我迟到了，是你的表快了一刻钟。", p: "Bú shì wǒ chídào le, shì nǐ de biǎo kuài le yí kè zhōng.", vi: "Không phải anh đến muộn, là đồng hồ của em chạy nhanh 15 phút đấy." }
+            ]}
+        ];
+
+        let gameScores = { vocab: 0, p3: 0, p4: 0, p5: 0, p6: 0 };
+        let completedSection = { p3: false, p4: false, p5: false, p6: false };
+        let userAnswers = {}; // Dictation answers
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function playAudio(id) {
+            const audio = document.getElementById(id);
+            if (audio) { audio.currentTime = 0; audio.play().catch(()=>{}); }
+        }
+
+        // --- TAB SWITCHING ---
+        function switchTab(tabId) {
+            // Lock Check cho Tab Bài Tập (Yêu cầu cả 4 phần ngữ pháp Bài 7)
+            if (tabId === 'exercise') {
+                if (!completedSection.p3 || !completedSection.p4 || !completedSection.p5 || !completedSection.p6) {
+                    showToast("⚠️ Vui lòng hoàn thành toàn bộ phần 'Ngữ Pháp' trước!");
+                    return;
+                }
+            }
+
+            playAudio('audio-click');
+            
+            // Hide all sections
+            document.getElementById('section-vocab').classList.add('hidden');
+            document.getElementById('section-grammar').classList.add('hidden');
+            document.getElementById('section-exercise').classList.add('hidden');
+            document.getElementById('section-dictation').classList.add('hidden');
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            // Show selected section and activate tab
+            document.getElementById('section-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            const player = document.getElementById('lesson-audio-player');
+            if (player) player.pause();
+
+            // Reset sub-menus
+            if(tabId === 'vocab') showVocabMenu();
+            else if(tabId === 'grammar') showGrammarMenu();
+            else if(tabId === 'dictation') {
+                document.getElementById('dictation-screen').classList.add('hidden');
+                document.getElementById('dictation-end-screen').classList.add('hidden');
+                document.getElementById('dictation-menu-screen').classList.remove('hidden');
+                renderLessonList();
+            } else if(tabId === 'exercise') {
+                renderExercises();
+            }
+        }
+
+        // ==========================================
+        // TAB 1: TỪ VỰNG (Flashcards & Game)
+        // ==========================================
+        let currentFlashList = [], flashcardIdx = 0, learnedCount = 0, unlearnedItems = [];
+        let vocabGameIdx = 0, selVocabAns = null;
+        let isFlipping = false; // Biến khóa trạng thái lật thẻ
+
+        function showVocabMenu() {
+            document.getElementById('vocab-menu').classList.remove('hidden');
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.add('hidden');
+            document.getElementById('vocab-game-screen').classList.add('hidden');
+        }
+
+        function startFlashcards(list) {
+            playAudio('audio-click');
+            currentFlashList = [...list];
+            flashcardIdx = 0; learnedCount = 0; unlearnedItems = [];
+            isFlipping = false;
+            
+            document.getElementById('vocab-menu').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.add('hidden');
+            document.getElementById('flashcard-screen').classList.remove('hidden');
+            
+            document.getElementById('card-total').innerText = currentFlashList.length;
+            updateFlashcard();
+        }
+
+        function updateFlashcard() {
+            const card = currentFlashList[flashcardIdx];
+            document.getElementById('card-index').innerText = flashcardIdx + 1;
+            document.getElementById('card-hanzi').innerText = card.h;
+            document.getElementById('card-pinyin').innerText = card.p;
+            document.getElementById('card-mean').innerText = card.m;
+            document.getElementById('card-example-cn').innerText = card.ex;
+            document.getElementById('card-example-vi').innerText = card.vi;
+            document.getElementById('flashcard-inner').classList.remove('is-flipped');
+        }
+
+        function flipCard() { 
+            if(isFlipping) return; 
+            playAudio('audio-flip'); 
+            document.getElementById('flashcard-inner').classList.toggle('is-flipped'); 
+        }
+
+        // SỬA LỖI FLASHCARD: Tạo độ trễ khi lật úp thẻ lại trước khi sang chữ mới
+        function markCard(learned) {
+            if (isFlipping) return; 
+            isFlipping = true;
+
+            if (learned) learnedCount++; else unlearnedItems.push(currentFlashList[flashcardIdx]);
+
+            // Lật úp thẻ lại trước
+            document.getElementById('flashcard-inner').classList.remove('is-flipped');
+
+            // Đợi hiệu ứng CSS lật úp kết thúc (500ms) rồi mới cập nhật chữ mới
+            setTimeout(() => {
+                flashcardIdx++;
+                if (flashcardIdx < currentFlashList.length) {
+                    updateFlashcard();
+                } else {
+                    showFlashcardStats();
+                }
+                isFlipping = false;
+            }, 500); 
+        }
+
+        function showFlashcardStats() {
+            document.getElementById('flashcard-screen').classList.add('hidden');
+            document.getElementById('flashcard-stat-screen').classList.remove('hidden');
+            
+            const learnedPercent = Math.round((learnedCount / currentFlashList.length) * 100);
+            document.getElementById('stat-learned-percent').innerText = learnedPercent + "%";
+            document.getElementById('stat-unlearned-percent').innerText = (100 - learnedPercent) + "%";
+            
+            const listContainer = document.getElementById('unlearned-list');
+            listContainer.innerHTML = unlearnedItems.length > 0 ? '' : '<p class="text-center py-4 font-bold text-emerald-700">Tuyệt vời! Bạn đã thuộc hết.</p>';
+            
+            unlearnedItems.forEach(item => {
+                listContainer.innerHTML += `<div class="flex justify-between border-b pb-1 text-sm border-gray-200"><span class="font-bold text-gray-800">${item.h}</span><span class="text-gray-600">${item.m}</span></div>`;
+            });
+            
+            document.getElementById('btn-relearn').classList.toggle('hidden', unlearnedItems.length === 0);
+        }
+
+        function relearnUnlearned() { startFlashcards(unlearnedItems); }
+
+        function startVocabGame() {
+            playAudio('audio-click');
+            vocabGameIdx = 0; gameScores.vocab = 0;
+            document.getElementById('vocab-menu').classList.add('hidden');
+            document.getElementById('vocab-game-screen').classList.remove('hidden');
+            loadVocabGame();
+        }
+
+        function loadVocabGame() {
+            selVocabAns = null; const item = vocabulary[vocabGameIdx];
+            document.getElementById('vg-progress').innerText = `Câu: ${vocabGameIdx+1}/${vocabulary.length}`;
+            document.getElementById('vg-hanzi').innerText = item.h;
+            document.getElementById('vg-feedback').classList.add('hidden');
+            document.getElementById('vg-next-btn').classList.add('hidden');
+            document.getElementById('vg-check-btn').classList.remove('hidden');
+            
+            let opts = [item.m];
+            while(opts.length < 4) {
+                let r = vocabulary[Math.floor(Math.random()*vocabulary.length)].m;
+                if(!opts.includes(r)) opts.push(r);
+            }
+            opts.sort(() => Math.random() - 0.5);
+            
+            const container = document.getElementById('vg-options'); container.innerHTML = '';
+            opts.forEach(o => {
+                const b = document.createElement('button');
+                b.className = "py-3 text-sm bg-white border-2 rounded-xl font-bold text-[var(--text-muted)]"; 
+                b.style.borderColor = "var(--secondary)";
+                b.innerText = o;
+                b.onclick = () => {
+                    document.querySelectorAll('#vg-options button').forEach(x => {
+                        x.style.backgroundColor = 'white';
+                        x.style.color = 'var(--text-muted)';
+                    });
+                    b.style.backgroundColor = 'var(--secondary)';
+                    b.style.color = 'white';
+                    selVocabAns = o;
+                };
+                container.appendChild(b);
+            });
+        }
+
+        function checkVocabAnswer() {
+            if(!selVocabAns) return;
+            const fb = document.getElementById('vg-feedback'); fb.classList.remove('hidden');
+            if(selVocabAns === vocabulary[vocabGameIdx].m) {
+                playAudio('audio-correct');
+                gameScores.vocab++; 
+                fb.innerText = "Chính xác! ✨"; 
+                fb.className = "mt-4 p-2 bg-emerald-100 text-emerald-700 rounded-lg font-bold text-center";
+            } else {
+                playAudio('audio-wrong');
+                fb.innerText = `Sai rồi! Đáp án: ${vocabulary[vocabGameIdx].m}`; 
+                fb.className = "mt-4 p-2 bg-rose-100 text-rose-700 rounded-lg font-bold text-center";
+            }
+            document.getElementById('vg-check-btn').classList.add('hidden');
+            document.getElementById('vg-next-btn').classList.remove('hidden');
+        }
+
+        function nextVocabQuestion() {
+            vocabGameIdx++;
+            if(vocabGameIdx < vocabulary.length) loadVocabGame(); 
+            else { showToast(`Hoàn thành Game! Bạn đúng ${gameScores.vocab}/${vocabulary.length} câu.`); showVocabMenu(); }
+        }
+
+        // ==========================================
+        // TAB 2: NGỮ PHÁP (Trắc nghiệm & Sắp xếp)
+        // ==========================================
+        let curGrammarKey = '', grammarIdx = 0;
+        let selectedWords = [], poolWords = [];
+
+        function showGrammarMenu() {
+            document.getElementById('grammar-menu').classList.remove('hidden');
+            document.getElementById('quiz-screen').classList.add('hidden');
+        }
+
+        function startQuiz(key) {
+            playAudio('audio-click');
+            curGrammarKey = key; grammarIdx = 0; gameScores[key] = 0;
+            document.getElementById('grammar-menu').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            loadQuiz();
+        }
+
+        function loadQuiz() {
+            const q = quizData[curGrammarKey][grammarIdx];
+            document.getElementById('quiz-idx').innerText = grammarIdx + 1;
+            document.getElementById('quiz-explanation').classList.add('hidden');
+            
+            if (q.type === 'mc') {
+                document.getElementById('multiple-choice-container').classList.remove('hidden');
+                document.getElementById('reorder-container').classList.add('hidden');
+                document.getElementById('quiz-question').innerText = q.q;
+                
+                const container = document.getElementById('quiz-options'); container.innerHTML = '';
+                q.o.forEach((opt, i) => {
+                    const b = document.createElement('button');
+                    b.className = "text-left px-4 py-3 bg-white border-2 rounded-xl font-bold text-[var(--text-main)]";
+                    b.style.borderColor = "var(--primary)";
+                    b.innerText = `${i+1}. ${opt}`;
+                    b.onclick = () => {
+                        const isRight = i === q.a;
+                        if(isRight) gameScores[curGrammarKey]++;
+                        showQuizFeedback(isRight, q, b);
+                    };
+                    container.appendChild(b);
+                });
+            } else {
+                document.getElementById('multiple-choice-container').classList.add('hidden');
+                document.getElementById('reorder-container').classList.remove('hidden');
+                
+                selectedWords = []; poolWords = [...q.w].sort(() => Math.random() - 0.5);
+                document.getElementById('btn-check-reorder').classList.remove('hidden');
+                renderReorder();
+            }
+        }
+
+        function renderReorder() {
+            const az = document.getElementById('answer-zone'); const pz = document.getElementById('words-pool');
+            az.innerHTML = ''; pz.innerHTML = '';
+            selectedWords.forEach((w, idx) => {
+                const b = document.createElement('div'); b.className = 'word-tag'; 
+                b.style.background = 'var(--secondary)'; b.style.color = 'white'; b.style.borderColor = 'var(--secondary-dark)'; b.style.boxShadow = '0 3px 0 var(--secondary-dark)';
+                b.innerText = w;
+                b.onclick = () => { selectedWords.splice(idx, 1); poolWords.push(w); renderReorder(); };
+                az.appendChild(b);
+            });
+            poolWords.forEach((w, idx) => {
+                const b = document.createElement('div'); b.className = 'word-tag'; b.innerText = w;
+                b.onclick = () => { poolWords.splice(idx, 1); selectedWords.push(w); renderReorder(); };
+                pz.appendChild(b);
+            });
+        }
+
+        function checkReorderAnswer() {
+            const q = quizData[curGrammarKey][grammarIdx];
+            const userStr = selectedWords.join('');
+            const correctStr = q.c.replace(/\s+/g, '');
+            const isRight = userStr === correctStr;
+            if(isRight) gameScores[curGrammarKey]++;
+            showQuizFeedback(isRight, q);
+        }
+
+        function showQuizFeedback(isRight, q, btn = null) {
+            document.getElementById('quiz-explanation').classList.remove('hidden');
+            const fbText = document.getElementById('quiz-feedback-text');
+            
+            if (isRight) {
+                playAudio('audio-correct');
+                fbText.innerText = "Chính xác! 🌟"; fbText.style.color = "#2e7d32";
+            } else {
+                playAudio('audio-wrong');
+                fbText.innerText = "Chưa đúng rồi! ❌"; fbText.style.color = "#c62828";
+            }
+            
+            document.getElementById('quiz-full-sentence').innerText = q.type === 'mc' ? q.q.replace('________', q.s).replace('____', q.s).replace('（ ）', q.s) : q.c;
+            document.getElementById('quiz-pinyin').innerText = q.p;
+            document.getElementById('quiz-translate').innerText = "Dịch: " + q.v;
+            
+            if (q.type === 'mc') {
+                document.querySelectorAll('#quiz-options button').forEach(x => x.onclick = null);
+                if(btn) {
+                    btn.style.backgroundColor = isRight ? "#c8e6c9" : "#ffcdd2";
+                    btn.style.borderColor = isRight ? "#4caf50" : "#f44336";
+                }
+            } else {
+                document.getElementById('btn-check-reorder').classList.add('hidden');
+            }
+        }
+
+        function checkUnlockExercise() {
+            if (completedSection.p3 && completedSection.p4 && completedSection.p5 && completedSection.p6) {
+                const tabEx = document.getElementById('tab-exercise');
+                tabEx.innerText = "📝 Bài Tập";
+                showToast("🎉 Phần Bài Tập đã được mở khóa!");
+            }
+        }
+
+        function nextQuizQuestion() {
+            grammarIdx++; 
+            if(grammarIdx < 10) loadQuiz(); 
+            else { 
+                showToast(`Hoàn thành! Đúng ${gameScores[curGrammarKey]}/10 câu.`); 
+                completedSection[curGrammarKey] = true;
+                document.getElementById(`check-${curGrammarKey}`).classList.remove('hidden');
+                checkUnlockExercise();
+                showGrammarMenu(); 
+            }
+        }
+
+        // ==========================================
+        // TAB 4: BÀI TẬP TỔNG HỢP
+        // ==========================================
+        let exerciseRendered = false;
+        function renderExercises() {
+            if (exerciseRendered) return;
+            const c1 = document.getElementById('fill-questions-1'); c1.innerHTML = '';
+            fillData1.forEach((d, i) => {
+                const p = document.createElement('p');
+                p.innerHTML = d.q.replace('____', `<select class="ex-sel-1 border-b-2 border-[var(--secondary)] outline-none bg-transparent" style="color: var(--secondary-dark);"><option value="">...</option>${d.o.map(x => `<option>${x}</option>`).join('')}</select>`);
+                c1.appendChild(p);
+            });
+
+            const c2 = document.getElementById('fill-questions-2'); c2.innerHTML = '';
+            fillData2.forEach((d, i) => {
+                const p = document.createElement('p');
+                p.innerHTML = d.q.replace('____', `<select class="ex-sel-2 border-b-2 border-[var(--secondary)] outline-none bg-transparent" style="color: var(--secondary-dark);"><option value="">...</option>${d.o.map(x => `<option>${x}</option>`).join('')}</select>`);
+                c2.appendChild(p);
+            });
+            exerciseRendered = true;
+        }
+
+        function submitExercise() {
+            let res = "=== BÀI LÀM HSK3 BÀI 7 ===\n\n";
+
+            res += "📊 KẾT QUẢ QUÁ TRÌNH HỌC:\n";
+            res += `- Game Từ vựng: ${gameScores.vocab}/${vocabulary.length} câu đúng.\n`;
+            res += `- Ngữ pháp V + 了 + Time + O: ${gameScores.p3}/10 câu đúng.\n`;
+            res += `- Ngữ pháp V + 了 + Time + O + 了: ${gameScores.p4}/10 câu đúng.\n`;
+            res += `- Ngữ pháp 对...感兴趣: ${gameScores.p5}/10 câu đúng.\n`;
+            res += `- Thời gian 半/刻/差: ${gameScores.p6}/10 câu đúng.\n\n`;
+
+            res += "📝 PHẦN ĐIỀN TỪ (BÀI TẬP):\n";
+            const sel1 = document.querySelectorAll('.ex-sel-1');
+            fillData1.forEach((d, i) => res += `${d.q.replace('____', ` [ ${sel1[i]?.value || "..."} ] `)}\n`);
+            const sel2 = document.querySelectorAll('.ex-sel-2');
+            fillData2.forEach((d, i) => res += `${d.q.replace('____', ` [ ${sel2[i]?.value || "..."} ] `)}\n`);
+
+            res += "\n🖼️ PHẦN MÔ TẢ HÌNH ẢNH:\n";
+            const ins = document.querySelectorAll('#img-desc-questions input');
+            const getVal = (idx) => ` [ ${ins[idx]?.value || "..."} ] `;
+
+            res += `1. A: 都 ${getVal(0)} 了，快去睡觉吧。 B: 我再玩儿十分钟。 A: 你已经玩儿了好几个小时了，不累吗？ B: 我 ${getVal(1)} 特别感兴趣，一点儿也不累。\n`;
+            res += `2. A: 你一直在这家公司工作吗？ B: 对，我已经 ${getVal(2)}。 A: 你 ${getVal(3)}？ B: 我特别喜欢我的工作。\n`;
+            res += `3. A: 喂，你在哪儿呢？ B: 我可能会晚 ${getVal(4)}。 A: 快点儿吧，我已经等了 ${getVal(5)}。 B: 好，你别着急，我快到了。\n`;
+            res += `4. A: 你们结婚 ${getVal(6)}？ B: 快50年了。 A: 你们身体怎么这么好？ B: 我们都对 ${getVal(7)}。\n\n`;
+
+            navigator.clipboard.writeText(res).then(() => {
+                showToast("✅ Đã copy kết quả Game & Bài tập!");
+            }).catch(err => {
+                const temp = document.createElement('textarea');
+                temp.value = res;
+                document.body.appendChild(temp);
+                temp.select();
+                document.execCommand('copy');
+                document.body.removeChild(temp);
+                showToast("✅ Đã copy kết quả Game & Bài tập!");
+            });
+        }
+
+        // ==========================================
+        // TAB 5: NGHE CHÉP (Dictation) 
+        // ==========================================
+        let currentLessonIdx = -1, dictStep = 0;
+
+        function renderLessonList() {
+            const listContainer = document.getElementById('lesson-list');
+            listContainer.innerHTML = '';
+            
+            let allCompleted = true;
+            if(lessonsData.length === 0) allCompleted = false;
+
+            lessonsData.forEach((lesson, index) => {
+                let lessonTotal = lesson.sentences.length;
+                let lessonDone = 0;
+                for(let i=0; i<lessonTotal; i++) {
+                    if(userAnswers[`${index}-${i}`]) lessonDone++;
+                }
+                
+                let isComplete = lessonDone === lessonTotal && lessonTotal > 0;
+                if(!isComplete) allCompleted = false;
+
+                const btn = document.createElement('div');
+                btn.className = `dict-lesson-btn ${isComplete ? 'completed' : ''}`;
+                btn.onclick = () => startDictationLesson(index);
+                
+                btn.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-bold text-lg" style="color: var(--primary-dark);">${lesson.title}</span>
+                        ${isComplete ? '<span class="text-xl">✅</span>' : `<span class="text-xs bg-white px-2 py-1 rounded-md text-amber-700 font-bold border border-amber-200">${lessonDone}/${lessonTotal}</span>`}
+                    </div>
+                    <span class="text-sm" style="color: var(--text-muted);">${lesson.desc}</span>
+                `;
+                listContainer.appendChild(btn);
+            });
+
+            if (allCompleted) {
+                document.getElementById('btn-finish-all').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-finish-all').classList.add('hidden');
+            }
+        }
+
+        function startDictationLesson(index) {
+            playAudio('audio-click');
+            currentLessonIdx = index;
+            
+            // Tìm câu chưa làm
+            dictStep = 0;
+            for(let i=0; i<lessonsData[index].sentences.length; i++) {
+                if(!userAnswers[`${index}-${i}`]) {
+                    dictStep = i; break;
+                }
+            }
+
+            document.getElementById('dictation-menu-screen').classList.add('hidden');
+            document.getElementById('dictation-end-screen').classList.add('hidden');
+            document.getElementById('dictation-screen').classList.remove('hidden');
+            document.getElementById('lesson-audio-player').src = lessonsData[currentLessonIdx].audioSrc;
+            
+            loadDictationStep();
+        }
+
+        function backToDictationMenu() { 
+            const player = document.getElementById('lesson-audio-player');
+            player.pause();
+            document.getElementById('dictation-screen').classList.add('hidden');
+            document.getElementById('dictation-end-screen').classList.add('hidden');
+            document.getElementById('dictation-menu-screen').classList.remove('hidden');
+            renderLessonList();
+        }
+
+        function loadDictationStep() {
+            const lesson = lessonsData[currentLessonIdx];
+            const sentenceObj = lesson.sentences[dictStep];
+            
+            document.getElementById('dictation-title-display').innerHTML = `Bài 7: <span id="dict-step">${dictStep + 1}</span>/${lesson.sentences.length}`;
+            
+            const rawH = sentenceObj.h.replace(/[，。？！、\s“”：]/g, '');
+            let hint = "-- ... --";
+            if(rawH.length <= 2) hint = "* *";
+            else hint = `${rawH.substring(0, 1)} ... ${rawH.substring(rawH.length - 1)}`;
+            document.getElementById('sentence-range-hint').innerText = hint;
+            
+            const inputField = document.getElementById('dict-input');
+            inputField.value = ""; inputField.disabled = false;
+            
+            document.getElementById('dict-answer-box').classList.add('hidden');
+            document.getElementById('btn-next-dict').classList.add('hidden');
+            document.getElementById('enter-instruction').classList.remove('hidden');
+            inputField.focus();
+
+            // Load history if exists
+            const oldAns = userAnswers[`${currentLessonIdx}-${dictStep}`];
+            if(oldAns) {
+                inputField.value = oldAns.userInput;
+                checkDictation(true); 
+            }
+        }
+
+        function cleanChineseText(text) { return text.replace(/[^\u4e00-\u9fa5]/g, '').trim(); }
+
+        function checkDictation(isHistoryLoad = false) {
+            const sentenceObj = lessonsData[currentLessonIdx].sentences[dictStep];
+            const feedback = document.getElementById('dict-feedback');
+            const inputField = document.getElementById('dict-input');
+            const rawUserInput = inputField.value.trim();
+            const userInput = cleanChineseText(rawUserInput);
+            const correctInput = cleanChineseText(sentenceObj.h);
+            const isCorrect = (userInput === correctInput && userInput !== "");
+            
+            if(!isHistoryLoad) {
+                if (isCorrect) playAudio('audio-correct');
+                else playAudio('audio-wrong');
+            }
+
+            userAnswers[`${currentLessonIdx}-${dictStep}`] = {
+                isCorrect: isCorrect,
+                userInput: rawUserInput
+            };
+
+            if (isCorrect) {
+                feedback.innerText = "Chính xác! 🌟";
+                feedback.className = "w-full p-2 rounded-lg text-center bg-emerald-100 text-emerald-700 font-bold";
+            } else {
+                feedback.innerText = "Chưa đúng! Đáp án:";
+                feedback.className = "w-full p-2 rounded-lg text-center bg-rose-100 text-rose-700 font-bold";
+            }
+
+            document.getElementById('ans-hanzi').innerText = sentenceObj.h;
+            document.getElementById('ans-pinyin').innerText = sentenceObj.p;
+            document.getElementById('ans-vi').innerText = sentenceObj.vi;
+            
+            document.getElementById('dict-answer-box').classList.remove('hidden');
+            inputField.disabled = true;
+            document.getElementById('enter-instruction').classList.add('hidden');
+            
+            const btnNext = document.getElementById('btn-next-dict');
+            if (dictStep === lessonsData[currentLessonIdx].sentences.length - 1) {
+                btnNext.innerText = "Hoàn thành Bài khóa 🏆";
+                btnNext.style.background = "var(--secondary)";
+                btnNext.style.boxShadow = "0 4px 0 var(--secondary-dark)";
+            } else {
+                btnNext.innerText = "Câu tiếp theo ❯";
+                btnNext.style.background = "var(--primary)";
+                btnNext.style.boxShadow = "0 4px 0 var(--primary-dark)";
+            }
+            btnNext.classList.remove('hidden');
+        }
+
+        function nextDictation() {
+            if (dictStep < lessonsData[currentLessonIdx].sentences.length - 1) {
+                dictStep++;
+                loadDictationStep();
+            } else {
+                backToDictationMenu();
+            }
+        }
+
+        function showFinalStats() {
+            playAudio('audio-click');
+            document.getElementById('dictation-menu-screen').classList.add('hidden');
+            document.getElementById('dictation-end-screen').classList.remove('hidden');
+
+            let total = 0, correct = 0, wrong = 0;
+            lessonsData.forEach((lesson, lIdx) => {
+                lesson.sentences.forEach((s, sIdx) => {
+                    total++;
+                    let ans = userAnswers[`${lIdx}-${sIdx}`];
+                    if(ans) {
+                        if(ans.isCorrect) correct++;
+                        else wrong++;
+                    } else {
+                        wrong++;
+                    }
+                });
+            });
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-correct').innerText = correct;
+            document.getElementById('stat-wrong').innerText = wrong;
+
+            const percentage = Math.round((correct / total) * 100) || 0;
+            setTimeout(() => {
+                document.getElementById('progress-bar').style.width = percentage + '%';
+            }, 100);
+            document.getElementById('stat-percentage').innerText = `Tỉ lệ đúng: ${percentage}%`;
+        }
+
+        function resetDictationGame() {
+            if(confirm("Xóa toàn bộ dữ liệu nghe chép và bắt đầu lại?")) {
+                userAnswers = {};
+                document.getElementById('progress-bar').style.width = '0%';
+                backToDictationMenu();
+            }
+        }
+
+        function copyDictationResults() {
+            let text = "📊 KẾT QUẢ NGHE CHÉP HSK3 - BÀI 7\n\n";
+            let total = 0, correct = 0;
+            let detailText = "";
+
+            lessonsData.forEach((lesson, lIdx) => {
+                detailText += `--- ${lesson.title} ---\n`;
+                lesson.sentences.forEach((sent, sIdx) => {
+                    total++;
+                    let ans = userAnswers[`${lIdx}-${sIdx}`];
+                    if(ans) {
+                        if(ans.isCorrect) {
+                            correct++;
+                            detailText += `${sIdx+1}. [✅] ${sent.h}\n`;
+                        } else {
+                            let uInput = ans.userInput ? ans.userInput : "[Để trống]";
+                            detailText += `${sIdx+1}. [❌] Đáp án: ${sent.h}\n      (Bạn gõ: ${uInput})\n`;
+                        }
+                    } else {
+                            detailText += `${sIdx+1}. [⚪] Chưa làm\n`;
+                    }
+                });
+                detailText += "\n";
+            });
+
+            const percent = Math.round((correct / total) * 100) || 0;
+            text += `🎯 Tổng: ${total} câu | Đúng: ${correct} | Sai/Chưa làm: ${total - correct} (${percent}%)\n\n`;
+            text += detailText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("✅ Đã copy kết quả Nghe Chép!");
+            }).catch(err => {
+                const temp = document.createElement('textarea');
+                temp.value = text;
+                document.body.appendChild(temp);
+                temp.select();
+                document.execCommand('copy');
+                document.body.removeChild(temp);
+                showToast("✅ Đã copy kết quả Nghe Chép!");
+            });
+        }
+
+        // --- KEYBOARD EVENT FOR DICTATION ---
+        document.addEventListener("keydown", function(e) {
+            const dictScreen = document.getElementById('dictation-screen');
+            if (e.key === "Enter" && !dictScreen.classList.contains('hidden')) {
+                e.preventDefault();
+                const btnNext = document.getElementById('btn-next-dict');
+                const inputField = document.getElementById('dict-input');
+                if (!btnNext.classList.contains('hidden')) nextDictation();
+                else if (!inputField.disabled) checkDictation();
+            }
+        });
+
+    </script>
+</body>
+</html>
+
+

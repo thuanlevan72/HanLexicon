@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khu Vườn Tiếng Trung - Học HSK qua Game cùng Nga</title>
+    <meta name="description" content="Trang web tổng hợp game học tiếng Trung HSK thú vị, tài liệu giáo trình chuẩn HSK 1-6 và HSK 3.0 miễn phí từ cô giáo Nga.">
+    <meta name="keywords" content="học tiếng trung, game hsk, giáo trình hsk 3.0, hsk 1, nga học hsk, tài liệu tiếng trung, khóa học hsk">
+    <meta property="og:title" content="Khu Vườn Tiếng Trung - Vừa Chơi Vừa Học HSK">
+    <meta property="og:description" content="Khám phá kho game, khóa học và tài liệu HSK miễn phí của Nga.">
+    <meta property="og:image" content="anh-nga.jpg.jpg"> 
+    <meta property="og:type" content="website">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ghibli-green: #9dc183;
+            --ghibli-dark-green: #4f7942;
+            --ghibli-sky: #d0f0f7;
+            --ghibli-wood: #8b5a2b;
+            --ghibli-leaf: #7fb069;
+            --ghibli-pink: #ffb7c5;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --hover-shadow: 0 15px 35px rgba(79, 121, 66, 0.2);
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Quicksand', sans-serif;
+            background: var(--ghibli-sky);
+            background-image: 
+                linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(255,255,255,0.3)),
+                url('https://images.unsplash.com/photo-1502082553048-f009c37129b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-attachment: fixed; background-position: center;
+            color: #333; display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; overflow-x: hidden; position: relative;
+        }
+
+        #leaves-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; overflow: hidden; }
+        .leaf { position: absolute; top: -10%; pointer-events: none; user-select: none; animation: fall linear infinite, sway ease-in-out infinite alternate; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        @keyframes fall { 0% { top: -10%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
+        @keyframes sway { 0% { transform: translateX(0px) rotate(0deg); } 100% { transform: translateX(40px) rotate(45deg); } }
+
+        .navbar {
+            position: sticky; top: 0; width: 100%; z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border-bottom: 3px solid var(--ghibli-green);
+        }
+        .nav-container {
+            max-width: 1200px; margin: 0 auto; padding: 15px 20px 10px;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+        }
+        .logo { 
+            font-family: 'Nunito', sans-serif; font-size: 2.2rem; font-weight: 800; 
+            color: var(--ghibli-dark-green); cursor: pointer; display: flex; align-items: center; gap: 10px;
+            text-transform: uppercase; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .logo:hover { transform: scale(1.02); }
+        .logo-icon { font-size: 2.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        
+        .nav-links { 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; 
+            list-style: none; margin: 0; padding: 0; width: 100%;
+        }
+        .nav-links li a { 
+            text-decoration: none; color: var(--ghibli-dark-green); font-weight: 700; font-size: 1.05rem;
+            padding: 10px 16px; border-radius: 25px; transition: all 0.3s ease;
+            display: inline-block; border: 2px solid transparent; white-space: nowrap;
+        }
+        .nav-links li a:hover, .nav-links li a.active-nav { 
+            background: var(--ghibli-green); color: white; border-color: var(--ghibli-leaf);
+            box-shadow: 0 4px 10px rgba(157, 193, 131, 0.4);
+        }
+        .nav-links li a.highlight-nav { color: #d6336c; background: #fff0f3; font-weight: 800; border-color: #ffb7c5; }
+        .nav-links li a.highlight-nav:hover, .nav-links li a.highlight-nav.active-nav { background: #d6336c; color: white; border-color: #d6336c; box-shadow: 0 4px 10px rgba(214, 51, 108, 0.4); }
+
+        @media (max-width: 768px) {
+            .nav-container { padding: 10px; gap: 8px; }
+            .logo { font-size: 1.4rem; }
+            .logo-icon { font-size: 1.6rem; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 5px; }
+            .nav-links li a { font-size: 0.85rem; padding: 6px 12px; }
+            .sub-tabs-container { flex-wrap: wrap !important; justify-content: center !important; gap: 6px; width: 100% !important; }
+            .sub-tab-btn { flex: 0 0 auto; font-size: 0.85rem; padding: 6px 12px; }
+            .hero-text-content { padding: 25px 15px; }
+            .hero-text-content h1 { font-size: 1.5rem; }
+        }
+
+        .main-wrapper { width: 100%; max-width: 1200px; z-index: 10; display: flex; flex-direction: column; align-items: center; padding-bottom: 50px; }
+        .section-content { display: none; width: 100%; flex-direction: column; align-items: center; animation: fadeInSection 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .section-content.active { display: flex; }
+        @keyframes fadeInSection { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hero-section { width: 92%; max-width: 1100px; margin: 40px auto; display: flex; flex-direction: column; align-items: center; gap: 40px; z-index: 10; position: relative; }
+        @media (min-width: 850px) { .hero-section { flex-direction: row; justify-content: space-between; align-items: center; margin: 60px auto; } }
+        .hero-text-content { flex: 1; text-align: center; background: var(--glass-bg); backdrop-filter: blur(12px); padding: 40px; border-radius: 30px; border: 2px solid var(--glass-border); box-shadow: var(--shadow); }
+        @media (min-width: 850px) { .hero-text-content { text-align: left; } }
+        .hero-badge { display: inline-block; padding: 8px 20px; border-radius: 25px; background: rgba(255, 183, 197, 0.6); color: #d6336c; font-weight: 800; font-size: 0.9rem; margin-bottom: 20px; border: 2px solid #ffb7c5; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-text-content h1 { margin: 0 0 15px 0; color: var(--ghibli-dark-green); font-size: clamp(1.8rem, 4vw, 2.5rem); font-family: 'Nunito', sans-serif; line-height: 1.3; }
+        .highlight-text { color: #d6336c; display: block; margin-top: 5px; font-size: clamp(1.2rem, 3vw, 1.5rem); }
+        .hero-text-content p { line-height: 1.8; color: #555; margin: 15px 0; font-size: 1.05rem; font-weight: 600; }
+        .hero-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px; }
+        @media (min-width: 850px) { .hero-buttons { justify-content: flex-start; } }
+        .btn-primary { background: var(--ghibli-dark-green); color: white; padding: 14px 28px; border-radius: 30px; font-weight: 700; font-size: 1.05rem; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 6px 15px rgba(79, 121, 66, 0.3); display: flex; align-items: center; gap: 8px; }
+        .btn-primary:hover { background: var(--ghibli-leaf); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(79, 121, 66, 0.4); }
+        .btn-secondary { background: white; color: var(--ghibli-dark-green); padding: 14px 28px; border-radius: 30px; font-weight: 700; font-size: 1.05rem; border: 2px solid var(--ghibli-dark-green); cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 8px; }
+        .btn-secondary:hover { background: var(--ghibli-sky); transform: translateY(-3px); }
+        .hero-image-wrapper { position: relative; width: 280px; height: 280px; flex-shrink: 0; animation: float 6s ease-in-out infinite; }
+        @media (min-width: 850px) { .hero-image-wrapper { width: 380px; height: 380px; } }
+        .hero-image-wrapper::before { content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; background: linear-gradient(45deg, var(--ghibli-green), var(--ghibli-sky)); border-radius: 50%; z-index: -1; filter: blur(20px); opacity: 0.7; }
+        .profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 8px solid white; box-shadow: var(--shadow); position: relative; z-index: 1; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
+
+        .sub-tabs-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 20px 0 30px; width: 92%; }
+        .sub-tab-btn { padding: 10px 22px; border-radius: 25px; border: 2px solid var(--ghibli-green); background: rgba(255,255,255,0.9); color: var(--ghibli-dark-green); font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        .sub-tab-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .sub-tab-btn.active { background: var(--ghibli-dark-green); color: white; border-color: var(--ghibli-dark-green); }
+
+        .search-wrapper { position: relative; width: 90%; max-width: 500px; margin-bottom: 40px; margin-top: 10px; }
+        #globalSearch { width: 100%; padding: 16px 20px 16px 50px; border-radius: 30px; border: 2px solid var(--ghibli-green); outline: none; box-sizing: border-box; font-family: 'Quicksand'; font-size: 1.1rem; font-weight: 600; background: rgba(255,255,255,0.95); box-shadow: 0 6px 15px rgba(0,0,0,0.08); transition: 0.3s; }
+        #globalSearch:focus { border-color: var(--ghibli-dark-green); box-shadow: var(--hover-shadow); }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; }
+
+        .grid-container { display: none; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 94%; max-width: 1150px; }
+        .grid-container.active { display: grid; }
+        @media (min-width: 700px) { .grid-container { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+        @media (min-width: 950px) { .grid-container { grid-template-columns: repeat(4, 1fr); gap: 25px; } }
+        
+        .game-card { background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 20px; padding: 25px 15px; text-align: center; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-decoration: none; color: inherit; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; border: 2px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.06); cursor: pointer; }
+        .game-card:hover { transform: translateY(-10px); border-color: var(--ghibli-leaf); background-color: white; box-shadow: var(--hover-shadow); }
+        .game-icon { font-size: 45px; margin-bottom: 12px; transition: 0.3s; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        .game-card:hover .game-icon { transform: scale(1.15) rotate(5deg); }
+        .game-title { font-weight: 800; font-size: 1.15rem; color: var(--ghibli-dark-green); margin-bottom: 4px; font-family: 'Nunito', sans-serif; line-height: 1.3; }
+        .game-trans { font-size: 0.85rem; color: #777; font-weight: 600; font-style: italic; margin-bottom: 10px; min-height: 38px; display: flex; align-items: center; text-align: center; }
+        .game-desc { font-size: 0.8rem; color: var(--ghibli-wood); font-weight: 700; background: rgba(139, 90, 43, 0.08); padding: 5px 12px; border-radius: 12px; margin-top: auto; }
+        .new-badge { position: absolute; top: 12px; right: -35px; background: #ff6b6b; color: white; font-size: 0.7rem; padding: 5px 40px; transform: rotate(45deg); font-weight: 800; box-shadow: 0 2px 5px rgba(0,0,0,0.2); letter-spacing: 1px; z-index: 2; }
+        .game-status { margin-top: 8px; font-size: 0.75rem; font-weight: 700; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 20px; display: inline-block; width: auto; }
+
+        .doc-list { display: none; width: 94%; max-width: 950px; flex-direction: column; gap: 20px; }
+        .doc-list.active { display: flex; }
+        .doc-card { background: white; padding: 25px 30px; border-radius: 20px; border-left: 10px solid var(--ghibli-green); box-shadow: 0 6px 20px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; transition: 0.3s; }
+        .doc-card:hover { transform: translateX(8px); border-left-color: var(--ghibli-dark-green); box-shadow: var(--hover-shadow); }
+        .doc-info { flex: 1; min-width: 250px; }
+        .doc-info h3 { margin: 0 0 10px 0; font-size: 1.3rem; color: var(--ghibli-dark-green); font-family: 'Nunito', sans-serif; font-weight: 800; }
+        .doc-info p { margin: 0; font-size: 1rem; color: #555; line-height: 1.6; font-weight: 600; }
+        .btn-download { background: var(--ghibli-dark-green); color: white; text-decoration: none; padding: 14px 30px; border-radius: 15px; font-size: 1rem; font-weight: 800; transition: 0.3s; box-shadow: 0 5px 0 #2d4d28; display: flex; align-items: center; gap: 8px; }
+        .btn-download:hover { background: var(--ghibli-leaf); transform: translateY(-2px); box-shadow: 0 5px 0 #3a6b34; }
+
+        .course-grid { display: grid; grid-template-columns: 1fr; gap: 25px; width: 92%; max-width: 1000px; margin: 0 auto; }
+        @media (min-width: 768px) { .course-grid { grid-template-columns: repeat(2, 1fr); } }
+        .course-card { background: white; border-radius: 25px; padding: 35px 30px; text-align: left; text-decoration: none; color: inherit; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: 0.4s; position: relative; overflow: hidden; border: 2px solid transparent; display: flex; flex-direction: column; }
+        .course-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: linear-gradient(90deg, var(--ghibli-green), var(--ghibli-sky)); }
+        .course-card:hover { transform: translateY(-8px); border-color: var(--ghibli-sky); box-shadow: var(--hover-shadow); }
+        .course-level { background: var(--ghibli-sky); color: var(--ghibli-dark-green); padding: 6px 15px; border-radius: 15px; font-weight: 800; font-size: 0.9rem; align-self: flex-start; margin-bottom: 15px; display: inline-block;}
+        .course-card h3 { color: var(--ghibli-dark-green); font-family: 'Nunito', sans-serif; font-size: 1.6rem; margin: 0 0 15px 0; }
+        .course-card p { color: #555; line-height: 1.6; font-size: 1.05rem; font-weight: 600; margin: 0 0 25px 0; flex-grow: 1; }
+        .course-btn { color: var(--ghibli-dark-green); font-weight: 800; display: flex; align-items: center; gap: 8px; font-size: 1.05rem; transition: 0.3s; }
+        .course-card:hover .course-btn { gap: 15px; color: var(--ghibli-leaf); }
+
+        .contact-wrapper { width: 92%; max-width: 1000px; margin: 20px auto 50px; background: var(--glass-bg); backdrop-filter: blur(15px); border-radius: 30px; border: 2px solid white; box-shadow: var(--shadow); padding: 40px; display: grid; grid-template-columns: 1fr; gap: 40px; }
+        @media (min-width: 800px) { .contact-wrapper { grid-template-columns: 1fr 1fr; } }
+        .contact-info-left h2 { color: var(--ghibli-dark-green); font-family: 'Nunito', sans-serif; font-size: 2rem; margin-top: 0; }
+        .contact-info-left p { font-size: 1.1rem; color: #555; line-height: 1.6; margin-bottom: 25px; font-weight: 600; }
+        .info-line { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; font-size: 1.15rem; font-weight: 700; color: var(--ghibli-wood); background: white; padding: 15px 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 5px solid var(--ghibli-green); }
+        .info-icon { font-size: 1.5rem; }
+        .social-qr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 20px; }
+        .qr-card { background: white; padding: 15px; border-radius: 20px; text-align: center; text-decoration: none; color: inherit; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; }
+        .qr-card:hover { transform: translateY(-8px); border-color: var(--ghibli-green); box-shadow: var(--hover-shadow); }
+        .qr-card img { width: 100px; height: 100px; object-fit: contain; border-radius: 10px; margin-bottom: 10px; background: #f9f9f9; padding: 5px; }
+        .qr-card span { font-weight: 800; color: var(--ghibli-dark-green); font-size: 0.95rem; }
+        .qr-card .platform { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
+
+        #footer-mini { margin-top: auto; width: 100%; background: var(--glass-bg); border-top: 2px solid var(--ghibli-green); padding: 15px; backdrop-filter: blur(10px); z-index: 10; text-align: center; }
+        #footer-mini p { margin: 0; font-size: 0.95rem; color: var(--ghibli-dark-green); font-weight: 700; letter-spacing: 0.5px; }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .login-box { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; border: 3px solid var(--ghibli-green); box-shadow: var(--hover-shadow); position: relative;}
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer; color: #888; font-weight: bold;}
+        .login-box h3 { color: var(--ghibli-dark-green); font-family: 'Nunito', sans-serif; margin-top: 0;}
+        .login-input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 2px solid #ddd; box-sizing: border-box; font-family: 'Quicksand', sans-serif;}
+        .login-input:focus { outline: none; border-color: var(--ghibli-green); }
+        .login-submit { width: 100%; background: var(--ghibli-dark-green); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 10px;}
+        .login-submit:hover { background: var(--ghibli-leaf); }
+        #login-message { color: #d6336c; font-size: 0.9rem; margin-top: 10px; font-weight: bold;}
+    </style>
+</head>
+<body>
+
+<div id="leaves-container"></div>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo" onclick="switchMainTab('section-home', document.querySelector('.nav-btn'))">
+            <span class="logo-icon">🌿</span> Khu Vườn Của Nga
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="nav-btn active-nav" onclick="switchMainTab('section-home', this)">Trang Chủ</a></li>
+            <li><a href="#" class="nav-btn highlight-nav" onclick="switchMainTab('section-hsk30-ppt', this)">🔥 HSK 3.0 MỚI</a></li>
+            <li><a href="#" class="nav-btn" onclick="switchMainTab('section-game', this)">Học Qua Game</a></li>
+            <li><a href="#" class="nav-btn" onclick="switchMainTab('section-english', this)">Tiếng Anh</a></li>
+            <li><a href="#" class="nav-btn" onclick="switchMainTab('section-doc', this)">Tài Liệu Tự Học</a></li>
+            <li><a href="#" class="nav-btn" onclick="switchMainTab('section-course', this)">Khóa Học HSK</a></li>
+            <li><a href="#" class="nav-btn" onclick="switchMainTab('section-contact', this)">Liên Hệ</a></li>
+            <li id="login-nav-item"><a href="#" class="nav-btn" onclick="showLoginModal()" style="color: white; background: #ffb7c5; border-color: #d6336c;">Đăng Nhập</a></li>
+            <li id="user-profile-item" style="display: none; align-items: center; font-weight: bold; color: var(--ghibli-dark-green); padding: 10px;">
+                Xin chào, <span id="display-username" style="margin-left: 5px; color: #d6336c;"></span>!
+                <a href="#" onclick="logout()" style="margin-left: 10px; font-size: 0.8rem; color: #888; text-decoration: underline;">Thoát</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="main-wrapper">
+    <section id="section-home" class="section-content active">
+        <div class="hero-section">
+            <div class="hero-text-content">
+                <div class="hero-badge">Chào bạn, mình là Nga! ✨</div>
+                <h1>Học Tiếng Trung Không Nhàm Chán</h1>
+                <span class="highlight-text">Học Thật • Thi Thật • Ứng Dụng Thật</span>
+                <p>Tốt nghiệp Đại học Kinh tế Quốc dân (NEU) chuyên ngành Quản trị Du lịch & Khách sạn. Là một trong những người đầu tiên ở Việt Nam thi đỗ HSK6 tiêu chuẩn 3.0 & HSKK Cao cấp và kinh nghiệm tiếp xúc đa ngôn ngữ, mình đam mê mang đến phương pháp học tiếng Trung qua Game (Gamification) đầy thú vị.</p>
+                <p>Mỗi bài học tại đây đều bám sát giáo trình chuẩn HSK, giúp bạn "vừa chơi vừa học" hiệu quả. Nếu gặp bất kỳ lỗi nhỏ nào, hãy giúp mình chụp màn hình và liên hệ để mình hoàn thiện khu vườn này nhé!</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="switchMainTab('section-game', document.querySelectorAll('.nav-btn')[2])">🎮 Bắt Đầu Chơi Game</button>
+                    <button class="btn-secondary" onclick="switchMainTab('section-course', document.querySelectorAll('.nav-btn')[5])">🎓 Tham Khảo Khóa Học</button>
+                </div>
+            </div>
+            <div class="hero-image-wrapper">
+                <img src="anh-nga.jpg.jpg" alt="Nga Học HSK" class="profile-img" onerror="this.src='https://via.placeholder.com/380?text=anh-nga.jpg.jpg'">
+            </div>
+        </div>
+    </section>
+
+    <div class="search-wrapper" id="global-search-area" style="display: none;">
+        <input type="text" id="globalSearch" placeholder="Tìm kiếm bài học, cấp độ, tài liệu...">
+        <div class="search-icon">🔍</div>
+    </div>
+
+    <section id="section-hsk30-ppt" class="section-content">
+        <div style="text-align: center; margin-bottom: 20px; background: var(--glass-bg); padding: 25px 40px; border-radius: 20px; box-shadow: var(--shadow); width: 92%; max-width: 950px; border: 2px solid var(--ghibli-pink);">
+            <h2 style="color: #d6336c; margin: 0 0 10px 0; font-family: 'Nunito', sans-serif; font-size: 2rem;">Tài Liệu & Bài Giảng HSK 3.0 MỚI 🔥</h2>
+            <p style="color: #555; margin: 0; font-weight: 600; font-size: 1.05rem;">Tải trọn bộ Slide bài giảng và rèn luyện từ vựng HSK 3.0 hoàn toàn miễn phí.</p>
+        </div>
+        <div class="sub-tabs-container">
+            <button class="sub-tab-btn active" data-target="hsk30-ppt-list">Tài Liệu & PPT 3.0</button>
+            <button class="sub-tab-btn" data-target="hsk30-challenge-main" style="color: #d6336c; border-color: #ffb7c5; background: #fff0f3;">⚔️ Thử Thách Từ Vựng 3.0</button>
+        </div>
+        <div id="hsk30-ppt-list" class="doc-list active"></div>
+        <div id="hsk30-challenge-main" class="grid-container"></div>
+    </section>
+
+    <section id="section-game" class="section-content">
+        <div class="sub-tabs-container">
+            <button class="sub-tab-btn active" data-target="game-intro">Nhập môn</button>
+            <button class="sub-tab-btn" data-target="game-hsk1">HSK 1</button>
+            <button class="sub-tab-btn" data-target="game-hsk2">HSK 2</button>
+            <button class="sub-tab-btn" data-target="game-hsk3">HSK 3</button>
+            <button class="sub-tab-btn" data-target="game-hsk4">HSK 4</button>
+            <button class="sub-tab-btn" data-target="game-hsk5">HSK 5</button>
+            <button class="sub-tab-btn" data-target="game-hsk6">HSK 6</button>
+            <button class="sub-tab-btn" data-target="game-hsk79" style="color: #d6336c; border-color: #ffb7c5; background: #fff0f3;">HSK 7-9</button>
+            <button class="sub-tab-btn" data-target="game-challenge" style="color: #ff6b6b; border-color: #ffb7c5; background: #fff5f5;">⚔️ Thử Thách Từ Vựng</button>
+        </div>
+        <div id="game-intro" class="grid-container active"></div>
+        <div id="game-hsk1" class="grid-container"></div>
+        <div id="game-hsk2" class="grid-container"></div>
+        <div id="game-hsk3" class="grid-container"></div>
+        <div id="game-hsk4" class="grid-container"></div>
+        <div id="game-hsk5" class="grid-container"></div>
+        <div id="game-hsk6" class="grid-container"></div>
+        <div id="game-hsk79" class="grid-container"></div>
+        <div id="game-challenge" class="grid-container"></div>
+    </section>
+
+    <section id="section-english" class="section-content">
+        <div style="margin: 20px 0; background: var(--glass-bg); padding: 20px 40px; border-radius: 20px; box-shadow: var(--shadow); text-align: center;">
+            <h2 style="color: var(--ghibli-dark-green); margin: 0; font-family: 'Nunito', sans-serif; font-size: 1.8rem;">Khóa học Tiếng Anh Qua Game 🎧</h2>
+        </div>
+        <div id="english-grid" class="grid-container active"></div>
+    </section>
+
+    <section id="section-doc" class="section-content">
+        <div class="sub-tabs-container">
+            <button class="sub-tab-btn active" data-target="doc-hsk1">HSK 1</button>
+            <button class="sub-tab-btn" data-target="doc-hsk2">HSK 2</button>
+            <button class="sub-tab-btn" data-target="doc-hsk3">HSK 3</button>
+            <button class="sub-tab-btn" data-target="doc-hsk4">HSK 4</button>
+            <button class="sub-tab-btn" data-target="doc-hsk5">HSK 5</button>
+            <button class="sub-tab-btn" data-target="doc-hsk6">HSK 6</button>
+        </div>
+        <div id="doc-hsk1" class="doc-list active"></div>
+        <div id="doc-hsk2" class="doc-list"></div>
+        <div id="doc-hsk3" class="doc-list"></div>
+        <div id="doc-hsk4" class="doc-list"></div>
+        <div id="doc-hsk5" class="doc-list"></div>
+        <div id="doc-hsk6" class="doc-list"></div>
+    </section>
+
+    <section id="section-course" class="section-content">
+        <div style="text-align: center; margin-bottom: 40px; background: var(--glass-bg); padding: 30px; border-radius: 20px; box-shadow: var(--shadow); width: 92%; max-width: 1000px;">
+            <h2 style="color: var(--ghibli-dark-green); font-family: 'Nunito', sans-serif; font-size: 2.2rem; margin: 0 0 10px 0;">Lộ Trình Khóa Học HSK Bài Bản 🎓</h2>
+            <p style="color: #555; font-size: 1.1rem; font-weight: 600; margin: 0;">Khóa học tương tác thực tế giúp bạn nhanh chóng đạt mục tiêu ngôn ngữ.</p>
+        </div>
+        <div class="course-grid">
+            <a href="https://www.tiktok.com/@studyhskwithnga" target="_blank" class="course-card"><div class="course-level">HSK 1 - HSK 2</div><h3>Lớp Nền Tảng Sơ Cấp</h3><p>Khóa học lý tưởng cho người mới bắt đầu. Nắm chắc phát âm chuẩn Pinyin, bộ thủ và giao tiếp sinh hoạt hàng ngày cơ bản.</p><span class="course-btn">Xem Chi Tiết Lớp Học ➔</span></a>
+            <a href="https://www.tiktok.com/@studyhskwithnga" target="_blank" class="course-card"><div class="course-level">HSK 3</div><h3>Lớp Giao Tiếp Trung Cấp</h3><p>Khóa học HSK 3 giúp học viên nắm vững hơn 2200 từ vựng, 210 chủ điểm ngữ pháp, và nâng cao khả năng giao tiếp tiếng Trung trong học tập, công việc, đời sống, chuẩn bị vững chắc cho kỳ thi HSK 3.</p><span class="course-btn">Xem Chi Tiết Lớp Học ➔</span></a>
+            <a href="https://www.tiktok.com/@studyhskwithnga" target="_blank" class="course-card"><div class="course-level">HSK 4</div><h3>Lớp Thành Thạo Tiếng Trung</h3><p>Khóa học HSK 4 giúp học viên nâng cao 4 kỹ năng tiếng Trung, tích lũy trên 3200 từ vựng, đủ kiến thức ngữ pháp và văn hóa xã hội Trung Quốc để thi HSK4 và tiếp tục học các khóa nâng cao.</p><span class="course-btn">Xem Chi Tiết Lớp Học ➔</span></a>
+            <a href="https://www.tiktok.com/@studyhskwithnga" target="_blank" class="course-card"><div class="course-level">HSK 5</div><h3>Lớp Cao Cấp & Dịch Thuật</h3><p>Khóa học HSK 5 giúp học viên nâng cao 6 kỹ năng nghe, nói, đọc, viết, dịch và đánh máy, với hơn 4300 từ vựng và 357 chủ điểm ngữ pháp, chuẩn bị tốt cho kỳ thi HSK 5 và các công việc yêu cầu tiếng Trung chuyên nghiệp.</p><span class="course-btn">Xem Chi Tiết Lớp Học ➔</span></a>
+        </div>
+    </section>
+
+    <section id="section-contact" class="section-content">
+        <div class="contact-wrapper">
+            <div class="contact-info-left"><h2>Cùng Giao Lưu Với Nga Nhé! 🌿</h2><p>Bạn có câu hỏi, thắc mắc về lộ trình học, hay đơn giản là muốn chia sẻ niềm vui khi "phá đảo" một game HSK? Hãy liên hệ ngay với mình qua các kênh dưới đây.</p><div class="info-line"><span class="info-icon">📧</span><span>Email: Ngabui94@gmail.com</span></div><div class="info-line"><span class="info-icon">📞</span><span>Hotline: 0979.393.427</span></div></div>
+            <div class="social-qr-grid"><a href="https://www.tiktok.com/@studyhskwithnga" target="_blank" class="qr-card"><span class="platform">Kênh Video</span><img src="qr-tiktok.png" alt="TikTok Nga Học HSK" onerror="this.src='https://via.placeholder.com/100?text=TikTok'"><span>TikTok: Nga Học HSK</span></a><a href="https://www.youtube.com/@studyhskwithnga" target="_blank" class="qr-card"><span class="platform">Bài Giảng Dài</span><img src="qr-youtube.png.png" alt="YouTube Nga Học HSK" onerror="this.src='https://via.placeholder.com/100?text=YouTube'"><span>YouTube: Nga Học HSK</span></a><a href="#" target="_blank" class="qr-card" title="Quét mã để nhắn tin Zalo"><span class="platform">Hỗ trợ Trực tiếp</span><img src="qr-zalo.png.jpg" alt="Zalo Nga Học HSK" onerror="this.src='https://via.placeholder.com/100?text=Zalo'"><span>Zalo Cá Nhân</span></a></div>
+        </div>
+    </section>
+</div>
+
+<footer id="footer-mini">
+    <p>© 2026 - Khu Vườn Của Nga 🌸 | Học Thật - Thi Thật - Ứng Dụng Thật</p>
+</footer>
+
+<div class="modal-overlay" id="loginModal">
+    <div class="login-box">
+        <span class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
+        <h3>🌿 Đăng Nhập Khu Vườn</h3>
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 20px;">Học viên liên hệ cô Nga để nhận tài khoản nhé!</p>
+        <input type="text" id="username" class="login-input" placeholder="Tên tài khoản">
+        <input type="password" id="password" class="login-input" placeholder="Mật khẩu">
+        <button class="login-submit" onclick="attemptLogin()">Vào Học</button>
+        <div id="login-message"></div>
+    </div>
+</div>
+
+<script>
+    // ================== CẤU HÌNH API ==================
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwpbjfdCICuAJLmDQvGlFiFwFfuEOWMTF9VlxRaJhhDd247dlhIV7A86nAcsNuc0xRY/exec';
+
+    // --- DỮ LIỆU GAME, TÀI LIỆU (GIỮ NGUYÊN) ---
+    function parseLevelData(level, rawDataArray) {
+        const icons = ["🌱", "🌿", "☘️", "🍀", "🍃", "🌳", "🍄", "🌸", "🌺", "🌻", "🍎", "🍊", "🍓", "🍉", "🍇", "🌲", "🍵", "📚", "☕", "✈️"];
+        return rawDataArray.map((str, index) => {
+            const parts = str.split(/\s*[-–]\s*/); 
+            const zhTitle = parts[0] ? parts[0].trim() : `Bài ${index + 1}`;
+            const viTrans = parts[1] ? parts[1].trim() : "";
+            return { link: `HSK${level}-LESSON${index + 1}.html`, icon: icons[index % icons.length], title: zhTitle, translation: viTrans, desc: `HSK ${level} - Bài ${index + 1}` };
+        });
+    }
+    function generateChallengeChunks(level, totalLessons, prefix = "HSK", urlPrefix = "challenge-hsk") {
+        const chunks = []; const icons = ["⭐", "🌟", "🔥", "⚡", "🏆", "👑", "🐉"]; let iconIndex = level % icons.length;
+        for (let i = 1; i <= totalLessons; i += 5) { let end = Math.min(i + 4, totalLessons); chunks.push({ link: `${urlPrefix}${level}-b${i}-${end}.html`, icon: icons[iconIndex], title: `Thử Thách ${prefix} ${level}`, desc: `Kiểm tra Từ vựng Bài ${i} - ${end}`, badge: i === 1 ? "HOT" : "" }); }
+        return chunks;
+    }
+    const challengeChunksData = { 3: generateChallengeChunks(3, 20), 4: generateChallengeChunks(4, 20), 5: generateChallengeChunks(5, 36), 6: generateChallengeChunks(6, 40) };
+    const hsk30ChunksData = { 1: [ { link: "challenge-hsk30-c1-part1.html", icon: "🔥", title: "HSK1 - 3.0 - PART 1", desc: "Thử thách từ vựng", badge: "HOT" }, { link: "challenge-hsk30-c1-part2.html", icon: "⭐", title: "HSK1 - 3.0 - PART 2", desc: "Thử thách từ vựng", badge: "" }, { link: "challenge-hsk30-c1-part3.html", icon: "🌟", title: "HSK1 - 3.0 - PART 3", desc: "Thử thách từ vựng", badge: "" }, { link: "challenge-hsk30-c1-part4.html", icon: "⚡", title: "HSK1 - 3.0 - PART 4", desc: "Thử thách từ vựng", badge: "" }, { link: "challenge-hsk30-c1-part5.html", icon: "🏆", title: "HSK1 - 3.0 - PART 5", desc: "Thử thách từ vựng", badge: "" } ], 2: generateChallengeChunks(2, 15, "HSK 2 (3.0)", "challenge-hsk30-c2"), 3: generateChallengeChunks(3, 20, "HSK 3 (3.0)", "challenge-hsk30-c3") };
+    const gamesData = {
+        "game-intro": [ { link: "pinyin.html", icon: "🎹", title: "Bảng phát âm", desc: "Học Pinyin chuẩn", badge: "HOT" }, { link: "so-tay-nhap-mon.html", icon: "📖", title: "Sổ Tay Nhập Môn", desc: "Lý thuyết Chữ Hán", badge: "MỚI" }, { link: "BO THU 1.html", icon: "🌱", title: "Bộ thủ 1", desc: "Nền tảng chữ Hán" }, { link: "BO THU 2.html", icon: "🌿", title: "Bộ thủ 2", desc: "Nền tảng chữ Hán" }, { link: "BO THU 3.html", icon: "☘️", title: "Bộ thủ 3", desc: "Nền tảng chữ Hán" }, { link: "BO THU 4.html", icon: "🍀", title: "Bộ thủ 4", desc: "Nền tảng chữ Hán" }, { link: "BO THU 5.html", icon: "🍃", title: "Bộ thủ 5", desc: "Nền tảng chữ Hán" }, { link: "BO THU 6.html", icon: "🌳", title: "Bộ thủ 6", desc: "Nền tảng chữ Hán" } ],
+        "game-hsk1": parseLevelData(1, [ "你好 – Xin chào", "谢谢你 – Cảm ơn bạn", "你叫什么名字 – Tên bạn là gì?", "她是我的汉语老师 – Cô ấy là giáo viên tiếng Trung của tôi", "她女儿今年二十岁 – Con gái cô ấy năm nay 20 tuổi", "我会说汉语 – Tôi biết nói tiếng Trung", "今天几号 – Hôm nay ngày mấy?", "我想喝茶 – Tôi muốn uống trà", "你儿子在哪里工作 – Con trai bạn làm việc ở đâu?", "我能坐这儿吗 – Tôi có thể ngồi đây không?", "现在几点 – Bây giờ là mấy giờ?", "明天天气怎么样 – Ngày mai thời tiết thế nào?", "他在学做中国菜呢 – Anh ấy đang học nấu món Trung Quốc", "她买了不少衣服 – Cô ấy đã mua khá nhiều quần áo", "我是坐飞机来的 – Tôi đến bằng máy bay" ]),
+        "game-hsk2": parseLevelData(2, [ "九月去北京旅游最好 – Tháng 9 đi Bắc Kinh du lịch là tốt nhất", "我每天六点起床 – Tôi mỗi ngày dậy lúc 6 giờ", "左边那个红色的是我的 – Cái màu đỏ bên trái là của tôi", "这个工作是他帮我介绍的 – Công việc này là anh ấy giới thiệu cho tôi", "就买这个吧 – Mua cái này đi", "你怎么不吃了 – Sao bạn không ăn nữa?", "你家离公司远吗 – Nhà bạn xa công ty không?", "让我想再告诉你 – Để tôi nghĩ rồi nói lại bạn", "题太多，我没做完 – Bài nhiều quá, tôi chưa làm xong", "别找了，手机在桌子上呢 – Đừng tìm nữa, điện thoại ở trên bàn", "他比我大三岁 – Anh ấy hơn tôi 3 tuổi", "你穿得太少了 – Bạn mặc ít quá", "门开着呢 – Cửa đang mở", "你看过那个电影吗 – Bạn đã xem phim đó chưa?", "新年就要到了 – Năm mới sắp đến rồi" ]),
+        "game-hsk3": parseLevelData(3, [ "周末你有什么打算？ – Cuối tuần bạn có kế hoạch gì?", "他什么时候回来？ – Khi nào anh ấy quay lại?", "桌子上放着很多饮料 – Trên bàn có nhiều đồ uống", "她总是笑着跟客人说话 – Cô ấy luôn cười khi nói chuyện với khách", "我最近越来越胖了 – Dạo này tôi càng ngày càng béo", "怎么突然找不到了？ – Sao đột nhiên không tìm thấy nữa?", "我跟她都认识五年了 – Tôi và cô ấy quen nhau 5 năm rồi", "你去哪儿我就去哪儿 – Bạn đi đâu tôi đi đó", "她的汉语说得跟中国人一样好 – Cô ấy nói tiếng Trung như người Trung Quốc", "数学比历史难多了 – Toán khó hơn Lịch sử nhiều", "别忘了把空调关了 – Đừng quên tắt điều hòa", "把重要的东西放在我这儿吧 – Để đồ quan trọng ở chỗ tôi", "我是走回来的 – Tôi đi bộ về", "你把水果拿过来 – Bạn mang hoa quả qua đây", "其他都没什么问题 – Những cái khác đều không có vấn đề", "我现在累得下了班就想睡觉 – Tôi mệt đến mức tan làm là muốn ngủ", "谁都有办法看好你的“病” – Ai cũng có cách chữa “bệnh” cho bạn", "我相信他们会同意的 – Tôi tin họ sẽ đồng ý", "你没看出来吗？ – Bạn không nhận ra sao?", "我被他影响了 – Tôi bị anh ấy ảnh hưởng" ]),
+        "game-hsk4": parseLevelData(4, [ "简单的爱情 – Tình yêu giản đơn", "真正的朋友 – Người bạn chân chính", "经理对我印象不错 – Giám đốc có ấn tượng tốt với tôi", "不要太着急赚钱 – Đừng vội kiếm tiền", "只买对的，不买贵的 – Chỉ mua đúng, không mua đắt", "一分钱一分货 – Tiền nào của nấy", "最好的医生是自己 – Bác sĩ tốt nhất là chính mình", "生活中不缺少美 – Cuộc sống không thiếu cái đẹp", "阳光总在风雨后 – Sau mưa trời lại sáng", "幸福的标准 – Tiêu chuẩn của hạnh phúc", "读书好，读好书，好读书 – Đọc sách tốt, đọc sách hay, thích đọc sách", "用心发现世界 – Khám phá thế giới bằng trái tim", "喝着茶看京剧 – Uống trà xem kinh kịch", "保护地球母亲 – Bảo vệ Trái Đất", "教育孩子的艺术 – Nghệ thuật dạy con", "生活可以更美好 – Cuộc sống có thể tốt đẹp hơn", "人与自然 – Con người và thiên nhiên", "科技与世界 – Công nghệ và thế giới", "生活的味道 – Hương vị cuộc sống", "路上的风景 – Phong cảnh trên đường" ]),
+        "game-hsk5": parseLevelData(5, [ "爱情的细节 – Chi tiết trong tình yêu", "留串钥匙给父母 – Để lại chìa khóa cho bố mẹ", "人生有选择一切可改变 – Cuộc đời có lựa chọn, mọi thứ có thể thay đổi", "子路背米 – Tử Lộ vác gạo", "济国的泉水 – Suối nước Tế Nam", "除夕的由来 – Nguồn gốc đêm giao thừa", "成语故事两则 – Hai câu chuyện thành ngữ", "朝三暮四的古今义 – Nghĩa xưa và nay của “Sáng ba chiều bốn”", "别样鲁迅 – Một Lỗ Tấn khác", "争论的奇迹 – Kỳ tích của tranh luận", "闹钟的危害 – Tác hại của đồng hồ báo thức", "海外用户玩儿微信 – Người nước ngoài dùng WeChat", "锯掉生活的筐底 – Cắt bỏ “đáy giỏ” cuộc sống", "北京的四合院 – Tứ hợp viện Bắc Kinh", "纸上谈兵 – Bàn chuyện binh trên giấy", "体重与节食 – Cân nặng và ăn kiêng", "在最美的时刻离开 – Rời đi lúc đẹp nhất", "抽象艺术美不美 – Nghệ thuật trừu tượng đẹp không", "家乡的萝卜饼 – Bánh củ cải quê hương", "小人书摊 – Sạp truyện tranh", "一个美国人的汉字情缘 – Tình yêu chữ Hán của người Mỹ", "阅读与思考 – Đọc và suy nghĩ", "放手 – Buông tay", "支教行动 – Hoạt động tình nguyện", "给自己加满水 – Làm đầy bản thân", "你属于哪一种忙 – Bạn thuộc kiểu bận nào", "下棋 – Đánh cờ", "最受欢迎的毕业生 – Sinh viên được yêu thích nhất", "培养对手 – Nuôi dưỡng đối thủ", "竞争让市场更高效 – Cạnh tranh làm thị trường hiệu quả hơn", "登门槛效应 – Hiệu ứng “bước chân vào cửa”", "身边的环保 – Bảo vệ môi trường xung quanh", "以堵治堵 – Giảm tắc nghẽn bằng “tắc nghẽn”", "鸟儿的护肤术 – Cách chim chăm sóc da", "植物会出汗 – Thực vật cũng “đổ mồ hôi”", "老舍与养花 – Lão Xá và việc trồng hoa" ]),
+        "game-hsk6": parseLevelData(6, [ "孩子给我们的启示 – Điều trẻ em dạy chúng ta", "父母之爱 – Tình yêu cha mẹ", "一盒月饼 – Một hộp bánh trung thu", "完美的胜利 – Chiến thắng hoàn hảo", "学一门外语需要理由吗 – Học ngoại ngữ cần lý do không", "当好职场插班生 – Làm tốt “người mới” nơi làm việc", "我的人生我做主 – Tôi làm chủ cuộc đời", "遇见原来的我 – Gặp lại chính mình", "不用手机的日子 – Những ngày không dùng điện thoại", "全球化视野中的中国饮食 – Ẩm thực Trung Quốc trong toàn cầu hóa", "我不在时，猫在干什么 – Khi tôi không ở nhà, mèo làm gì", "我们都爱白噪音 – Chúng ta đều thích tiếng ồn trắng", "从旅游指南看世事变迁 – Nhìn đời qua sách du lịch", "背着电饭锅去北极 – Mang nồi cơm điện đến Bắc Cực", "山脉上的雕刻 – Điêu khắc trên núi", "徐健和他的野生动物摄影老师 – Từ Kiện và nhiếp ảnh động vật", "小动物眼中的慢世界 – Thế giới chậm trong mắt động vật", "神奇的丝瓜 – Quả mướp kỳ diệu", "无阳光的深海世界 – Biển sâu không ánh sáng", "金鸡窝 – Ổ gà vàng", "未来商店 – Cửa hàng tương lai", "2050年的汽车什么样 – Xe năm 2050 thế nào", "大数据时代 – Thời đại dữ liệu lớn", "体育明星们的离奇遭遇 – Chuyện kỳ lạ của sao thể thao", "草船借箭 – Thuyền cỏ mượn tên", "奇异的灯光 – Ánh sáng kỳ lạ", "完璧归赵 – Trả ngọc cho nước Triệu", "高山流水遇知音 – Gặp tri âm", "“笑”的备忘录 – Ghi chú về “cười”", "你睡好了吗 – Bạn ngủ ngon không", "运动的学问 – Kiến thức vận động", "有时，不妨悲伤 – Đôi khi cũng nên buồn", "怀念慢生活 – Nhớ cuộc sống chậm", "为文物而生的人 – Người sống vì di sản", "走近木版年画 – Tranh Tết mộc bản", "中国古代书院 – Thư viện cổ Trung Quốc", "警察的故事 – Câu chuyện cảnh sát", "慧眼捕捉生机 – Nắm bắt cơ hội", "互联网时代的生活 – Cuộc sống thời Internet", "人类超能力会改变世界记录吗 – Siêu năng lực có thay đổi thế giới không" ]),
+        "game-hsk79": [ { link: "HSK79-U1-L1.html", icon: "🎓", title: "没有高考，你怎么拼得过富二代？", translation: "Không có Cao khảo, làm sao bạn đấu lại con nhà giàu?", desc: "顶石中文 - Chương 1 - Bài 1" }, { link: "HSK79-U1-L2.html", icon: "🏫", title: "学区房情结怎么破？", translation: "Làm sao phá bỏ tâm lý sính 'nhà gần trường tốt'?", desc: "顶石中文 - Chương 1 - Bài 2" }, { link: "HSK79-U1-L3.html", icon: "🎒", title: "“高考移民”动了谁的奶酪？", translation: "'Di cư Cao khảo' đã động chạm đến quyền lợi của ai?", desc: "顶石中文 - Chương 1 - Bài 3" }, { link: "HSK79-U2-L1.html", icon: "🏙️", title: "融不进的城市，回不去的农村", translation: "Thành phố khó hòa nhập, nông thôn chẳng thể về", desc: "顶石中文 - Chương 2 - Bài 1" }, { link: "HSK79-U2-L2.html", icon: "💻", title: "信息化社会：“一个都不能少”", translation: "Xã hội thông tin: 'Không để một ai bị bỏ lại'", desc: "顶石中文 - Chương 2 - Bài 2" }, { link: "HSK79-U2-L3.html", icon: "📱", title: "群体性孤独：网络社交正在扼杀深度关系", translation: "Cô đơn tập thể: Mạng xã hội đang giết chết các mối quan hệ sâu sắc", desc: "顶石中文 - Chương 2 - Bài 3" }, { link: "HSK79-U3-L1.html", icon: "🌍", title: "碳排放的“蛋糕”怎么切？", translation: "Chia 'chiếc bánh' phát thải carbon như thế nào?", desc: "顶石中文 - Chương 3 - Bài 1" }, { link: "HSK79-U3-L2.html", icon: "♻️", title: "“随手扔”还是“随手分”，你“拎得清”吗？", translation: "'Tiện tay vứt' hay 'Tiện tay phân loại', bạn có hiểu rõ không?", desc: "顶石中文 - Chương 3 - Bài 2" }, { link: "HSK79-U3-L3.html", icon: "🛍️", title: "“塑战”能否速决？", translation: "Liệu 'cuộc chiến nhựa' có thể giải quyết nhanh chóng?", desc: "顶石中文 - Chương 3 - Bài 3" }, { link: "HSK79-U4-L1.html", icon: "🔒", title: "真的，你的隐私只值一分钱！", translation: "Thật đấy, quyền riêng tư của bạn chỉ đáng giá một xu!", desc: "顶石中文 - Chương 4 - Bài 1" }, { link: "HSK79-U4-L2.html", icon: "🤖", title: "机器人医生，简直神了！", translation: "Bác sĩ robot, thật là thần kỳ!", desc: "顶石中文 - Chương 4 - Bài 2" }, { link: "HSK79-U4-L3.html", icon: "⚙️", title: "算法时代：谁是你的菜？", translation: "Thời đại thuật toán: Ai mới là 'gu' của bạn?", desc: "顶石中文 - Chương 4 - Bài 3" }, { link: "HSK79-U5-L1.html", icon: "🚫", title: "对家暴必须“零容忍”", translation: "Phải 'không khoan nhượng' đối với bạo lực gia đình", desc: "顶石中文 - Chương 5 - Bài 1" }, { link: "HSK79-U5-L2.html", icon: "👨‍👩‍👦", title: "“养儿防老”变“养子啃老”?", translation: "'Nuôi con phòng tuổi già' biến thành 'nuôi con ăn bám'?", desc: "顶石中文 - Chương 5 - Bài 2" }, { link: "HSK79-U5-L3.html", icon: "💔", title: "相亲鄙视链：爱情被黑得惨不忍睹", translation: "Chuỗi khinh miệt khi xem mắt: Tình yêu bị bôi đen thảm hại", desc: "顶石中文 - Chương 5 - Bài 3" }, { link: "HSK79-U6-L1.html", icon: "🏢", title: "职场 996", translation: "Văn hóa làm việc 996 nơi công sở", desc: "顶石中文 - Chương 6 - Bài 1" }, { link: "HSK79-U6-L2.html", icon: "🚀", title: "谁能站在新职业风口？", translation: "Ai có thể đón đầu xu hướng nghề nghiệp mới?", desc: "顶石中文 - Chương 6 - Bài 2" }, { link: "HSK79-U6-L3.html", icon: "👩‍💼", title: "30 岁的职场姐姐如何乘风破浪？", translation: "Những 'người chị' công sở tuổi 30 vượt sóng ra khơi như thế nào?", desc: "顶石中文 - Chương 6 - Bài 3" }, { link: "HSK79-U7-L1.html", icon: "🤝", title: "闲置经济是真正的共享经济", translation: "Kinh tế đồ cũ mới là kinh tế chia sẻ thực sự", desc: "顶石中文 - Chương 7 - Bài 1" }, { link: "HSK79-U7-L2.html", icon: "🍽️", title: "天下没有永远免费的午餐", translation: "Trên đời không có bữa trưa nào miễn phí mãi mãi", desc: "顶石中文 - Chương 7 - Bài 2" }, { link: "HSK79-U7-L3.html", icon: "📈", title: "中国扶贫的道路选择", translation: "Lựa chọn con đường xóa đói giảm nghèo của Trung Quốc", desc: "顶石中文 - Chương 7 - Bài 3" }, { link: "HSK79-U8-L1.html", icon: "⚖️", title: "“大头条”对簿“小油条”", translation: "'Toutiao lớn' kiện 'Tiểu Quẩy' ra tòa - Vụ kiện thương hiệu", desc: "顶石中文 - Chương 8 - Bài 1" }, { link: "HSK79-U8-L2.html", icon: "🏛️", title: "高通：打官司打出的“江山”", translation: "Qualcomm: 'Giang sơn' gây dựng từ những vụ kiện", desc: "顶石中文 - Chương 8 - Bài 2" }, { link: "HSK79-U8-L3.html", icon: "🕊️", title: "善终也是一种权利", translation: "Chết thanh thản cũng là một quyền lợi", desc: "顶石中文 - Chương 8 - Bài 3" } ],
+        "game-challenge": [ { link: "challenge-hsk1.html", icon: "🔥", title: "Thử Thách HSK 1", desc: "Tổng hợp 150 từ vựng", badge: "HOT" }, { link: "challenge-hsk2.html", icon: "⚡", title: "Thử Thách HSK 2", desc: "Tổng hợp 300 từ vựng" }, { link: "javascript:showChallengeSubLevels(3)", icon: "⭐", title: "Thử Thách HSK 3", desc: "Chọn nhóm bài học" }, { link: "javascript:showChallengeSubLevels(4)", icon: "🌟", title: "Thử Thách HSK 4", desc: "Chọn nhóm bài học" }, { link: "javascript:showChallengeSubLevels(5)", icon: "🏆", title: "Thử Thách HSK 5", desc: "Chọn nhóm bài học" }, { link: "javascript:showChallengeSubLevels(6)", icon: "👑", title: "Thử Thách HSK 6", desc: "Chọn nhóm bài học" }, { link: "challenge-hsk79.html", icon: "🐉", title: "Thử Thách HSK 7-9", desc: "Đỉnh cao từ vựng", badge: "MỚI" } ],
+        "hsk30-challenge-main": [ { link: "javascript:showHsk30SubLevels(1)", icon: "🔥", title: "HSK 1 (3.0)", desc: "Chọn nhóm bài học" }, { link: "javascript:showHsk30SubLevels(2)", icon: "⚡", title: "HSK 2 (3.0)", desc: "Chọn nhóm bài học" }, { link: "javascript:showHsk30SubLevels(3)", icon: "⭐", title: "HSK 3 (3.0)", desc: "Chọn nhóm bài học" } ]
+    };
+    const englishData = Array.from({length: 36}, (_, i) => ({ link: `ENGLISH-LESSON${i+1}.html`, icon: "🎧", title: `English Lesson ${i+1}`, desc: "Learn via Games" }));
+    const docsData = { "doc-hsk1": [ { title: "Giáo trình chuẩn HSK 1 (Full bộ) 📚", desc: "Sách bài học, Bài tập và Audio.", link: "https://drive.google.com/drive/folders/1NsBSkqHFmWaBs3fFbnY0NS7N4qx9ziOz" }, { title: "Bảng 150 từ vựng HSK 1 📝", desc: "Từ vựng kèm phiên âm, nghĩa và ví dụ.", link: "#" } ], "doc-hsk2": [ { title: "Giáo trình chuẩn HSK 2 📚", desc: "Sách bài học và Audio.", link: "#" } ], "doc-hsk3": [ { title: "Giáo trình chuẩn HSK 3 📚", desc: "Sách bài học và Audio.", link: "#" } ], "doc-hsk4": [ { title: "Giáo trình chuẩn HSK 4 📚", desc: "Sách bài học, tập 1 và 2.", link: "#" } ], "doc-hsk5": [ { title: "Giáo trình chuẩn HSK 5 📚", desc: "Sách bài học, tập 1 và 2.", link: "#" } ], "doc-hsk6": [ { title: "Giáo trình chuẩn HSK 6 📚", desc: "Tài liệu cao cấp nhất.", link: "#" } ] };
+    const hsk30PptData = [ { title: "Trọn bộ Slide PPT HSK 3.0 🖥️", desc: "Bài giảng PPT chi tiết từ Bài 1 đến Bài 15 ", link: "https://drive.google.com/drive/folders/1yjy6g10i9a0lBfKMFH3vlYuM0H-nXrTG?usp=sharing" }, { title: "Giáo trình HSK 1 - 3.0 🏆", desc: "Sách giáo khoa chuẩn HSK 3.0 cấp độ 1.", link: "https://drive.google.com/file/d/1-tT5z7cXE8k8b87siTms_A6d3leBFU3Q/view?usp=drive_link" }, { title: "Giáo trình HSK 2 - 3.0 🏆", desc: "Sách giáo khoa chuẩn HSK 3.0 cấp độ 2.", link: "https://drive.google.com/file/d/1PTa1CgZ4RncTIQIpScLo1I0xObSCczBS/view?usp=drive_link" }, { title: "Giáo trình HSK 3 - 3.0 🏆", desc: "Sách giáo khoa chuẩn HSK 3.0 cấp độ 3.", link: "https://drive.google.com/file/d/1TTDW7UUVKajsw78W7otiGWit-y8ur-qj/view?usp=drive_link" } ];
+
+    // --- HÀM RENDER ---
+    function createGameCard(data) {
+        const badgeHTML = data.badge ? `<div class="new-badge">${data.badge}</div>` : '';
+        const transHTML = data.translation ? `<div class="game-trans">${data.translation}</div>` : '';
+        return `<a href="${data.link}" class="game-card">${badgeHTML}<div class="game-icon">${data.icon}</div><div class="game-title">${data.title}</div>${transHTML}<div class="game-desc">${data.desc}</div><div class="game-status">📖 Chưa học</div></a>`;
+    }
+    function createDocCard(data) { return `<div class="doc-card"><div class="doc-info"><h3>${data.title}</h3><p>${data.desc}</p></div><a href="${data.link}" target="_blank" class="btn-download">Tải về 📥</a></div>`; }
+    function showChallengeSubLevels(level) { const container = document.getElementById('game-challenge'); const chunks = challengeChunksData[level]; let html = `<div style="grid-column: 1 / -1; margin-bottom: 10px; display: flex; justify-content: flex-start;"><button onclick="renderMainChallenge()" class="btn-secondary" style="padding: 8px 20px; font-size: 0.95rem; border-radius: 20px;">⬅ Quay lại</button></div>`; html += chunks.map(createGameCard).join(''); container.innerHTML = html; if(currentUser) updateAllGameUI(); }
+    function renderMainChallenge() { const container = document.getElementById('game-challenge'); container.innerHTML = gamesData["game-challenge"].map(createGameCard).join(''); if(currentUser) updateAllGameUI(); }
+    function showHsk30SubLevels(level) { const container = document.getElementById('hsk30-challenge-main'); const chunks = hsk30ChunksData[level]; let html = `<div style="grid-column: 1 / -1; margin-bottom: 10px; display: flex; justify-content: flex-start;"><button onclick="renderMainHsk30Challenge()" class="btn-secondary" style="padding: 8px 20px; font-size: 0.95rem; border-radius: 20px; border-color: #ffb7c5; color: #d6336c;">⬅ Quay lại</button></div>`; html += chunks.map(createGameCard).join(''); container.innerHTML = html; if(currentUser) updateAllGameUI(); }
+    function renderMainHsk30Challenge() { const container = document.getElementById('hsk30-challenge-main'); container.innerHTML = gamesData["hsk30-challenge-main"].map(createGameCard).join(''); if(currentUser) updateAllGameUI(); }
+
+    // --- HỆ THỐNG TÀI KHOẢN VÀ TIẾN ĐỘ (MỚI) ---
+    let currentUser = null;
+    let userProgress = {};
+
+    function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; document.getElementById('login-message').innerText = ''; }
+    function updateUIAfterLogin() { document.getElementById('login-nav-item').style.display = 'none'; document.getElementById('user-profile-item').style.display = 'flex'; document.getElementById('display-username').innerText = currentUser; }
+    function logout() { currentUser = null; userProgress = {}; localStorage.removeItem('nga_user'); localStorage.removeItem('nga_progress'); document.getElementById('login-nav-item').style.display = 'block'; document.getElementById('user-profile-item').style.display = 'none'; updateAllGameUI(); }
+
+    function attemptLogin() {
+        const user = document.getElementById('username').value.trim();
+        const pass = document.getElementById('password').value.trim();
+        const msgBox = document.getElementById('login-message');
+        if(!user || !pass) { msgBox.innerText = "Vui lòng nhập đủ thông tin!"; return; }
+        msgBox.innerText = "Đang kiểm tra..."; msgBox.style.color = "#4f7942";
+        fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `action=login&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}` })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                currentUser = user;
+                localStorage.setItem('nga_user', user);
+                document.getElementById('loginModal').style.display = 'none';
+                updateUIAfterLogin();
+                fetchUserProgress(user);
+                alert("Đăng nhập thành công! Chào mừng " + user);
+            } else { msgBox.innerText = data.message; msgBox.style.color = "#d6336c"; }
+        }).catch(error => { msgBox.innerText = "Lỗi kết nối mạng hoặc sai đường dẫn Web App!"; msgBox.style.color = "#d6336c"; });
+    }
+
+    function fetchUserProgress(username) {
+        fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `action=getProgress&username=${encodeURIComponent(username)}` })
+        .then(response => response.json())
+        .then(data => { if(data.success) { userProgress = data.progress || {}; updateAllGameUI(); } else { console.error("Lỗi lấy tiến độ:", data.message); } })
+        .catch(error => console.error("Lỗi fetch:", error));
+    }
+
+    function updateAllGameUI() {
+        document.querySelectorAll('.game-card').forEach(card => {
+            const link = card.getAttribute('href');
+            let statusDiv = card.querySelector('.game-status');
+            if (!statusDiv) { statusDiv = document.createElement('div'); statusDiv.classList.add('game-status'); card.appendChild(statusDiv); }
+            if (currentUser && link && userProgress[link]) {
+                const score = userProgress[link].score;
+                const completed = userProgress[link].completed === 'Yes';
+                if (completed) { statusDiv.innerHTML = '✅ Hoàn thành (100%)'; statusDiv.style.color = 'green'; }
+                else if (score) { statusDiv.innerHTML = `📊 Tiến độ: ${score}%`; statusDiv.style.color = 'orange'; }
+                else { statusDiv.innerHTML = '📖 Chưa học'; statusDiv.style.color = 'gray'; }
+            } else { statusDiv.innerHTML = '📖 Chưa học'; statusDiv.style.color = 'gray'; }
+        });
+    }
+
+    function saveGameProgress(lessonId, score) {
+        if(!currentUser) return;
+        userProgress[lessonId] = { score: score, completed: (score >= 70 ? 'Yes' : 'No') };
+        updateAllGameUI();
+        fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `action=saveProgress&username=${encodeURIComponent(currentUser)}&gameId=${encodeURIComponent(lessonId)}&score=${score}` }).catch(error => console.error("Lỗi lưu tiến độ:", error));
+    }
+
+    // --- KHỞI TẠO TRANG ---
+    function switchMainTab(sectionId, clickedElement = null) {
+        const showSearch = sectionId === 'section-game' || sectionId === 'section-doc' || sectionId === 'section-english' || sectionId === 'section-hsk30-ppt';
+        document.getElementById('global-search-area').style.display = showSearch ? 'block' : 'none';
+        document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        if(clickedElement) { document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-nav')); clickedElement.classList.add('active-nav'); }
+        document.getElementById('globalSearch').value = '';
+        document.querySelectorAll('.game-card, .doc-card').forEach(card => card.style.display = 'flex');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        for (const [key, items] of Object.entries(gamesData)) { const container = document.getElementById(key); if (container) container.innerHTML = items.map(createGameCard).join(''); }
+        document.getElementById('english-grid').innerHTML = englishData.map(createGameCard).join('');
+        for (const [key, items] of Object.entries(docsData)) { const container = document.getElementById(key); if (container) container.innerHTML = items.map(createDocCard).join(''); }
+        const pptContainer = document.getElementById('hsk30-ppt-list'); if (pptContainer) pptContainer.innerHTML = hsk30PptData.map(createDocCard).join('');
+        document.querySelectorAll('.sub-tab-btn').forEach(btn => { btn.addEventListener('click', function() { const targetId = this.getAttribute('data-target'); const parentSection = this.closest('.section-content'); if (targetId === 'game-challenge') renderMainChallenge(); if (targetId === 'hsk30-challenge-main') renderMainHsk30Challenge(); parentSection.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); parentSection.querySelectorAll('.grid-container, .doc-list').forEach(c => c.classList.remove('active')); document.getElementById(targetId).classList.add('active'); if(currentUser) updateAllGameUI(); }); });
+        const searchInput = document.getElementById('globalSearch');
+        searchInput.addEventListener('input', function() { const searchTerm = searchInput.value.toLowerCase().trim(); const activeGrids = document.querySelectorAll('.section-content.active .grid-container.active, .section-content.active .doc-list.active'); activeGrids.forEach(container => { const cards = container.querySelectorAll('.game-card, .doc-card'); cards.forEach(card => { const text = card.innerText.toLowerCase(); card.style.display = text.includes(searchTerm) ? "flex" : "none"; }); }); });
+        const leafContainer = document.getElementById('leaves-container'); const leafIcons = ['🍃', '🍂', '🌿', '🌸', '✨'];
+        for (let i = 0; i < 15; i++) { let leaf = document.createElement('div'); leaf.classList.add('leaf'); leaf.innerText = leafIcons[Math.floor(Math.random() * leafIcons.length)]; leaf.style.left = Math.random() * 100 + 'vw'; leaf.style.fontSize = (Math.random() * 15 + 12) + 'px'; leaf.style.animationDuration = `${Math.random() * 7 + 8}s, ${Math.random() * 3 + 3}s`; leaf.style.animationDelay = `-${Math.random() * 10}s`; leafContainer.appendChild(leaf); }
+        const savedUser = localStorage.getItem('nga_user');
+        if(savedUser) { currentUser = savedUser; try { userProgress = JSON.parse(localStorage.getItem('nga_progress') || '{}'); } catch(e) { userProgress = {}; } updateUIAfterLogin(); fetchUserProgress(currentUser); }
+    });
+</script>
+</body>
+</html>
