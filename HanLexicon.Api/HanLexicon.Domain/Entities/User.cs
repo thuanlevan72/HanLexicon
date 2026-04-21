@@ -27,6 +27,12 @@ public partial class User
 
     public DateTime? LastLoginAt { get; set; }
 
+    public virtual ICollection<ImportJob> ImportJobs { get; set; } = new List<ImportJob>();
+
+    public virtual ICollection<MediaFile> MediaFiles { get; set; } = new List<MediaFile>();
+
+    public virtual ICollection<SearchHistory> SearchHistories { get; set; } = new List<SearchHistory>();
+
     public virtual ICollection<UserProgress> UserProgresses { get; set; } = new List<UserProgress>();
 
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();

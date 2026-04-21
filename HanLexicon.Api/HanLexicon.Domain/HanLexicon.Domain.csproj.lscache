@@ -62,14 +62,17 @@ Entities/
  ChallengeWord.cs
  Document.cs
  HanziCard.cs
+ ImportJob.cs
  Lesson.cs
  LessonCategory.cs
+ MediaFile.cs
  Permission.cs
  QuizOption.cs
  QuizQuestion.cs
  Radical.cs
  RadicalSet.cs
  Role.cs
+ SearchHistory.cs
  User.cs
  UserProgress.cs
  UserRole.cs

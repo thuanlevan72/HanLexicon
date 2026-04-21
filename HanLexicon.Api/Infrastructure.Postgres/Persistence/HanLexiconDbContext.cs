@@ -18,9 +18,13 @@ public partial class HanLexiconDbContext : DbContext
 
     public virtual DbSet<HanziCard> HanziCards { get; set; }
 
+    public virtual DbSet<ImportJob> ImportJobs { get; set; }
+
     public virtual DbSet<Lesson> Lessons { get; set; }
 
     public virtual DbSet<LessonCategory> LessonCategories { get; set; }
+
+    public virtual DbSet<MediaFile> MediaFiles { get; set; }
 
     public virtual DbSet<Permission> Permissions { get; set; }
 
@@ -33,6 +37,8 @@ public partial class HanLexiconDbContext : DbContext
     public virtual DbSet<RadicalSet> RadicalSets { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<SearchHistory> SearchHistories { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -148,6 +154,46 @@ public partial class HanLexiconDbContext : DbContext
                 .HasConstraintName("hanzi_cards_lesson_id_fkey");
         });
 
+        modelBuilder.Entity<ImportJob>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("import_jobs_pkey");
+
+            entity.ToTable("import_jobs");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("uuid_generate_v4()")
+                .HasColumnName("id");
+            entity.Property(e => e.CategoryId).HasColumnName("category_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
+            entity.Property(e => e.ErrorLog)
+                .HasColumnType("jsonb")
+                .HasColumnName("error_log");
+            entity.Property(e => e.FailedRows).HasColumnName("failed_rows");
+            entity.Property(e => e.FileName)
+                .HasMaxLength(255)
+                .HasColumnName("file_name");
+            entity.Property(e => e.FinishedAt).HasColumnName("finished_at");
+            entity.Property(e => e.ProcessedRows).HasColumnName("processed_rows");
+            entity.Property(e => e.StartedAt).HasColumnName("started_at");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .HasDefaultValueSql("'pending'::character varying")
+                .HasColumnName("status");
+            entity.Property(e => e.TotalRows).HasColumnName("total_rows");
+            entity.Property(e => e.UploadedBy).HasColumnName("uploaded_by");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.ImportJobs)
+                .HasForeignKey(d => d.CategoryId)
+                .HasConstraintName("import_jobs_category_id_fkey");
+
+            entity.HasOne(d => d.UploadedByNavigation).WithMany(p => p.ImportJobs)
+                .HasForeignKey(d => d.UploadedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("import_jobs_uploaded_by_fkey");
+        });
+
         modelBuilder.Entity<Lesson>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("lessons_pkey");
@@ -216,6 +262,43 @@ public partial class HanLexiconDbContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("slug");
             entity.Property(e => e.SortOrder).HasColumnName("sort_order");
+        });
+
+        modelBuilder.Entity<MediaFile>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("media_files_pkey");
+
+            entity.ToTable("media_files");
+
+            entity.HasIndex(e => new { e.OwnerType, e.OwnerId }, "idx_media_owner");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("uuid_generate_v4()")
+                .HasColumnName("id");
+            entity.Property(e => e.CdnUrl).HasColumnName("cdn_url");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
+            entity.Property(e => e.FileName)
+                .HasMaxLength(255)
+                .HasColumnName("file_name");
+            entity.Property(e => e.FileSizeKb).HasColumnName("file_size_kb");
+            entity.Property(e => e.MediaType)
+                .HasMaxLength(10)
+                .HasColumnName("media_type");
+            entity.Property(e => e.MimeType)
+                .HasMaxLength(50)
+                .HasColumnName("mime_type");
+            entity.Property(e => e.OwnerId).HasColumnName("owner_id");
+            entity.Property(e => e.OwnerType)
+                .HasMaxLength(30)
+                .HasColumnName("owner_type");
+            entity.Property(e => e.StorageKey).HasColumnName("storage_key");
+            entity.Property(e => e.UploadedBy).HasColumnName("uploaded_by");
+
+            entity.HasOne(d => d.UploadedByNavigation).WithMany(p => p.MediaFiles)
+                .HasForeignKey(d => d.UploadedBy)
+                .HasConstraintName("media_files_uploaded_by_fkey");
         });
 
         modelBuilder.Entity<Permission>(entity =>
@@ -366,6 +449,35 @@ public partial class HanLexiconDbContext : DbContext
                         j.IndexerProperty<short>("RoleId").HasColumnName("role_id");
                         j.IndexerProperty<short>("PermissionId").HasColumnName("permission_id");
                     });
+        });
+
+        modelBuilder.Entity<SearchHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("search_history_pkey");
+
+            entity.ToTable("search_history");
+
+            entity.HasIndex(e => new { e.UserId, e.SearchedAt }, "idx_search_user").IsDescending(false, true);
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("uuid_generate_v4()")
+                .HasColumnName("id");
+            entity.Property(e => e.Query)
+                .HasMaxLength(200)
+                .HasColumnName("query");
+            entity.Property(e => e.SearchedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("searched_at");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.VocabId).HasColumnName("vocab_id");
+
+            entity.HasOne(d => d.User).WithMany(p => p.SearchHistories)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("search_history_user_id_fkey");
+
+            entity.HasOne(d => d.Vocab).WithMany(p => p.SearchHistories)
+                .HasForeignKey(d => d.VocabId)
+                .HasConstraintName("search_history_vocab_id_fkey");
         });
 
         modelBuilder.Entity<User>(entity =>

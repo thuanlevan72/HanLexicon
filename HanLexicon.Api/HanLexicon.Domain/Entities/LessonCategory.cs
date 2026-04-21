@@ -15,5 +15,7 @@ public partial class LessonCategory
 
     public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
 
+    public virtual ICollection<ImportJob> ImportJobs { get; set; } = new List<ImportJob>();
+
     public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 }

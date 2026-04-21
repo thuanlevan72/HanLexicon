@@ -31,5 +31,7 @@ public partial class Vocabulary
 
     public virtual Lesson Lesson { get; set; } = null!;
 
+    public virtual ICollection<SearchHistory> SearchHistories { get; set; } = new List<SearchHistory>();
+
     public virtual ICollection<UserWordProgress> UserWordProgresses { get; set; } = new List<UserWordProgress>();
 }
