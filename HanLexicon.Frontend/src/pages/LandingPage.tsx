@@ -87,7 +87,7 @@ export default function LandingPage() {
             <div className="bg-brand-primary w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg">文</div>
             <span className="font-heading font-black text-brand-secondary text-xl tracking-tight hidden sm:block">MandarinFlow</span>
           </div>
-
+          
           <nav className="hidden md:flex items-center gap-8">
             <a href="#home" className="text-sm font-black text-brand-secondary/70 hover:text-brand-primary transition-colors uppercase tracking-widest">Trang chủ</a>
             <a href="#courses" className="text-sm font-black text-brand-secondary/70 hover:text-brand-primary transition-colors uppercase tracking-widest">Khóa học</a>
@@ -108,9 +108,9 @@ export default function LandingPage() {
       <section id="home" className="relative pt-32 pb-24 md:pt-40 md:pb-40 bg-brand-bg overflow-hidden text-brand-ink scroll-mt-20">
         {/* Decorative Tree Background Element */}
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
-          <img
-            src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-            alt="Khu rừng xanh mướt - Cảm hứng từ Ghibli"
+          <img 
+            src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+            alt="Khu rừng xanh mướt - Cảm hứng từ Ghibli" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
@@ -140,9 +140,9 @@ export default function LandingPage() {
               <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                 <Search className="w-5 h-5 text-slate-400 group-focus-within:text-brand-primary transition-colors" />
               </div>
-              <input
-                type="text"
-                placeholder="Tra từ vựng HSK ngay..."
+              <input 
+                type="text" 
+                placeholder="Tra từ vựng HSK ngay..." 
                 className="w-full h-16 pl-12 pr-4 bg-white border-2 border-brand-border rounded-[2rem] text-brand-secondary font-bold focus:outline-none focus:border-brand-primary shadow-lg transition-all"
               />
               <div className="absolute right-2 top-2">
@@ -170,9 +170,9 @@ export default function LandingPage() {
           >
             {/* Teacher Nga Image Focal Point - Using high quality asset */}
             <div className="relative w-full max-w-[500px] aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group bg-slate-100">
-              <img
-                src="images/anh-nga.jpg"
-                alt="Meet Teacher Nga - MandarinFlow Creator"
+              <img 
+                src="https://images.unsplash.com/photo-1544717297-fa95b3ee9bc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                alt="Meet Teacher Nga - MandarinFlow Creator" 
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                 referrerPolicy="no-referrer"
               />
@@ -182,7 +182,7 @@ export default function LandingPage() {
                 <p className="text-sm font-bold opacity-90 leading-tight">Tốt nghiệp NEU, Đạt HSK 6 & HSKK Cao cấp • Tâm huyết với tiếng Trung 🌿</p>
               </div>
             </div>
-
+            
             {/* Floating Accents */}
             <div className="absolute -top-12 -right-12 w-48 h-48 bg-brand-primary/20 rounded-full blur-3xl animate-pulse"></div>
             <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-brand-accent/30 rounded-full blur-3xl animate-bounce duration-[4000ms]"></div>
@@ -218,7 +218,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-2xl font-black text-brand-secondary mb-3 tracking-tight font-heading">{feature.title}</h3>
                 <p className="text-slate-500 text-sm leading-relaxed mb-6 font-semibold">
-                  {feature.description}
+                   {feature.description}
                 </p>
                 <div className="flex items-center justify-between mt-auto pt-6 border-t border-brand-border/40">
                   <span className="text-[11px] font-black text-brand-primary uppercase tracking-widest flex items-center gap-2">
@@ -235,92 +235,91 @@ export default function LandingPage() {
       </section>
 
       {/* Community Connection Section */}
-      <section className="py-24 bg-brand-surface border-y border-brand-border scroll-mt-20" id="community">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <h2 className="text-4xl font-black text-brand-secondary font-heading leading-tight italic">
+      <section 
+        className="py-24 relative bg-cover bg-center scroll-mt-20" 
+        id="community"
+        style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80)', backgroundAttachment: 'fixed' }}
+      >
+        <div className="absolute inset-0 bg-white/20 backdrop-blur-[2px]"></div>
+        
+        <div className="container mx-auto px-4 relative z-10 max-w-6xl">
+          <div className="bg-[#f5f6f1] rounded-[3rem] p-8 md:p-12 shadow-2xl border border-white flex flex-col lg:flex-row gap-12 items-center">
+            
+            {/* Left Column: Text & Contacts */}
+            <div className="lg:w-5/12 flex flex-col justify-center space-y-6">
+              <h2 className="text-3xl md:text-4xl font-black text-[#476C44] font-heading leading-tight">
                 Cùng Giao Lưu Với Nga Nhé! 🌿
               </h2>
-              <p className="text-lg text-slate-600 font-semibold leading-relaxed">
-                Bạn có câu hỏi, thắc mắc về lộ trình học, hay đơn giản là muốn chia sẻ niềm vui? Kết nối ngay qua các nền tảng mạng xã hội:
+              <p className="text-[#5b5b5b] font-medium leading-relaxed text-lg">
+                Bạn có câu hỏi, thắc mắc về lộ trình học, hay đơn giản là muốn chia sẻ niềm vui khi "phá đảo" một game HSK? Hãy liên hệ ngay với mình qua các kênh dưới đây.
               </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                {[
-                  {
-                    name: 'TikTok',
-                    platform: '@studyhskwithnga',
-                    icon: <Play className="w-6 h-6 fill-white text-white" />,
-                    gradient: 'bg-black',
-                    url: 'https://www.tiktok.com/@studyhskwithnga'
-                  },
-                  {
-                    name: 'YouTube',
-                    platform: 'Nga Học HSK',
-                    icon: <Youtube className="w-6 h-6 text-white" />,
-                    gradient: 'bg-[#FF0000]',
-                    url: 'https://youtube.com/@NguyenNgaHsk'
-                  },
-                  {
-                    name: 'Zalo',
-                    platform: '0979.393.427',
-                    icon: <MessageCircle className="w-6 h-6 text-white fill-white" />,
-                    gradient: 'bg-[#0068FF]',
-                    url: 'https://zalo.me/0979393427'
-                  },
-                ].map((social) => (
-                  <a
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    key={social.name}
-                    className="p-6 text-center rounded-[2.5rem] border-brand-border hover:shadow-2xl transition-all bg-white group hover:-translate-y-2 block relative overflow-hidden"
-                  >
-                    <div className={`w-14 h-14 ${social.gradient} rounded-[1.2rem] flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg`}>
-                      {social.icon}
-                    </div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">{social.name}</p>
-                    <p className="text-sm font-black text-brand-secondary">{social.platform}</p>
-                    <ExternalLink className="absolute top-4 right-4 w-4 h-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </a>
-                ))}
+              
+              <div className="space-y-4 pt-4">
+                <a href="mailto:Ngabui94@gmail.com" className="flex items-center gap-4 bg-white pl-4 pr-6 py-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-2 h-10 bg-[#8cb389] rounded-full mr-2"></div>
+                  <div className="w-10 h-10 bg-[#e8e8ff] flex items-center justify-center rounded-xl text-indigo-500 font-bold shrink-0 shadow-inner">@</div>
+                  <span className="font-bold text-[#A55233] text-lg lg:text-xl truncate">Email: Ngabui94@gmail.com</span>
+                </a>
+                <a href="tel:0979393427" className="flex items-center gap-4 bg-white pl-4 pr-6 py-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-2 h-10 bg-[#8cb389] rounded-full mr-2"></div>
+                  <div className="w-10 h-10 bg-[#ffe8e8] flex items-center justify-center rounded-xl text-rose-500 shrink-0 shadow-inner">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="lucide lucide-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                  </div>
+                  <span className="font-bold text-[#A55233] text-lg lg:text-xl truncate">Hotline: 0979.393.427</span>
+                </a>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-center gap-10 relative">
-              {/* TikTok QR */}
-              <div className="w-56 bg-white p-6 rounded-[3rem] shadow-2xl border-brand-border rotate-[-4deg] hover:rotate-0 transition-all duration-500 hover:scale-105 group">
-                <div className="w-full aspect-square bg-slate-50 rounded-2xl flex items-center justify-center mb-6 overflow-hidden border border-slate-100">
-                  <img
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://www.tiktok.com/@studyhskwithnga"
-                    alt="TikTok QR"
-                    className="w-full h-full object-cover p-2"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black text-center uppercase tracking-widest text-slate-400">Kết nối</p>
-                  <p className="text-sm font-black text-center text-brand-secondary">QUÉT QR TIKTOK</p>
-                </div>
-              </div>
-
-              {/* Zalo QR */}
-              <div className="w-56 bg-white p-6 rounded-[3rem] shadow-2xl border-brand-border rotate-[4deg] hover:rotate-0 transition-all duration-500 hover:scale-105 group mt-12 sm:mt-20">
-                <div className="w-full aspect-square bg-slate-50 rounded-2xl flex items-center justify-center mb-6 overflow-hidden border border-slate-100">
-                  <img
-                    src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://zalo.me/0979393427"
-                    alt="Zalo QR"
-                    className="w-full h-full object-cover p-2"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black text-center uppercase tracking-widest text-slate-400">Tư vấn</p>
-                  <p className="text-sm font-black text-center text-brand-secondary">QUÉT QR ZALO</p>
-                </div>
-              </div>
+            {/* Right Column: QRs */}
+            <div className="lg:w-7/12 w-full grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                { 
+                  title: 'Kênh Video',
+                  name: 'TikTok: Nga Học HSK', 
+                  bgColor: 'bg-[#fff4e6]',
+                  url: 'https://www.tiktok.com/@studyhskwithnga',
+                  qrData: 'https://www.tiktok.com/@studyhskwithnga'
+                },
+                { 
+                  title: 'Bài Giảng Dài',
+                  name: 'YouTube: Nga Học HSK', 
+                  bgColor: 'bg-[#f4faee]',
+                  url: 'https://youtube.com/@NguyenNgaHsk',
+                  qrData: 'https://youtube.com/@NguyenNgaHsk'
+                },
+                { 
+                  title: 'Hỗ trợ Trực tiếp',
+                  name: 'Zalo Cá Nhân', 
+                  bgColor: 'bg-[#f4f5fa]',
+                  url: 'https://zalo.me/0979393427',
+                  qrData: 'https://zalo.me/0979393427'
+                },
+              ].map((card) => (
+                <a 
+                  href={card.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  key={card.title} 
+                  className="bg-white p-4 pb-6 rounded-3xl shadow-xl hover:-translate-y-2 transition-all duration-300 group flex flex-col items-center border border-slate-100"
+                >
+                  <span className="text-[13px] font-bold text-slate-500 mb-3 block text-center w-full">{card.title}</span>
+                  
+                  <div className={`w-full aspect-square flex items-center justify-center mb-4 relative overflow-hidden transition-all group-hover:scale-105`}>
+                     {/* The decorative rounded box mimicking the image */}
+                     <div className={`absolute inset-0 ${card.bgColor} rounded-3xl opacity-80 m-1`}></div>
+                     <img 
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${card.qrData}`} 
+                      alt={`QR ${card.name}`} 
+                      className="w-[75%] h-[75%] object-cover mix-blend-multiply opacity-90 relative z-10" 
+                      referrerPolicy="no-referrer" 
+                     />
+                  </div>
+                  
+                  <p className="text-[15px] font-bold text-[#476C44] text-center px-1 leading-tight">{card.name}</p>
+                </a>
+              ))}
             </div>
+
           </div>
         </div>
       </section>
@@ -328,10 +327,10 @@ export default function LandingPage() {
       {/* Final CTA Section */}
       <section id="contact" className="py-32 bg-brand-secondary relative overflow-hidden scroll-mt-20">
         <div className="absolute right-[-10%] bottom-[-10%] w-[500px] h-[500px] bg-brand-primary/20 rounded-full blur-[100px] pointer-events-none"></div>
-
+        
         <div className="container mx-auto px-4 relative z-10 text-center space-y-12">
           <div className="space-y-6">
-            <Badge className="bg-brand-primary text-white border-0 px-6 py-2 rounded-full uppercase text-[10px] tracking-widest font-black shadow-lg">🚀 Chinh Phục HSK Ngay</Badge>
+             <Badge className="bg-brand-primary text-white border-0 px-6 py-2 rounded-full uppercase text-[10px] tracking-widest font-black shadow-lg">🚀 Chinh Phục HSK Ngay</Badge>
             <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight font-heading">Sẵn sàng bước vào Khu Vườn?</h2>
             <p className="text-white/80 max-w-2xl mx-auto text-xl font-semibold leading-relaxed">
               Tham gia cùng hàng ngàn học viên đang học tiếng Trung hiệu quả với MandarinFlow.
@@ -351,10 +350,10 @@ export default function LandingPage() {
 
       <footer className="py-12 bg-white border-t border-brand-border text-center">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center gap-4">
-            <div className="bg-brand-primary w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-brand-primary/20 shadow-lg">文</div>
-            <p className="text-slate-400 font-bold tracking-widest uppercase text-xs">© 2026 MandarinFlow • Khu Vườn Của Nga • Crafted with Heart</p>
-          </div>
+           <div className="flex flex-col items-center gap-4">
+             <div className="bg-brand-primary w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-brand-primary/20 shadow-lg">文</div>
+             <p className="text-slate-400 font-bold tracking-widest uppercase text-xs">© 2026 MandarinFlow • Khu Vườn Của Nga • Crafted with Heart</p>
+           </div>
         </div>
       </footer>
     </div>
