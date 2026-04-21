@@ -1,6 +1,15 @@
-version: '3.8'
+version: "3.8"
 
 services:
+  mandarin_flow:
+    build: ./HanLexicon.Frontend
+    container_name: mandarin_flow_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
   db:
     image: postgres:16-alpine # Thay đổi ở đây
     container_name: hanlexicon_db
