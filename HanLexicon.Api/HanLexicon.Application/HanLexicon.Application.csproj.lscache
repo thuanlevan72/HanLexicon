@@ -2,12 +2,10 @@ version=1
 
 # This file caches language service data to improve the performance of C# Dev Kit.
 # It is not intended for manual editing. It can safely be deleted and will be
-# regenerated automatically.
+# regenerated automatically. For more information, see https://aka.ms/lscache
 #
-# To exclude from version control, add *.lscache to your .gitignore file.
-#
-# To disable caching, add the following to your VS Code settings:
-#   "dotnet.projectsystem.enableLanguageServiceCache": false
+# To control where cache files are stored, use the following VS Code setting:
+#   "dotnet.projectsystem.cacheInProjectFolder": true
 
 [project]
 language=C#
@@ -57,22 +55,26 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 
 [sourceFiles]
 DependencyInjections/ApplicationDependencyInjection.cs.cs
-DTOs/docsData/
- DocumentCategoryResponseDto.cs
- DocumentItemDto.cs
-DTOs/gamesData/
- GameCategoryResponseDto.cs
- GameItemDto.cs
-Features/Auth/Login/
+DTOs/
+ authDto/AuthResultDto.cs
+ docsData/
+  DocumentCategoryResponseDto.cs
+  DocumentItemDto.cs
+ gamesData/
+  GameCategoryResponseDto.cs
+  GameItemDto.cs
+Features/Auth/
  LoginCommand.cs
- LoginEndpoint.cs
- LoginHandler.cs
+ LogoutCommand.cs
+ RefreshTokenCommand.cs
+ RegisterCommand.cs
 Features/Lessons/
  GetDocuments.cs
  GetLessonDetail.cs
  GetLessons.cs
  GetVocabularyLessons.cs
 Interfaces/
+ IAuthService.cs
  ICurrentUserService.cs
  IStorageService.cs
  IVocabularyImportJob.cs
@@ -81,6 +83,7 @@ obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  HanLexicon.Application.AssemblyInfo.cs
  HanLexicon.Application.GlobalUsings.g.cs
+Services/AuthService.cs
 
 [metadataReferences]
 ../
@@ -256,7 +259,10 @@ obj/Debug/net10.0/
  WindowsBase.dll
 <NUGET>/
  automapper/16.1.1/lib/net10.0/AutoMapper.dll
+ bcrypt.net-next/4.1.0/lib/net10.0/BCrypt.Net-Next.dll
  efcore.namingconventions/10.0.1/lib/net10.0/EFCore.NamingConventions.dll
+ fluentvalidation.dependencyinjectionextensions/12.1.1/lib/net8.0/FluentValidation.DependencyInjectionExtensions.dll
+ fluentvalidation/12.1.1/lib/net8.0/FluentValidation.dll
  mediatr.contracts/2.0.1/lib/netstandard2.0/MediatR.Contracts.dll
  mediatr/14.1.0/lib/net10.0/MediatR.dll
  microsoft.aspnetcore.cryptography.internal/10.0.5/lib/net10.0/Microsoft.AspNetCore.Cryptography.Internal.dll

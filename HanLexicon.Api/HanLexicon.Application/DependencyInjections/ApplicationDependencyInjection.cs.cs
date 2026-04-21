@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using HanLexicon.Application.Interfaces;
+using HanLexicon.Application.Services;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HanLexicon.Application.DependencyInjections
@@ -15,27 +17,6 @@ namespace HanLexicon.Application.DependencyInjections
                 /// <summary>
                 /// Thêm performance monitoring behavior
                 /// 
-                /// Mục đích:
-                /// - Đo thời gian execution của mỗi command/query
-                /// - Log performance metrics (> 1s → warning)
-                /// - Detect slow operations
-                /// 
-                /// Hoạt động:
-                /// - Intercept mỗi request/response
-                /// - Record start time
-                /// - Execute handler
-                /// - Calculate duration
-                /// - Log: "CreateTodoHandler executed in 123ms"
-                /// 
-                /// Lợi ích:
-                /// - Performance monitoring built-in
-                /// - No need add logging to every handler
-                /// - Identify bottlenecks
-                /// 
-                /// Note:
-                /// - Behavior execute before handler (pre-processing)
-                /// - Can add validation, caching, etc. behaviors similarly
-                /// - Order matters: Validation → Performance → Caching → Handler
                 /// </summary>
                 //cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
             });
@@ -43,7 +24,9 @@ namespace HanLexicon.Application.DependencyInjections
             /// <summary>
             
             services.AddAutoMapper(cfg => cfg.AddMaps(typeof(ApplicationDependencyInjection).Assembly));
-
+            services.AddValidatorsFromAssembly(typeof(ApplicationDependencyInjection).Assembly);
+            // ĐĂNG KÝ CÁCH SERVICES
+            services.AddScoped<IAuthService, AuthService>();
             /// <summary>
             /// Return services collection
             /// 

@@ -2,12 +2,10 @@ version=1
 
 # This file caches language service data to improve the performance of C# Dev Kit.
 # It is not intended for manual editing. It can safely be deleted and will be
-# regenerated automatically.
+# regenerated automatically. For more information, see https://aka.ms/lscache
 #
-# To exclude from version control, add *.lscache to your .gitignore file.
-#
-# To disable caching, add the following to your VS Code settings:
-#   "dotnet.projectsystem.enableLanguageServiceCache": false
+# To control where cache files are stored, use the following VS Code setting:
+#   "dotnet.projectsystem.cacheInProjectFolder": true
 
 [project]
 language=C#
@@ -239,7 +237,10 @@ obj/Debug/net10.0/
  WindowsBase.dll
 <NUGET>/
  automapper/16.1.1/lib/net10.0/AutoMapper.dll
+ bcrypt.net-next/4.1.0/lib/net10.0/BCrypt.Net-Next.dll
  efcore.namingconventions/10.0.1/lib/net10.0/EFCore.NamingConventions.dll
+ fluentvalidation.dependencyinjectionextensions/12.1.1/lib/net8.0/FluentValidation.DependencyInjectionExtensions.dll
+ fluentvalidation/12.1.1/lib/net8.0/FluentValidation.dll
  google.api.gax.rest/4.12.1/lib/netstandard2.0/Google.Api.Gax.Rest.dll
  google.api.gax/4.12.1/lib/netstandard2.0/Google.Api.Gax.dll
  google.apis.auth/1.72.0/lib/net6.0/Google.Apis.Auth.dll
