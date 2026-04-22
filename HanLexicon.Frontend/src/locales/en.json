@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "home": "Home",
+    "courses": "Courses",
+    "tools": "Tools",
+    "hsk": "HSK 3.0",
+    "login": "Login",
+    "start": "Get Started"
+  },
+  "hero": {
+    "title": "Master",
+    "subtitle": "International Standard",
+    "description": "True Learning • True Testing • True Application. International HSK standard learning system via fun Gamification methods.",
+    "cta": "Try for free",
+    "value1": "Personalized roadmap from HSK 1 to HSK 6",
+    "value2": "Fun Gamification learning method",
+    "value3": "Dedicated support and exercise grading"
+  },
+  "common": {
+    "consult": "Send Now",
+    "emailPlaceHolder": "Enter email for consultation...",
+    "footerDesc": "We are here to help you shorten your HSK conquest path. Inbox us if you are looking for a guide for self-study!",
+    "explore": "Explore",
+    "support": "Support",
+    "connect": "Connect Now"
+  }
+}

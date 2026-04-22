@@ -11,6 +11,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import StudentDashboard from './pages/student/Dashboard';
 import AdminDashboard from './pages/admin/Dashboard';
+import FileManager from './pages/admin/FileManager';
+import SystemSettings from './pages/admin/SystemSettings';
 import StudentLayout from './layouts/StudentLayout';
 import AdminLayout from './layouts/AdminLayout';
 import PublicLayout from './layouts/PublicLayout';
@@ -80,6 +82,8 @@ function AppRoutes() {
           <Route path="lessons" element={<div className="p-8 text-center text-slate-500 italic">Quản lý bài học đang được phát triển...</div>} />
           <Route path="hanzi" element={<div className="p-8 text-center text-slate-500 italic">Quản lý hán tự đang được phát triển...</div>} />
           <Route path="import" element={<AdminImportPage />} />
+          <Route path="files" element={<FileManager />} />
+          <Route path="settings" element={<SystemSettings />} />
         </Route>
 
         {/* Chuyển hướng dự phòng (Fallback Route) */}

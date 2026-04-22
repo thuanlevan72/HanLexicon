@@ -4,7 +4,7 @@
  */
 
 export const CONFIG = {
-  APP_NAME: 'MandarinFlow',
+  APP_NAME: 'Tiếng Trung Leyi',
   VERSION: '1.0.0',
   DEFAULT_LANGUAGE: 'vi',
   

@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import LandingPage from './pages/LandingPage';
 import PublicLayout from './layouts/PublicLayout';
+import './i18n';
 
 export function render(url: string) {
   return renderToString(

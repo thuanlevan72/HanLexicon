@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "home": "Trang chủ",
+    "courses": "Khóa học",
+    "tools": "Công cụ",
+    "hsk": "HSK 3.0",
+    "login": "Đăng nhập",
+    "start": "Bắt đầu học ngay"
+  },
+  "hero": {
+    "title": "Chinh Phục",
+    "subtitle": "Chuẩn Quốc Tế",
+    "description": "Học Thật • Thi Thật • Ứng Dụng Thật. Hệ thống học tập chuẩn HSK quốc tế qua phương pháp Gamification đầy thú vị.",
+    "cta": "Học thử miễn phí",
+    "value1": "Lộ trình cá nhân hóa từ HSK 1 đến HSK 6",
+    "value2": "Phương pháp học Gamification không nhàm chán",
+    "value3": "Hỗ trợ giải đáp, chấm chữa bài tận tình"
+  },
+  "common": {
+    "consult": "Gửi ngay",
+    "emailPlaceHolder": "Nhập email để nhận tư vấn...",
+    "footerDesc": "Chúng tôi ở đây để giúp bạn rút ngắn lộ trình chinh phục HSK. Hãy inbox ngay nếu bạn đang đi tìm kim chỉ nam cho việc tự học!",
+    "explore": "Khám phá",
+    "support": "Hỗ trợ",
+    "connect": "Kết nối ngay"
+  }
+}

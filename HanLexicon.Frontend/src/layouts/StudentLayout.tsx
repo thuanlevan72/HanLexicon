@@ -42,13 +42,13 @@ export default function StudentLayout() {
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-brand-surface border-r border-brand-border">
       <div className="p-6">
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="bg-brand-primary w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-sm">
-            文
-          </div>
+        <Link to="/" className="flex items-center gap-2 group">
           <span className="font-semibold text-lg tracking-tight text-brand-ink">
-            MandarinFlow
+            Tiếng Trung
           </span>
+          <div className="bg-brand-primary w-auto px-3 h-10 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-sm font-heading">
+            Leyi
+          </div>
         </Link>
       </div>
 
@@ -78,7 +78,7 @@ export default function StudentLayout() {
           <p className="text-[10px] text-brand-secondary font-semibold uppercase mb-2 tracking-wider">Cấp độ hiện tại</p>
           <p className="font-bold text-sm text-brand-ink">HSK 3 Intermediate</p>
           <div className="w-full bg-brand-border h-2 rounded-full mt-3 overflow-hidden">
-            <div className="bg-brand-primary h-full w-3/4 transition-all"></div>
+            <div className="bg-brand-accent h-full w-3/4 transition-all"></div>
           </div>
         </div>
         <Button 

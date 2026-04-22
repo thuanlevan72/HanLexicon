@@ -24,9 +24,10 @@ export default function LoginPage() {
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4 bg-brand-bg">
       <Card className="w-full max-w-md border border-brand-border shadow-xl rounded-3xl overflow-hidden">
         <CardHeader className="space-y-4 text-center pb-8 pt-10">
-          <div className="flex justify-center">
-            <div className="bg-brand-primary w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-sm">
-              文
+          <div className="flex justify-center items-center gap-2">
+            <span className="text-3xl font-bold tracking-tight text-brand-ink">Tiếng Trung</span>
+            <div className="bg-brand-primary w-auto px-4 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-sm font-heading">
+              Leyi
             </div>
           </div>
           <div className="space-y-1">

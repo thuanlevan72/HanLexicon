@@ -15,7 +15,8 @@ import {
   Bell,
   Search,
   LayoutGrid,
-  Database
+  Database,
+  FileCode
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -26,6 +27,7 @@ const navigation = [
   { name: 'Người dùng', href: '/admin/users', icon: Users },
   { name: 'Bài học', href: '/admin/lessons', icon: Library },
   { name: 'Hán tự', href: '/admin/hanzi', icon: BookMarked },
+  { name: 'Tệp tin media', href: '/admin/files', icon: FileCode },
   { name: 'Nhập dữ liệu', href: '/admin/import', icon: Database },
 ];
 
@@ -37,16 +39,16 @@ export default function AdminLayout() {
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-brand-ink text-brand-secondary">
       <div className="p-8 border-b border-white/5">
-        <Link to="/" className="flex items-center gap-3">
-          <div className="bg-brand-primary w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-sm">
-            文
-          </div>
-          <div className="flex flex-col">
+        <Link to="/" className="flex flex-col gap-1.5">
+          <div className="flex items-center gap-2">
             <span className="text-xl font-bold tracking-tight text-white leading-none">
-              MandarinFlow
+              Tiếng Trung
             </span>
-            <span className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mt-1.5 opacity-80">Admin Console</span>
+            <div className="bg-brand-primary w-auto px-3 h-9 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm font-heading">
+              Leyi
+            </div>
           </div>
+          <span className="text-[10px] font-bold text-brand-primary uppercase tracking-widest opacity-80">Admin Console</span>
         </Link>
       </div>
 
@@ -72,9 +74,11 @@ export default function AdminLayout() {
       </nav>
 
       <div className="p-6 border-t border-white/5 space-y-2">
-        <Button variant="ghost" className="w-full justify-start gap-3 text-brand-border/60 hover:text-white hover:bg-white/5 font-bold">
-          <Settings className="w-5 h-5" /> Cài đặt hệ thống
-        </Button>
+        <Link to="/admin/settings">
+          <Button variant="ghost" className="w-full justify-start gap-3 text-brand-border/60 hover:text-white hover:bg-white/5 font-bold">
+            <Settings className="w-5 h-5" /> Cài đặt hệ thống
+          </Button>
+        </Link>
         <Button
           variant="ghost"
           onClick={logout}

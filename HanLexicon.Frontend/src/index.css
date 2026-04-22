@@ -1,13 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-primary: #9DC183;
-  --color-brand-secondary: #4F7942;
-  --color-brand-accent: #B8D3A8;
+  --color-brand-primary: #228040;
+  --color-brand-secondary: #175e2e;
+  --color-brand-primary-light: #05aa48;
+  --color-brand-accent: #f17407;
+  --color-brand-accent-light: #ff9400;
+  --color-brand-accent-dark: #e23300;
+  --color-brand-cyan: #a8f2eb;
   --color-brand-bg: #FAF9F6;
   --color-brand-surface: #F4F2EE;
   --color-brand-border: #E5E1DA;
-  --color-brand-highlight: #F1F5E8;
+  --color-brand-highlight: #e9f6ef;
   --color-brand-ink: #2C3333;
 
   --radius-xl: 0.75rem;
@@ -76,18 +80,18 @@
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
-    --primary: #4F7942;
+    --primary: #228040;
     --primary-foreground: #FFFFFF;
-    --secondary: #F1F5E8;
-    --secondary-foreground: #4F7942;
-    --muted: #F1F5E8;
+    --secondary: #e9f6ef;
+    --secondary-foreground: #175e2e;
+    --muted: #e9f6ef;
     --muted-foreground: oklch(0.556 0 0);
-    --accent: #B8D3A8;
-    --accent-foreground: #4F7942;
-    --destructive: oklch(0.577 0.245 27.325);
+    --accent: #ff9400;
+    --accent-foreground: #FFFFFF;
+    --destructive: #e23300;
     --border: #E5E1DA;
     --input: #E5E1DA;
-    --ring: #9DC183;
+    --ring: #228040;
     --chart-1: oklch(0.87 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
