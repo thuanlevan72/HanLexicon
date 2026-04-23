@@ -48,5 +48,7 @@ namespace HanLexicon.Domain.Interfaces
         void Update(TEntity entity);
 
         void Delete(TEntity entity);
+
+        void DeleteRange(IEnumerable<TEntity> entities);
     }
 }

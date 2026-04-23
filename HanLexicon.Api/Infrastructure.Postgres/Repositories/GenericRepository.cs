@@ -136,5 +136,10 @@ namespace Infrastructure.Postgres.Repositories
         {
             _dbSet.Remove(entity);
         }
+
+        public void DeleteRange(IEnumerable<TEntity> entities)
+        {
+            _dbSet.RemoveRange(entities);
+        }
     }
 }
