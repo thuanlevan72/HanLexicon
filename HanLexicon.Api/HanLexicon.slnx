@@ -7,11 +7,11 @@
   </Folder>
   <Folder Name="/Infrastructure/">
     <Project Path="Infrastructure.BackgroundJobs/Infrastructure.BackgroundJobs.csproj" Id="30f1076b-26b6-4f83-8c14-04e53e52deab" />
-    <Project Path="Infrastructure.GoogleCloud/Infrastructure.GoogleCloud.csproj" Id="5a12abdc-278f-41e8-bb15-357d11cd5510" />
+    <Project Path="Infrastructure.Minio/Infrastructure.Minio.csproj" />
     <Project Path="Infrastructure.Postgres/Infrastructure.Postgres.csproj" Id="4f198f98-39f4-4a0f-b748-326cb6658103" />
-    <Project Path="Infrastructure.S3/Infrastructure.S3.csproj" Id="065803fc-428b-4975-8c1f-931bf11e5b33" />
   </Folder>
   <Folder Name="/Presentation/">
     <Project Path="HanLexicon.Api/HanLexicon.Api.csproj" Id="b68cf14b-80af-4ec3-8897-400af9ce8598" />
   </Folder>
+  <Project Path="HanLexicon.Tests/HanLexicon.Tests.csproj" />
 </Solution>

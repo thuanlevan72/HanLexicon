@@ -7,4 +7,5 @@ public record AuthResultDto
     public string? AccessToken { get; init; }
     public string? Message { get; init; }
     public IEnumerable<string>? Errors { get; init; }
+    public Guid? UserId { get; init; }
 }

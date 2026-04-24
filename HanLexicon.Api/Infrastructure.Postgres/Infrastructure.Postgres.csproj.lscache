@@ -60,7 +60,14 @@ obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  Infrastructure.Postgres.AssemblyInfo.cs
  Infrastructure.Postgres.GlobalUsings.g.cs
-Persistence/HanLexiconDbContext.cs
+Persistence/
+ HanLexiconDbContext.cs
+ Migrations/
+  20260424134740_InitialCreate.cs
+  20260424134740_InitialCreate.Designer.cs
+  20260424135354_AddViews.cs
+  20260424135354_AddViews.Designer.cs
+  HanLexiconDbContextModelSnapshot.cs
 Repositories/
  GenericRepository.cs
  UnitOfWork .cs

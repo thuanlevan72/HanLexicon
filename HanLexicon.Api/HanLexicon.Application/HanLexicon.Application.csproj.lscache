@@ -55,6 +55,11 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 
 [sourceFiles]
 DependencyInjections/ApplicationDependencyInjection.cs.cs
+DTOs/Admin/
+ ContentDtos.cs
+ LessonCategoryDto.cs
+ LessonDto.cs
+ VocabularyDto.cs
 DTOs/
  authDto/AuthResultDto.cs
  docsData/
@@ -63,6 +68,27 @@ DTOs/
  gamesData/
   GameCategoryResponseDto.cs
   GameItemDto.cs
+  LessonFullDetailDto.cs
+  VocabularyItemDto.cs
+Features/Admin/
+ Content/AdminContentFeatures.cs
+ Lesson/
+  CreateLesson.cs
+  DeleteLesson.cs
+  GetLessonsAdmin.cs
+  UpdateLesson.cs
+ LessonCategory/
+  CreateLessonCategory.cs
+  DeleteLessonCategory.cs
+  GetLessonCategories.cs
+  UpdateLessonCategory.cs
+ SeedInitialData.cs
+ Vocabulary/
+  CreateVocabulary.cs
+  DeleteVocabulary.cs
+  GetVocabulariesAdmin.cs
+  ImportVocabulary.cs
+  UpdateVocabulary.cs
 Features/Auth/
  LoginCommand.cs
  LogoutCommand.cs
@@ -73,6 +99,11 @@ Features/Lessons/
  GetLessonDetail.cs
  GetLessons.cs
  GetVocabularyLessons.cs
+ SaveUserProgress.cs
+Features/
+ Search/LogSearchHistory.cs
+ Users/UserFeatures.cs
+ Vocabulary/UpdateWordProgress.cs
 Interfaces/
  IAuthService.cs
  ICurrentUserService.cs

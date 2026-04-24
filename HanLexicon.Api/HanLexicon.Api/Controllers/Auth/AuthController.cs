@@ -1,6 +1,7 @@
 ﻿using Application.Features.Auth;
 using HanLexicon.Application.Features.Auth;
 using HanLexicon.Application.Features.Lessons;
+using HanLexicon.Application.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,18 +10,26 @@ using System.Security.Claims;
 
 namespace HanLexicon.Api.Controllers.Auth
 {
+    /// <summary>
+    /// API xác thực người dùng, đăng ký và quản lý phiên làm việc.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public AuthController(IMediator mediator)
+        private readonly IAuthService _authService;
+        public AuthController(IMediator mediator, IAuthService authService)
         {
             _mediator = mediator;
+            _authService = authService;
         }
 
-
-
+        /// <summary>
+        /// Đăng nhập vào hệ thống.
+        /// </summary>
+        /// <param name="command">Thông tin đăng nhập (Email/Username, Password).</param>
+        /// <returns>AuthResultDto chứa JWT Token và thông tin User.</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginCommand command)
         {
@@ -33,7 +42,9 @@ namespace HanLexicon.Api.Controllers.Auth
             return Ok(result);
         }
 
-
+        /// <summary>
+        /// Làm mới Access Token bằng Refresh Token.
+        /// </summary>
         [HttpPost("refresh_token")]
         [Authorize]
         public async Task<IActionResult> Refresht([FromBody] RefreshTokenCommand command)
@@ -51,6 +62,9 @@ namespace HanLexicon.Api.Controllers.Auth
             return Ok(result);
         }
 
+        /// <summary>
+        /// Đăng ký tài khoản người dùng mới.
+        /// </summary>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterCommand command)
         {
@@ -62,33 +76,28 @@ namespace HanLexicon.Api.Controllers.Auth
             return Ok(new { result.Message });
         }
 
-        // -----------------------------------------------------
-        // API 1: CHỈ ĐĂNG XUẤT THIẾT BỊ HIỆN TẠI
-        // -----------------------------------------------------
+        /// <summary>
+        /// Đăng xuất khỏi thiết bị hiện tại.
+        /// Vô hiệu hóa Refresh Token đang sử dụng.
+        /// </summary>
         [HttpPost("logout")]
         [Authorize]
         public async Task<IActionResult> Logout([FromBody] LogoutRequest request)
         {
-
-            // Khởi tạo Record mới, truyền cứng false vào tham số thứ 2
-            var command = new LogoutCommand(request);
-            var result = await _mediator.Send(command);
-
-            return Ok(new { message = result });
+            await _authService.RevokeSingleTokenAsync(request.ClientRefreshToken);
+            return Ok(new { message = "Đã đăng xuất thiết bị hiện tại." });
         }
 
-        // -----------------------------------------------------
-        // API 2: ĐĂNG XUẤT TẤT CẢ THIẾT BỊ
-        // -----------------------------------------------------
-        [HttpPost("logout-all")] // ĐỔI TÊN ĐƯỜNG DẪN TRÁNH TRÙNG LẶP
+        /// <summary>
+        /// Đăng xuất khỏi tất cả thiết bị.
+        /// Xóa toàn bộ phiên làm việc của người dùng hiện tại.
+        /// </summary>
+        [HttpPost("logout-all")]
         [Authorize]
-        public async Task<IActionResult> LogoutAll([FromBody] LogoutRequest request)
+        public async Task<IActionResult> LogoutAll()
         {
-            // Khởi tạo Record mới, truyền cứng true vào tham số thứ 2
-            var command = new LogoutCommand(request);
-            var result = await _mediator.Send(command);
-
-            return Ok(new { message = result });
+            await _authService.RevokeAllUserTokensAsync();
+            return Ok(new { message = "Đã đăng xuất khỏi tất cả các thiết bị." });
         }
     }
 }

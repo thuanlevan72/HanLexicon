@@ -51,6 +51,8 @@ namespace HanLexicon.Application.Services
                 // 2. Tìm User (KHÔNG dùng Transaction cho thao tác Read)
                 // Ưu tiên tìm theo chính xác trường được truyền vào
                 var user = await userRepository.Query()
+                    .Include(u => u.UserRoles)
+                        .ThenInclude(ur => ur.Role)
                     .FirstOrDefaultAsync(x =>
                         (!string.IsNullOrEmpty(email) && x.Email == email) ||
                         (!string.IsNullOrEmpty(userName) && x.Username == userName));
@@ -100,7 +102,8 @@ namespace HanLexicon.Application.Services
                     IsSuccess = true,
                     Message = "Đăng nhập thành công",
                     AccessToken = accessToken,
-                    RefreshToken = refreshToken
+                    RefreshToken = refreshToken,
+                    UserId = user.Id
                 };
             }
             catch (Exception ex)
@@ -175,7 +178,8 @@ namespace HanLexicon.Application.Services
                     IsSuccess = true,
                     Message = "Làm mới Token thành công",
                     AccessToken = newAccessToken,
-                    RefreshToken = newRefreshToken
+                    RefreshToken = newRefreshToken,
+                    UserId = user.Id
                 };
             }
             catch (Exception)
