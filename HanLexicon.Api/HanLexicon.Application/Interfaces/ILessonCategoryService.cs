@@ -45,6 +45,6 @@ namespace HanLexicon.Application.Interfaces
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        Task<List<LessonCategoryDto>> GetAllAsync(PaginationRequest request);
+        Task<PagedResponse<LessonCategoryDto>> GetAllAsync(PaginationRequest request);
     }
 }

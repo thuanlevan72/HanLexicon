@@ -29,6 +29,7 @@
 	<ItemGroup>
 		<Folder Include="DTOs\Request\" />
 		<Folder Include="Features\Admin\" />
+		<Folder Include="Features\LessonCategories\Queries\" />
 		<Folder Include="Features\Progress\" />
 		<Folder Include="Interfaces\None\" />
 	</ItemGroup>

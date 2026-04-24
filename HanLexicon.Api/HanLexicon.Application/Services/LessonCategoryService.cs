@@ -2,11 +2,11 @@
 using HanLexicon.Application.DTOs;
 using HanLexicon.Application.DTOs.LessonCategory;
 using HanLexicon.Application.Interfaces;
+using HanLexicon.Application.Mappers;
 using HanLexicon.Domain.Common.Pagination;
 using HanLexicon.Domain.Interfaces;
 using Infrastructure.Postgres;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Logging;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -99,13 +99,7 @@ namespace HanLexicon.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
 
-                return ApiResponse<LessonCategoryDto>.Created(new LessonCategoryDto
-                {
-                    Id = entity.Id,
-                    Name = entity.Name,
-                    Slug = entity.Slug,
-                    SortOrder = entity.SortOrder
-                });
+                return ApiResponse<LessonCategoryDto>.Created(LessonCategoryMapping.ToDto(entity));
             }
             catch
             {
@@ -153,19 +147,109 @@ namespace HanLexicon.Application.Services
             }
         }
 
-        public Task<List<LessonCategoryDto>> GetAllAsync(PaginationRequest request)
+        /// <summary>
+        /// Get all lesson categories with pagination and optional dynamic filtering. This method will retrieve a paginated list of lesson categories based on the provided pagination parameters and any dynamic filters specified in the request. It will return a structured response containing the list of categories, total item count, and pagination metadata.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<PagedResponse<LessonCategoryDto>> GetAllAsync(PaginationRequest request)
         {
-            throw new NotImplementedException();
+            var lessonCategoryQueryable = _unitOfWork.Repository<LessonCategory>().Query();
+
+            if(request.DynamicFilters != null)
+            {
+                lessonCategoryQueryable = lessonCategoryQueryable.Where(x => request.DynamicFilters.ContainsKey(x.Name));
+            }
+
+            var totalItems = await lessonCategoryQueryable.CountAsync();
+
+            var items = await lessonCategoryQueryable
+                .AsNoTracking()
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => LessonCategoryMapping.ToDto(x))
+                .ToListAsync();
+
+            return new PagedResponse<LessonCategoryDto>(
+                items,
+                totalItems,
+                request.PageNumber,
+                request.PageSize
+            );
         }
 
-        public Task<LessonCategoryDto> GetByIdAsync(short id)
+        /// <summary>
+        /// Get by ID of a lesson category. This method will retrieve a single lesson category based on its unique identifier. If the category is found, it will return the corresponding DTO; if not, it will throw an exception indicating that the entity was not found.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task<LessonCategoryDto> GetByIdAsync(short id)
         {
-            throw new NotImplementedException();
+            var entity = await _unitOfWork.Repository<LessonCategory>().GetByIdAsync(id);
+
+            if(entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            var result = LessonCategoryMapping.ToDto(entity);
+            return result;
         }
 
-        public Task<ApiResponse<LessonCategoryDto>> UpdateAsync(LessonCategoryUpdateDto request)
+        /// <summary>
+        /// Update an existing lesson category based on the provided update data. This method will check if the category exists, apply the updates to the entity, save the changes to the database, and return the updated DTO. It will also handle any necessary validation and manage transactions to ensure data integrity.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<ApiResponse<LessonCategoryDto>> UpdateAsync(LessonCategoryUpdateDto request)
         {
-            throw new NotImplementedException();
+            var lessonCategoryQueryable = _unitOfWork.Repository<LessonCategory>().Query();
+
+            var lessonCategory = await lessonCategoryQueryable.FirstOrDefaultAsync(x => x.Id == request.Id);
+            if (lessonCategory == null)
+            {
+                throw new ArgumentNullException(nameof(lessonCategory));
+            }
+
+            if (string.IsNullOrEmpty(request.Name))
+            {
+                throw new ArgumentException(nameof(request.Name), "Name is required");
+            }
+
+            var baseSlug = GenerateSlug(request.Name);
+            var slug = baseSlug;
+
+            var index = 1;
+            while (await lessonCategoryQueryable.AnyAsync(x => x.Slug == slug))
+            {
+                slug = $"{baseSlug}-{index++}";
+            }
+
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+
+                lessonCategory.Name = request.Name;
+                lessonCategory.Slug = slug;
+
+                _unitOfWork.Repository<LessonCategory>().Update(lessonCategory);
+
+                await _unitOfWork.SaveChangesAsync();
+
+                await _unitOfWork.CommitTransactionAsync();
+
+                var result = LessonCategoryMapping.ToDto(lessonCategory);
+
+                return ApiResponse<LessonCategoryDto>.Success(result);
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
+
         }
         #endregion
 
