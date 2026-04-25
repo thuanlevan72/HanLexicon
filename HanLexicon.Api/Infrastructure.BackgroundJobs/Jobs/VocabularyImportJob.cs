@@ -1,6 +1,9 @@
-﻿using ClosedXML.Excel;
+using HanLexicon.Domain.Entities;
+using ClosedXML.Excel;
 using HanLexicon.Application.Interfaces;
+using HanLexicon.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using System.IO.Compression;
 
 namespace Infrastructure.BackgroundJobs.Jobs;
@@ -8,92 +11,137 @@ namespace Infrastructure.BackgroundJobs.Jobs;
 public class VocabularyImportJob : IVocabularyImportJob
 {
     private readonly IStorageService _storageService;
-    // Giả sử bạn có IAppDbContext ở tầng Application
-    // private readonly IAppDbContext _dbContext; 
+    private readonly IUnitOfWork _uow;
     private readonly ILogger<VocabularyImportJob> _logger;
 
     public VocabularyImportJob(
         IStorageService storageService,
-        // IAppDbContext dbContext,
+        IUnitOfWork uow,
         ILogger<VocabularyImportJob> logger)
     {
         _storageService = storageService;
-        // _dbContext = dbContext;
+        _uow = uow;
         _logger = logger;
     }
 
     public async Task ProcessImportAsync(string tempExcelPath, string tempZipPath, Guid adminId)
     {
-        // Tạo một thư mục tạm duy nhất cho luồng này để giải nén
-        var extractPath = Path.Combine(Path.GetTempPath(), $"HanLexicon_Extract_{Guid.NewGuid()}");
+        // Ta sẽ tạo một Job record mới (hoặc đã có id từ lúc Admin call API)
+        // Giả sử ta tìm ImportJob vừa tạo
+        var importJob = await _uow.Repository<ImportJob>().Query()
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefaultAsync(x => x.UploadedBy == adminId && x.Status == "pending");
+
+        if (importJob == null)
+        {
+             _logger.LogError("Không tìm thấy bản ghi ImportJob 'pending' cho Admin " + adminId);
+             return;
+        }
+
+        importJob.Status = "processing";
+        importJob.StartedAt = DateTime.UtcNow;
+        await _uow.SaveChangesAsync();
+
+        var extractPath = Path.Combine(Path.GetTempPath(), $"HanLexicon_Extract_{importJob.Id}");
 
         try
         {
             _logger.LogInformation($"Bắt đầu giải nén file zip ra {extractPath}...");
-            ZipFile.ExtractToDirectory(tempZipPath, extractPath);
-
-            var vocabulariesToInsert = new List<dynamic>(); // Thay 'dynamic' bằng Entity Vocabulary của bạn
+            if (File.Exists(tempZipPath))
+            {
+                ZipFile.ExtractToDirectory(tempZipPath, extractPath);
+            }
 
             _logger.LogInformation("Bắt đầu đọc file Excel...");
             using var workbook = new XLWorkbook(tempExcelPath);
             var worksheet = workbook.Worksheet(1);
-            var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // Bỏ qua dòng Header
+            var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // Bỏ qua Header
+
+            importJob.TotalRows = rows.Count();
+            int successCount = 0;
+            int failedCount = 0;
+            var errorLogs = new List<string>();
 
             foreach (var row in rows)
             {
-                // 1. Đọc Text từ Excel
-                var word = row.Cell(1).GetValue<string>();
-                var pinyin = row.Cell(2).GetValue<string>();
-                var meaning = row.Cell(3).GetValue<string>();
-                var imageFileName = row.Cell(4).GetValue<string>(); // VD: "apple.png"
-                var audioFileName = row.Cell(5).GetValue<string>(); // VD: "apple.mp3"
-
-                // 2. Xử lý Upload Hình ảnh (Nếu có)
-                string imageUrl = null;
-                if (!string.IsNullOrEmpty(imageFileName))
+                try
                 {
-                    imageUrl = await UploadMediaAsync(extractPath, imageFileName, "image/png"); // Hàm phụ trợ bên dưới
+                    var word = row.Cell(1).GetValue<string>();
+                    var pinyin = row.Cell(2).GetValue<string>();
+                    var meaning = row.Cell(3).GetValue<string>();
+                    var imageFileName = row.Cell(4).GetValue<string>();
+                    var audioFileName = row.Cell(5).GetValue<string>();
+                    var lessonIdStr = row.Cell(6).GetValue<string>();
+                    var meaningEn = row.Cell(7).GetValue<string>();
+                    var exampleCn = row.Cell(8).GetValue<string>();
+                    var examplePy = row.Cell(9).GetValue<string>();
+                    var exampleVn = row.Cell(10).GetValue<string>();
+
+                    if (string.IsNullOrEmpty(word) || !Guid.TryParse(lessonIdStr, out var lessonId))
+                    {
+                        failedCount++;
+                        errorLogs.Add($"Dòng {row.RowNumber()}: Dữ liệu không hợp lệ (Word trống hoặc LessonId sai format)");
+                        continue;
+                    }
+
+                    string? imageUrl = null;
+                    if (!string.IsNullOrEmpty(imageFileName) && Directory.Exists(extractPath))
+                    {
+                        imageUrl = await UploadMediaAsync(extractPath, imageFileName, "image/png");
+                    }
+
+                    string? audioUrl = null;
+                    if (!string.IsNullOrEmpty(audioFileName) && Directory.Exists(extractPath))
+                    {
+                        audioUrl = await UploadMediaAsync(extractPath, audioFileName, "audio/mpeg");
+                    }
+
+                    var vocabulary = new Vocabulary
+                    {
+                        Id = Guid.NewGuid(),
+                        LessonId = lessonId,
+                        Word = word,
+                        Pinyin = pinyin,
+                        Meaning = meaning,
+                        MeaningEn = meaningEn,
+                        ExampleCn = exampleCn,
+                        ExamplePy = examplePy,
+                        ExampleVn = exampleVn,
+                        ImageUrl = imageUrl,
+                        AudioUrl = audioUrl,
+                        SortOrder = (short)(successCount + 1)
+                    };
+
+                    _uow.Repository<Vocabulary>().Add(vocabulary);
+                    successCount++;
                 }
-
-                // 3. Xử lý Upload Audio (Nếu có)
-                string audioUrl = null;
-                if (!string.IsNullOrEmpty(audioFileName))
+                catch (Exception ex)
                 {
-                    audioUrl = await UploadMediaAsync(extractPath, audioFileName, "audio/mpeg");
+                    failedCount++;
+                    errorLogs.Add($"Dòng {row.RowNumber()}: {ex.Message}");
                 }
-
-                // 4. Map vào Entity
-                /*
-                vocabulariesToInsert.Add(new Vocabulary
-                {
-                    Word = word,
-                    Pinyin = pinyin,
-                    Meaning = meaning,
-                    ImageUrl = imageUrl,
-                    AudioUrl = audioUrl,
-                    CreatedAt = DateTime.UtcNow
-                });
-                */
             }
 
-            // 5. Lưu vào Database (Bulk Insert)
-            /*
-            await _dbContext.Vocabularies.AddRangeAsync(vocabulariesToInsert);
-            await _dbContext.SaveChangesAsync();
-            */
+            importJob.ProcessedRows = successCount;
+            importJob.FailedRows = failedCount;
+            importJob.ErrorLog = errorLogs.Any() ? string.Join("\n", errorLogs) : null;
+            importJob.Status = failedCount == 0 ? "finished" : (successCount > 0 ? "finished_with_errors" : "failed");
+            importJob.FinishedAt = DateTime.UtcNow;
 
-            _logger.LogInformation($"Import thành công {rows.Count()} từ vựng cho Admin {adminId}");
-
-            // TODO: (Tùy chọn) Gọi SignalR Hub bắn thông báo về cho Admin báo done.
+            await _uow.SaveChangesAsync();
+            _logger.LogInformation($"Import thành công {successCount} từ vựng cho Admin {adminId}");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Lỗi xảy ra trong quá trình import cho Admin {adminId}");
-            throw; // Quăng lỗi để Hangfire ghi nhận thất bại và có thể Retry
+            _logger.LogError(ex, $"Lỗi nghiêm trọng trong quá trình import cho Admin {adminId}");
+            importJob.Status = "failed";
+            importJob.ErrorLog = ex.ToString();
+            importJob.FinishedAt = DateTime.UtcNow;
+            await _uow.SaveChangesAsync();
+            throw;
         }
         finally
         {
-            // BẮT BUỘC: Dọn dẹp rác (Clean up) để server không bị đầy ổ cứng
             _logger.LogInformation("Đang dọn dẹp file tạm...");
             if (Directory.Exists(extractPath)) Directory.Delete(extractPath, true);
             if (File.Exists(tempExcelPath)) File.Delete(tempExcelPath);
@@ -101,20 +149,12 @@ public class VocabularyImportJob : IVocabularyImportJob
         }
     }
 
-    // Hàm phụ trợ tìm file trong thư mục giải nén và đẩy lên S3
     private async Task<string> UploadMediaAsync(string extractDirectory, string fileName, string contentType)
     {
-        // Tìm file trong thư mục giải nén (bao gồm cả thư mục con nếu zip có cấu trúc)
         var matchedFiles = Directory.GetFiles(extractDirectory, fileName, SearchOption.AllDirectories);
+        if (matchedFiles.Length == 0) return null;
 
-        if (matchedFiles.Length == 0)
-        {
-            _logger.LogWarning($"Không tìm thấy file {fileName} trong file Zip.");
-            return null;
-        }
-
-        var actualFilePath = matchedFiles[0]; // Lấy file đầu tiên tìm thấy
-
+        var actualFilePath = matchedFiles[0];
         using var stream = new FileStream(actualFilePath, FileMode.Open, FileAccess.Read);
         return await _storageService.UploadFileAsync(stream, fileName, contentType);
     }

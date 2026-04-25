@@ -21,7 +21,7 @@ ProjectAssetsFile=<PATH>obj/project.assets.json
 RootNamespace=HanLexicon.Application
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
-SolutionPath=*Undefined*
+SolutionPath=<PATH>../HanLexicon.slnx
 TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net10.0/HanLexicon.Application.dll
 TargetRefPath=<PATH>obj/Debug/net10.0/ref/HanLexicon.Application.dll
@@ -54,7 +54,13 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 /warnaserror+:NU1605,SYSLIB0011
 
 [sourceFiles]
-DependencyInjections/ApplicationDependencyInjection.cs.cs
+Common/ApiResponse.cs
+DependencyInjections/ApplicationDependencyInjection.cs
+DTOs/Admin/
+ ContentDtos.cs
+ LessonCategoryDto.cs
+ LessonDto.cs
+ VocabularyDto.cs
 DTOs/
  authDto/AuthResultDto.cs
  docsData/
@@ -63,16 +69,48 @@ DTOs/
  gamesData/
   GameCategoryResponseDto.cs
   GameItemDto.cs
+  LessonFullDetailDto.cs
+  VocabularyItemDto.cs
+Features/Admin/
+ ChallengeWords/ChallengeWordFeatures.cs
+ Documents/DocumentFeatures.cs
+ HanziCards/HanziCardFeatures.cs
+ LessonCategories/
+  CreateLessonCategory.cs
+  DeleteLessonCategory.cs
+  GetLessonCategories.cs
+  UpdateLessonCategory.cs
+ LessonsAdmin/
+  CreateLesson.cs
+  DeleteLesson.cs
+  GetLessonsAdmin.cs
+  UpdateLesson.cs
+ Quizzes/QuizFeatures.cs
+ Radicals/RadicalFeatures.cs
+ SeedInitialData.cs
+ VocabulariesAdmin/
+  CreateVocabulary.cs
+  DeleteVocabulary.cs
+  GetVocabulariesAdmin.cs
+  ImportVocabulary.cs
+  UpdateVocabulary.cs
 Features/Auth/
  LoginCommand.cs
  LogoutCommand.cs
  RefreshTokenCommand.cs
  RegisterCommand.cs
-Features/Lessons/
+Features/LessonsUser/
  GetDocuments.cs
  GetLessonDetail.cs
  GetLessons.cs
  GetVocabularyLessons.cs
+ SaveUserProgress.cs
+Features/
+ Search/LogSearchHistory.cs
+ Users/UserFeatures.cs
+ VocabulariesUser/
+  SearchVocabularies.cs
+  UpdateWordProgress.cs
 Interfaces/
  IAuthService.cs
  ICurrentUserService.cs

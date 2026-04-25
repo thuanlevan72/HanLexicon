@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+using HanLexicon.Domain.Entities;
+using Application.Interfaces;
 using HanLexicon.Application.Interfaces;
 using MediatR;
 using System;
@@ -25,18 +26,18 @@ namespace Application.Features.Auth
         public async Task<string> Handle(LogoutCommand request, CancellationToken cancellationToken)
         {
 
-            // 2. Xử lý 2 lựa chọn
+            // 2. X? l� 2 l?a ch?n
             if (request.LogoutRequest.LogoutAllDevices)
             {
-                // Lựa chọn 1: Đăng xuất mọi thiết bị
+                // L?a ch?n 1: �ang xu?t m?i thi?t b?
                 await _authService.RevokeAllUserTokensAsync();
-                return "Đã đăng xuất thành công khỏi TẤT CẢ các thiết bị.";
+                return "�� dang xu?t th�nh c�ng kh?i T?T C? c�c thi?t b?.";
             }
             else
             {
-                // Lựa chọn 2: Đăng xuất thiết bị hiện tại (Truyền kèm currentUserId để bảo mật)
+                // L?a ch?n 2: �ang xu?t thi?t b? hi?n t?i (Truy?n k�m currentUserId d? b?o m?t)
                 await _authService.RevokeSingleTokenAsync(request.LogoutRequest.ClientRefreshToken);
-                return "Đã đăng xuất thành công khỏi thiết bị hiện tại.";
+                return "�� dang xu?t th�nh c�ng kh?i thi?t b? hi?n t?i.";
             }
 
         }

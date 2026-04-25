@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace Infrastructure.Postgres;
+namespace HanLexicon.Domain.Entities;
 
 public partial class QuizQuestion
 {

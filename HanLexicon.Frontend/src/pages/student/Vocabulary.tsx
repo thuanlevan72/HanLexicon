@@ -8,6 +8,7 @@ import { Search, Filter, Volume2, Image as ImageIcon, BookOpen } from 'lucide-re
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
+import { playAudio } from '@/src/lib/audio';
 
 const HSK_LEVELS = ['Tất cả', 'HSK 1', 'HSK 2', 'HSK 3', 'HSK 4', 'HSK 5', 'HSK 6'];
 
@@ -93,7 +94,7 @@ export default function VocabularyPage() {
                     <h2 className="text-6xl font-black text-brand-ink mb-2 tracking-tight">{w.word}</h2>
                     <p className="text-xl font-bold text-brand-primary mb-4 italic">{w.pinyin}</p>
                     <div className="flex justify-center gap-3">
-                      <Button variant="ghost" size="icon" className="w-10 h-10 rounded-full bg-white border border-brand-border text-brand-primary hover:bg-brand-primary hover:text-white transition-all">
+                      <Button onClick={() => playAudio(w.word)} variant="ghost" size="icon" className="w-10 h-10 rounded-full bg-white border border-brand-border text-brand-primary hover:bg-brand-primary hover:text-white transition-all">
                         <Volume2 className="w-5 h-5" />
                       </Button>
                     </div>

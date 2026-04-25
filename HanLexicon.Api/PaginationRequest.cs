@@ -1,4 +1,5 @@
-﻿using System;
+using HanLexicon.Domain.Entities;
+using System;
 
 public class Class1
 {

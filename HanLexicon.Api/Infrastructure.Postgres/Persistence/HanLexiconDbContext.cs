@@ -1,4 +1,5 @@
-﻿using System;
+using HanLexicon.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using Infrastructure.Postgres;
 using Microsoft.EntityFrameworkCore;
@@ -219,11 +220,11 @@ public partial class HanLexiconDbContext : DbContext
                 .HasColumnName("description");
             entity.Property(e => e.Filename)
                 .HasMaxLength(120)
-                .HasComment("Tên file HTML gốc, dùng làm game_id khi lưu tiến độ")
+                .HasComment("T�n file HTML g?c, d�ng l�m game_id khi luu ti?n d?")
                 .HasColumnName("filename");
             entity.Property(e => e.Icon)
                 .HasMaxLength(10)
-                .HasDefaultValueSql("'📚'::character varying")
+                .HasDefaultValueSql("'??'::character varying")
                 .HasColumnName("icon");
             entity.Property(e => e.IsPublished)
                 .HasDefaultValue(true)
@@ -402,7 +403,7 @@ public partial class HanLexiconDbContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.Icon)
                 .HasMaxLength(10)
-                .HasDefaultValueSql("'🌱'::character varying")
+                .HasDefaultValueSql("'??'::character varying")
                 .HasColumnName("icon");
             entity.Property(e => e.LessonId).HasColumnName("lesson_id");
             entity.Property(e => e.SetNumber).HasColumnName("set_number");
@@ -484,7 +485,7 @@ public partial class HanLexiconDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("users_pkey");
 
-            entity.ToTable("users", tb => tb.HasComment("Tài khoản học viên và quản trị viên"));
+            entity.ToTable("users", tb => tb.HasComment("T�i kho?n h?c vi�n v� qu?n tr? vi�n"));
 
             entity.HasIndex(e => e.Email, "users_email_key").IsUnique();
 
@@ -613,7 +614,7 @@ public partial class HanLexiconDbContext : DbContext
         {
             entity.HasKey(e => new { e.UserId, e.VocabId }).HasName("user_word_progress_pkey");
 
-            entity.ToTable("user_word_progress", tb => tb.HasComment("Lưu lịch sử học tập/tra cứu của từng từ vựng riêng biệt"));
+            entity.ToTable("user_word_progress", tb => tb.HasComment("Luu l?ch s? h?c t?p/tra c?u c?a t?ng t? v?ng ri�ng bi?t"));
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.VocabId).HasColumnName("vocab_id");

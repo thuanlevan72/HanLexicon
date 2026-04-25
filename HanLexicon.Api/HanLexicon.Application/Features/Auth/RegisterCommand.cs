@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+using HanLexicon.Domain.Entities;
+using Application.Interfaces;
 using FluentValidation;
 using HanLexicon.Application.DTOs.authDto;
 using HanLexicon.Application.Interfaces;

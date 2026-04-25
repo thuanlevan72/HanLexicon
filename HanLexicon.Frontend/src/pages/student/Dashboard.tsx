@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { useAuth } from '@/src/context/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,16 +15,24 @@ import {
   TrendingUp,
   Award
 } from 'lucide-react';
-
-const stats = [
-  { label: 'Ngày liên tiếp', value: '7', icon: Flame, color: 'text-brand-primary', bg: 'bg-brand-highlight' },
-  { label: 'Bài học', value: '12', icon: BookOpen, color: 'text-amber-600', bg: 'bg-[#FEF3C7]' },
-  { label: 'Từ vựng', value: '240', icon: Target, color: 'text-brand-secondary', bg: 'bg-brand-highlight' },
-  { label: 'Số giờ học', value: '8.5', icon: Clock, color: 'text-purple-500', bg: 'bg-[#F5F3FF]' },
-];
+import { userService, UserStats } from '@/src/services/api';
 
 export default function StudentDashboard() {
   const { user } = useAuth();
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
+
+  useEffect(() => {
+    userService.getStats()
+      .then(stats => setUserStats(stats))
+      .catch(err => console.error("Failed to load user stats", err));
+  }, []);
+
+  const statsList = [
+    { label: 'Điểm số', value: userStats?.totalPoints?.toString() || '...', icon: Flame, color: 'text-brand-primary', bg: 'bg-brand-highlight' },
+    { label: 'Bài học', value: userStats?.lessonsCompleted?.toString() || '...', icon: BookOpen, color: 'text-amber-600', bg: 'bg-[#FEF3C7]' },
+    { label: 'Điểm TB', value: userStats ? `${userStats.avgScore}%` : '...', icon: Target, color: 'text-brand-secondary', bg: 'bg-brand-highlight' },
+    { label: 'Số giờ học', value: userStats ? (userStats.timeSpentS / 3600).toFixed(1) : '...', icon: Clock, color: 'text-purple-500', bg: 'bg-[#F5F3FF]' },
+  ];
 
   return (
     <div className="space-y-8 pb-12">
@@ -42,7 +51,7 @@ export default function StudentDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {stats.map((stat) => (
+        {statsList.map((stat) => (
           <motion.div
             key={stat.label}
             whileHover={{ y: -4 }}

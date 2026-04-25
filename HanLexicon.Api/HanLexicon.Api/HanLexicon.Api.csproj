@@ -30,9 +30,8 @@
 	  <ProjectReference Include="..\HanLexicon.Application\HanLexicon.Application.csproj" />
 	  <ProjectReference Include="..\HanLexicon.Domain\HanLexicon.Domain.csproj" />
 	  <ProjectReference Include="..\Infrastructure.BackgroundJobs\Infrastructure.BackgroundJobs.csproj" />
-	  <ProjectReference Include="..\Infrastructure.GoogleCloud\Infrastructure.GoogleCloud.csproj" />
 	  <ProjectReference Include="..\Infrastructure.Postgres\Infrastructure.Postgres.csproj" />
-	  <ProjectReference Include="..\Infrastructure.S3\Infrastructure.S3.csproj" />
+	  <ProjectReference Include="..\Infrastructure.Minio\Infrastructure.Minio.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

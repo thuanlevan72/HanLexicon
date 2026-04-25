@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -6,32 +7,61 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, XCircle, ArrowRight, Volume2, Brain, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
-import { Link } from 'react-router-dom';
-
-const questions = [
-  {
-    id: 1,
-    type: 'translate',
-    question: 'Dịch sang tiếng Việt: 你好',
-    options: ['Chào buổi sáng', 'Tạm biệt', 'Xin chào', 'Cảm ơn'],
-    correct: 2,
-    audio: true
-  },
-  {
-    id: 2,
-    type: 'matching',
-    question: 'Chọn Hán tự cho: wǒ (Tôi)',
-    options: ['你', '我', '好', '叫'],
-    correct: 1,
-  }
-];
+import { learningService, LessonDetail, Quiz } from '@/src/services/api';
+import { playAudio } from '@/src/lib/audio';
 
 export default function StudentQuiz() {
+  const { id } = useParams();
+  const [lesson, setLesson] = useState<LessonDetail | null>(null);
+  const [questions, setQuestions] = useState<any[]>([]);
+  
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      learningService.getLessonDetail(id).then(data => {
+        setLesson(data);
+        if (data.quizzes && data.quizzes.length > 0) {
+          // Map to local question format
+          setQuestions(data.quizzes.map((q: Quiz, idx: number) => {
+            const correctOptIdx = q.options.findIndex(o => o.isCorrect);
+            return {
+              id: idx + 1,
+              type: 'general',
+              question: q.question,
+              options: q.options.map(o => o.optionText),
+              correct: correctOptIdx >= 0 ? correctOptIdx : 0
+            };
+          }));
+        } else {
+          // Fallback questions if empty
+          setQuestions([
+            { id: 1, type: 'translate', question: 'Dịch sang tiếng Việt: 你好', options: ['Chào buổi sáng', 'Tạm biệt', 'Xin chào', 'Cảm ơn'], correct: 2, audio: true },
+            { id: 2, type: 'matching', question: 'Chọn Hán tự cho: wǒ (Tôi)', options: ['你', '我', '好', '叫'], correct: 1 }
+          ]);
+        }
+      }).catch(err => console.error("Failed to fetch lesson detail", err));
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (isFinished && id) {
+      learningService.saveProgress({
+        lessonId: id,
+        score: Math.round((score / questions.length) * 100),
+        completed: true,
+        timeSpentS: 300 // example time
+      }).catch(err => console.error("Failed to save progress", err));
+    }
+  }, [isFinished, id, score, questions.length]);
+
+  if (!lesson || questions.length === 0) {
+    return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div></div>;
+  }
 
   const currentQuestion = questions[currentStep];
 
@@ -110,7 +140,12 @@ export default function StudentQuiz() {
            </div>
            <h2 className="text-4xl md:text-5xl font-extrabold text-brand-ink px-10 leading-tight tracking-tight">{currentQuestion.question}</h2>
            {currentQuestion.audio && (
-             <Button variant="ghost" size="icon" className="w-20 h-20 rounded-full bg-brand-highlight text-brand-primary border border-brand-border shadow-sm hover:scale-110 transition-transform active:scale-95">
+             <Button 
+               onClick={() => playAudio(currentQuestion.question.split(':').pop()?.trim() || currentQuestion.question)} 
+               variant="ghost" 
+               size="icon" 
+               className="w-20 h-20 rounded-full bg-brand-highlight text-brand-primary border border-brand-border shadow-sm hover:scale-110 transition-transform active:scale-95"
+             >
                <Volume2 className="w-10 h-10" />
              </Button>
            )}

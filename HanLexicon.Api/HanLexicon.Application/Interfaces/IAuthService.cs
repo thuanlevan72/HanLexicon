@@ -1,4 +1,5 @@
-﻿using HanLexicon.Application.DTOs.authDto;
+using HanLexicon.Domain.Entities;
+using HanLexicon.Application.DTOs.authDto;
 using System;
 using System.Collections.Generic;
 using System.Text;

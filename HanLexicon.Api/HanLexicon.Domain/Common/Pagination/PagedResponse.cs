@@ -1,4 +1,5 @@
-﻿using System;
+using HanLexicon.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,13 +12,13 @@ namespace HanLexicon.Domain.Common.Pagination
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
 
-        // Tự động tính toán tổng số trang
+        // T? d?ng t�nh to�n t?ng s? trang
         public int TotalPages => (int)Math.Ceiling(TotalItems / (double)PageSize);
 
         public bool HasPrevious => CurrentPage > 1;
         public bool HasNext => CurrentPage < TotalPages;
 
-        // Constructor tiện ích
+        // Constructor ti?n �ch
         public PagedResponse(List<T> items, int totalItems, int currentPage, int pageSize)
         {
             Items = items;

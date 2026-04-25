@@ -5,7 +5,61 @@
     "tools": "Tools",
     "hsk": "HSK 3.0",
     "login": "Login",
-    "start": "Get Started"
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "menu": "Menu",
+    "brand": {
+      "prefix": "Leyi",
+      "suffix": "Chinese"
+    },
+    "start": "Get Started",
+    "admin": {
+      "settings": "System Settings",
+      "fileManager": "File Manager",
+      "general": "General Settings",
+      "basicInfo": "Basic Information",
+      "appName": "App Name",
+      "defaultLang": "Default Language",
+      "aiIntegration": "AI & API Integration",
+      "security": "Security & Access",
+      "save": "Save Changes",
+      "reset": "Restore",
+      "stats": {
+        "audio": "Total Audio Files",
+        "images": "Total Image Files",
+        "missing": "Missing Files"
+      },
+      "form": {
+        "appTitle": "Chinese Leyi",
+        "appNameLabel": "Application Name",
+        "defaultLangLabel": "Default Language",
+        "vi": "Vietnamese",
+        "en": "English",
+        "aiConfig": "Configuration",
+        "syncInterval": "Auto-sync every 24h",
+        "securityDesc": "Access limits and user control rules.",
+        "emailAuth": "Mandatory Email Verification",
+        "emailAuthDesc": "Users must confirm email to activate account.",
+        "multiDevice": "Multi-device Login",
+        "multiDeviceDesc": "Allow login on PC and mobile simultaneously.",
+        "notifications": "System Notifications",
+        "notificationsDesc": "Push notifications for new lessons or events."
+      },
+      "files": {
+        "title": "File Management",
+        "subtitle": "Manage images and audio for each vocabulary card.",
+        "uploadBulk": "Bulk Upload",
+        "searchPlaceholder": "Search vocabulary or Chinese characters...",
+        "filter": "Filter",
+        "sort": "Sort",
+        "hasAudio": "HAS AUDIO",
+        "noAudio": "MISSING AUDIO",
+        "hasImage": "HAS IMAGE",
+        "noImage": "MISSING IMAGE",
+        "updated": "Updated",
+        "loadMore": "Load more vocabulary"
+      }
+    }
   },
   "hero": {
     "title": "Master",

@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hanlexicon
+    ports:
+      - "5432:5432"
+
+  minio:
+    image: minio/minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadminpassword
+    command: server /data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=hanlexicon;Username=user;Password=password"
+      MinioSettings__Endpoint: "minio:9000"
+      MinioSettings__AccessKey: "minioadmin"
+      MinioSettings__SecretKey: "minioadminpassword"
+      MinioSettings__PublicUrl: "http://localhost:9000"
+      JWT__Key: "Chuoi_Bi_Mat_Sieu_Cap_An_Toan_Dung_De_Ky_JWT_123456789!@#"
+      JWT__Issuer: "TodoApp"
+      JWT__Audience: "TodoAppUsers"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - minio
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=hanlexicon;Username=user;Password=password"
+      MinioSettings__Endpoint: "minio:9000"
+    depends_on:
+      - db
+      - minio
+      - api

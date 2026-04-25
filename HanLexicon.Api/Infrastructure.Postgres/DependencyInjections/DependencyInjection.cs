@@ -1,4 +1,5 @@
-﻿using HanLexicon.Domain.Interfaces;
+using HanLexicon.Domain.Entities;
+using HanLexicon.Domain.Interfaces;
 using Infrastructure.Postgres.Persistence;
 using Infrastructure.Postgres.Repositories;
 using MediatR;
@@ -12,7 +13,7 @@ namespace Infrastructure.Postgres.DependencyInjections
     {
         public static IServiceCollection AddInfrastructurePostgres(this IServiceCollection services, IConfiguration configuration)
         {
-            // 1. Đăng ký AppDbContext
+            // 1. �ang k� AppDbContext
             services.AddDbContext<HanLexiconDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 

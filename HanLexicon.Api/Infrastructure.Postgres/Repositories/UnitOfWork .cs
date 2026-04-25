@@ -1,4 +1,5 @@
-﻿using HanLexicon.Domain.Interfaces;
+using HanLexicon.Domain.Entities;
+using HanLexicon.Domain.Interfaces;
 using Infrastructure.Postgres.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

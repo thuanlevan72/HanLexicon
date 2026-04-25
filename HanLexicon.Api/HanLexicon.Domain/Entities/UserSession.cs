@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 
-namespace Infrastructure.Postgres;
+namespace HanLexicon.Domain.Entities;
 
 public partial class UserSession
 {

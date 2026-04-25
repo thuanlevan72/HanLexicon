@@ -1,94 +1,49 @@
-﻿using Application.Features.Auth;
+using Application.Features.Auth;
 using HanLexicon.Application.Features.Auth;
-using HanLexicon.Application.Features.Lessons;
+using HanLexicon.Application.Interfaces;
+using HanLexicon.Application.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace HanLexicon.Api.Controllers.Auth
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public AuthController(IMediator mediator)
+        private readonly IAuthService _authService;
+
+        public AuthController(IMediator mediator, IAuthService authService)
         {
             _mediator = mediator;
-        }
-
-
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginCommand command)
-        {
-            // Giới hạn: 1 IP chỉ được thử đăng nhập 5 lần mỗi phút
-            var result = await _mediator.Send(command);
-
-            if (!result.IsSuccess)
-                return Unauthorized(new { result.Message, result.Errors });
-
-            return Ok(result);
-        }
-
-
-        [HttpPost("refresh_token")]
-        [Authorize]
-        public async Task<IActionResult> Refresht([FromBody] RefreshTokenCommand command)
-        {
-            // Giới hạn: 1 IP chỉ được thử đăng nhập 5 lần mỗi phút
-            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-            //bool isAllowed = await _rateLimitService.IsAllowedAsync($"login_{clientIp}", 5, TimeSpan.FromMinutes(1));
-
-            //if (!isAllowed) return StatusCode(429, "Bạn spam quá nhanh, vui lòng thử lại sau 1 phút!");
-            var result = await _mediator.Send(command);
-
-            if (!result.IsSuccess)
-                return Unauthorized(new { result.Message, result.Errors });
-
-            return Ok(result);
+            _authService = authService;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterCommand command)
         {
             var result = await _mediator.Send(command);
-
-            if (!result.IsSuccess)
-                return BadRequest(new { result.Message, result.Errors });
-
-            return Ok(new { result.Message });
+            if (!result.IsSuccess) return BadRequest(ApiResponse<object>.Failure(result.Errors, result.Message));
+            return Ok(ApiResponse<object>.Success(null, "Đăng ký thành công."));
         }
 
-        // -----------------------------------------------------
-        // API 1: CHỈ ĐĂNG XUẤT THIẾT BỊ HIỆN TẠI
-        // -----------------------------------------------------
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (!result.IsSuccess) return Unauthorized(ApiResponse<object>.Failure(result.Errors, result.Message, 401));
+            return Ok(ApiResponse<object>.Success(result));
+        }
+
         [HttpPost("logout")]
         [Authorize]
         public async Task<IActionResult> Logout([FromBody] LogoutRequest request)
         {
-
-            // Khởi tạo Record mới, truyền cứng false vào tham số thứ 2
-            var command = new LogoutCommand(request);
-            var result = await _mediator.Send(command);
-
-            return Ok(new { message = result });
-        }
-
-        // -----------------------------------------------------
-        // API 2: ĐĂNG XUẤT TẤT CẢ THIẾT BỊ
-        // -----------------------------------------------------
-        [HttpPost("logout-all")] // ĐỔI TÊN ĐƯỜNG DẪN TRÁNH TRÙNG LẶP
-        [Authorize]
-        public async Task<IActionResult> LogoutAll([FromBody] LogoutRequest request)
-        {
-            // Khởi tạo Record mới, truyền cứng true vào tham số thứ 2
-            var command = new LogoutCommand(request);
-            var result = await _mediator.Send(command);
-
-            return Ok(new { message = result });
+            await _authService.RevokeSingleTokenAsync(request.ClientRefreshToken);
+            return Ok(ApiResponse<object>.Success(null, "Đã đăng xuất."));
         }
     }
 }

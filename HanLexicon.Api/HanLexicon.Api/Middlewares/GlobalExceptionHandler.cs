@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+using HanLexicon.Domain.Entities;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace HanLexicon.Api.Middlewares
 {
@@ -13,24 +14,24 @@ namespace HanLexicon.Api.Middlewares
 
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            // 1. GHI LOG RA FILE (Chỉ developer và sysadmin mới thấy)
-            // Log luôn cả Exception (Stack trace chi tiết) để dễ debug
-            _logger.LogError(exception, "LỖI HỆ THỐNG: {Message}", exception.Message);
+            // 1. GHI LOG RA FILE (Ch? developer v� sysadmin m?i th?y)
+            // Log lu�n c? Exception (Stack trace chi ti?t) d? d? debug
+            _logger.LogError(exception, "L?I H? TH?NG: {Message}", exception.Message);
 
-            // 2. TRẢ VỀ CHO NGƯỜI DÙNG (Giấu tịt lỗi thật, chỉ hiện câu chung chung)
+            // 2. TR? V? CHO NGU?I D�NG (Gi?u t?t l?i th?t, ch? hi?n c�u chung chung)
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
             httpContext.Response.ContentType = "application/json";
 
             var response = new
             {
                 StatusCode = 500,
-                Message = "Hệ thống đang gặp sự cố. Vui lòng thử lại sau!",
-                // Bắt buộc KHÔNG CÓ StackTrace ở đây
+                Message = "H? th?ng dang g?p s? c?. Vui l�ng th? l?i sau!",
+                // B?t bu?c KH�NG C� StackTrace ? d�y
             };
 
             await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
 
-            // Trả về true để báo cho .NET biết: "Tôi đã xử lý lỗi này rồi, đừng quăng lỗi gốc ra ngoài nữa"
+            // Tr? v? true d? b�o cho .NET bi?t: "T�i d� x? l� l?i n�y r?i, d?ng quang l?i g?c ra ngo�i n?a"
             return true;
         }
     }

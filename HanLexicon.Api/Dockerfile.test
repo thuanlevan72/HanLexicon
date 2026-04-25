@@ -1,0 +1,11 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+# Copy everything
+COPY . .
+
+# Restore dependencies for the test project
+RUN dotnet restore "HanLexicon.Tests/HanLexicon.Tests.csproj"
+
+# Build and run tests when the container starts
+CMD ["dotnet", "test", "HanLexicon.Tests/HanLexicon.Tests.csproj", "--logger", "trx;LogFileName=docker_test_results.trx"]

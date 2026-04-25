@@ -6,18 +6,26 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { GraduationCap, Mail, Lock, ArrowRight, Github } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<UserRole>('student');
+  const [errorMsg, setErrorMsg] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login(email || 'demo@user.com', role);
-    navigate(role === 'admin' ? '/admin' : '/student');
+    setErrorMsg('');
+    try {
+      await login(email, role, password);
+      navigate(role === 'admin' ? '/admin' : '/student');
+    } catch (error: any) {
+      setErrorMsg(error.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+    }
   };
 
   return (
@@ -36,17 +44,23 @@ export default function LoginPage() {
           </div>
         </CardHeader>
         <CardContent>
+          {errorMsg && (
+            <div className="mb-4 p-3 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm text-center font-medium">
+              {errorMsg}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-brand-secondary uppercase tracking-widest">Email</label>
+              <label className="text-xs font-bold text-brand-secondary uppercase tracking-widest">Email / Tên đăng nhập</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 w-4 h-4 text-brand-secondary" />
                 <Input
-                  type="email"
-                  placeholder="name@example.com"
+                  type="text"
+                  placeholder="name@example.com hoặc username"
                   className="pl-10 h-12 border-brand-border bg-brand-highlight/30 focus:bg-white rounded-xl"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -60,12 +74,13 @@ export default function LoginPage() {
                   className="pl-10 h-12 border-brand-border bg-brand-highlight/30 focus:bg-white rounded-xl"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
             </div>
 
             <div className="pt-2">
-              <label className="text-xs font-bold text-brand-secondary uppercase tracking-widest mb-3 block">Bạn là ai?</label>
+              <label className="text-xs font-bold text-brand-secondary uppercase tracking-widest mb-3 block">Bạn là ai? (Tạm thời)</label>
               <div className="grid grid-cols-2 gap-3">
                 <Button
                   type="button"
@@ -92,8 +107,14 @@ export default function LoginPage() {
               </div>
             </div>
 
+            <div className="bg-blue-50 text-blue-800 p-3 rounded-lg text-xs leading-relaxed mt-2 border border-blue-100">
+              <strong className="block mb-1">Tài khoản trải nghiệm:</strong>
+              • Học viên: <code className="bg-white px-1 font-bold">student@chuang.com</code> / <code className="bg-white px-1 font-bold">student123</code><br/>
+              • Admin: <code className="bg-white px-1 font-bold">admin@chuang.com</code> / <code className="bg-white px-1 font-bold">admin123</code>
+            </div>
+
             <Button type="submit" className="w-full bg-brand-primary hover:bg-brand-secondary h-14 text-white rounded-xl text-lg font-bold shadow-sm group">
-              Đăng nhập <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              {t('nav.login')} <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </form>
 

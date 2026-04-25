@@ -1,4 +1,5 @@
-﻿using System;
+using HanLexicon.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,11 +7,11 @@ namespace HanLexicon.Domain.Common.Pagination
 {
     public class PaginationRequest
     {
-        const int maxPageSize = 50; // Giới hạn tối đa 50 record/trang
+        const int maxPageSize = 50; // Gi?i h?n t?i da 50 record/trang
 
         public int PageNumber { get; set; } = 1;
 
-        private int _pageSize = 10; // Mặc định là 10
+        private int _pageSize = 10; // M?c d?nh l� 10
         public int PageSize
         {
             get => _pageSize;
@@ -18,7 +19,7 @@ namespace HanLexicon.Domain.Common.Pagination
         }
 
         public Dictionary<string, object>? DynamicFilters { get; set; }
-        // Sau này có thể thêm:
+        // Sau n�y c� th? th�m:
         // public string? SearchTerm { get; set; }
         // public string? SortBy { get; set; }
     }

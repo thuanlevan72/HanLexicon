@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+using HanLexicon.Domain.Entities;
+using Application.Interfaces;
 using HanLexicon.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -17,7 +18,7 @@ namespace HanLexicon.Api.Extensions
             services.AddControllers();
             services.AddEndpointsApiExplorer();
 
-            // 1. Cấu hình CORS
+            // 1. C?u h�nh CORS
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
@@ -25,11 +26,11 @@ namespace HanLexicon.Api.Extensions
 
             services.AddControllers().AddJsonOptions(options =>
             {
-                // Bỏ qua các vòng lặp tham chiếu khi parse JSON
+                // B? qua c�c v�ng l?p tham chi?u khi parse JSON
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
 
-            // 2. Cấu hình JWT
+            // 2. C?u h�nh JWT
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -52,60 +53,60 @@ namespace HanLexicon.Api.Extensions
                 };
 
                 // ==========================================
-                // THÊM MỚI: ĐOẠN CODE KIỂM TRA TOKEN CHẶT CHẼ
+                // TH�M M?I: �O?N CODE KI?M TRA TOKEN CH?T CH?
                 // ==========================================
                 //options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
                 //{
                 //    OnTokenValidated = async context =>
                 //    {
-                //        // 1. Resolve các service cần thiết
+                //        // 1. Resolve c�c service c?n thi?t
                 //        //var cacheService = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
                 //        var appContext = context.HttpContext.RequestServices.GetRequiredService<HanLexiconDbContext>();
                 //        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<g>>();
 
 
-                //        // 2. Lấy UserId từ Token (Claim NameIdentifier)
+                //        // 2. L?y UserId t? Token (Claim NameIdentifier)
                 //        var userId = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                //        // 3. Lấy deviceId Từ clamis
+                //        // 3. L?y deviceId T? clamis
                 //        var deviceId = context.Principal?.FindFirst("deviceId")?.Value;
 
 
                 //        if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(deviceId))
                 //        {
-                //            context.Fail("Token không chứa thông tin User và Claim hợp lệ.");
+                //            context.Fail("Token kh�ng ch?a th�ng tin User v� Claim h?p l?.");
                 //            return;
                 //        }
-                //        /// cách này không tốt vì nó call quá nhiều lần vào database
-                //        //// 4. Kiểm tra xem thiết bị này đã từng login chưa (có token cũ trong DB không)
+                //        /// c�ch n�y kh�ng t?t v� n� call qu� nhi?u l?n v�o database
+                //        //// 4. Ki?m tra xem thi?t b? n�y d� t?ng login chua (c� token cu trong DB kh�ng)
                 //        //var tokenInDb = await appContext.Set<ApplicationToken>()
                 //        //    .FirstOrDefaultAsync(t => t.UserId == Guid.Parse(userId) &&
                 //        //                              t.LoginProvider == deviceId &&
                 //        //                              t.Name == "RefreshToken");
 
-                //        //// NẾU TÌM KHÔNG THẤY -> Có nghĩa là thiết bị này đã bị Đăng xuất hoặc bị "Đá"
+                //        //// N?U T�M KH�NG TH?Y -> C� nghia l� thi?t b? n�y d� b? �ang xu?t ho?c b? "��"
                 //        //if (tokenInDb == null)
                 //        //{
-                //        //    context.Fail("Phiên đăng nhập đã hết hạn hoặc bị thu hồi trên thiết bị này.");
+                //        //    context.Fail("Phi�n dang nh?p d� h?t h?n ho?c b? thu h?i tr�n thi?t b? n�y.");
                 //        //    return;
                 //        //}
 
-                //        //// 3. Tìm User trong Database
+                //        //// 3. T�m User trong Database
                 //        //var user = await userManager.FindByIdAsync(userId);
 
-                //        //// 4. Kiểm tra: User có bị xóa, hoặc bị Admin khóa (IsActive = false) không?
-                //        //// (Dựa vào thuộc tính IsActive trong ApplicationUser của bạn)
+                //        //// 4. Ki?m tra: User c� b? x�a, ho?c b? Admin kh�a (IsActive = false) kh�ng?
+                //        //// (D?a v�o thu?c t�nh IsActive trong ApplicationUser c?a b?n)
                 //        //if (user == null || !user.IsActive)
                 //        //{
-                //        //    // Đánh dấu Token này là KHÔNG HỢP LỆ -> Trả về lỗi 401 Unauthorized ngay lập tức
-                //        //    context.Fail("Tài khoản không tồn tại hoặc đã bị khóa.");
+                //        //    // ��nh d?u Token n�y l� KH�NG H?P L? -> Tr? v? l?i 401 Unauthorized ngay l?p t?c
+                //        //    context.Fail("T�i kho?n kh�ng t?n t?i ho?c d� b? kh�a.");
                 //        //}
                 //        // ====================================================
-                //        // KIỂM TRA 1: SESSION THIẾT BỊ (Bọc qua Redis)
+                //        // KI?M TRA 1: SESSION THI?T B? (B?c qua Redis)
                 //        // ====================================================
 
                 //        string sessionCacheKey = $"Session:{userId}:{deviceId}";
 
-                //        // Tự động tìm trong Redis, nếu không có mới chạy hàm query DB
+                //        // T? d?ng t�m trong Redis, n?u kh�ng c� m?i ch?y h�m query DB
                 //        var isSessionValid = await cacheService.GetOrSetAsync(
                 //            sessionCacheKey,
                 //            factory: async (cToken) =>
@@ -115,19 +116,19 @@ namespace HanLexicon.Api.Extensions
                 //                    .FirstOrDefaultAsync(t => t.UserId == Guid.Parse(userId) &&
                 //                                              t.LoginProvider == loginProvider &&
                 //                                              t.Name == "RefreshToken");
-                //                return tokenInDb != null; // Trả về true nếu còn trong DB
+                //                return tokenInDb != null; // Tr? v? true n?u c�n trong DB
                 //            },
-                //            slidingExpiration: TimeSpan.FromMinutes(15) // Cache tồn tại 15 phút (bằng tuổi thọ JWT)
+                //            slidingExpiration: TimeSpan.FromMinutes(15) // Cache t?n t?i 15 ph�t (b?ng tu?i th? JWT)
                 //        );
 
                 //        if (!isSessionValid)
                 //        {
-                //            context.Fail("Phiên đăng nhập đã hết hạn hoặc bị thu hồi trên thiết bị này.");
+                //            context.Fail("Phi�n dang nh?p d� h?t h?n ho?c b? thu h?i tr�n thi?t b? n�y.");
                 //            return;
                 //        }
 
                 //        // ====================================================
-                //        // KIỂM TRA 2: TRẠNG THÁI USER ACTIVE (Bọc qua Redis)
+                //        // KI?M TRA 2: TR?NG TH�I USER ACTIVE (B?c qua Redis)
                 //        // ====================================================
                 //        string userStatusCacheKey = $"UserActive:{userId}";
 
@@ -138,25 +139,25 @@ namespace HanLexicon.Api.Extensions
                 //                var user = await userManager.FindByIdAsync(userId);
                 //                return user != null && user.IsActive;
                 //            },
-                //            absoluteExpiration: TimeSpan.FromMinutes(5) // Cache 5 phút để check ban account nhanh nhạy
+                //            absoluteExpiration: TimeSpan.FromMinutes(5) // Cache 5 ph�t d? check ban account nhanh nh?y
                 //        );
 
                 //        if (!isUserActive)
                 //        {
-                //            context.Fail("Tài khoản không tồn tại hoặc đã bị khóa.");
+                //            context.Fail("T�i kho?n kh�ng t?n t?i ho?c d� b? kh�a.");
                 //            return;
                 //        }
                 //    }
                 //};
             });
 
-            // 3. Cấu hình Swagger
+            // 3. C?u h�nh Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Todo API", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = "Nhập 'Bearer [khoảng trắng] [token của bạn]'.",
+                    Description = "Nh?p 'Bearer [kho?ng tr?ng] [token c?a b?n]'.",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,

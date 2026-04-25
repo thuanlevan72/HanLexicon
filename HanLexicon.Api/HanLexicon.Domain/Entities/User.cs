@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace Infrastructure.Postgres;
+namespace HanLexicon.Domain.Entities;
 
 /// <summary>
-/// Tài khoản học viên và quản trị viên
+/// T�i kho?n h?c vi�n v� qu?n tr? vi�n
 /// </summary>
 public partial class User
 {
