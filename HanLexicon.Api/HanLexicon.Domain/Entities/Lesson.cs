@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace Infrastructure.Postgres;
+namespace HanLexicon.Domain.Entities;
 
 public partial class Lesson
 {
@@ -12,7 +12,7 @@ public partial class Lesson
     public short? LessonNumber { get; set; }
 
     /// <summary>
-    /// Tên file HTML gốc, dùng làm game_id khi lưu tiến độ
+    /// T�n file HTML g?c, d�ng l�m game_id khi luu ti?n d?
     /// </summary>
     public string Filename { get; set; } = null!;
 

@@ -5,7 +5,9 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { useAuth } from './context/AuthContext';
+import { Provider } from 'react-redux';
+import { store } from './store';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -26,6 +28,7 @@ import AdminImportPage from './pages/admin/ImportData';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; role?: 'student' | 'admin' }> = ({ children, role }) => {
   const { user, isAuthenticated } = useAuth();
+
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -62,7 +65,7 @@ function AppRoutes() {
           <Route path="lessons" element={<StudentLessons />} />
           <Route path="lessons/:id" element={<StudentLessonDetail />} />
           <Route path="vocabulary" element={<VocabularyPage />} />
-          <Route path="quiz" element={<StudentQuiz />} />
+          <Route path="quiz/:id" element={<StudentQuiz />} />
           <Route path="history" element={<HistoryPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="progress" element={<div className="p-8 text-center text-slate-500 italic">Tính năng tiến độ đang được phát triển...</div>} />
@@ -95,9 +98,9 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
+    <Provider store={store}>
       <AppRoutes />
-    </AuthProvider>
+    </Provider>
   );
 }
 

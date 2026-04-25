@@ -1,7 +1,7 @@
 import { Outlet, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/src/context/AuthContext';
-import { GraduationCap, LogIn, UserPlus, Menu, ArrowRight, MessageCircle, Youtube } from 'lucide-react';
+import { GraduationCap, LogIn, UserPlus, Menu, ArrowRight, MessageCircle, Youtube, X } from 'lucide-react';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTranslation } from 'react-i18next';
@@ -71,28 +71,80 @@ export default function PublicLayout() {
           </div>
 
           {/* Mobile Nav */}
-          <div className="md:hidden">
+          <div className="lg:hidden flex items-center gap-2">
+            <LanguageSwitcher />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger 
-                render={
-                  <Button variant="ghost" size="icon">
-                    <Menu className="w-6 h-6" />
-                  </Button>
-                }
-              />
-              <SheetContent side="right">
-                <div className="flex flex-col gap-6 pt-10">
-                  <Link to="/" onClick={() => setIsOpen(false)} className="text-lg font-semibold">Trang chủ</Link>
-                  <Link to="/#courses" onClick={() => setIsOpen(false)}>Khóa học</Link>
-                  <Link to="/#tools" onClick={() => setIsOpen(false)}>Công cụ</Link>
-                  <Link to="/#hsk" onClick={() => setIsOpen(false)}>HSK 3.0</Link>
-                  <div className="flex flex-col gap-3 pt-4 border-t">
-                    <Link to="/login" onClick={() => setIsOpen(false)}>
-                      <Button variant="outline" className="w-full">Đăng nhập</Button>
+              <SheetTrigger render={(triggerProps) => (
+                <Button variant="ghost" size="icon" className="h-10 w-10" {...triggerProps}>
+                  <Menu className="w-6 h-6" />
+                </Button>
+              )} />
+              <SheetContent side="right" className="w-full sm:w-[350px] p-0 border-l border-brand-border">
+                <div className="flex flex-col h-full bg-white">
+                  <div className="p-6 border-b border-brand-border flex items-center justify-between">
+                    <span className="text-xl font-bold tracking-tight text-brand-ink">Menu</span>
+                    <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+                      <X className="w-6 h-6" />
+                    </Button>
+                  </div>
+                  
+                  <nav className="flex-1 p-6 flex flex-col gap-4 overflow-y-auto">
+                    <Link 
+                      to="/" 
+                      onClick={() => setIsOpen(false)} 
+                      className="flex items-center justify-between p-4 rounded-2xl bg-brand-highlight/30 text-brand-ink font-bold text-lg"
+                    >
+                      {t('nav.home')}
+                      <ArrowRight className="w-5 h-5 text-brand-primary" />
                     </Link>
-                    <Link to="/register" onClick={() => setIsOpen(false)}>
-                      <Button className="w-full bg-gradient-to-r from-brand-accent-dark via-brand-accent to-brand-accent-light hover:opacity-90 border-0 text-white font-bold">Bắt đầu học ngay</Button>
+                    <Link 
+                      to="/#courses" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center justify-between p-4 rounded-2xl border border-brand-border text-brand-secondary font-bold"
+                    >
+                      {t('nav.courses')}
+                      <ArrowRight className="w-5 h-5 opacity-30" />
                     </Link>
+                    <Link 
+                      to="/#tools" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center justify-between p-4 rounded-2xl border border-brand-border text-brand-secondary font-bold"
+                    >
+                      {t('nav.tools')}
+                      <ArrowRight className="w-5 h-5 opacity-30" />
+                    </Link>
+                    <Link 
+                      to="/#hsk" 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center justify-between p-4 rounded-2xl border border-brand-border text-brand-secondary font-bold"
+                    >
+                      {t('nav.hsk')}
+                      <ArrowRight className="w-5 h-5 opacity-30" />
+                    </Link>
+                  </nav>
+
+                  <div className="p-6 border-t border-brand-border flex flex-col gap-3 bg-brand-surface/30">
+                    {user ? (
+                      <>
+                        <Link to={user.role === 'admin' ? '/admin' : '/student'} onClick={() => setIsOpen(false)}>
+                          <Button className="w-full h-14 rounded-2xl font-black text-lg">Dashboard</Button>
+                        </Link>
+                        <Button variant="outline" onClick={() => { logout(); setIsOpen(false); }} className="w-full h-14 rounded-2xl border-brand-border font-bold">Đăng xuất</Button>
+                      </>
+                    ) : (
+                      <>
+                        <Link to="/login" onClick={() => setIsOpen(false)}>
+                          <Button variant="ghost" className="w-full h-14 rounded-2xl font-bold flex items-center gap-2">
+                             <LogIn className="w-5 h-5" /> {t('nav.login')}
+                          </Button>
+                        </Link>
+                        <Link to="/register" onClick={() => setIsOpen(false)}>
+                          <Button className="w-full h-14 bg-gradient-to-r from-brand-accent-dark via-brand-accent to-brand-accent-light hover:opacity-90 border-0 text-white font-black text-lg rounded-2xl shadow-xl shadow-brand-accent/20">
+                            {t('nav.start')}
+                          </Button>
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>

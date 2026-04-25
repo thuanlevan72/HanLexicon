@@ -21,7 +21,7 @@ ProjectAssetsFile=<PATH>obj/project.assets.json
 RootNamespace=Infrastructure.Postgres
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
-SolutionPath=*Undefined*
+SolutionPath=<PATH>../HanLexicon.slnx
 TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net10.0/Infrastructure.Postgres.dll
 TargetRefPath=<PATH>obj/Debug/net10.0/ref/Infrastructure.Postgres.dll
@@ -63,10 +63,8 @@ obj/Debug/net10.0/
 Persistence/
  HanLexiconDbContext.cs
  Migrations/
-  20260424134740_InitialCreate.cs
-  20260424134740_InitialCreate.Designer.cs
-  20260424135354_AddViews.cs
-  20260424135354_AddViews.Designer.cs
+  20260425011229_Baseline.cs
+  20260425011229_Baseline.Designer.cs
   HanLexiconDbContextModelSnapshot.cs
 Repositories/
  GenericRepository.cs

@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+using HanLexicon.Domain.Entities;
+using Application.Interfaces;
 using System.Security.Claims;
 
 namespace HanLexicon.Api.Services;

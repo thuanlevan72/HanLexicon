@@ -1,4 +1,4 @@
-﻿namespace HanLexicon.Application.DTOs.authDto;
+namespace HanLexicon.Application.DTOs.authDto;
 
 public record AuthResultDto
 {

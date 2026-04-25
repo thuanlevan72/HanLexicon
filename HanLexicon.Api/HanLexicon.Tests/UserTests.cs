@@ -1,4 +1,4 @@
-using Infrastructure.Postgres;
+using HanLexicon.Domain.Entities;
 using Xunit;
 
 namespace HanLexicon.Tests

@@ -1,5 +1,5 @@
+using HanLexicon.Domain.Entities;
 using HanLexicon.Domain.Interfaces;
-using Infrastructure.Postgres;
 using MediatR;
 using System;
 using System.Threading;

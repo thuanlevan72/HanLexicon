@@ -1,9 +1,9 @@
-﻿using Application.Interfaces;
+using HanLexicon.Domain.Entities;
+using Application.Interfaces;
 using HanLexicon.Application.DTOs.authDto;
 using HanLexicon.Application.Interfaces;
 using HanLexicon.Domain.Common;
 using HanLexicon.Domain.Interfaces;
-using Infrastructure.Postgres;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +22,7 @@ namespace HanLexicon.Application.Services
 
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ICurrentUserService _currentUserService; // Inject anh chàng này vào
+        private readonly ICurrentUserService _currentUserService; // Inject anh ch�ng n�y v�o
         private readonly Guid _currentId;
 
         public AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
@@ -36,20 +36,20 @@ namespace HanLexicon.Application.Services
 
         public async Task<AuthResultDto> LoginAsync(string? email, string? userName, string password, string ipAddress)
         {
-            // 1. FAIL-FAST: Bắt lỗi dữ liệu đầu vào rỗng
+            // 1. FAIL-FAST: B?t l?i d? li?u d?u v�o r?ng
             if (string.IsNullOrWhiteSpace(email) && string.IsNullOrWhiteSpace(userName))
-                throw new ArgumentException("Phải cung cấp Email hoặc Username để đăng nhập.");
+                throw new ArgumentException("Ph?i cung c?p Email ho?c Username d? dang nh?p.");
 
             if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException("Mật khẩu không được để trống.");
+                throw new ArgumentException("M?t kh?u kh�ng du?c d? tr?ng.");
            
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                // 1. Tìm user theo Email
+                // 1. T�m user theo Email
                 var userRepository = _unitOfWork.Repository<User>();
-                // 2. Tìm User (KHÔNG dùng Transaction cho thao tác Read)
-                // Ưu tiên tìm theo chính xác trường được truyền vào
+                // 2. T�m User (KH�NG d�ng Transaction cho thao t�c Read)
+                // Uu ti�n t�m theo ch�nh x�c tru?ng du?c truy?n v�o
                 var user = await userRepository.Query()
                     .Include(u => u.UserRoles)
                         .ThenInclude(ur => ur.Role)
@@ -57,25 +57,25 @@ namespace HanLexicon.Application.Services
                         (!string.IsNullOrEmpty(email) && x.Email == email) ||
                         (!string.IsNullOrEmpty(userName) && x.Username == userName));
 
-                // 3. Bắt lỗi không tìm thấy tài khoản hoặc tài khoản bị khóa
+                // 3. B?t l?i kh�ng t�m th?y t�i kho?n ho?c t�i kho?n b? kh�a
                 if (user == null)
-                    throw new UnauthorizedAccessException("Tài khoản hoặc mật khẩu không chính xác.");
+                    throw new UnauthorizedAccessException("T�i kho?n ho?c m?t kh?u kh�ng ch�nh x�c.");
 
                 if (!user.IsActive)
-                    throw new UnauthorizedAccessException("Tài khoản của bạn đã bị khóa.");
+                    throw new UnauthorizedAccessException("T�i kho?n c?a b?n d� b? kh�a.");
 
-                // 4. Verify Password bằng BCrypt
+                // 4. Verify Password b?ng BCrypt
                 bool isPasswordValid = BCrypt.Net.BCrypt.EnhancedVerify(password, user.PasswordHash);
                 if (!isPasswordValid)
-                    throw new UnauthorizedAccessException("Tài khoản hoặc mật khẩu không chính xác.");
-                // 5. Nếu mọi thứ đúng, cập nhật LastLoginAt (Thao tác GHI đơn giản, không cần Transaction)
+                    throw new UnauthorizedAccessException("T�i kho?n ho?c m?t kh?u kh�ng ch�nh x�c.");
+                // 5. N?u m?i th? d�ng, c?p nh?t LastLoginAt (Thao t�c GHI don gi?n, kh�ng c?n Transaction)
                 user.LastLoginAt = DateTime.UtcNow;
 
                 List<string> role = user.UserRoles.Select(x => x.Role.Code).ToList();
 
 
 
-                // TODO: Generate JWT Token và Refresh Token ở đây
+                // TODO: Generate JWT Token v� Refresh Token ? d�y
                 string accessToken = await GenerateJwtTokenAsync(role, user, ipAddress);
                 string refreshToken = GenerateRefreshToken();
 
@@ -87,7 +87,7 @@ namespace HanLexicon.Application.Services
                 {
                     UserId = user.Id,
                     CreatedAt = DateTime.UtcNow,
-                    ExpiresAt = DateTime.UtcNow.AddDays(3), // cho 3 ngày mới xóa tokken hiệu lực
+                    ExpiresAt = DateTime.UtcNow.AddDays(3), // cho 3 ng�y m?i x�a tokken hi?u l?c
                     RefreshToken = refreshToken,
                     IpAddress = IPAddress.Parse(ipAddress),
                     UserAgent = ""
@@ -100,7 +100,7 @@ namespace HanLexicon.Application.Services
                 return new AuthResultDto
                 {
                     IsSuccess = true,
-                    Message = "Đăng nhập thành công",
+                    Message = "�ang nh?p th�nh c�ng",
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     UserId = user.Id
@@ -117,14 +117,14 @@ namespace HanLexicon.Application.Services
         {
             // 1. FAIL-FAST
             if (string.IsNullOrWhiteSpace(clientRefreshToken))
-                throw new ArgumentException("Refresh Token không được để trống.");
+                throw new ArgumentException("Refresh Token kh�ng du?c d? tr?ng.");
 
             try
             {
                 var sessionRepo = _unitOfWork.Repository<UserSession>();
 
-                // 2. Tìm Session trong DB (Kèm theo User và Roles)
-                // LƯU Ý: Phải Include UserRoles và Role để lúc tạo token không bị lỗi NullReference
+                // 2. T�m Session trong DB (K�m theo User v� Roles)
+                // LUU �: Ph?i Include UserRoles v� Role d? l�c t?o token kh�ng b? l?i NullReference
                 var session = await sessionRepo.Query()
                     .Include(s => s.User)
                         .ThenInclude(u => u.UserRoles)
@@ -132,41 +132,41 @@ namespace HanLexicon.Application.Services
                     .FirstOrDefaultAsync(s => s.RefreshToken == clientRefreshToken && s.UserId == _currentId);
 
                 if (session == null)
-                    throw new UnauthorizedAccessException("Refresh Token không hợp lệ hoặc không tồn tại.");
+                    throw new UnauthorizedAccessException("Refresh Token kh�ng h?p l? ho?c kh�ng t?n t?i.");
 
-                // 3. Kiểm tra Hạn sử dụng của Refresh Token
+                // 3. Ki?m tra H?n s? d?ng c?a Refresh Token
                 if (session.ExpiresAt < DateTime.UtcNow)
                 {
-                    // Nếu hết hạn thì tiện tay xóa luôn cho sạch Database
+                    // N?u h?t h?n th� ti?n tay x�a lu�n cho s?ch Database
                     sessionRepo.Delete(session);
                     await _unitOfWork.SaveChangesAsync();
-                    throw new UnauthorizedAccessException("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+                    throw new UnauthorizedAccessException("Phi�n dang nh?p d� h?t h?n. Vui l�ng dang nh?p l?i.");
                 }
 
                 var user = session.User;
                 if (user == null || !user.IsActive)
-                    throw new UnauthorizedAccessException("Tài khoản của bạn đã bị khóa hoặc không tồn tại.");
+                    throw new UnauthorizedAccessException("T�i kho?n c?a b?n d� b? kh�a ho?c kh�ng t?n t?i.");
 
-                // 4. MỞ TRANSACTION: Xóa token cũ & cấp token mới
+                // 4. M? TRANSACTION: X�a token cu & c?p token m?i
                 await _unitOfWork.BeginTransactionAsync();
 
                 List<string> roles = user.UserRoles.Select(x => x.Role.Code).ToList();
 
-                // Tạo bộ đôi Token mới
+                // T?o b? d�i Token m?i
                 string newAccessToken = await GenerateJwtTokenAsync(roles, user, session.IpAddress?.ToString() ?? "");
                 string newRefreshToken = GenerateRefreshToken();
 
-                // Xóa Session cũ (Chống tái sử dụng Token - Bảo mật cao)
+                // X�a Session cu (Ch?ng t�i s? d?ng Token - B?o m?t cao)
                 sessionRepo.Delete(session);
 
-                // Tạo Session mới
+                // T?o Session m?i
                 sessionRepo.Add(new UserSession
                 {
                     UserId = user.Id,
                     CreatedAt = DateTime.UtcNow,
-                    ExpiresAt = DateTime.UtcNow.AddDays(3), // Gia hạn thêm 3 ngày
+                    ExpiresAt = DateTime.UtcNow.AddDays(3), // Gia h?n th�m 3 ng�y
                     RefreshToken = newRefreshToken,
-                    IpAddress = session.IpAddress, // Giữ nguyên IP cũ hoặc lấy từ HttpContext nếu bạn truyền vào
+                    IpAddress = session.IpAddress, // Gi? nguy�n IP cu ho?c l?y t? HttpContext n?u b?n truy?n v�o
                     UserAgent = session.UserAgent
                 });
 
@@ -176,7 +176,7 @@ namespace HanLexicon.Application.Services
                 return new AuthResultDto
                 {
                     IsSuccess = true,
-                    Message = "Làm mới Token thành công",
+                    Message = "L�m m?i Token th�nh c�ng",
                     AccessToken = newAccessToken,
                     RefreshToken = newRefreshToken,
                     UserId = user.Id
@@ -195,30 +195,30 @@ namespace HanLexicon.Application.Services
             string? displayName,
             string? email)
         {
-            // 1. FAIL-FAST: Validate đầu vào
+            // 1. FAIL-FAST: Validate d?u v�o
             if (string.IsNullOrWhiteSpace(userName))
-                throw new ArgumentException("Tên đăng nhập không được để trống.");
+                throw new ArgumentException("T�n dang nh?p kh�ng du?c d? tr?ng.");
 
             if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
-                throw new ArgumentException("Mật khẩu phải có ít nhất 6 ký tự.");
+                throw new ArgumentException("M?t kh?u ph?i c� �t nh?t 6 k� t?.");
 
            
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
                 var userRepository = _unitOfWork.Repository<User>();
-                // 2. Kiểm tra trùng lặp (ĐỌC TRƯỚC, KHÔNG CẦN TRANSACTION)
+                // 2. Ki?m tra tr�ng l?p (�?C TRU?C, KH�NG C?N TRANSACTION)
                 bool isUsernameExist = await userRepository.Query().AnyAsync(u => u.Username == userName);
                 if (isUsernameExist)
-                    throw new InvalidOperationException("Tên đăng nhập này đã có người sử dụng.");
+                    throw new InvalidOperationException("T�n dang nh?p n�y d� c� ngu?i s? d?ng.");
 
                 if (!string.IsNullOrWhiteSpace(email))
                 {
                     bool isEmailExist = await userRepository.Query().AnyAsync(u => u.Email == email);
                     if (isEmailExist)
-                        throw new InvalidOperationException("Email này đã được đăng ký.");
+                        throw new InvalidOperationException("Email n�y d� du?c dang k�.");
                 }
-                // 3. Chuẩn bị dữ liệu ghi (Băm pass)
+                // 3. Chu?n b? d? li?u ghi (Bam pass)
                 string hashedPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
                 Guid userId = Guid.NewGuid();
 
@@ -226,7 +226,7 @@ namespace HanLexicon.Application.Services
                 {
                     Id = userId,
                     CreatedAt = DateTime.UtcNow,
-                    DisplayName = displayName ?? userName, // Cấp fallback nếu displayName null
+                    DisplayName = displayName ?? userName, // C?p fallback n?u displayName null
                     IsActive = true,
                     PasswordHash = hashedPassword,
                     Email = email,
@@ -246,7 +246,7 @@ namespace HanLexicon.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
 
-                return new AuthResultDto { IsSuccess = true, Message = "Đăng ký thành công" };
+                return new AuthResultDto { IsSuccess = true, Message = "�ang k� th�nh c�ng" };
 
             }
             catch (Exception ex)
@@ -264,14 +264,14 @@ namespace HanLexicon.Application.Services
             {
                 var sessionRepo = _unitOfWork.Repository<UserSession>();
 
-                // Tìm toàn bộ phiên đăng nhập của User này
+                // T�m to�n b? phi�n dang nh?p c?a User n�y
                 var activeSessions = await sessionRepo.Query()
                     .Where(s => s.UserId == _currentId)
                     .ToListAsync();
 
                 if (activeSessions.Any())
                 {
-                    // Xóa tất cả. (Nếu IRepository của bạn có hàm DeleteRange thì dùng, không thì lặp foreach để Delete)
+                    // X�a t?t c?. (N?u IRepository c?a b?n c� h�m DeleteRange th� d�ng, kh�ng th� l?p foreach d? Delete)
                     foreach (var session in activeSessions)
                     {
                         sessionRepo.Delete(session);
@@ -282,7 +282,7 @@ namespace HanLexicon.Application.Services
             }
             catch (Exception)
             {
-                // Log lỗi nếu cần
+                // Log l?i n?u c?n
                 throw;
             }
         }
@@ -290,13 +290,13 @@ namespace HanLexicon.Application.Services
         public async Task RevokeSingleTokenAsync(string clientRefreshToken)
         {
             if (string.IsNullOrWhiteSpace(clientRefreshToken))
-                return; // Đăng xuất thì nếu đầu vào sai cứ im lặng return, không cần văng lỗi
+                return; // �ang xu?t th� n?u d?u v�o sai c? im l?ng return, kh�ng c?n vang l?i
 
             try
             {
                 var sessionRepo = _unitOfWork.Repository<UserSession>();
 
-                // Tìm chính xác session khớp cả Token và UserId
+                // T�m ch�nh x�c session kh?p c? Token v� UserId
                 var session = await sessionRepo.Query()
                     .FirstOrDefaultAsync(s => s.RefreshToken == clientRefreshToken && s.UserId == _currentId);
 
@@ -308,7 +308,7 @@ namespace HanLexicon.Application.Services
             }
             catch (Exception)
             {
-                // Log lỗi nếu cần
+                // Log l?i n?u c?n
                 throw;
             }
         }
@@ -329,7 +329,7 @@ namespace HanLexicon.Application.Services
             };
 
             // ==========================================
-            // THÊM MỚI: NHÉT CÁC ROLE VÀO JWT TOKEN
+            // TH�M M?I: NH�T C�C ROLE V�O JWT TOKEN
             // ==========================================
             foreach (var role in roles)
             {

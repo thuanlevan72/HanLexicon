@@ -1,53 +1,47 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store';
+import { setUser, logoutUser, UserRole } from '../store/slices/authSlice';
+import { authService } from '../services/api';
 
-export type UserRole = 'student' | 'admin' | null;
+export type { UserRole };
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: UserRole;
-  avatar?: string;
-}
+export const useAuth = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-interface AuthContextType {
-  user: User | null;
-  login: (email: string, role: UserRole) => void;
-  logout: () => void;
-  isAuthenticated: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-
-  const login = (email: string, role: UserRole) => {
-    // Mock login logic
-    setUser({
-      id: '1',
-      name: email.split('@')[0],
-      email,
-      role,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`
-    });
+  const login = async (email: string, role: string, password?: string) => {
+    try {
+      const response = await authService.login({
+        email,
+        password,
+        role,
+        ipAddress: '127.0.0.1' // In a real app, this might be handled by the backend
+      });
+      
+      if (response.isSuccess) {
+        localStorage.setItem('auth_token', response.accessToken);
+        dispatch(setUser({
+          id: response.userId,
+          name: response.name || email.split('@')[0],
+          email,
+          role: (response.role || role) as UserRole,
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`
+        }));
+        return;
+      } else {
+        throw new Error(response.message || 'Login failed');
+      }
+    } catch (error: any) {
+      console.error('API Login failed', error);
+      throw error; // Re-throw so UI can catch it
+    }
   };
 
   const logout = () => {
-    setUser(null);
+    localStorage.removeItem('auth_token');
+    dispatch(logoutUser());
   };
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  return { user, isAuthenticated, login, logout };
 };

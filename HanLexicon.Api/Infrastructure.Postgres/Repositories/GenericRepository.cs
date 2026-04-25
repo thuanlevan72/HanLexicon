@@ -1,4 +1,5 @@
-﻿using HanLexicon.Domain.Common.Pagination;
+using HanLexicon.Domain.Entities;
+using HanLexicon.Domain.Common.Pagination;
 using HanLexicon.Domain.Interfaces;
 using Infrastructure.Postgres.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -69,7 +70,7 @@ namespace Infrastructure.Postgres.Repositories
                 query = query.Where(predicate);
             }
 
-            // Total count (trước khi paging)
+            // Total count (tru?c khi paging)
             var totalItems = await query.CountAsync(cancellationToken);
 
             // Paging + Select

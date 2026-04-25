@@ -5,7 +5,54 @@
     "tools": "Công cụ",
     "hsk": "HSK 3.0",
     "login": "Đăng nhập",
-    "start": "Bắt đầu học ngay"
+    "start": "Bắt đầu ngay",
+    "admin": {
+      "settings": "Cài đặt hệ thống",
+      "fileManager": "Quản lý tệp tin",
+      "general": "Cài đặt chung",
+      "basicInfo": "Thông tin cơ bản",
+      "appName": "Tên ứng dụng",
+      "defaultLang": "Ngôn ngữ mặc định",
+      "aiIntegration": "Tích hợp AI & API",
+      "security": "Bảo mật & Quyền truy cập",
+      "save": "Lưu thay đổi",
+      "reset": "Khôi phục",
+      "stats": {
+        "audio": "Tổng tệp âm thanh",
+        "images": "Tổng tệp hình ảnh",
+        "missing": "Từ vựng thiếu tệp"
+      },
+      "form": {
+        "appTitle": "Tiếng Trung Leyi",
+        "appNameLabel": "Tên ứng dụng",
+        "defaultLangLabel": "Ngôn ngữ mặc định",
+        "vi": "Tiếng Việt",
+        "en": "Tiếng Anh",
+        "aiConfig": "Cấu hình",
+        "syncInterval": "Đồng bộ tự động mỗi 24h",
+        "securityDesc": "Giới hạn truy cập và quy tắc kiểm soát người dùng.",
+        "emailAuth": "Xác thực Email bắt buộc",
+        "emailAuthDesc": "Người dùng phải xác nhận email để kích hoạt tài khoản.",
+        "multiDevice": "Đăng nhập đa thiết bị",
+        "multiDeviceDesc": "Cho phép đăng nhập trên máy tính và điện thoại cùng lúc.",
+        "notifications": "Thông báo hệ thống",
+        "notificationsDesc": "Gửi thông báo đẩy khi có bài học hoặc sự kiện mới."
+      },
+      "files": {
+        "title": "Quản lý tệp tin",
+        "subtitle": "Quản lý hình ảnh và âm thanh cho từng thẻ từ vựng.",
+        "uploadBulk": "Tải lên hàng loạt",
+        "searchPlaceholder": "Tìm kiếm từ vựng hoặc hán tự...",
+        "filter": "Bộ lọc",
+        "sort": "Sắp xếp",
+        "hasAudio": "CÓ ÂM THANH",
+        "noAudio": "THIẾU AUDIO",
+        "hasImage": "CÓ HÌNH ẢNH",
+        "noImage": "THIẾU ẢNH",
+        "updated": "Cập nhật",
+        "loadMore": "Xem thêm từ vựng"
+      }
+    }
   },
   "hero": {
     "title": "Chinh Phục",

@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace Infrastructure.Postgres;
+namespace HanLexicon.Domain.Entities;
 
 /// <summary>
-/// Lưu lịch sử học tập/tra cứu của từng từ vựng riêng biệt
+/// Luu l?ch s? h?c t?p/tra c?u c?a t?ng t? v?ng ri�ng bi?t
 /// </summary>
 public partial class UserWordProgress
 {

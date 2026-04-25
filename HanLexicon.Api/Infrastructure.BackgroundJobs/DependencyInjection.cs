@@ -1,4 +1,5 @@
-﻿using HanLexicon.Application.Interfaces;
+using HanLexicon.Domain.Entities;
+using HanLexicon.Application.Interfaces;
 using HanLexicon.Domain.Interfaces;
 using Infrastructure.BackgroundJobs.Jobs;
 using Microsoft.Extensions.Configuration;

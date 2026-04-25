@@ -1,6 +1,60 @@
-@HanLexicon.Api_HostAddress = http://localhost:5029
+@hostname = localhost
+@port = 5029
+@host = http://{{hostname}}:{{port}}
+@contentType = application/json
+@token = YOUR_ACCESS_TOKEN_HERE
 
-GET {{HanLexicon.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+### 1. Đăng ký tài khoản
+POST {{host}}/api/v1/auth/register
+Content-Type: {{contentType}}
 
-###
+{
+  "username": "testuser",
+  "password": "Password123!",
+  "email": "test@example.com",
+  "displayName": "Người Học Thử Nghiệm"
+}
+
+### 2. Đăng nhập (Lấy Token)
+POST {{host}}/api/v1/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "password": "Password123!"
+}
+
+### 3. Tra cứu từ vựng (Cần Token)
+GET {{host}}/api/v1/dictionary/search?query=hello
+Authorization: Bearer {{token}}
+
+### 4. Lấy danh mục Level (HSK1, HSK2...)
+GET {{host}}/api/v1/learning/catalog
+
+### 5. Lấy từ vựng theo nhóm bài học
+# Thay {id} bằng Guid thật của bài học
+GET {{host}}/api/v1/learning/lessons/00000000-0000-0000-0000-000000000000/vocabularies
+
+### 6. Lưu tiến độ bài học
+POST {{host}}/api/v1/study-progress/lessons
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "lessonId": "00000000-0000-0000-0000-000000000000",
+  "score": 90,
+  "timeSpentS": 300,
+  "completed": true
+}
+
+### 7. Import Excel (Admin)
+POST {{host}}/api/v1/admin/vocabularies/import
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="excelFile"; filename="vocab.xlsx"
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
+< ./vocab.xlsx
+--boundary--

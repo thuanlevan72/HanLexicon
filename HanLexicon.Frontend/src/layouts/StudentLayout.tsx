@@ -26,7 +26,7 @@ const navigation = [
   { name: 'Tổng quan', href: '/student', icon: LayoutDashboard },
   { name: 'Bài học', href: '/student/lessons', icon: BookOpen },
   { name: 'Từ điển', href: '/student/vocabulary', icon: Library },
-  { name: 'Luyện tập', href: '/student/quiz', icon: Trophy },
+  { name: 'Luyện tập', href: '/student/lessons', icon: Trophy },
   { name: 'Lịch sử', href: '/student/history', icon: History },
   { name: 'Tiến độ', href: '/student/progress', icon: BarChart3 },
 ];

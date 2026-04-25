@@ -1,4 +1,4 @@
-﻿namespace HanLexicon.Tests;
+namespace HanLexicon.Tests;
 
 public class UnitTest1
 {

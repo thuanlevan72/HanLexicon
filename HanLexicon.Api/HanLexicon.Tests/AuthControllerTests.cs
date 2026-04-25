@@ -1,3 +1,4 @@
+using HanLexicon.Domain.Entities;
 using HanLexicon.Api.Controllers.Auth;
 using HanLexicon.Application.DTOs.authDto;
 using HanLexicon.Application.Features.Auth;

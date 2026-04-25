@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Minio;
+namespace Infrastructure.Minio;
 
 public class Class1
 {

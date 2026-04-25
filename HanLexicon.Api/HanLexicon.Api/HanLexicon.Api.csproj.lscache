@@ -21,7 +21,7 @@ ProjectAssetsFile=<PATH>obj/project.assets.json
 RootNamespace=HanLexicon.Api
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
-SolutionPath=*Undefined*
+SolutionPath=<PATH>../HanLexicon.slnx
 TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net10.0/HanLexicon.Api.dll
 TargetRefPath=<PATH>obj/Debug/net10.0/ref/HanLexicon.Api.dll
@@ -56,13 +56,12 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 
 [sourceFiles]
 Controllers/
- Admin/AdminController.cs
+ Admin/AdminVocabulariesController.cs
  Auth/AuthController.cs
- FilesController.cs
- LessonsController.cs
- UserController.cs
- VocabulariesController.cs
- WeatherForecastController.cs
+ DictionaryController.cs
+ LearningController.cs
+ ProfileController.cs
+ StudyProgressController.cs
 Extensions/ApiServiceCollectionExtensions.cs
 Middlewares/GlobalExceptionHandler.cs
 obj/Debug/net10.0/
@@ -71,7 +70,6 @@ obj/Debug/net10.0/
  HanLexicon.Api.GlobalUsings.g.cs
 Program.cs
 Services/CurrentUserService.cs
-WeatherForecast.cs
 
 [metadataReferences]
 ../

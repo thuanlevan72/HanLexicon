@@ -25,7 +25,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Infrastructure.Postgres.ChallengeWord", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.ChallengeWord", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,7 +74,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("challenge_words", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Document", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Document", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -132,7 +132,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("documents", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.HanziCard", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.HanziCard", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -186,7 +186,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("hanzi_cards", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.ImportJob", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.ImportJob", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -256,7 +256,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("import_jobs", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Lesson", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Lesson", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -289,7 +289,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)")
                         .HasColumnName("filename")
-                        .HasComment("Tên file HTML gốc, dùng làm game_id khi lưu tiến độ");
+                        .HasComment("T�n file HTML g?c, d�ng l�m game_id khi luu ti?n d?");
 
                     b.Property<string>("Icon")
                         .IsRequired()
@@ -297,7 +297,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)")
                         .HasColumnName("icon")
-                        .HasDefaultValueSql("'📚'::character varying");
+                        .HasDefaultValueSql("'??'::character varying");
 
                     b.Property<bool>("IsPublished")
                         .ValueGeneratedOnAdd()
@@ -339,7 +339,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("lessons", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.LessonCategory", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.LessonCategory", b =>
                 {
                     b.Property<short>("Id")
                         .ValueGeneratedOnAdd()
@@ -373,7 +373,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("lesson_categories", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.MediaFile", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.MediaFile", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -442,7 +442,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("media_files", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Permission", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Permission", b =>
                 {
                     b.Property<short>("Id")
                         .ValueGeneratedOnAdd()
@@ -476,7 +476,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("permissions", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.QuizOption", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.QuizOption", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -509,7 +509,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("quiz_options", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.QuizQuestion", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.QuizQuestion", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -549,7 +549,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("quiz_questions", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Radical", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Radical", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -593,7 +593,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("radicals", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.RadicalSet", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.RadicalSet", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -607,7 +607,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)")
                         .HasColumnName("icon")
-                        .HasDefaultValueSql("'🌱'::character varying");
+                        .HasDefaultValueSql("'??'::character varying");
 
                     b.Property<Guid?>("LessonId")
                         .HasColumnType("uuid")
@@ -634,7 +634,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("radical_sets", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Role", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Role", b =>
                 {
                     b.Property<short>("Id")
                         .ValueGeneratedOnAdd()
@@ -668,7 +668,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("roles", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.SearchHistory", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.SearchHistory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -707,7 +707,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("search_history", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.User", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -764,11 +764,11 @@ namespace Infrastructure.Postgres.Persistence.Migrations
 
                     b.ToTable("users", null, t =>
                         {
-                            t.HasComment("Tài khoản học viên và quản trị viên");
+                            t.HasComment("T�i kho?n h?c vi�n v� qu?n tr? vi�n");
                         });
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.UserProgress", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.UserProgress", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -829,7 +829,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("user_progress", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.UserRole", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.UserRole", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
@@ -855,7 +855,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("user_roles", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.UserSession", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.UserSession", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -905,7 +905,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("user_sessions", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.UserWordProgress", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.UserWordProgress", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
@@ -940,11 +940,11 @@ namespace Infrastructure.Postgres.Persistence.Migrations
 
                     b.ToTable("user_word_progress", null, t =>
                         {
-                            t.HasComment("Lưu lịch sử học tập/tra cứu của từng từ vựng riêng biệt");
+                            t.HasComment("Luu l?ch s? h?c t?p/tra c?u c?a t?ng t? v?ng ri�ng bi?t");
                         });
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.VLessonsSummary", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.VLessonsSummary", b =>
                 {
                     b.Property<string>("Badge")
                         .HasMaxLength(20)
@@ -1001,7 +1001,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToView("v_lessons_summary", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.VUserStat", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.VUserStat", b =>
                 {
                     b.Property<decimal?>("AvgScore")
                         .HasColumnType("numeric")
@@ -1038,7 +1038,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToView("v_user_stats", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Vocabulary", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Vocabulary", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1047,24 +1047,19 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                         .HasDefaultValueSql("uuid_generate_v4()");
 
                     b.Property<string>("AudioUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("audio_url");
+                        .HasColumnType("text");
 
                     b.Property<string>("ExampleCn")
-                        .HasColumnType("text")
-                        .HasColumnName("example_cn");
+                        .HasColumnType("text");
 
                     b.Property<string>("ExamplePy")
-                        .HasColumnType("text")
-                        .HasColumnName("example_py");
+                        .HasColumnType("text");
 
                     b.Property<string>("ExampleVn")
-                        .HasColumnType("text")
-                        .HasColumnName("example_vn");
+                        .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("image_url");
+                        .HasColumnType("text");
 
                     b.Property<Guid>("LessonId")
                         .HasColumnType("uuid")
@@ -1076,9 +1071,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                         .HasColumnName("meaning");
 
                     b.Property<string>("MeaningEn")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("meaning_en");
+                        .HasColumnType("text");
 
                     b.Property<string>("Pinyin")
                         .IsRequired()
@@ -1124,9 +1117,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("role_permissions", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.ChallengeWord", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.ChallengeWord", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.Lesson", "Lesson")
+                    b.HasOne("HanLexicon.Domain.Entities.Lesson", "Lesson")
                         .WithMany("ChallengeWords")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1136,9 +1129,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Lesson");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Document", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Document", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.LessonCategory", "Category")
+                    b.HasOne("HanLexicon.Domain.Entities.LessonCategory", "Category")
                         .WithMany("Documents")
                         .HasForeignKey("CategoryId")
                         .IsRequired()
@@ -1147,9 +1140,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.HanziCard", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.HanziCard", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.Lesson", "Lesson")
+                    b.HasOne("HanLexicon.Domain.Entities.Lesson", "Lesson")
                         .WithMany("HanziCards")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1159,14 +1152,14 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Lesson");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.ImportJob", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.ImportJob", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.LessonCategory", "Category")
+                    b.HasOne("HanLexicon.Domain.Entities.LessonCategory", "Category")
                         .WithMany("ImportJobs")
                         .HasForeignKey("CategoryId")
                         .HasConstraintName("import_jobs_category_id_fkey");
 
-                    b.HasOne("Infrastructure.Postgres.User", "UploadedByNavigation")
+                    b.HasOne("HanLexicon.Domain.Entities.User", "UploadedByNavigation")
                         .WithMany("ImportJobs")
                         .HasForeignKey("UploadedBy")
                         .IsRequired()
@@ -1177,9 +1170,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("UploadedByNavigation");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Lesson", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Lesson", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.LessonCategory", "Category")
+                    b.HasOne("HanLexicon.Domain.Entities.LessonCategory", "Category")
                         .WithMany("Lessons")
                         .HasForeignKey("CategoryId")
                         .IsRequired()
@@ -1188,9 +1181,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.MediaFile", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.MediaFile", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.User", "UploadedByNavigation")
+                    b.HasOne("HanLexicon.Domain.Entities.User", "UploadedByNavigation")
                         .WithMany("MediaFiles")
                         .HasForeignKey("UploadedBy")
                         .HasConstraintName("media_files_uploaded_by_fkey");
@@ -1198,9 +1191,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("UploadedByNavigation");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.QuizOption", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.QuizOption", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.QuizQuestion", "Question")
+                    b.HasOne("HanLexicon.Domain.Entities.QuizQuestion", "Question")
                         .WithMany("QuizOptions")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1210,9 +1203,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.QuizQuestion", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.QuizQuestion", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.Lesson", "Lesson")
+                    b.HasOne("HanLexicon.Domain.Entities.Lesson", "Lesson")
                         .WithMany("QuizQuestions")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1222,9 +1215,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Lesson");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Radical", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Radical", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.RadicalSet", "Set")
+                    b.HasOne("HanLexicon.Domain.Entities.RadicalSet", "Set")
                         .WithMany("Radicals")
                         .HasForeignKey("SetId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1234,9 +1227,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Set");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.RadicalSet", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.RadicalSet", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.Lesson", "Lesson")
+                    b.HasOne("HanLexicon.Domain.Entities.Lesson", "Lesson")
                         .WithMany("RadicalSets")
                         .HasForeignKey("LessonId")
                         .HasConstraintName("radical_sets_lesson_id_fkey");
@@ -1244,16 +1237,16 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Lesson");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.SearchHistory", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.SearchHistory", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.User", "User")
+                    b.HasOne("HanLexicon.Domain.Entities.User", "User")
                         .WithMany("SearchHistories")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("search_history_user_id_fkey");
 
-                    b.HasOne("Infrastructure.Postgres.Vocabulary", "Vocab")
+                    b.HasOne("HanLexicon.Domain.Entities.Vocabulary", "Vocab")
                         .WithMany("SearchHistories")
                         .HasForeignKey("VocabId")
                         .HasConstraintName("search_history_vocab_id_fkey");
@@ -1263,16 +1256,16 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Vocab");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.UserProgress", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.UserProgress", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.Lesson", "Lesson")
+                    b.HasOne("HanLexicon.Domain.Entities.Lesson", "Lesson")
                         .WithMany("UserProgresses")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("user_progress_lesson_id_fkey");
 
-                    b.HasOne("Infrastructure.Postgres.User", "User")
+                    b.HasOne("HanLexicon.Domain.Entities.User", "User")
                         .WithMany("UserProgresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1284,16 +1277,16 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.UserRole", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.UserRole", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.Role", "Role")
+                    b.HasOne("HanLexicon.Domain.Entities.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("user_roles_role_id_fkey");
 
-                    b.HasOne("Infrastructure.Postgres.User", "User")
+                    b.HasOne("HanLexicon.Domain.Entities.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1305,9 +1298,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.UserSession", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.UserSession", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.User", "User")
+                    b.HasOne("HanLexicon.Domain.Entities.User", "User")
                         .WithMany("UserSessions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1317,16 +1310,16 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.UserWordProgress", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.UserWordProgress", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.User", "User")
+                    b.HasOne("HanLexicon.Domain.Entities.User", "User")
                         .WithMany("UserWordProgresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("user_word_progress_user_id_fkey");
 
-                    b.HasOne("Infrastructure.Postgres.Vocabulary", "Vocab")
+                    b.HasOne("HanLexicon.Domain.Entities.Vocabulary", "Vocab")
                         .WithMany("UserWordProgresses")
                         .HasForeignKey("VocabId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1338,9 +1331,9 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Vocab");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Vocabulary", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Vocabulary", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.Lesson", "Lesson")
+                    b.HasOne("HanLexicon.Domain.Entities.Lesson", "Lesson")
                         .WithMany("Vocabularies")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1352,14 +1345,14 @@ namespace Infrastructure.Postgres.Persistence.Migrations
 
             modelBuilder.Entity("RolePermission", b =>
                 {
-                    b.HasOne("Infrastructure.Postgres.Permission", null)
+                    b.HasOne("HanLexicon.Domain.Entities.Permission", null)
                         .WithMany()
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("role_permissions_permission_id_fkey");
 
-                    b.HasOne("Infrastructure.Postgres.Role", null)
+                    b.HasOne("HanLexicon.Domain.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1367,7 +1360,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                         .HasConstraintName("role_permissions_role_id_fkey");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Lesson", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Lesson", b =>
                 {
                     b.Navigation("ChallengeWords");
 
@@ -1382,7 +1375,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Vocabularies");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.LessonCategory", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.LessonCategory", b =>
                 {
                     b.Navigation("Documents");
 
@@ -1391,22 +1384,22 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("Lessons");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.QuizQuestion", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.QuizQuestion", b =>
                 {
                     b.Navigation("QuizOptions");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.RadicalSet", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.RadicalSet", b =>
                 {
                     b.Navigation("Radicals");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Role", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Role", b =>
                 {
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.User", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.User", b =>
                 {
                     b.Navigation("ImportJobs");
 
@@ -1423,7 +1416,7 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("UserWordProgresses");
                 });
 
-            modelBuilder.Entity("Infrastructure.Postgres.Vocabulary", b =>
+            modelBuilder.Entity("HanLexicon.Domain.Entities.Vocabulary", b =>
                 {
                     b.Navigation("SearchHistories");
 

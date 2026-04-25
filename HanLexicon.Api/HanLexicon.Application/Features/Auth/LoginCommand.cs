@@ -1,4 +1,5 @@
-﻿using Application.Features.Auth;
+using HanLexicon.Domain.Entities;
+using Application.Features.Auth;
 using Application.Interfaces;
 using FluentValidation;
 using HanLexicon.Application.DTOs.authDto;
@@ -20,11 +21,11 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
 {
     public LoginCommandValidator()
     {
-        // 🔥 Rule chính: phải có Email hoặc Username
+        // ?? Rule ch�nh: ph?i c� Email ho?c Username
         RuleFor(x => x)
             .Must(x => !string.IsNullOrWhiteSpace(x.Email)
                     || !string.IsNullOrWhiteSpace(x.UserName))
-            .WithMessage("Phải nhập Email hoặc Username");
+            .WithMessage("Ph?i nh?p Email ho?c Username");
 
         // Password
         RuleFor(x => x.Password)
@@ -32,12 +33,12 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
             .MinimumLength(6)
             .MaximumLength(100);
 
-        // Email (nếu có thì phải đúng format)
+        // Email (n?u c� th� ph?i d�ng format)
         RuleFor(x => x.Email)
             .EmailAddress()
             .When(x => !string.IsNullOrWhiteSpace(x.Email));
 
-        // Username (nếu có thì validate)
+        // Username (n?u c� th� validate)
         RuleFor(x => x.UserName)
             .MinimumLength(4)
             .MaximumLength(50)

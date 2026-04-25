@@ -1,7 +1,7 @@
+using HanLexicon.Domain.Entities;
 using ClosedXML.Excel;
 using HanLexicon.Application.Interfaces;
 using HanLexicon.Domain.Interfaces;
-using Infrastructure.Postgres;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Compression;
@@ -72,6 +72,10 @@ public class VocabularyImportJob : IVocabularyImportJob
                     var imageFileName = row.Cell(4).GetValue<string>();
                     var audioFileName = row.Cell(5).GetValue<string>();
                     var lessonIdStr = row.Cell(6).GetValue<string>();
+                    var meaningEn = row.Cell(7).GetValue<string>();
+                    var exampleCn = row.Cell(8).GetValue<string>();
+                    var examplePy = row.Cell(9).GetValue<string>();
+                    var exampleVn = row.Cell(10).GetValue<string>();
 
                     if (string.IsNullOrEmpty(word) || !Guid.TryParse(lessonIdStr, out var lessonId))
                     {
@@ -99,6 +103,10 @@ public class VocabularyImportJob : IVocabularyImportJob
                         Word = word,
                         Pinyin = pinyin,
                         Meaning = meaning,
+                        MeaningEn = meaningEn,
+                        ExampleCn = exampleCn,
+                        ExamplePy = examplePy,
+                        ExampleVn = exampleVn,
                         ImageUrl = imageUrl,
                         AudioUrl = audioUrl,
                         SortOrder = (short)(successCount + 1)

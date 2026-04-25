@@ -21,7 +21,7 @@ ProjectAssetsFile=<PATH>obj/project.assets.json
 RootNamespace=HanLexicon.Tests
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
-SolutionPath=*Undefined*
+SolutionPath=<PATH>../HanLexicon.slnx
 TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net10.0/HanLexicon.Tests.dll
 TargetRefPath=<PATH>obj/Debug/net10.0/ref/HanLexicon.Tests.dll
@@ -56,8 +56,6 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 [sourceFiles]
 <NUGET>/microsoft.net.test.sdk/17.14.1/build/net8.0/Microsoft.NET.Test.Sdk.Program.cs
 AuthControllerTests.cs
-FilesControllerTests.cs
-LessonsControllerTests.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  HanLexicon.Tests.AssemblyInfo.cs

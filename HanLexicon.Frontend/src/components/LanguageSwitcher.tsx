@@ -20,12 +20,19 @@ export function LanguageSwitcher() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-9 px-3 gap-2 font-bold text-slate-600 hover:text-brand-primary">
-          <Globe className="w-4 h-4" />
-          <span className="uppercase">{currentLang}</span>
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={(triggerProps) => (
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-9 px-3 gap-2 font-bold text-slate-600 hover:text-brand-primary"
+            {...triggerProps}
+          >
+            <Globe className="w-4 h-4" />
+            <span className="uppercase">{currentLang}</span>
+          </Button>
+        )}
+      />
       <DropdownMenuContent align="end" className="w-32 rounded-xl">
         <DropdownMenuItem onClick={() => changeLanguage('vi')} className="font-bold cursor-pointer">
           Tiếng Việt

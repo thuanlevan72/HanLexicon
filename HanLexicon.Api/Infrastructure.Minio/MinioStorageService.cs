@@ -1,3 +1,4 @@
+using HanLexicon.Domain.Entities;
 using HanLexicon.Application.Interfaces;
 using Microsoft.Extensions.Options;
 using Minio;

@@ -1,3 +1,4 @@
+using HanLexicon.Domain.Entities;
 using HanLexicon.Api.Extensions;
 using HanLexicon.Application.DependencyInjections;
 using Infrastructure.Postgres.DependencyInjections;

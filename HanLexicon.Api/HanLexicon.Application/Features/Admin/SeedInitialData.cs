@@ -1,6 +1,6 @@
+using HanLexicon.Domain.Entities;
 using HanLexicon.Domain.Common;
 using HanLexicon.Domain.Interfaces;
-using Infrastructure.Postgres;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;

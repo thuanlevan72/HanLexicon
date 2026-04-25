@@ -1,4 +1,5 @@
-﻿using HanLexicon.Domain.Common.Pagination;
+using HanLexicon.Domain.Entities;
+using HanLexicon.Domain.Common.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -8,7 +9,7 @@ namespace HanLexicon.Domain.Interfaces
 {
     public interface IGenericRepository<TEntity> where TEntity : class
     {
-        IQueryable<TEntity> Query(); // 🔥 quan trọng nhất
+        IQueryable<TEntity> Query(); // ?? quan tr?ng nh?t
 
         Task<TEntity?> GetByIdAsync(object id, CancellationToken cancellationToken = default);
 
