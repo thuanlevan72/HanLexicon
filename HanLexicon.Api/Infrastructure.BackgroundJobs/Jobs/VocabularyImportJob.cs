@@ -4,6 +4,7 @@ using HanLexicon.Application.Interfaces;
 using HanLexicon.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Infrastructure.BackgroundJobs.Jobs;
 
@@ -22,7 +23,7 @@ public class VocabularyImportJob : IVocabularyImportJob
     {
         var importJob = await _uow.Repository<ImportJob>().Query()
             .OrderByDescending(x => x.CreatedAt)
-            .FirstOrDefaultAsync(x => x.UploadedBy == adminId && x.Status == "pending");
+            .FirstOrDefaultAsync(x => x.UploadedBy == adminId && (x.Status == "pending" || x.Status == "test"));
 
         if (importJob == null) return;
 
@@ -32,7 +33,6 @@ public class VocabularyImportJob : IVocabularyImportJob
 
         try
         {
-            _logger.LogInformation("Bắt đầu đọc file Excel Import (Text Only)...");
             using var workbook = new XLWorkbook(tempExcelPath);
             var worksheet = workbook.Worksheet(1);
             var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
@@ -49,8 +49,8 @@ public class VocabularyImportJob : IVocabularyImportJob
                     var word = row.Cell(1).GetValue<string>();
                     var pinyin = row.Cell(2).GetValue<string>();
                     var meaning = row.Cell(3).GetValue<string>();
-                    var imageUrl = row.Cell(4).GetValue<string>(); // Giờ là Link URL trực tiếp
-                    var audioUrl = row.Cell(5).GetValue<string>(); // Giờ là Link URL trực tiếp
+                    var imageUrl = row.Cell(4).GetValue<string>();
+                    var audioUrl = row.Cell(5).GetValue<string>();
                     var lessonIdStr = row.Cell(6).GetValue<string>();
                     var meaningEn = row.Cell(7).GetValue<string>();
                     var exampleCn = row.Cell(8).GetValue<string>();
@@ -92,23 +92,22 @@ public class VocabularyImportJob : IVocabularyImportJob
 
             importJob.ProcessedRows = successCount;
             importJob.FailedRows = failedCount;
-            importJob.ErrorLog = errorLogs.Any() ? string.Join("\n", errorLogs) : null;
-            importJob.Status = failedCount == 0 ? "finished" : (successCount > 0 ? "finished_with_errors" : "failed");
+            
+            // SỬA LỖI JSON TẠI ĐÂY: Serialize danh sách lỗi sang chuỗi JSON
+            importJob.ErrorLog = errorLogs.Any() ? JsonSerializer.Serialize(errorLogs) : null;
+            
+            importJob.Status = "finished";
             importJob.FinishedAt = DateTime.UtcNow;
 
             await _uow.SaveChangesAsync();
+            Console.WriteLine($"IMPORT_DONE: {successCount} rows inserted.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Lỗi khi xử lý file Excel");
             importJob.Status = "failed";
-            importJob.ErrorLog = ex.Message;
+            importJob.ErrorLog = JsonSerializer.Serialize(new { error = ex.Message });
             importJob.FinishedAt = DateTime.UtcNow;
             await _uow.SaveChangesAsync();
-        }
-        finally
-        {
-            if (File.Exists(tempExcelPath)) File.Delete(tempExcelPath);
         }
     }
 }

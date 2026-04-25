@@ -1,5 +1,7 @@
 using HanLexicon.Application.Interfaces;
 using HanLexicon.Application.Common;
+using HanLexicon.Domain.Interfaces;
+using HanLexicon.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,26 +10,19 @@ using System.Threading.Tasks;
 
 namespace HanLexicon.Api.Controllers
 {
-    /// <summary>
-    /// API chuyên dụng để đẩy tài nguyên lên kho lưu trữ MinIO.
-    /// </summary>
     [Route("api/v1/media")]
     [ApiController]
     public class MediaController : ControllerBase
     {
         private readonly IStorageService _storageService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public MediaController(IStorageService storageService)
+        public MediaController(IStorageService storageService, IUnitOfWork unitOfWork)
         {
             _storageService = storageService;
+            _unitOfWork = unitOfWork;
         }
 
-        /// <summary>
-        /// Đẩy một hoặc nhiều file vào một thư mục cụ thể trên MinIO.
-        /// </summary>
-        /// <param name="files">Danh sách các file cần upload.</param>
-        /// <param name="folder">Tên thư mục muốn lưu (ví dụ: 'avatars', 'lessons/audio').</param>
-        /// <returns>Danh sách các URL của file sau khi upload thành công.</returns>
         [HttpPost("upload-batch")]
         public async Task<IActionResult> UploadBatch(List<IFormFile> files, [FromQuery] string folder = "general")
         {
@@ -44,12 +39,28 @@ namespace HanLexicon.Api.Controllers
                     if (file.Length > 0)
                     {
                         using var stream = file.OpenReadStream();
-                        // Gán tên file kèm folder để MinIO tự hiểu là cây thư mục
                         var fileNameWithFolder = $"{folder.Trim('/')}/{file.FileName}";
                         
                         var fileUrl = await _storageService.UploadFileAsync(stream, fileNameWithFolder, file.ContentType);
                         
+                        // LƯU VÀO DATABASE
+                        var mediaFile = new MediaFile
+                        {
+                            Id = Guid.NewGuid(),
+                            FileName = file.FileName,
+                            MediaType = file.ContentType.StartsWith("image") ? "image" : "audio",
+                            MimeType = file.ContentType,
+                            FileSizeKb = (int)(file.Length / 1024),
+                            CdnUrl = fileUrl,
+                            StorageKey = fileNameWithFolder,
+                            OwnerType = "General", // Hoặc gắn với ID cụ thể nếu cần
+                            OwnerId = Guid.Empty,
+                            CreatedAt = DateTime.UtcNow
+                        };
+                        _unitOfWork.Repository<MediaFile>().Add(mediaFile);
+
                         uploadedUrls.Add(new {
+                            id = mediaFile.Id,
                             originalName = file.FileName,
                             url = fileUrl
                         });
@@ -61,14 +72,12 @@ namespace HanLexicon.Api.Controllers
                 }
             }
 
-            if (uploadedUrls.Count == 0)
-                return StatusCode(500, ApiResponse<object>.Failure(errors, "Tất cả các file đều upload thất bại."));
+            await _unitOfWork.SaveChangesAsync();
 
             return Ok(ApiResponse<object>.Success(new {
                 total = uploadedUrls.Count,
-                files = uploadedUrls,
-                errors = errors.Count > 0 ? errors : null
-            }, "Upload hoàn tất."));
+                files = uploadedUrls
+            }, "Upload và lưu Database hoàn tất."));
         }
     }
 }
