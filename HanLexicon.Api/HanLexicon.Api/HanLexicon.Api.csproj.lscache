@@ -21,7 +21,7 @@ ProjectAssetsFile=<PATH>obj/project.assets.json
 RootNamespace=HanLexicon.Api
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
-SolutionPath=<PATH>../HanLexicon.slnx
+SolutionPath=*Undefined*
 TargetFrameworkIdentifier=.NETCoreApp
 TargetPath=<PATH>bin/Debug/net10.0/HanLexicon.Api.dll
 TargetRefPath=<PATH>obj/Debug/net10.0/ref/HanLexicon.Api.dll
@@ -60,6 +60,7 @@ Controllers/
  Auth/AuthController.cs
  DictionaryController.cs
  LearningController.cs
+ MediaController.cs
  ProfileController.cs
  StudyProgressController.cs
 Extensions/ApiServiceCollectionExtensions.cs

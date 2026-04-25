@@ -30,33 +30,26 @@ namespace HanLexicon.Api.Controllers.Admin
         }
 
         /// <summary>
-        /// Import từ vựng hàng loạt từ Excel. 
-        /// Có hỗ trợ upload file Zip chứa media (ảnh/âm thanh) để tự động mapping.
+        /// Import từ vựng thuần Text từ Excel. 
+        /// Các cột Hình ảnh/Âm thanh trong Excel phải là Link URL đã upload lên MinIO trước đó.
         /// </summary>
         [HttpPost("import")]
-        public async Task<IActionResult> ImportVocabulary(IFormFile excelFile, IFormFile? mediaZip, [FromQuery] short? categoryId)
+        public async Task<IActionResult> ImportVocabulary(IFormFile excelFile, [FromQuery] short? categoryId)
         {
             if (excelFile == null) return BadRequest(ApiResponse<object>.Failure("File Excel là bắt buộc."));
 
             var tempExcelPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".xlsx");
             using (var stream = new FileStream(tempExcelPath, FileMode.Create)) await excelFile.CopyToAsync(stream);
 
-            string? tempZipPath = null;
-            if (mediaZip != null)
-            {
-                tempZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
-                using (var stream = new FileStream(tempZipPath, FileMode.Create)) await mediaZip.CopyToAsync(stream);
-            }
-
             var jobId = await _mediator.Send(new ImportVocabularyCommand(
                 tempExcelPath,
-                tempZipPath,
+                null, // Không còn dùng Zip
                 _currentUserService.UserId,
                 excelFile.FileName,
                 categoryId
             ));
 
-            return Ok(ApiResponse<object>.Success(new { jobId }, "Yêu cầu import đã được gửi vào hàng chờ."));
+            return Ok(ApiResponse<object>.Success(new { jobId }, "Yêu cầu import text đã được gửi vào hàng chờ."));
         }
 
         [HttpGet("import-status/{jobId}")]
