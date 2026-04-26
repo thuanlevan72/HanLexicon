@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { authService } from '../../services/api';
 
 export type UserRole = 'student' | 'admin';
 

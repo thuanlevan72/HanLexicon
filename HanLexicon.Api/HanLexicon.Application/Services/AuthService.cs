@@ -19,10 +19,9 @@ namespace HanLexicon.Application.Services
 {
     public class AuthService : IAuthService
     {
-
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ICurrentUserService _currentUserService; // Inject anh ch‡ng n‡y v‡o
+        private readonly ICurrentUserService _currentUserService;
         private readonly Guid _currentId;
 
         public AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
@@ -31,25 +30,20 @@ namespace HanLexicon.Application.Services
             _unitOfWork = unitOfWork;
             _currentUserService = currentUserService;
             _currentId = _currentUserService.UserId;
-
         }
 
         public async Task<AuthResultDto> LoginAsync(string? email, string? userName, string password, string ipAddress)
         {
-            // 1. FAIL-FAST: B?t l?i d? li?u d?u v‡o r?ng
             if (string.IsNullOrWhiteSpace(email) && string.IsNullOrWhiteSpace(userName))
-                throw new ArgumentException("Ph?i cung c?p Email ho?c Username d? dang nh?p.");
+                return new AuthResultDto { IsSuccess = false, Message = "Ph·∫£i cung c·∫•p Email ho·∫∑c Username ƒë·ªÉ ƒëƒÉng nh·∫≠p." };
 
             if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException("M?t kh?u khÙng du?c d? tr?ng.");
+                return new AuthResultDto { IsSuccess = false, Message = "M·∫≠t kh·∫©u kh√¥ng ƒë∆∞·ª£c ƒë·ªÉ tr·ªëng." };
            
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                // 1. TÏm user theo Email
                 var userRepository = _unitOfWork.Repository<User>();
-                // 2. TÏm User (KH‘NG d˘ng Transaction cho thao t·c Read)
-                // Uu tiÍn tÏm theo chÌnh x·c tru?ng du?c truy?n v‡o
                 var user = await userRepository.Query()
                     .Include(u => u.UserRoles)
                         .ThenInclude(ur => ur.Role)
@@ -57,29 +51,30 @@ namespace HanLexicon.Application.Services
                         (!string.IsNullOrEmpty(email) && x.Email == email) ||
                         (!string.IsNullOrEmpty(userName) && x.Username == userName));
 
-                // 3. B?t l?i khÙng tÏm th?y t‡i kho?n ho?c t‡i kho?n b? khÛa
                 if (user == null)
-                    throw new UnauthorizedAccessException("T‡i kho?n ho?c m?t kh?u khÙng chÌnh x·c.");
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new AuthResultDto { IsSuccess = false, Message = "T√†i kho·∫£n ho·∫∑c m·∫≠t kh·∫©u kh√¥ng ch√≠nh x√°c." };
+                }
 
                 if (!user.IsActive)
-                    throw new UnauthorizedAccessException("T‡i kho?n c?a b?n d„ b? khÛa.");
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new AuthResultDto { IsSuccess = false, Message = "T√†i kho·∫£n c·ªßa b·∫°n ƒë√£ b·ªã kh√≥a." };
+                }
 
-                // 4. Verify Password b?ng BCrypt
                 bool isPasswordValid = BCrypt.Net.BCrypt.EnhancedVerify(password, user.PasswordHash);
                 if (!isPasswordValid)
-                    throw new UnauthorizedAccessException("T‡i kho?n ho?c m?t kh?u khÙng chÌnh x·c.");
-                // 5. N?u m?i th? d˙ng, c?p nh?t LastLoginAt (Thao t·c GHI don gi?n, khÙng c?n Transaction)
-                user.LastLoginAt = DateTime.UtcNow;
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new AuthResultDto { IsSuccess = false, Message = "T√†i kho·∫£n ho·∫∑c m·∫≠t kh·∫©u kh√¥ng ch√≠nh x√°c." };
+                }
 
+                user.LastLoginAt = DateTime.UtcNow;
                 List<string> role = user.UserRoles.Select(x => x.Role.Code).ToList();
 
-
-
-                // TODO: Generate JWT Token v‡ Refresh Token ? d‚y
                 string accessToken = await GenerateJwtTokenAsync(role, user, ipAddress);
                 string refreshToken = GenerateRefreshToken();
-
-
 
                 userRepository.Update(user);
 
@@ -87,20 +82,18 @@ namespace HanLexicon.Application.Services
                 {
                     UserId = user.Id,
                     CreatedAt = DateTime.UtcNow,
-                    ExpiresAt = DateTime.UtcNow.AddDays(3), // cho 3 ng‡y m?i xÛa tokken hi?u l?c
+                    ExpiresAt = DateTime.UtcNow.AddDays(3),
                     RefreshToken = refreshToken,
                     IpAddress = IPAddress.Parse(ipAddress),
                     UserAgent = ""
                 });
                 await _unitOfWork.SaveChangesAsync();
-
                 await _unitOfWork.CommitTransactionAsync();
-
 
                 return new AuthResultDto
                 {
                     IsSuccess = true,
-                    Message = "–ang nh?p th‡nh cÙng",
+                    Message = "ƒêƒÉng nh·∫≠p th√†nh c√¥ng",
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     UserId = user.Id
@@ -109,22 +102,18 @@ namespace HanLexicon.Application.Services
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                throw;
+                return new AuthResultDto { IsSuccess = false, Message = "ƒê√£ c√≥ l·ªói x·∫£y ra: " + ex.Message };
             }
         }
 
         public async Task<AuthResultDto> RefreshTokenAsync(string clientRefreshToken)
         {
-            // 1. FAIL-FAST
             if (string.IsNullOrWhiteSpace(clientRefreshToken))
-                throw new ArgumentException("Refresh Token khÙng du?c d? tr?ng.");
+                return new AuthResultDto { IsSuccess = false, Message = "Refresh Token kh√¥ng ƒë∆∞·ª£c ƒë·ªÉ tr·ªëng." };
 
             try
             {
                 var sessionRepo = _unitOfWork.Repository<UserSession>();
-
-                // 2. TÏm Session trong DB (KËm theo User v‡ Roles)
-                // LUU ›: Ph?i Include UserRoles v‡ Role d? l˙c t?o token khÙng b? l?i NullReference
                 var session = await sessionRepo.Query()
                     .Include(s => s.User)
                         .ThenInclude(u => u.UserRoles)
@@ -132,41 +121,34 @@ namespace HanLexicon.Application.Services
                     .FirstOrDefaultAsync(s => s.RefreshToken == clientRefreshToken && s.UserId == _currentId);
 
                 if (session == null)
-                    throw new UnauthorizedAccessException("Refresh Token khÙng h?p l? ho?c khÙng t?n t?i.");
+                    return new AuthResultDto { IsSuccess = false, Message = "Refresh Token kh√¥ng h·ª£p l·ªá ho·∫∑c kh√¥ng t·ªìn t·∫°i." };
 
-                // 3. Ki?m tra H?n s? d?ng c?a Refresh Token
                 if (session.ExpiresAt < DateTime.UtcNow)
                 {
-                    // N?u h?t h?n thÏ ti?n tay xÛa luÙn cho s?ch Database
                     sessionRepo.Delete(session);
                     await _unitOfWork.SaveChangesAsync();
-                    throw new UnauthorizedAccessException("PhiÍn dang nh?p d„ h?t h?n. Vui lÚng dang nh?p l?i.");
+                    return new AuthResultDto { IsSuccess = false, Message = "Phi√™n ƒëƒÉng nh·∫≠p ƒë√£ h·∫øt h·∫°n. Vui l√≤ng ƒëƒÉng nh·∫≠p l·∫°i." };
                 }
 
                 var user = session.User;
                 if (user == null || !user.IsActive)
-                    throw new UnauthorizedAccessException("T‡i kho?n c?a b?n d„ b? khÛa ho?c khÙng t?n t?i.");
+                    return new AuthResultDto { IsSuccess = false, Message = "T√†i kho·∫£n c·ªßa b·∫°n ƒë√£ b·ªã kh√≥a ho·∫∑c kh√¥ng t·ªìn t·∫°i." };
 
-                // 4. M? TRANSACTION: XÛa token cu & c?p token m?i
                 await _unitOfWork.BeginTransactionAsync();
-
                 List<string> roles = user.UserRoles.Select(x => x.Role.Code).ToList();
 
-                // T?o b? dÙi Token m?i
                 string newAccessToken = await GenerateJwtTokenAsync(roles, user, session.IpAddress?.ToString() ?? "");
                 string newRefreshToken = GenerateRefreshToken();
 
-                // XÛa Session cu (Ch?ng t·i s? d?ng Token - B?o m?t cao)
                 sessionRepo.Delete(session);
 
-                // T?o Session m?i
                 sessionRepo.Add(new UserSession
                 {
                     UserId = user.Id,
                     CreatedAt = DateTime.UtcNow,
-                    ExpiresAt = DateTime.UtcNow.AddDays(3), // Gia h?n thÍm 3 ng‡y
+                    ExpiresAt = DateTime.UtcNow.AddDays(3),
                     RefreshToken = newRefreshToken,
-                    IpAddress = session.IpAddress, // Gi? nguyÍn IP cu ho?c l?y t? HttpContext n?u b?n truy?n v‡o
+                    IpAddress = session.IpAddress,
                     UserAgent = session.UserAgent
                 });
 
@@ -176,49 +158,49 @@ namespace HanLexicon.Application.Services
                 return new AuthResultDto
                 {
                     IsSuccess = true,
-                    Message = "L‡m m?i Token th‡nh cÙng",
+                    Message = "L√†m m·ªõi Token th√†nh c√¥ng",
                     AccessToken = newAccessToken,
                     RefreshToken = newRefreshToken,
                     UserId = user.Id
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                throw;
+                return new AuthResultDto { IsSuccess = false, Message = "ƒê√£ c√≥ l·ªói x·∫£y ra: " + ex.Message };
             }
         }
 
-        public async Task<AuthResultDto> RegisterAsync(
-            string userName,
-            string password,
-            string? displayName,
-            string? email)
+        public async Task<AuthResultDto> RegisterAsync(string userName, string password, string? displayName, string? email)
         {
-            // 1. FAIL-FAST: Validate d?u v‡o
             if (string.IsNullOrWhiteSpace(userName))
-                throw new ArgumentException("TÍn dang nh?p khÙng du?c d? tr?ng.");
+                return new AuthResultDto { IsSuccess = false, Message = "T√™n ƒëƒÉng nh·∫≠p kh√¥ng ƒë∆∞·ª£c ƒë·ªÉ tr·ªëng." };
 
             if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
-                throw new ArgumentException("M?t kh?u ph?i cÛ Ìt nh?t 6 k˝ t?.");
+                return new AuthResultDto { IsSuccess = false, Message = "M·∫≠t kh·∫©u ph·∫£i c√≥ √≠t nh·∫•t 6 k√Ω t·ª±." };
 
-           
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
                 var userRepository = _unitOfWork.Repository<User>();
-                // 2. Ki?m tra tr˘ng l?p (–?C TRU?C, KH‘NG C?N TRANSACTION)
+                
                 bool isUsernameExist = await userRepository.Query().AnyAsync(u => u.Username == userName);
                 if (isUsernameExist)
-                    throw new InvalidOperationException("TÍn dang nh?p n‡y d„ cÛ ngu?i s? d?ng.");
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new AuthResultDto { IsSuccess = false, Message = "T√™n ƒëƒÉng nh·∫≠p n√†y ƒë√£ c√≥ ng∆∞·ªùi s·ª≠ d·ª•ng." };
+                }
 
                 if (!string.IsNullOrWhiteSpace(email))
                 {
                     bool isEmailExist = await userRepository.Query().AnyAsync(u => u.Email == email);
                     if (isEmailExist)
-                        throw new InvalidOperationException("Email n‡y d„ du?c dang k˝.");
+                    {
+                        await _unitOfWork.RollbackTransactionAsync();
+                        return new AuthResultDto { IsSuccess = false, Message = "Email n√†y ƒë√£ ƒë∆∞·ª£c ƒëƒÉng k√Ω." };
+                    }
                 }
-                // 3. Chu?n b? d? li?u ghi (Bam pass)
+
                 string hashedPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
                 Guid userId = Guid.NewGuid();
 
@@ -226,7 +208,7 @@ namespace HanLexicon.Application.Services
                 {
                     Id = userId,
                     CreatedAt = DateTime.UtcNow,
-                    DisplayName = displayName ?? userName, // C?p fallback n?u displayName null
+                    DisplayName = displayName ?? userName,
                     IsActive = true,
                     PasswordHash = hashedPassword,
                     Email = email,
@@ -246,43 +228,35 @@ namespace HanLexicon.Application.Services
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
 
-                return new AuthResultDto { IsSuccess = true, Message = "–ang k˝ th‡nh cÙng" };
-
+                return new AuthResultDto { IsSuccess = true, Message = "ƒêƒÉng k√Ω th√†nh c√¥ng" };
             }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync();
-                throw;
+                return new AuthResultDto { IsSuccess = false, Message = "ƒê√£ c√≥ l·ªói x·∫£y ra: " + ex.Message };
             }
-           
         }
 
         public async Task RevokeAllUserTokensAsync()
         {
-
             try
             {
                 var sessionRepo = _unitOfWork.Repository<UserSession>();
-
-                // TÏm to‡n b? phiÍn dang nh?p c?a User n‡y
                 var activeSessions = await sessionRepo.Query()
                     .Where(s => s.UserId == _currentId)
                     .ToListAsync();
 
                 if (activeSessions.Any())
                 {
-                    // XÛa t?t c?. (N?u IRepository c?a b?n cÛ h‡m DeleteRange thÏ d˘ng, khÙng thÏ l?p foreach d? Delete)
                     foreach (var session in activeSessions)
                     {
                         sessionRepo.Delete(session);
                     }
-
                     await _unitOfWork.SaveChangesAsync();
                 }
             }
             catch (Exception)
             {
-                // Log l?i n?u c?n
                 throw;
             }
         }
@@ -290,13 +264,11 @@ namespace HanLexicon.Application.Services
         public async Task RevokeSingleTokenAsync(string clientRefreshToken)
         {
             if (string.IsNullOrWhiteSpace(clientRefreshToken))
-                return; // –ang xu?t thÏ n?u d?u v‡o sai c? im l?ng return, khÙng c?n vang l?i
+                return;
 
             try
             {
                 var sessionRepo = _unitOfWork.Repository<UserSession>();
-
-                // TÏm chÌnh x·c session kh?p c? Token v‡ UserId
                 var session = await sessionRepo.Query()
                     .FirstOrDefaultAsync(s => s.RefreshToken == clientRefreshToken && s.UserId == _currentId);
 
@@ -308,7 +280,6 @@ namespace HanLexicon.Application.Services
             }
             catch (Exception)
             {
-                // Log l?i n?u c?n
                 throw;
             }
         }
@@ -317,7 +288,6 @@ namespace HanLexicon.Application.Services
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
 
             var claims = new List<Claim>
             {
@@ -328,9 +298,6 @@ namespace HanLexicon.Application.Services
                 new Claim("ipAddress", ipAddress)
             };
 
-            // ==========================================
-            // TH M M?I: NH…T C¡C ROLE V¿O JWT TOKEN
-            // ==========================================
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
@@ -346,7 +313,6 @@ namespace HanLexicon.Application.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
 
         private static string GenerateRefreshToken()
         {

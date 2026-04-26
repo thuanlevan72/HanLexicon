@@ -40,6 +40,19 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  # --- 2. DATABASE MỚI (CHẠY SONG SONG, TRẮNG TINH) ---
+  db_empty:
+    image: postgres:16-alpine
+    container_name: hanlexicon_db_empty # Đổi tên container
+    restart: always
+    environment:
+      POSTGRES_DB: hanlexicon_empty # Tên database bên trong (bạn có thể giữ nguyên hanlexicon nếu muốn)
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432" # Đổi port ra ngoài thành 5433 để không đụng hàng
+    volumes:
+      - postgres_data_empty:/var/lib/postgresql/data # QUAN TRỌNG: Tên volume mới để data trống
   minio:
     image: minio/minio
     container_name: hanlexicon-minio
@@ -55,4 +68,5 @@ services:
 
 volumes:
   postgres_data:
+  postgres_data_empty:
   minio_data:

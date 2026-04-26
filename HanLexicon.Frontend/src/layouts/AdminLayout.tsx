@@ -24,17 +24,19 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutGrid },
-  { name: 'Người dùng', href: '/admin/users', icon: Users },
-  { name: 'Bài học', href: '/admin/lessons', icon: Library },
-  { name: 'Hán tự', href: '/admin/hanzi', icon: BookMarked },
-  { name: 'Tệp tin media', href: '/admin/files', icon: FileCode },
+  { name: 'Quản lý từ vựng', href: '/admin/files', icon: FileCode },
   { name: 'Nhập dữ liệu', href: '/admin/import', icon: Database },
 ];
 
 export default function AdminLayout() {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === '/admin') {
+      return location.pathname === '/admin';
+    }
+    return location.pathname.startsWith(path);
+  };
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-brand-ink text-brand-secondary">
@@ -74,11 +76,6 @@ export default function AdminLayout() {
       </nav>
 
       <div className="p-6 border-t border-white/5 space-y-2">
-        <Link to="/admin/settings">
-          <Button variant="ghost" className="w-full justify-start gap-3 text-brand-border/60 hover:text-white hover:bg-white/5 font-bold">
-            <Settings className="w-5 h-5" /> Cài đặt hệ thống
-          </Button>
-        </Link>
         <Button
           variant="ghost"
           onClick={logout}

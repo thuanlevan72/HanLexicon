@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
-import { api, Vocabulary } from '@/src/services/api';
+import { Vocabulary, MOCK_VOCABULARIES } from '@/src/services/api';
 
 export default function FileManager() {
   const { t } = useTranslation();
@@ -29,16 +29,20 @@ export default function FileManager() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState('');
 
+  // Pure UI mock
   useEffect(() => {
-    // Load initial data
-    api.getVocabulary().then(data => setVocabularies(data));
+    setVocabularies(MOCK_VOCABULARIES as any);
   }, []);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
     setSearchTerm(term);
-    const data = await api.getVocabulary(term);
-    setVocabularies(data);
+    // Mock search filter 
+    if (term) {
+      setVocabularies(MOCK_VOCABULARIES.filter(v => v.word.includes(term) || (v.meaning_vn && v.meaning_vn.includes(term))) as any);
+    } else {
+      setVocabularies(MOCK_VOCABULARIES as any);
+    }
   };
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
@@ -49,19 +53,16 @@ export default function FileManager() {
     setUploadMessage('');
     
     try {
-      // It calls api.ts which wraps adminService.importVocabularies
-      const res = await api.importExcel(excelFile);
-      setUploadMessage(res.message);
-      if (res.success) {
-        // Refresh list
-        api.getVocabulary().then(data => setVocabularies(data));
-        setTimeout(() => {
-          setIsUploadModalOpen(false);
-          setExcelFile(null);
-          setMediaZip(null);
-          setUploadMessage('');
-        }, 2000);
-      }
+      // Mock upload
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setUploadMessage('Nhập dữ liệu thành công (Thuần Giao Diện)');
+      
+      setTimeout(() => {
+        setIsUploadModalOpen(false);
+        setExcelFile(null);
+        setMediaZip(null);
+        setUploadMessage('');
+      }, 2000);
     } catch (error) {
       setUploadMessage('Lỗi tải lên dữ liệu.');
     } finally {

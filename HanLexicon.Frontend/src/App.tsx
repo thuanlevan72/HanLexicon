@@ -14,13 +14,9 @@ import RegisterPage from './pages/RegisterPage';
 import StudentDashboard from './pages/student/Dashboard';
 import AdminDashboard from './pages/admin/Dashboard';
 import FileManager from './pages/admin/FileManager';
-import SystemSettings from './pages/admin/SystemSettings';
 import StudentLayout from './layouts/StudentLayout';
 import AdminLayout from './layouts/AdminLayout';
 import PublicLayout from './layouts/PublicLayout';
-import StudentLessons from './pages/student/Lessons';
-import StudentLessonDetail from './pages/student/LessonDetail';
-import StudentQuiz from './pages/student/Quiz';
 import VocabularyPage from './pages/student/Vocabulary';
 import HistoryPage from './pages/student/History';
 import ProfilePage from './pages/student/Profile';
@@ -62,13 +58,9 @@ function AppRoutes() {
           }
         >
           <Route index element={<StudentDashboard />} />
-          <Route path="lessons" element={<StudentLessons />} />
-          <Route path="lessons/:id" element={<StudentLessonDetail />} />
           <Route path="vocabulary" element={<VocabularyPage />} />
-          <Route path="quiz/:id" element={<StudentQuiz />} />
           <Route path="history" element={<HistoryPage />} />
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="progress" element={<div className="p-8 text-center text-slate-500 italic">Tính năng tiến độ đang được phát triển...</div>} />
         </Route>
 
         {/* Các Tuyến Đường Cho Quản Trị Viên (Admin Routes) */}
@@ -81,12 +73,8 @@ function AppRoutes() {
           }
         >
           <Route index element={<AdminDashboard />} />
-          <Route path="users" element={<div className="p-8 text-center text-slate-500 italic">Quản lý người dùng đang được phát triển...</div>} />
-          <Route path="lessons" element={<div className="p-8 text-center text-slate-500 italic">Quản lý bài học đang được phát triển...</div>} />
-          <Route path="hanzi" element={<div className="p-8 text-center text-slate-500 italic">Quản lý hán tự đang được phát triển...</div>} />
           <Route path="import" element={<AdminImportPage />} />
           <Route path="files" element={<FileManager />} />
-          <Route path="settings" element={<SystemSettings />} />
         </Route>
 
         {/* Chuyển hướng dự phòng (Fallback Route) */}

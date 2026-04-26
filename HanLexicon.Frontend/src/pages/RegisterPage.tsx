@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { GraduationCap, Mail, Lock, User, ArrowRight } from 'lucide-react';
-import { authService } from '../services/api';
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -26,26 +25,10 @@ export default function RegisterPage() {
       return;
     }
 
-    try {
-      // Create user via API
-      await authService.register({
-        username,
-        password,
-        confirmPassword,
-        displayName,
-        email
-      });
-
-      // Once registered, attempt to log in automatically
-      // Note: we can use the username/email here. 
-      await login(email || username, 'student', password);
-      navigate('/student');
-    } catch (err) {
-      console.warn('API Register failed, falling back to mock or taking error', err);
-      // Mock fallback
-      await login(email || username, 'student');
-      navigate('/student');
-    }
+    // Thuần giao diện
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await login(email || username, password);
+    navigate('/student');
   };
 
   return (

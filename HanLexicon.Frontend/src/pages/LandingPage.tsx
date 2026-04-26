@@ -37,46 +37,25 @@ const staggerContainer = {
 
 const features = [
   {
-    icon: <BookOpen className="w-8 h-8 text-emerald-600" />,
-    title: "Giáo trình HSK",
-    description: "Học theo chuẩn HSK quốc tế từ cấp độ 1 đến 6, phù hợp với mọi trình độ.",
-    count: "150 bài",
+    icon: <Search className="w-8 h-8 text-emerald-600" />,
+    title: "Từ điển HSK",
+    description: "Tra cứu từ vựng chuẩn HSK 1 đến 6 với nghĩa tiếng Việt, tiếng Anh và hình ảnh trực quan.",
+    count: "6 Cấp độ",
     color: "bg-emerald-50"
   },
   {
-    icon: <Search className="w-8 h-8 text-amber-600" />,
-    title: "Từ vựng chủ đề",
-    description: "Hệ thống từ vựng được phân loại theo chủ đề, dễ học và ghi nhớ.",
-    count: "80 bài",
+    icon: <BookOpen className="w-8 h-8 text-amber-600" />,
+    title: "Danh sách từ vựng",
+    description: "Hệ thống từ vựng chi tiết, dễ dàng nắm bắt số lượng từ theo yêu cầu của từng cấp độ.",
+    count: "Hàng ngàn từ",
     color: "bg-amber-50"
   },
   {
-    icon: <MessageSquare className="w-8 h-8 text-sky-600" />,
-    title: "Hội thoại",
-    description: "Luyện tập hội thoại thực tế với các tình huống giao tiếp hàng ngày.",
-    count: "120 bài",
+    icon: <Trophy className="w-8 h-8 text-sky-600" />,
+    title: "Lịch sử học tập",
+    description: "Theo dõi tiến độ học tập, ghi lại nhật ký tra cứu từ vựng hàng ngày của bạn.",
+    count: "Cá nhân hóa",
     color: "bg-sky-50"
-  },
-  {
-    icon: <Languages className="w-8 h-8 text-indigo-600" />,
-    title: "Đọc hiểu",
-    description: "Nâng cao khả năng đọc hiểu với các bài văn từ cơ bản đến nâng cao.",
-    count: "90 bài",
-    color: "bg-indigo-50"
-  },
-  {
-    icon: <Trophy className="w-8 h-8 text-rose-600" />,
-    title: "Luyện thi",
-    description: "Đề thi thử HSK với hệ thống chấm điểm tự động và phân tích chi tiết.",
-    count: "60 bài",
-    color: "bg-rose-50"
-  },
-  {
-    icon: <PenTool className="w-8 h-8 text-teal-600" />,
-    title: "Bộ thủ",
-    description: "Học 214 bộ thủ cơ bản giúp nhận biết và viết chữ Hán chính xác.",
-    count: "30 bài",
-    color: "bg-teal-50"
   }
 ];
 
@@ -142,9 +121,9 @@ export default function LandingPage() {
               <Link to="/register" className={cn(buttonVariants({ size: "lg" }), "bg-gradient-to-r from-brand-accent-dark via-brand-accent to-brand-accent-light text-white rounded-2xl px-10 h-16 text-lg font-bold shadow-xl shadow-brand-accent/30 group border-0 hover:-translate-y-1 transition-all")}>
                 Bắt đầu học ngay <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Button variant="outline" size="lg" className="rounded-2xl px-10 h-16 text-lg border-brand-border text-brand-secondary font-bold hover:bg-brand-highlight">
-                Khám phá khóa học
-              </Button>
+              <Link to="/login" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "rounded-2xl px-10 h-16 text-lg border-brand-border text-brand-secondary font-bold hover:bg-brand-highlight")}>
+                Tra cứu từ điển
+              </Link>
             </div>
           </motion.div>
 
@@ -331,12 +310,12 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
             <Link to="/register" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto h-20 px-12 rounded-[2rem] bg-gradient-to-r from-brand-accent-dark via-brand-accent to-brand-accent-light text-xl font-black shadow-2xl shadow-brand-accent/40 text-white transition-all hover:scale-105 border-0 flex items-center justify-center")}>
               Đăng ký học miễn phí
             </Link>
-            <Link to="/courses" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "w-full sm:w-auto h-20 px-12 rounded-[2rem] border-0 bg-white text-brand-primary hover:bg-brand-highlight text-xl font-black shadow-xl transition-all hover:scale-105 flex items-center justify-center")}>
-              Xem các bài học <ArrowRight className="w-6 h-6 ml-3" />
+            <Link to="/login" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "w-full sm:w-auto h-20 px-12 rounded-[2rem] border-0 bg-white text-brand-primary hover:bg-brand-highlight text-xl font-black shadow-xl transition-all hover:scale-105 flex items-center justify-center")}>
+              Đăng nhập <ArrowRight className="w-6 h-6 ml-3" />
             </Link>
           </div>
         </div>

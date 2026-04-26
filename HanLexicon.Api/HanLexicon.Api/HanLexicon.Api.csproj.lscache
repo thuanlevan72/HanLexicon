@@ -64,7 +64,9 @@ Controllers/
  ProfileController.cs
  StudyProgressController.cs
 Extensions/ApiServiceCollectionExtensions.cs
-Middlewares/GlobalExceptionHandler.cs
+Middlewares/
+ ExceptionMiddleware.cs
+ GlobalExceptionHandler.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  HanLexicon.Api.AssemblyInfo.cs

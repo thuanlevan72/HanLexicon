@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/src/context/AuthContext';
-import { api } from '@/src/services/api';
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,7 @@ export default function ProfilePage() {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await api.updateUserProfile(user?.id || '1', { name, email });
+    await new Promise(resolve => setTimeout(resolve, 500)); // pure UI mock
     setLoading(false);
     alert('Thông tin đã được cập nhật!');
   };

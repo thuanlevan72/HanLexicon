@@ -36,7 +36,7 @@ namespace HanLexicon.Application.Common
                 IsSuccess = false,
                 StatusCode = statusCode,
                 Message = message ?? "Error",
-                Errors = errors.ToList()
+                Errors = errors?.ToList()
             };
         }
 

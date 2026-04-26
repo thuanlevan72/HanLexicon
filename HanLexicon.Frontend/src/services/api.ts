@@ -1,4 +1,3 @@
-import { apiClient } from './apiClient';
 
 // --- Types based on spec ---
 export interface LoginResponse {
@@ -490,91 +489,97 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const authService = {
   login: async (data: any) => { 
-    try {
-      const response = await apiClient.post('/api/v1/auth/login', {
-        email: data.email,
-        password: data.password,
-        userName: data.email, // using email as userName for now
-        ipAddress: data.ipAddress || '127.0.0.1'
-      }) as any;
-      return { 
-        isSuccess: true, 
-        accessToken: response.token || response.accessToken, 
-        userId: response.userId,
-        role: response.role,
-        message: 'Success' 
+    await sleep(500);
+    const { userName, password } = data;
+    
+    // Fake admin based on user's sample
+    if (userName === 'Admin' && password === '@Anh123anh') {
+      return {
+        isSuccess: true,
+        statusCode: 200,
+        message: "Success",
+        data: {
+          isSuccess: true,
+          refreshToken: "030cqKdsXznpXIQ7c2HaaKoeebacuRTQqU5a4qAQtPebiDDgRiKPIkP5j7KDfuqp6ye/LWkL6Zs/qmcMA6+f/g==",
+          accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzNDRkOTVmNC0zM2EzLTQyOGYtYmE2ZC02ZmNkMTg1MzQwMTciLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMzQ0ZDk1ZjQtMzNhMy00MjhmLWJhNmQtNmZjZDE4NTM0MDE3IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkFkbWluIiwiaXBBZGRyZXNzIjoiMjcuNjUuMTYyLjE0NCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6ImFkbWluIiwiZXhwIjoxNzc3Nzc0MDIzLCJpc3MiOiJUb2RvQXBwIiwiYXVkIjoiVG9kb0FwcFVzZXJzIn0.X9xuXdDykTtjCZFYfm_ZJn-2WVRLMvy3IIdS-eSpz0I",
+          message: "Đăng nhập thành công",
+          errors: null,
+          userId: "344d95f4-33a3-428f-ba6d-6fcd18534017"
+        },
+        errors: []
       };
-    } catch (error: any) {
-      // Fallback for demo accounts if backend fails or doesn't support them
-      const { email, password, role } = data;
-      if (email === 'admin@chuang.com' && password === 'admin123' && role === 'admin') {
-        return { isSuccess: true, accessToken: 'admin_mock_token', refreshToken: 'admin_mock_refresh', userId: 'admin-01', role: 'admin', name: 'Super Admin', message: 'Success' };
-      }
-      if (email === 'student@chuang.com' && password === 'student123' && role === 'student') {
-        return { isSuccess: true, accessToken: 'student_mock_token', refreshToken: 'student_mock_refresh', userId: 'student-01', role: 'student', name: 'John Student', message: 'Success' };
-      }
-      return { isSuccess: false, message: error || 'Sai thông tin đăng nhập hoặc sai vai trò (Role).' };
     }
+    
+    // Fake student
+    if ((userName === 'student@chuang.com' || userName === 'student') && password === 'student123') {
+      const studentPayload = {
+        sub: "student-1234",
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "Student",
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "student",
+        email: "student@chuang.com"
+      };
+      
+      const payloadBase64 = btoa(JSON.stringify(studentPayload));
+      const studentToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${payloadBase64}.fake_sig`;
+      
+      return {
+        isSuccess: true,
+        statusCode: 200,
+        message: "Success",
+        data: {
+          isSuccess: true,
+          refreshToken: "fake_student_refresh_token",
+          accessToken: studentToken,
+          message: "Đăng nhập thành công",
+          errors: null,
+          userId: "student-1234"
+        },
+        errors: []
+      };
+    }
+    
+    return { isSuccess: false, message: 'Sai thông tin đăng nhập.' };
   },
   register: async (data: any) => { 
-    return (await apiClient.post('/api/v1/auth/register', data)) as any;
+    await sleep(500);
+    return { message: 'Registered successfully' };
   },
   logout: async (data?: any) => { 
-    try {
-      return (await apiClient.post('/api/v1/auth/logout', { logoutAllDevices: false })) as any;
-    } catch {
-      return { message: 'Logged out successfully' };
-    }
+    await sleep(200);
+    return { message: 'Logged out successfully' };
   },
   logoutAll: async () => { 
-    try {
-      return (await apiClient.post('/api/v1/auth/logout', { logoutAllDevices: true })) as any;
-    } catch {
-      return { message: 'Logged out of all devices' };
-    }
+    await sleep(200);
+    return { message: 'Logged out of all devices' };
   }
 };
 
 export const learningService = {
   getLessons: async () => { 
-    try {
-      return (await apiClient.get('/api/v1/learning/catalog')) as any;
-    } catch {
-      return MOCK_CATEGORIES; 
-    }
+    await sleep(500);
+    return MOCK_CATEGORIES; 
   },
   getLessonDetail: async (id: string) => { 
-    // Not formally defined in swagger paths, use mock as fallback
     await sleep(300); return MOCK_LESSON_DETAIL; 
   },
   getLessonVocabularies: async (id: string) => { 
-    try {
-      return (await apiClient.get(`/api/v1/learning/lessons/${id}/vocabularies`)) as any;
-    } catch {
-      return MOCK_VOCABULARIES; 
-    }
+    await sleep(300);
+    return MOCK_VOCABULARIES; 
   },
   getDocuments: async (categoryId?: number) => { await sleep(300); return [{ id: 1, title: 'Tài liệu HSK 1', url: '#' }]; },
   saveProgress: async (data: any) => { 
-    try {
-      return (await apiClient.post('/api/v1/study-progress/lessons', data)) as any;
-    } catch {
-      return { success: true }; 
-    }
+    await sleep(300);
+    return { success: true }; 
   },
   submitQuizResult: async (lessonId: string, score: number, total: number) => { 
-    // Might be folded into saveProgress based on api docs
     return learningService.saveProgress({ lessonId, score, completed: score === total, timeSpentS: 0 });
   }
 };
 
 export const vocabularyService = {
   getVocabularies: async (params?: any) => { 
-    try {
-      return (await apiClient.get('/api/v1/dictionary/search', { params: { query: params?.search || '' } })) as any;
-    } catch {
-      return { data: MOCK_VOCABULARIES, totalCount: MOCK_VOCABULARIES.length, pageIndex: 1, pageSize: 200 }; 
-    }
+    await sleep(300);
+    return { data: MOCK_VOCABULARIES, totalCount: MOCK_VOCABULARIES.length, pageIndex: 1, pageSize: 200 }; 
   },
   importVocabularies: async (file: File) => {
     return api.importExcel(file);
@@ -591,21 +596,16 @@ export const adminService = {
 export const userService = {
   getUserProfile: async () => { await sleep(400); return { id: 'user1', username: 'student1', email: 'student@example.com', displayName: 'Học viên Chăm chỉ' }; },
   getStats: async () => { 
-    try {
-      return (await apiClient.get('/api/v1/profile/analytics')) as any;
-    } catch {
-      return { totalPoints: 1250, avgScore: 85.5, lessonsCompleted: 12, timeSpentS: 3600 * 5, lastPlayed: new Date().toISOString() };
-    }
+    await sleep(300);
+    return { totalPoints: 1250, avgScore: 85.5, lessonsCompleted: 12, timeSpentS: 3600 * 5, lastPlayed: new Date().toISOString() };
   },
   getUserStats: async () => { return userService.getStats(); },
   getRecentHistory: async () => { 
-    try {
-      return (await apiClient.get('/api/v1/profile/vocabulary-mastery')) as any;
-    } catch {
-      return [{ id: '1', type: 'quiz', title: 'Bài 1 Quiz', score: 90, date: new Date().toISOString() }];
-    }
+    await sleep(300);
+    return [{ id: '1', type: 'quiz', title: 'Bài 1 Quiz', score: 90, date: new Date().toISOString() }];
   }
 };
+
 
 
 export interface Vocabulary {
@@ -639,26 +639,18 @@ export interface LearningHistory {
 
 export const api = {
   getVocabulary: async (search?: string, level?: string) => {
-    try {
-      const response = await apiClient.get('/api/v1/dictionary/search', { params: { query: search || level } }) as any;
-      if (response && response.data) {
-        return response.data;
-      }
-      return response;
-    } catch {
-      return MOCK_VOCABULARIES.map(v => ({ ...v, image: v.imageUrl, example_cn: v.exampleCn, example_vn: v.exampleVn, meaning_en: v.meaning_en || "English meaning" } as Vocabulary));
-    }
+    await sleep(300);
+    return MOCK_VOCABULARIES.map(v => ({ 
+      ...v, 
+      image: v.imageUrl || `https://api.dicebear.com/7.x/shapes/svg?seed=${v.word}`, 
+      example_cn: v.exampleCn, 
+      example_vn: v.exampleVn, 
+      meaning_en: v.meaning_en || `English meaning for ${v.word}` 
+    } as Vocabulary));
   },
   importExcel: async (file: File) => {
-    try {
-      const formData = new FormData();
-      formData.append('excelFile', file);
-      return (await apiClient.post('/api/v1/admin/vocabularies/import', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })) as any;
-    } catch {
-      return { success: true, message: 'Nhập dữ liệu thành công (Fallback)', count: 50 };
-    }
+    await sleep(500);
+    return { success: true, message: 'Nhập dữ liệu thành công (Mock)', count: 50 };
   },
   getHistory: async (userId: string) => {
     return [{ id: '1', lessonId: '1', lessonName: 'Bài 1: Xin chào', score: 4, totalQuizzes: 4, completedAt: new Date().toISOString(), type: 'quiz', timestamp: new Date().toISOString(), content: 'Bài 1 Quiz' }] as LearningHistory[];
