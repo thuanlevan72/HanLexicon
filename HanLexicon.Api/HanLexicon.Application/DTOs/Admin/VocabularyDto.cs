@@ -4,7 +4,7 @@ public class VocabularyDto
 {
     public Guid Id { get; set; }
     public Guid LessonId { get; set; }
-    public string LessonTitle { get; set; } = null!;
+    public string? LessonTitle { get; set; }
     public short SortOrder { get; set; }
     public string Word { get; set; } = null!;
     public string Pinyin { get; set; } = null!;

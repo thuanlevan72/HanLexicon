@@ -13,18 +13,17 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import StudentDashboard from './pages/student/Dashboard';
 import AdminDashboard from './pages/admin/Dashboard';
-import FileManager from './pages/admin/FileManager';
+import VocabularyManager from './pages/admin/VocabularyManager';
 import StudentLayout from './layouts/StudentLayout';
 import AdminLayout from './layouts/AdminLayout';
 import PublicLayout from './layouts/PublicLayout';
 import VocabularyPage from './pages/student/Vocabulary';
 import HistoryPage from './pages/student/History';
 import ProfilePage from './pages/student/Profile';
-import AdminImportPage from './pages/admin/ImportData';
+import ImportJobManager from './pages/admin/ImportJobManager';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; role?: 'student' | 'admin' }> = ({ children, role }) => {
   const { user, isAuthenticated } = useAuth();
-
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -73,8 +72,8 @@ function AppRoutes() {
           }
         >
           <Route index element={<AdminDashboard />} />
-          <Route path="import" element={<AdminImportPage />} />
-          <Route path="files" element={<FileManager />} />
+          <Route path="jobs" element={<ImportJobManager />} />
+          <Route path="vocabularies" element={<VocabularyManager />} />
         </Route>
 
         {/* Chuyển hướng dự phòng (Fallback Route) */}
@@ -91,5 +90,3 @@ export default function App() {
     </Provider>
   );
 }
-
-

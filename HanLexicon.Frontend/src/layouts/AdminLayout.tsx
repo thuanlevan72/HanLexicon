@@ -24,8 +24,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutGrid },
-  { name: 'Quản lý từ vựng', href: '/admin/files', icon: FileCode },
-  { name: 'Nhập dữ liệu', href: '/admin/import', icon: Database },
+  { name: 'Quản lý từ vựng', href: '/admin/vocabularies', icon: FileCode },
+  { name: 'Quản lý Job', href: '/admin/jobs', icon: Database },
 ];
 
 export default function AdminLayout() {

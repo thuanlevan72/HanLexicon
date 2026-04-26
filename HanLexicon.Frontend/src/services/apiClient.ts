@@ -1,16 +1,18 @@
 import axios, { AxiosInstance } from 'axios';
 
-const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'https://localhost:7285';
+// Ép kiểu để TypeScript không báo lỗi với ImportMeta
+const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'https://localhost:7285/api/v1';
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 15000,
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('auth_token');
+  const token = localStorage.getItem('accessToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -18,8 +20,15 @@ apiClient.interceptors.request.use((config) => {
 });
 
 apiClient.interceptors.response.use(
-  (response) => response.data,
+  (response) => {
+    return response.data;
+  },
   (error) => {
-    return Promise.reject(error.response?.data || error.message);
+    if (error.response?.status === 401) {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('user');
+    }
+    const errorMsg = error.response?.data?.message || error.message || "Lỗi kết nối máy chủ";
+    return Promise.reject(errorMsg);
   }
 );
