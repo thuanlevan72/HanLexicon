@@ -11,20 +11,23 @@ import { useTranslation } from 'react-i18next';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('student');
   const [errorMsg, setErrorMsg] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     setErrorMsg('');
     try {
-      await login(email, role, password);
-      navigate(role === 'admin' ? '/admin' : '/student');
+      const detectedRole = await login(email, password);
+      navigate(detectedRole === 'admin' ? '/admin' : '/student');
     } catch (error: any) {
       setErrorMsg(error.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -79,42 +82,14 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="pt-2">
-              <label className="text-xs font-bold text-brand-secondary uppercase tracking-widest mb-3 block">Bạn là ai? (Tạm thời)</label>
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  type="button"
-                  variant={role === 'student' ? 'default' : 'outline'}
-                  onClick={() => setRole('student')}
-                  className={cn(
-                    "h-12 rounded-xl font-bold",
-                    role === 'student' ? "bg-brand-primary text-white" : "border-brand-border text-brand-secondary"
-                  )}
-                >
-                  Học viên
-                </Button>
-                <Button
-                  type="button"
-                  variant={role === 'admin' ? 'default' : 'outline'}
-                  onClick={() => setRole('admin')}
-                  className={cn(
-                    "h-12 rounded-xl font-bold",
-                    role === 'admin' ? "bg-brand-ink text-white" : "border-brand-border text-brand-secondary"
-                  )}
-                >
-                  Admin
-                </Button>
-              </div>
-            </div>
-
             <div className="bg-blue-50 text-blue-800 p-3 rounded-lg text-xs leading-relaxed mt-2 border border-blue-100">
               <strong className="block mb-1">Tài khoản trải nghiệm:</strong>
               • Học viên: <code className="bg-white px-1 font-bold">student@chuang.com</code> / <code className="bg-white px-1 font-bold">student123</code><br/>
-              • Admin: <code className="bg-white px-1 font-bold">admin@chuang.com</code> / <code className="bg-white px-1 font-bold">admin123</code>
+              • Admin: <code className="bg-white px-1 font-bold">Admin</code> / <code className="bg-white px-1 font-bold">@Anh123anh</code>
             </div>
 
-            <Button type="submit" className="w-full bg-brand-primary hover:bg-brand-secondary h-14 text-white rounded-xl text-lg font-bold shadow-sm group">
-              {t('nav.login')} <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <Button disabled={isLoading} type="submit" className="w-full bg-brand-primary hover:bg-brand-secondary h-14 text-white rounded-xl text-lg font-bold shadow-sm group">
+              {isLoading ? 'Đang đăng nhập...' : t('nav.login')} {!isLoading && <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             </Button>
           </form>
 

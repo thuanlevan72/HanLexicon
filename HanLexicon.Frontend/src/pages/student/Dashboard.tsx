@@ -15,16 +15,15 @@ import {
   TrendingUp,
   Award
 } from 'lucide-react';
-import { userService, UserStats } from '@/src/services/api';
+import { UserStats } from '@/src/services/api';
 
 export default function StudentDashboard() {
   const { user } = useAuth();
-  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [userStats, setUserStats] = useState<UserStats | null>({ totalPoints: 1250, avgScore: 85.5, lessonsCompleted: 12, timeSpentS: 18000, lastPlayed: new Date().toISOString() });
 
+  // Pure UI mock
   useEffect(() => {
-    userService.getStats()
-      .then(stats => setUserStats(stats))
-      .catch(err => console.error("Failed to load user stats", err));
+    //
   }, []);
 
   const statsList = [
@@ -79,12 +78,12 @@ export default function StudentDashboard() {
           <Card className="rounded-3xl border border-brand-border shadow-sm bg-brand-highlight overflow-hidden relative group">
             <CardContent className="p-8 relative z-10 flex flex-col md:flex-row gap-8 items-center">
               <div className="space-y-4 flex-1 text-center md:text-left">
-                <span className="inline-block px-3 py-1 bg-brand-primary text-white text-[10px] font-bold uppercase rounded-full">Tiếp tục bài học</span>
+                <span className="inline-block px-3 py-1 bg-brand-primary text-white text-[10px] font-bold uppercase rounded-full">Khám phá từ vựng mới</span>
                 <h3 className="text-3xl font-bold text-brand-ink">Hội thoại tại nhà hàng</h3>
-                <p className="text-brand-secondary text-sm max-w-sm font-medium">Bài 14: Cách gọi món và hỏi giá tiền bằng tiếng Trung phổ thông.</p>
+                <p className="text-brand-secondary text-sm max-w-sm font-medium">Bổ sung ngay 15 từ vựng thường gặp khi gọi món bằng tiếng Trung phổ thông.</p>
                 <div className="flex flex-wrap gap-4 pt-4 justify-center md:justify-start">
-                  <Button className="bg-brand-ink text-white hover:bg-black rounded-xl px-8 font-bold h-12 shadow-sm flex items-center gap-2">
-                    Bắt đầu ngay <ArrowRight className="w-4 h-4" />
+                  <Button onClick={() => window.location.href='/student/vocabulary'} className="bg-brand-ink text-white hover:bg-black rounded-xl px-8 font-bold h-12 shadow-sm flex items-center gap-2">
+                    Từ điển HSK <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
               </div>

@@ -24,11 +24,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const navigation = [
   { name: 'Tổng quan', href: '/student', icon: LayoutDashboard },
-  { name: 'Bài học', href: '/student/lessons', icon: BookOpen },
   { name: 'Từ điển', href: '/student/vocabulary', icon: Library },
-  { name: 'Luyện tập', href: '/student/lessons', icon: Trophy },
   { name: 'Lịch sử', href: '/student/history', icon: History },
-  { name: 'Tiến độ', href: '/student/progress', icon: BarChart3 },
 ];
 
 export default function StudentLayout() {
@@ -37,7 +34,12 @@ export default function StudentLayout() {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === '/student') {
+      return location.pathname === '/student';
+    }
+    return location.pathname.startsWith(path);
+  };
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-brand-surface border-r border-brand-border">

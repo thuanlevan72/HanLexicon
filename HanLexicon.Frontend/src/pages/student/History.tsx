@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { api, LearningHistory } from '@/src/services/api';
+import { LearningHistory } from '@/src/services/api';
 import { useAuth } from '@/src/context/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Clock, BookOpen, Trophy, FileText, ChevronRight } from 'lucide-react';
@@ -15,10 +15,12 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchHistory = async () => {
+    const fetchHistory = () => {
       if (user) {
-        const data = await api.getHistory(user.id);
-        setHistory(data);
+        setHistory([
+          { id: '1', lessonId: '1', lessonName: 'Bài 1: Xin chào', score: 90, totalQuizzes: 10, completedAt: new Date().toISOString(), type: 'quiz', timestamp: new Date().toISOString(), content: 'Bài 1 Quiz' },
+          { id: '2', lessonId: '2', lessonName: 'Từ vựng bài 1', score: 100, totalQuizzes: 5, completedAt: new Date().toISOString(), type: 'word', timestamp: new Date().toISOString(), content: 'Hoàn thành từ vựng Unit 1' }
+        ] as any);
         setLoading(false);
       }
     };

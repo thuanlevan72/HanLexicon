@@ -2,6 +2,8 @@ using HanLexicon.Domain.Entities;
 using HanLexicon.Application.Interfaces;
 using HanLexicon.Domain.Interfaces;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection; // Bắt buộc thêm thư viện này
+using Microsoft.Extensions.Logging;
 
 namespace HanLexicon.Application.Features.Admin.VocabulariesAdmin;
 
@@ -10,18 +12,22 @@ public record ImportVocabularyCommand(
     string? TempZipPath,
     Guid AdminId,
     string OriginalFileName,
-    short? CategoryId
-) : IRequest<Guid>;
+    short? CategoryId) : IRequest<Guid>;
 
 public class ImportVocabularyHandler : IRequestHandler<ImportVocabularyCommand, Guid>
 {
     private readonly IUnitOfWork _uow;
-    private readonly IVocabularyImportJob _importJob;
+    private readonly IServiceScopeFactory _scopeFactory; // Đổi sang dùng ScopeFactory
+    private readonly ILogger<ImportVocabularyHandler> _logger;
 
-    public ImportVocabularyHandler(IUnitOfWork uow, IVocabularyImportJob importJob)
+    public ImportVocabularyHandler(
+        IUnitOfWork uow,
+        IServiceScopeFactory scopeFactory,
+        ILogger<ImportVocabularyHandler> logger)
     {
         _uow = uow;
-        _importJob = importJob;
+        _scopeFactory = scopeFactory;
+        _logger = logger;
     }
 
     public async Task<Guid> Handle(ImportVocabularyCommand request, CancellationToken cancellationToken)
@@ -43,20 +49,32 @@ public class ImportVocabularyHandler : IRequestHandler<ImportVocabularyCommand, 
         _uow.Repository<ImportJob>().Add(jobRecord);
         await _uow.SaveChangesAsync(cancellationToken);
 
-        // 2. Chạy Background Job
-        // Trong dự án thực tế nên dùng Hangfire: BackgroundJob.Enqueue(() => _importJob.ProcessImportAsync(...))
-        // Ở đây ta dùng Task.Run để demo luồng xử lý bất đồng bộ cơ bản
-        _ = Task.Run(async () => {
-            try 
+        // 2. CHẠY BACKGROUND JOB (Fire and Forget)
+        _ = Task.Run(async () =>
+        {
+            try
             {
-                await _importJob.ProcessImportAsync(request.TempExcelPath, request.TempZipPath ?? "", request.AdminId);
+                // TẠO SCOPE MỚI: Đảm bảo DbContext sống độc lập với HTTP Request
+                using var scope = _scopeFactory.CreateScope();
+
+                // Lấy ra Job service từ cái scope mới này
+                var backgroundJob = scope.ServiceProvider.GetRequiredService<IVocabularyImportJob>();
+
+                // Tiến hành chạy ngầm
+                await backgroundJob.ProcessImportAsync(
+                    request.TempExcelPath,
+                    request.TempZipPath ?? "",
+                    request.AdminId,
+                    jobRecord.Id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Xử lý lỗi trong job đã có log ở Job class
+                // Ghi log nếu có lỗi không mong muốn lọt ra ngoài Job
+                _logger.LogError(ex, "Lỗi hệ thống khi kích hoạt luồng import cho JobId: {JobId}", jobRecord.Id);
             }
         });
 
+        // 3. Trả về JobId ngay lập tức cho client (Frontend có thể dùng ID này để polling tiến độ)
         return jobRecord.Id;
     }
 }

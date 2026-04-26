@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { api } from '@/src/services/api';
 import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -57,17 +56,15 @@ export default function AdminImportPage() {
       });
     }, 300);
 
-    const result = await api.importExcel(file);
+    // Mock API
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     clearInterval(interval);
     setProgress(100);
     
-    if (result.success) {
-      setResultCount(result.count || 0);
-      setImportState('success');
-    } else {
-      setImportState('error');
-    }
+    // Simulate success
+    setResultCount(50);
+    setImportState('success');
   };
 
   const reset = () => {

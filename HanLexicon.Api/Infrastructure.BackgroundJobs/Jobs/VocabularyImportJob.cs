@@ -19,11 +19,9 @@ public class VocabularyImportJob : IVocabularyImportJob
         _logger = logger;
     }
 
-    public async Task ProcessImportAsync(string tempExcelPath, string? tempZipPath, Guid adminId)
+    public async Task ProcessImportAsync(string tempExcelPath, string? tempZipPath, Guid adminId, Guid jobId)
     {
-        var importJob = await _uow.Repository<ImportJob>().Query()
-            .OrderByDescending(x => x.CreatedAt)
-            .FirstOrDefaultAsync(x => x.UploadedBy == adminId && (x.Status == "pending" || x.Status == "test"));
+        var importJob = await _uow.Repository<ImportJob>().GetByIdAsync(jobId);
 
         if (importJob == null) return;
 
@@ -33,7 +31,8 @@ public class VocabularyImportJob : IVocabularyImportJob
 
         try
         {
-            using var workbook = new XLWorkbook(tempExcelPath);
+            using var stream = new FileStream(tempExcelPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var workbook = new XLWorkbook(stream);
             var worksheet = workbook.Worksheet(1);
             var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
 
@@ -41,6 +40,7 @@ public class VocabularyImportJob : IVocabularyImportJob
             int successCount = 0;
             int failedCount = 0;
             var errorLogs = new List<string>();
+            List<Vocabulary> list = new List<Vocabulary>();
 
             foreach (var row in rows)
             {
@@ -57,17 +57,17 @@ public class VocabularyImportJob : IVocabularyImportJob
                     var examplePy = row.Cell(9).GetValue<string>();
                     var exampleVn = row.Cell(10).GetValue<string>();
 
-                    if (string.IsNullOrEmpty(word) || !Guid.TryParse(lessonIdStr, out var lessonId))
-                    {
-                        failedCount++;
-                        errorLogs.Add($"Dòng {row.RowNumber()}: Thiếu Word hoặc LessonId sai");
-                        continue;
-                    }
+                    //if (string.IsNullOrEmpty(word) || !Guid.TryParse(lessonIdStr, out var lessonId))
+                    //{
+                    //    failedCount++;
+                    //    errorLogs.Add($"Dòng {row.RowNumber()}: Thiếu Word hoặc LessonId sai");
+                    //    continue;
+                    //}
 
                     var vocabulary = new Vocabulary
                     {
                         Id = Guid.NewGuid(),
-                        LessonId = lessonId,
+                        LessonId = Guid.Parse("29fa1a00-8be7-48ed-8f22-b3950fd0ed34"),
                         Word = word,
                         Pinyin = pinyin,
                         Meaning = meaning,
@@ -79,6 +79,7 @@ public class VocabularyImportJob : IVocabularyImportJob
                         AudioUrl = audioUrl,
                         SortOrder = (short)(successCount + 1)
                     };
+                    list.Add(vocabulary);
 
                     _uow.Repository<Vocabulary>().Add(vocabulary);
                     successCount++;
@@ -96,7 +97,7 @@ public class VocabularyImportJob : IVocabularyImportJob
             // SỬA LỖI JSON TẠI ĐÂY: Serialize danh sách lỗi sang chuỗi JSON
             importJob.ErrorLog = errorLogs.Any() ? JsonSerializer.Serialize(errorLogs) : null;
             
-            importJob.Status = "finished";
+            importJob.Status = "done";
             importJob.FinishedAt = DateTime.UtcNow;
 
             await _uow.SaveChangesAsync();

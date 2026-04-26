@@ -16,7 +16,6 @@ import {
   Plus
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { adminService } from '@/src/services/api';
 
 const adminStatsMock = [
   { label: 'Tổng Học Viên', value: '1,248', change: '+12%', icon: Users, color: 'text-brand-primary', bg: 'bg-brand-highlight' },
@@ -36,29 +35,9 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(adminStatsMock);
   const [importJobs, setImportJobs] = useState<any[]>([]);
 
+  // Pure UI mock
   useEffect(() => {
-    adminService.getLessonsSummary()
-      .then(data => {
-        if (data && data.length > 0) {
-          const totalLessons = data.length;
-          const totalVocab = data.reduce((acc, curr) => acc + (curr.vocab_count || 0), 0);
-          setStats([
-            adminStatsMock[0],
-            { label: 'Bài học đã đăng', value: totalLessons.toString(), change: '+2%', icon: Library, color: 'text-indigo-500', bg: 'bg-indigo-50' },
-            { label: 'Từ vựng Hanzi', value: totalVocab.toString(), change: '+4%', icon: BookMarked, color: 'text-emerald-500', bg: 'bg-emerald-50' },
-            adminStatsMock[3],
-          ]);
-        }
-      })
-      .catch(console.error);
-
-    adminService.getImportJobs()
-      .then(data => {
-        if (data && Array.isArray(data)) {
-          setImportJobs(data.slice(0, 4));
-        }
-      })
-      .catch(console.error);
+    // 
   }, []);
 
   return (

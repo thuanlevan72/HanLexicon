@@ -237,9 +237,8 @@ export const authService = {
 
 1. Cài đặt thư viện `axios` (`npm install axios`) nếu chưa có hoặc copy mẫu `fetch` API.
 2. Xây dựng một Client cấu hình sẵn BaseURL và Authentication Headers (`apiClient.ts`).
-3. Xóa các biến `MOCK_` (VD: `MOCK_LESSON_DETAIL`, `MOCK_VOCABULARIES`).
-4. Thay lõi của các hàm async trong `src/services/api.ts` bằng các lệnh gọi `apiClient.get()`, `.post()`.
-5. Đảm bảo cấu trúc dữ liệu JSON backend trả về trùng khớp với Interface đã khai báo (như `export interface LessonDetail { id: string, titleCn: string... }`). Nếu có sự khác biệt (ví dụ backend trả về \`title_cn\` snake_case), bạn map/chuyển đổi nó ra frontend tại lớp `api.ts` thay vì rải lỗi gõ phím ở mọi giao diện.
+3. Loại bỏ và Custom Logic:
+Hiện tại dự án đang được sử dụng dữ liệu giả lập (mock data) hoàn toàn trong `src/services/api.ts`. Bạn có thể thay phần `apiClient` hoặc custom thư viện gọi API tùy ý. (Hệ thống đã dọn dẹp các lệnh gọi axios thực tế để trả lại code nguyên thủy thuần tuý UI + Mock data).
 
 ---
 

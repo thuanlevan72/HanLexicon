@@ -21,12 +21,26 @@ export default function VocabularyPage() {
   useEffect(() => {
     const fetchWords = async () => {
       setLoading(true);
-      const data = await api.getVocabulary(search, level);
-      setWords(data);
-      setLoading(false);
+      try {
+        let data = await api.getVocabulary(search, level);
+        if (level !== 'Tất cả') {
+          data = data.filter(w => w.level === level);
+        }
+        if (search) {
+          const lowerSearch = search.toLowerCase();
+          data = data.filter(w => 
+            w.word.toLowerCase().includes(lowerSearch) || 
+            (w.meaning_vn && w.meaning_vn.toLowerCase().includes(lowerSearch))
+          );
+        }
+        setWords(data);
+      } catch (error) {
+        console.error("Error fetching vocabularies", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    const timer = setTimeout(fetchWords, 300); // Debounce search
-    return () => clearTimeout(timer);
+    fetchWords();
   }, [search, level]);
 
   return (
