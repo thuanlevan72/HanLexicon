@@ -43,6 +43,8 @@ public partial class HanLexiconDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<ReviewHistory> ReviewHistories { get; set; }
+
     public virtual DbSet<UserProgress> UserProgresses { get; set; }
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
@@ -55,6 +57,8 @@ public partial class HanLexiconDbContext : DbContext
 
     public virtual DbSet<VUserStat> VUserStats { get; set; }
 
+    public virtual DbSet<SystemLog> SystemLogs { get; set; }
+
     public virtual DbSet<Vocabulary> Vocabularies { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,6 +66,18 @@ public partial class HanLexiconDbContext : DbContext
         modelBuilder
             .HasPostgresExtension("pgcrypto")
             .HasPostgresExtension("uuid-ossp");
+
+        modelBuilder.Entity<SystemLog>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToTable("logs");
+            entity.Property(e => e.Level).HasColumnName("level");
+            entity.Property(e => e.Message).HasColumnName("message");
+            entity.Property(e => e.MessageTemplate).HasColumnName("message_template");
+            entity.Property(e => e.Exception).HasColumnName("exception");
+            entity.Property(e => e.Timestamp).HasColumnName("timestamp");
+            entity.Property(e => e.LogEvent).HasColumnType("jsonb").HasColumnName("log_event");
+        });
 
         modelBuilder.Entity<ChallengeWord>(entity =>
         {
@@ -515,6 +531,28 @@ public partial class HanLexiconDbContext : DbContext
                 .HasColumnName("username");
         });
 
+        modelBuilder.Entity<ReviewHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("review_history_pkey");
+            entity.ToTable("review_history");
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()").HasColumnName("id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.LessonId).HasColumnName("lesson_id");
+            entity.Property(e => e.Score).HasColumnName("score");
+            entity.Property(e => e.TotalQuestions).HasColumnName("total_questions");
+            entity.Property(e => e.CorrectCount).HasColumnName("correct_count");
+            entity.Property(e => e.DetailsJson).HasColumnType("jsonb").HasColumnName("details_json");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+
+            entity.HasOne(d => d.Lesson).WithMany(p => p.ReviewHistories)
+                .HasForeignKey(d => d.LessonId)
+                .HasConstraintName("review_history_lesson_id_fkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.ReviewHistories)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("review_history_user_id_fkey");
+        });
+
         modelBuilder.Entity<UserProgress>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("user_progress_pkey");
@@ -545,6 +583,7 @@ public partial class HanLexiconDbContext : DbContext
             entity.Property(e => e.LessonId).HasColumnName("lesson_id");
             entity.Property(e => e.Score).HasColumnName("score");
             entity.Property(e => e.TimeSpentS).HasColumnName("time_spent_s");
+            entity.Property(e => e.CurrentIndex).HasColumnName("current_index");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Lesson).WithMany(p => p.UserProgresses)
@@ -714,6 +753,10 @@ public partial class HanLexiconDbContext : DbContext
             entity.Property(e => e.Word)
                 .HasMaxLength(50)
                 .HasColumnName("word");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
 
             entity.HasOne(d => d.Lesson).WithMany(p => p.Vocabularies)
                 .HasForeignKey(d => d.LessonId)

@@ -586,13 +586,28 @@ ALTER TABLE public.user_sessions OWNER TO "user";
 -- Name: user_word_progress; Type: TABLE; Schema: public; Owner: user
 --
 
-CREATE TABLE public.user_word_progress (
+CREATE TABLE user_word_progress (
     user_id uuid NOT NULL,
     vocab_id uuid NOT NULL,
     status character varying(20) DEFAULT 'learning'::character varying NOT NULL,
     review_count smallint DEFAULT 0 NOT NULL,
     last_reviewed timestamp with time zone DEFAULT now() NOT NULL
 );
+
+CREATE TABLE review_history (
+    id uuid DEFAULT uuid_generate_v4() NOT NULL,
+    user_id uuid NOT NULL,
+    lesson_id uuid NOT NULL,
+    score smallint NOT NULL,
+    total_questions smallint NOT NULL,
+    correct_count smallint NOT NULL,
+    details_json jsonb,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT review_history_pkey PRIMARY KEY (id),
+    CONSTRAINT review_history_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT review_history_lesson_id_fkey FOREIGN KEY (lesson_id) REFERENCES lessons (id) ON DELETE CASCADE
+);
+
 
 
 ALTER TABLE public.user_word_progress OWNER TO "user";
@@ -1333,3 +1348,4 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 \unrestrict HQzudgo9NuVPFYd8MurX3Q3Eh3lsG1oKq2Cph9zdvGlr53feRh0o3u0FckiQIKB
 
+ALTER TABLE public.vocabulary ADD COLUMN IF NOT EXISTS created_at timestamp with time zone DEFAULT now();

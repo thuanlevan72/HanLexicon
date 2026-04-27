@@ -13,10 +13,36 @@ using System.Threading.Tasks;
 
 namespace HanLexicon.Application.Features.Admin.ChallengeWords;
 
-public record QueryGetChallengeWords(Guid lessonId) : IRequest<List<ChallengeWordDto>>;
-public record CreateChallengeWordCommand(Guid LessonId, string Word, string Pinyin, string Meaning, short SortOrder) : IRequest<ChallengeWordDto>;
-public record UpdateChallengeWordCommand(Guid Id, Guid LessonId, string Word, string Pinyin, string Meaning, short SortOrder) : IRequest<ChallengeWordDto>;
-public record DeleteChallengeWordCommand(Guid Id) : IRequest<bool>;
+public class QueryGetChallengeWords : IRequest<List<ChallengeWordDto>>
+{
+    public Guid lessonId { get; set; }
+    public QueryGetChallengeWords(Guid id) => lessonId = id;
+}
+
+public class CreateChallengeWordCommand : IRequest<ChallengeWordDto>
+{
+    public Guid LessonId { get; set; }
+    public string Word { get; set; } = null!;
+    public string Pinyin { get; set; } = null!;
+    public string Meaning { get; set; } = null!;
+    public short SortOrder { get; set; }
+}
+
+public class UpdateChallengeWordCommand : IRequest<ChallengeWordDto>
+{
+    public Guid Id { get; set; }
+    public Guid LessonId { get; set; }
+    public string Word { get; set; } = null!;
+    public string Pinyin { get; set; } = null!;
+    public string Meaning { get; set; } = null!;
+    public short SortOrder { get; set; }
+}
+
+public class DeleteChallengeWordCommand : IRequest<bool>
+{
+    public Guid Id { get; set; }
+    public DeleteChallengeWordCommand(Guid id) => Id = id;
+}
 
 public class ChallengeWordHandler : 
     IRequestHandler<QueryGetChallengeWords, List<ChallengeWordDto>>,

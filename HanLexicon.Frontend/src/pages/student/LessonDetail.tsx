@@ -1,187 +1,190 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  ChevronLeft,
-  Volume2,
-  Play,
-  CheckCircle2,
-  BookOpen,
-  MessageCircle,
-  FileText,
-  Star,
-  Brain
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { 
+  ArrowLeft, Volume2, ChevronRight, ChevronLeft, CheckCircle2, 
+  BookOpen, Trophy, Play, Star, RefreshCw, Quote, ArrowRight
 } from 'lucide-react';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
-import { learningService, LessonDetail } from '@/src/services/api';
-import { playAudio } from '@/src/lib/audio';
+import { learningService, Vocabulary } from '@/src/services/api';
+import { cn } from '@/lib/utils';
 
 export default function StudentLessonDetail() {
-  const { id } = useParams();
-  const [activeTab, setActiveTab] = useState('vocab');
-  const [lesson, setLesson] = useState<LessonDetail | null>(null);
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  
+  const [lesson, setLesson] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [vocabIndex, setVocabIndex] = useState(0);
+  const [isFinished, setIsFinished] = useState(false);
+  
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    if (id) {
-      learningService.getLessonDetail(id).then(data => {
-        setLesson(data);
-      }).catch(err => {
-        console.error("Failed to fetch lesson detail", err);
-      });
-    }
+    const fetchLesson = async () => {
+      if (!id) return;
+      try {
+        const res = await learningService.getLessonDetail(id);
+        const data = res.data || res;
+        if (data) {
+          setLesson(data);
+          // Tự động nhảy đến vị trí đang học dở
+          if (data.currentIndex > 0 && data.currentIndex < (data.vocabularies?.length || 0)) {
+            setVocabIndex(data.currentIndex);
+          }
+        }
+      } catch (e) { console.error(e); }
+      finally { setLoading(false); }
+    };
+    fetchLesson();
   }, [id]);
 
-  if (!lesson) {
+  // Tự động lưu tiến độ khi thay đổi từ vựng
+  useEffect(() => {
+    if (lesson && vocabIndex >= 0) {
+      const saveProgress = async () => {
+        try {
+          await learningService.saveProgress({
+            lessonId: lesson.id,
+            score: 0,
+            completed: vocabIndex === lesson.vocabularies.length - 1,
+            timeSpentS: 0,
+            currentIndex: vocabIndex
+          });
+        } catch (e) { console.error("Lỗi lưu tiến độ", e); }
+      };
+      // Debounce hoặc chỉ lưu khi thực sự cần thiết, ở đây lưu mỗi lần next để đảm bảo trải nghiệm
+      saveProgress();
+    }
+  }, [vocabIndex, lesson]);
+
+  const playAudio = (url?: string) => {
+    if (!url || !audioRef.current) return;
+    const backendUrl = (import.meta as any).env?.VITE_API_BASE_URL?.replace('/api/v1', '') || 'https://localhost:7285';
+    const fullUrl = url.startsWith('http') ? url : `${backendUrl}/${url.startsWith('/') ? url.substring(1) : url}`;
+    audioRef.current.src = fullUrl;
+    audioRef.current.play();
+  };
+
+  const handleFinishStudy = async () => {
+    if (!lesson) return;
+    setIsFinished(true);
+    try {
+       await learningService.saveProgress({
+          lessonId: lesson.id,
+          score: 100,
+          completed: true,
+          timeSpentS: 120,
+          currentIndex: vocabIndex
+       });
+    } catch (e) { console.error("Lỗi lưu tiến độ học tập", e); }
+  };
+
+  if (loading) return <div className="flex items-center justify-center min-h-screen bg-brand-bg"><RefreshCw className="w-10 h-10 animate-spin text-brand-primary opacity-20" /></div>;
+  if (!lesson || !lesson.vocabularies?.length) return <div className="text-center p-20 font-bold">Bài học này chưa có nội dung từ vựng.</div>;
+
+  const currentVocab = lesson.vocabularies[vocabIndex];
+
+  if (isFinished) {
     return (
-      <div className="flex justify-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div>
-      </div>
+       <div className="min-h-screen bg-brand-bg flex items-center justify-center p-6">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="max-w-md w-full text-center space-y-8">
+             <div className="w-32 h-32 bg-emerald-500 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-2xl rotate-3">
+                <CheckCircle2 className="w-16 h-16 text-white" />
+             </div>
+             <div className="space-y-2">
+                <h1 className="text-4xl font-black text-brand-ink uppercase italic">Học tập hoàn tất!</h1>
+                <p className="text-brand-secondary font-bold">Bạn đã xem toàn bộ từ vựng của bài học này.</p>
+             </div>
+             <div className="grid grid-cols-1 gap-4">
+                <Button onClick={() => navigate('/student')} className="h-16 rounded-2xl font-black bg-brand-ink text-white shadow-lg gap-2">
+                   Quay về Dashboard <ArrowRight className="w-5 h-5 text-brand-primary" />
+                </Button>
+                <Button onClick={() => navigate(`/student/lessons/${id}/review`)} variant="outline" className="h-16 rounded-2xl font-black border-2 border-brand-border gap-2 hover:bg-brand-highlight">
+                   <RefreshCw className="w-5 h-5 text-brand-primary" /> Sang phần Ôn luyện ngay
+                </Button>
+             </div>
+          </motion.div>
+       </div>
     );
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <header className="space-y-6">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink 
-                render={<Link to="/student/lessons">Bài học</Link>}
-              />
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{lesson.titleCn || 'Đang tải...'}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Badge className="bg-brand-highlight text-brand-primary hover:bg-brand-highlight">Từ vựng</Badge>
-              <Badge variant="outline">HSK</Badge>
+    <div className="min-h-screen bg-brand-bg pb-20">
+      <audio ref={audioRef} className="hidden" />
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-brand-border h-20">
+         <div className="max-w-5xl mx-auto px-6 h-full flex items-center justify-between gap-6">
+            <Button onClick={() => navigate('/student')} variant="ghost" size="icon" className="rounded-full hover:bg-brand-highlight"><ArrowLeft /></Button>
+            <div className="flex-1 max-w-md">
+               <div className="flex justify-between text-[10px] font-black uppercase mb-2 tracking-widest text-brand-secondary">
+                  <span>Tiến độ học từ mới</span>
+                  <span className="text-brand-primary">{vocabIndex + 1} / {lesson.vocabularies.length}</span>
+               </div>
+               <Progress value={((vocabIndex + 1) / lesson.vocabularies.length) * 100} className="h-2 bg-brand-highlight" />
             </div>
-            <h1 className="text-4xl font-black text-brand-ink tracking-tight">{lesson.titleCn}</h1>
-            <p className="text-slate-500">Học từ mới và nét chữ.</p>
-          </div>
-          <Link to={`/student/quiz/${id}`}>
-            <Button className="bg-brand-primary hover:bg-brand-secondary h-12 px-8 rounded-xl font-bold shadow-lg shadow-brand-primary/20 gap-2 text-white">
-              <Brain className="w-5 h-5" /> Làm Quiz ngay
-            </Button>
-          </Link>
-        </div>
+            <div className="w-10" />
+         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
-          {/* Main Video/Content Player Mockup */}
-          <div className="aspect-video bg-brand-ink rounded-3xl overflow-hidden relative shadow-2xl flex items-center justify-center group cursor-pointer group hover:bg-black transition-colors">
-            <img
-              src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=1200"
-              className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700"
-              referrerPolicy="no-referrer"
-            />
-            <div className="relative z-10 w-20 h-20 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/30 group-hover:scale-110 transition-transform">
-              <Play className="w-8 h-8 text-white fill-white" />
-            </div>
-          </div>
-
-          <Tabs defaultValue="vocab" className="w-full" onValueChange={setActiveTab}>
-            <TabsList className="bg-brand-highlight p-1 rounded-2xl w-full max-w-md">
-              <TabsTrigger value="vocab" className="flex-1 rounded-xl font-bold py-3 text-brand-secondary data-[state=active]:bg-white data-[state=active]:text-brand-primary"><BookOpen className="w-4 h-4 mr-2" /> Từ vựng</TabsTrigger>
-              <TabsTrigger value="grammar" className="flex-1 rounded-xl font-bold py-3 text-brand-secondary data-[state=active]:bg-white data-[state=active]:text-brand-primary"><FileText className="w-4 h-4 mr-2" /> Ngữ pháp</TabsTrigger>
-              <TabsTrigger value="practice" className="flex-1 rounded-xl font-bold py-3 text-brand-secondary data-[state=active]:bg-white data-[state=active]:text-brand-primary"><MessageCircle className="w-4 h-4 mr-2" /> Hội thoại</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="vocab" className="pt-6 space-y-4">
-              <div className="grid grid-cols-1 gap-4">
-                {lesson.hanziCards?.map((item, idx) => (
-                  <Card key={idx} className="border-brand-border hover:border-brand-primary/30 hover:bg-brand-highlight/30 transition-all cursor-default group">
-                    <CardContent className="p-6 flex items-center justify-between">
-                      <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl font-bold border border-brand-border shadow-sm group-hover:scale-110 transition-transform font-serif text-brand-ink">
-                          {item.character}
+      <main className="max-w-3xl mx-auto px-6 pt-12 space-y-8">
+         <AnimatePresence mode="wait">
+            <motion.div key={vocabIndex} initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-8">
+               <Card className="border-4 border-brand-border bg-white rounded-[3.5rem] shadow-xl overflow-hidden min-h-[450px] flex flex-col hover:border-brand-primary transition-colors">
+                  <CardContent className="p-12 flex-1 flex flex-col items-center justify-center text-center space-y-8">
+                     {(currentVocab.imageUrl || currentVocab.image) && (
+                        <div className="w-40 h-40 rounded-3xl overflow-hidden border-4 border-brand-highlight shadow-md">
+                           <img src={currentVocab.imageUrl || currentVocab.image} className="w-full h-full object-cover" />
                         </div>
-                        <div>
-                          <p className="text-xl font-bold text-brand-primary font-mono tracking-tight">{item.pinyin}</p>
-                          <p className="text-slate-600 font-medium">{item.meaning}</p>
-                          {item.radical && (
-                            <p className="text-xs text-brand-secondary mt-1 tracking-widest uppercase">Bộ thủ: {item.radical}</p>
-                          )}
-                        </div>
-                      </div>
-                      <Button onClick={() => playAudio(item.character)} variant="ghost" size="icon" className="h-12 w-12 rounded-full bg-white shadow-sm hover:bg-brand-primary hover:text-white transition-all text-brand-primary">
-                        <Volume2 className="w-6 h-6" />
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="grammar" className="pt-6">
-              <Card className="border-0 shadow-sm p-8 space-y-6">
-                <h3 className="text-xl font-bold flex items-center gap-2">
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <FileText className="w-4 h-4 text-purple-600" />
-                  </div>
-                  Chưa có dữ liệu ngữ pháp
-                </h3>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
+                     )}
+                     <div className="space-y-2">
+                        <h1 className="text-8xl font-black text-brand-ink tracking-tighter">{currentVocab.word}</h1>
+                        <p className="text-3xl font-black text-brand-primary uppercase italic tracking-widest">{currentVocab.pinyin}</p>
+                     </div>
+                     <div className="bg-brand-highlight/30 px-8 py-4 rounded-2xl border border-brand-border/50">
+                        <p className="text-2xl font-black text-brand-ink italic">"{currentVocab.meaning || currentVocab.meaning_vn}"</p>
+                     </div>
+                     <Button onClick={() => playAudio(currentVocab.audioUrl || currentVocab.audio)} size="lg" className="w-16 h-16 rounded-full bg-sky-500 text-white shadow-xl hover:scale-110 active:scale-95 transition-all">
+                        <Volume2 className="w-8 h-8" />
+                     </Button>
+                  </CardContent>
 
-        <div className="space-y-8">
-          <Card className="border-0 shadow-sm p-6 space-y-6 bg-white border border-brand-border rounded-3xl">
-            <h3 className="font-bold text-lg text-brand-ink">Bài học bao gồm</h3>
-            <div className="space-y-4">
-              {[
-                { label: `${lesson.hanziCards?.length || 0} từ vựng mới`, done: true },
-                { label: 'Cách viết nét cơ bản', done: true },
-                { label: 'Câu hỏi trắc nghiệm', done: false },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3 text-sm">
-                  {item.done ? (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-500 fill-emerald-50" />
-                  ) : (
-                    <div className="w-5 h-5 border-2 border-slate-200 rounded-full" />
+                  {(currentVocab.example_cn || currentVocab.exampleCn) && (
+                     <div className="p-8 bg-brand-ink text-white/90">
+                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-brand-primary mb-3">
+                           <Quote className="w-3 h-3" /> Ví dụ minh họa
+                        </div>
+                        <div className="space-y-1">
+                           <p className="text-xl font-bold font-serif">{currentVocab.example_cn || currentVocab.exampleCn}</p>
+                           <p className="text-sm text-brand-primary font-bold italic">{currentVocab.example_py || currentVocab.examplePy}</p>
+                           <p className="text-sm font-medium text-slate-400">{currentVocab.example_vn || currentVocab.exampleVn}</p>
+                        </div>
+                     </div>
                   )}
-                  <span className={item.done ? "text-slate-400 line-through" : "text-brand-secondary font-medium"}>
-                    {item.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="pt-4 border-t border-brand-border/40">
-              <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
-                <span>Tiến trình bài học</span>
-                <span className="text-brand-primary">0%</span>
-              </div>
-              <div className="h-2 bg-brand-highlight rounded-full overflow-hidden">
-                <div className="h-full bg-brand-primary w-0 rounded-full transition-all duration-500"></div>
-              </div>
-            </div>
-          </Card>
+               </Card>
 
-          <Card className="border-0 bg-brand-highlight p-6 space-y-4 relative overflow-hidden group rounded-3xl">
-            <div className="absolute -right-8 -bottom-8 w-24 h-24 bg-white/40 rounded-full group-hover:scale-125 transition-transform"></div>
-            <div className="relative z-10 space-y-3">
-              <div className="bg-white w-10 h-10 rounded-xl flex items-center justify-center shadow-sm">
-                <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-              </div>
-              <h4 className="font-bold text-brand-ink">Mẹo ghi nhớ</h4>
-              <p className="text-sm text-brand-secondary leading-relaxed">
-                Đừng quên luyện viết từng nét cho mỗi chữ Hán với công cụ luyện chữ trong hệ thống! Nhấn nút Quiz để tham gia nhé.
-              </p>
-            </div>
-          </Card>
-        </div>
-      </div>
+               <div className="flex gap-4">
+                  <Button 
+                     disabled={vocabIndex === 0} 
+                     onClick={() => setVocabIndex(v => v - 1)}
+                     className="h-16 flex-1 bg-white border-2 border-brand-border text-brand-secondary rounded-2xl font-black uppercase tracking-widest hover:bg-brand-highlight"
+                  >
+                     <ChevronLeft className="mr-2" /> Quay lại
+                  </Button>
+                  <Button 
+                     onClick={() => {
+                        if (vocabIndex < lesson.vocabularies.length - 1) setVocabIndex(v => v + 1);
+                        else handleFinishStudy();
+                     }}
+                     className="h-16 flex-[2] bg-brand-primary text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-brand-primary/20"
+                  >
+                     {vocabIndex < lesson.vocabularies.length - 1 ? 'Tiếp theo' : 'Hoàn thành học'} <ChevronRight className="ml-2" />
+                  </Button>
+               </div>
+            </motion.div>
+         </AnimatePresence>
+      </main>
     </div>
   );
 }

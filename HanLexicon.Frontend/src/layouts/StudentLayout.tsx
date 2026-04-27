@@ -1,189 +1,151 @@
+import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/src/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  LayoutDashboard,
-  BookOpen,
-  Trophy,
-  BarChart3,
-  LogOut,
-  Menu,
-  X,
-  GraduationCap,
-  Bell,
-  Search,
-  Settings,
-  HelpCircle,
-  Library,
-  History
+import { motion } from 'motion/react';
+import { 
+  LayoutGrid, BookOpen, History, Settings, LogOut, Menu, X, Bell, 
+  MessageSquare, User, Search, Play, Trophy, Sparkles, RefreshCw
 } from 'lucide-react';
-import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-
-const navigation = [
-  { name: 'Tổng quan', href: '/student', icon: LayoutDashboard },
-  { name: 'Từ điển', href: '/student/vocabulary', icon: Library },
-  { name: 'Lịch sử', href: '/student/history', icon: History },
-];
 
 export default function StudentLayout() {
   const { user, logout } = useAuth();
-  const location = useLocation();
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const isActive = (path: string) => {
-    if (path === '/student') {
-      return location.pathname === '/student';
-    }
-    return location.pathname.startsWith(path);
-  };
-
-  const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-brand-surface border-r border-brand-border">
-      <div className="p-6">
-        <Link to="/" className="flex items-center gap-2 group">
-          <span className="font-semibold text-lg tracking-tight text-brand-ink">
-            Tiếng Trung
-          </span>
-          <div className="bg-brand-primary w-auto px-3 h-10 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-sm font-heading">
-            Leyi
-          </div>
-        </Link>
-      </div>
-
-      <nav className="flex-1 px-4 space-y-1">
-        {navigation.map((item) => (
-          <Link
-            key={item.name}
-            to={item.href}
-            className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all group",
-              isActive(item.href)
-                ? "bg-brand-primary text-white shadow-sm"
-                : "text-brand-secondary hover:bg-brand-highlight hover:text-brand-ink"
-            )}
-          >
-            <item.icon className={cn(
-              "w-5 h-5",
-              isActive(item.href) ? "text-white" : "text-brand-secondary group-hover:text-brand-primary"
-            )} />
-            {item.name}
-          </Link>
-        ))}
-      </nav>
-
-      <div className="p-4 border-t border-brand-border space-y-1">
-        <div className="bg-brand-highlight rounded-xl p-4 mb-4">
-          <p className="text-[10px] text-brand-secondary font-semibold uppercase mb-2 tracking-wider">Cấp độ hiện tại</p>
-          <p className="font-bold text-sm text-brand-ink">HSK 3 Intermediate</p>
-          <div className="w-full bg-brand-border h-2 rounded-full mt-3 overflow-hidden">
-            <div className="bg-brand-accent h-full w-3/4 transition-all"></div>
-          </div>
-        </div>
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate('/student/profile')}
-          className={cn(
-            "w-full justify-start gap-3 text-brand-secondary hover:text-brand-ink hover:bg-brand-highlight",
-            location.pathname === '/student/profile' && "bg-brand-highlight text-brand-ink"
-          )}
-        >
-          <Settings className="w-5 h-5" /> Cài đặt
-        </Button>
-        <Button
-          variant="ghost"
-          onClick={logout}
-          className="w-full justify-start gap-3 text-rose-500 hover:text-rose-600 hover:bg-rose-50"
-        >
-          <LogOut className="w-5 h-5" /> Đăng xuất
-        </Button>
-      </div>
-    </div>
-  );
+  const menuItems = [
+    { label: 'Tổng quan', path: '/student', icon: LayoutGrid },
+    { label: 'Lộ trình học tập', path: '/student/learning', icon: Play },
+    { label: 'Trung tâm ôn luyện', path: '/student/review', icon: RefreshCw },
+    { label: 'Từ điển cá nhân', path: '/student/vocabulary', icon: BookOpen },
+    { label: 'Lịch sử học tập', path: '/student/history', icon: History },
+  ];
 
   return (
-    <div className="flex h-screen bg-brand-bg text-brand-ink overflow-hidden">
-      {/* Thanh điều hướng bên (Sidebar) trên Desktop của học viên */}
-      <aside className={cn(
-        "hidden md:block transition-all duration-300 ease-in-out shrink-0 overflow-hidden",
-        isSidebarOpen ? "w-64" : "w-0"
-      )}>
-        <div className="w-64 h-full">
-          <SidebarContent />
+    <div className="flex h-screen bg-[#F8FAFC]">
+      {/* Sidebar Desktop */}
+      <aside className="hidden md:flex flex-col w-72 bg-white border-r border-slate-200">
+        <div className="p-8">
+          <Link to="/student" className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-brand-primary/20 rotate-3">
+              <Sparkles className="w-6 h-6 text-white fill-current" />
+            </div>
+            <span className="text-xl font-black text-brand-ink tracking-tighter uppercase italic">HanLexicon</span>
+          </Link>
+        </div>
+
+        <nav className="flex-1 px-4 space-y-1">
+          {menuItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={cn(
+                "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-black transition-all group",
+                location.pathname === item.path
+                  ? "bg-brand-highlight text-brand-primary shadow-sm"
+                  : "text-slate-500 hover:bg-slate-50 hover:text-brand-ink"
+              )}
+            >
+              <item.icon className={cn(
+                "w-5 h-5 transition-colors",
+                location.pathname === item.path ? "text-brand-primary" : "text-slate-400 group-hover:text-brand-ink"
+              )} />
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="p-6 border-t border-slate-100">
+          <Button 
+            variant="ghost" 
+            onClick={logout}
+            className="w-full justify-start gap-3 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-2xl font-bold h-12"
+          >
+            <LogOut className="w-5 h-5" /> Đăng xuất
+          </Button>
         </div>
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0 transition-all duration-300 overflow-hidden">
-        {/* Thanh chắn ngang (Topbar) */}
-        <header className="h-20 bg-white border-b border-brand-border flex items-center justify-between px-4 md:px-8 shrink-0">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="hidden md:flex text-brand-secondary hover:text-brand-ink"
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-20">
+          <button 
+            className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <Menu className="w-6 h-6" />
+          </button>
 
-            {/* Nút Trigger bung khay danh mục áp dụng trên Điện thoại di động */}
-            <Sheet>
-              <SheetTrigger 
-                render={
-                  <Button variant="ghost" size="icon" className="md:hidden">
-                    <Menu className="w-6 h-6" />
-                  </Button>
-                }
-              />
-              <SheetContent side="left" className="p-0 w-64">
-                <SidebarContent />
-              </SheetContent>
-            </Sheet>
-
-            <div className="hidden sm:flex items-center relative group">
-              <Search className="w-4 h-4 text-brand-secondary absolute left-3 group-focus-within:text-brand-primary transition-colors" />
-              <input
-                type="text"
-                placeholder="Tìm kiếm bài học..."
-                className="bg-brand-highlight border-0 rounded-lg pl-10 pr-4 py-2.5 text-sm w-64 focus:ring-2 focus:ring-brand-primary/20 transition-all focus:bg-white"
-              />
-            </div>
+          <div className="hidden md:flex items-center gap-4 bg-slate-100 px-4 py-2 rounded-2xl w-96 border border-transparent focus-within:border-brand-primary/30 focus-within:bg-white transition-all">
+            <Search className="w-4 h-4 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="Tìm kiếm nhanh bài học..." 
+              className="bg-transparent border-none outline-none text-sm font-medium w-full"
+            />
           </div>
 
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="relative text-brand-secondary hover:text-brand-ink transition-colors">
-              <Bell className="w-6 h-6" />
-              <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white"></span>
+            <Button variant="ghost" size="icon" className="rounded-full text-slate-400 hover:text-brand-primary hover:bg-brand-highlight">
+              <Bell className="w-5 h-5" />
             </Button>
-
-            <div className="flex items-center gap-3 pl-6 border-l border-brand-border">
+            <div className="w-px h-6 bg-slate-200 mx-2 hidden sm:block"></div>
+            <div className="flex items-center gap-3 pl-2 group cursor-pointer" onClick={() => navigate('/student/profile')}>
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-brand-ink leading-tight">{user?.name}</p>
-                <p className="text-[10px] text-brand-secondary font-bold uppercase tracking-widest leading-tight">{user?.role === 'admin' ? 'Quản trị viên' : 'Học viên'}</p>
+                <p className="text-sm font-black text-brand-ink leading-none">{(user as any)?.displayName || user?.name}</p>
+                <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-1">Student</p>
               </div>
-              <Avatar className="h-10 w-10 border border-brand-border shadow-sm">
-                <AvatarImage src={user?.avatar} />
-                <AvatarFallback className="bg-brand-accent text-white font-bold">{user?.name?.[0]?.toUpperCase()}</AvatarFallback>
+              <Avatar className="h-10 w-10 border-2 border-transparent group-hover:border-brand-primary transition-all">
+                <AvatarImage src={(user as any)?.avatar} />
+                <AvatarFallback className="bg-brand-primary text-white font-bold">{user?.name?.charAt(0)}</AvatarFallback>
               </Avatar>
             </div>
           </div>
         </header>
 
-        {/* Điểm đổ nội dung chính của trang (Content Area) */}
-        <main className="flex-1 overflow-y-auto bg-brand-bg/50">
-          <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-8">
-            <div className="flex items-center gap-2 text-[10px] font-bold text-brand-secondary uppercase tracking-widest">
-              <Link to="/student" className="hover:text-brand-primary transition-colors">Học viên</Link>
-              <span>/</span>
-              <span className="text-brand-ink">{location.pathname.split('/').pop()}</span>
-            </div>
-            <Outlet />
-          </div>
+        {/* Content Area */}
+        <main className="flex-1 overflow-y-auto p-8 md:p-12">
+          <Outlet />
         </main>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-[100] md:hidden">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
+          <motion.div 
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            className="absolute left-0 top-0 bottom-0 w-80 bg-white p-8 flex flex-col"
+          >
+            <div className="flex items-center justify-between mb-10">
+              <span className="text-xl font-black text-brand-ink italic uppercase">HanLexicon</span>
+              <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}><X /></Button>
+            </div>
+            <nav className="flex-1 space-y-2">
+              {menuItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={cn(
+                    "flex items-center gap-4 px-6 py-4 rounded-2xl text-base font-black transition-all",
+                    location.pathname === item.path ? "bg-brand-highlight text-brand-primary" : "text-slate-600"
+                  )}
+                >
+                  <item.icon className="w-6 h-6" />
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <Button variant="outline" onClick={logout} className="mt-auto h-14 rounded-2xl font-black border-slate-200">Đăng xuất</Button>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

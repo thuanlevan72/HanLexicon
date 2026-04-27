@@ -30,6 +30,13 @@ namespace HanLexicon.Api.Controllers
             return Ok(ApiResponse<bool>.Success(await _mediator.Send(finalCommand)));
         }
 
+        [HttpGet("lessons/{lessonId}/history")]
+        public async Task<IActionResult> GetReviewHistory(Guid lessonId)
+        {
+            var result = await _mediator.Send(new QueryGetReviewHistory(lessonId));
+            return Ok(ApiResponse<object>.Success(result));
+        }
+
         [HttpPost("vocabularies")]
         public async Task<IActionResult> UpdateWordProgress([FromBody] UpdateWordProgressCommand command)
         {

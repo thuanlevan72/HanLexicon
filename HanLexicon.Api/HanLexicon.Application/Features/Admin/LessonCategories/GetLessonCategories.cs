@@ -4,28 +4,40 @@ using HanLexicon.Application.DTOs.Admin;
 using HanLexicon.Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace HanLexicon.Application.Features.Admin.LessonCategories;
-
-public record QueryGetLessonCategories : IRequest<List<LessonCategoryDto>>;
-
-public class GetLessonCategoriesHandler : IRequestHandler<QueryGetLessonCategories, List<LessonCategoryDto>>
+namespace HanLexicon.Application.Features.Admin.LessonCategories
 {
-    private readonly IUnitOfWork _uow;
-    private readonly IMapper _mapper;
+    public record QueryGetLessonCategories(string? Search = null) : IRequest<List<LessonCategoryDto>>;
 
-    public GetLessonCategoriesHandler(IUnitOfWork uow, IMapper mapper)
+    public class GetLessonCategoriesHandler : IRequestHandler<QueryGetLessonCategories, List<LessonCategoryDto>>
     {
-        _uow = uow;
-        _mapper = mapper;
-    }
+        private readonly IUnitOfWork _uow;
+        private readonly IMapper _mapper;
 
-    public async Task<List<LessonCategoryDto>> Handle(QueryGetLessonCategories request, CancellationToken cancellationToken)
-    {
-        var categories = await _uow.Repository<LessonCategory>().Query()
-            .OrderBy(c => c.SortOrder)
-            .ToListAsync(cancellationToken);
+        public GetLessonCategoriesHandler(IUnitOfWork uow, IMapper mapper)
+        {
+            _uow = uow;
+            _mapper = mapper;
+        }
 
-        return _mapper.Map<List<LessonCategoryDto>>(categories);
+        public async Task<List<LessonCategoryDto>> Handle(QueryGetLessonCategories request, CancellationToken cancellationToken)
+        {
+            var query = _uow.Repository<LessonCategory>().Query().AsNoTracking();
+
+            if (!string.IsNullOrEmpty(request.Search))
+            {
+                query = query.Where(c => c.Name.Contains(request.Search) || c.Slug.Contains(request.Search));
+            }
+
+            var categories = await query
+                .OrderBy(c => c.SortOrder)
+                .ToListAsync(cancellationToken);
+
+            return _mapper.Map<List<LessonCategoryDto>>(categories);
+        }
     }
 }

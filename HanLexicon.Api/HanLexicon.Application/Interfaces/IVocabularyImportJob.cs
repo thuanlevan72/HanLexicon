@@ -7,6 +7,6 @@ namespace HanLexicon.Application.Interfaces
 {
     public interface IVocabularyImportJob
     {
-        Task ProcessImportAsync(string tempExcelPath, string? tempZipPath, Guid adminId, Guid jobId);
+        Task ProcessImportAsync(string tempExcelPath, string? tempZipPath, Guid adminId, Guid jobId, Guid? lessonId = null);
     }
 }

@@ -1,7 +1,8 @@
-using Application.Interfaces;
+using HanLexicon.Application.Features.Admin.DashboardAdmin;
 using HanLexicon.Application.Common;
 using HanLexicon.Domain.Entities;
 using HanLexicon.Domain.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,19 @@ namespace HanLexicon.Api.Controllers.Admin
     public class AdminDashboardController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
+        private readonly IMediator _mediator;
 
-        public AdminDashboardController(IUnitOfWork uow)
+        public AdminDashboardController(IUnitOfWork uow, IMediator mediator)
         {
             _uow = uow;
+            _mediator = mediator;
+        }
+
+        [HttpGet("overall-stats")]
+        public async Task<IActionResult> GetOverallStats()
+        {
+            var result = await _mediator.Send(new QueryGetSystemOverallStats());
+            return Ok(ApiResponse<object>.Success(result));
         }
 
         [HttpGet("import-stats")]

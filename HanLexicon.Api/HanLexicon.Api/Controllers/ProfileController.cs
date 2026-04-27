@@ -22,6 +22,13 @@ namespace HanLexicon.Api.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetProfile()
+        {
+            var result = await _mediator.Send(new QueryGetProfile());
+            return Ok(ApiResponse<object>.Success(result));
+        }
+
         /// <summary>
         /// Lấy bảng thống kê thành tích học tập (Điểm, Thời gian...).
         /// </summary>
@@ -39,6 +46,13 @@ namespace HanLexicon.Api.Controllers
         public async Task<IActionResult> GetVocabularyMastery()
         {
             var result = await _mediator.Send(new QueryGetUserWordProgress());
+            return Ok(ApiResponse<object>.Success(result));
+        }
+
+        [HttpGet("learning-history")]
+        public async Task<IActionResult> GetLearningHistory()
+        {
+            var result = await _mediator.Send(new QueryGetUserLearningHistory());
             return Ok(ApiResponse<object>.Success(result));
         }
     }

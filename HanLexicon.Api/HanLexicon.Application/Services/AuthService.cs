@@ -1,3 +1,4 @@
+using HanLexicon.Application.Features.Users;
 using HanLexicon.Domain.Entities;
 using Application.Interfaces;
 using HanLexicon.Application.DTOs.authDto;
@@ -71,9 +72,12 @@ namespace HanLexicon.Application.Services
                 }
 
                 user.LastLoginAt = DateTime.UtcNow;
-                List<string> role = user.UserRoles.Select(x => x.Role.Code).ToList();
+                List<string> roleCodes = user.UserRoles.Select(x => x.Role.Code.ToLower()).ToList();
+                
+                // Xác định role chính để trả về cho Frontend
+                string primaryRole = roleCodes.Contains("admin") ? "admin" : "student";
 
-                string accessToken = await GenerateJwtTokenAsync(role, user, ipAddress);
+                string accessToken = await GenerateJwtTokenAsync(roleCodes, user, ipAddress);
                 string refreshToken = GenerateRefreshToken();
 
                 userRepository.Update(user);
@@ -96,7 +100,18 @@ namespace HanLexicon.Application.Services
                     Message = "Đăng nhập thành công",
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
-                    UserId = user.Id
+                    UserId = user.Id,
+                    User = new UserProfileDto
+                    {
+                        Id = user.Id,
+                        Username = user.Username,
+                        Email = user.Email ?? "",
+                        DisplayName = user.DisplayName ?? user.Username,
+                        IsActive = user.IsActive,
+                        CreatedAt = user.CreatedAt,
+                        Avatar = $"https://api.dicebear.com/7.x/avataaars/svg?seed={user.Username}",
+                        Role = primaryRole
+                    }
                 };
             }
             catch (Exception ex)
@@ -135,7 +150,7 @@ namespace HanLexicon.Application.Services
                     return new AuthResultDto { IsSuccess = false, Message = "Tài khoản của bạn đã bị khóa hoặc không tồn tại." };
 
                 await _unitOfWork.BeginTransactionAsync();
-                List<string> roles = user.UserRoles.Select(x => x.Role.Code).ToList();
+                List<string> roles = user.UserRoles.Select(x => x.Role.Code.ToLower()).ToList();
 
                 string newAccessToken = await GenerateJwtTokenAsync(roles, user, session.IpAddress?.ToString() ?? "");
                 string newRefreshToken = GenerateRefreshToken();

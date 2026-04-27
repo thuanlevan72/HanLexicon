@@ -28,6 +28,27 @@ namespace HanLexicon.Api.Controllers
             return Ok(ApiResponse<object>.Success(result));
         }
 
+        [HttpGet("categories")]
+        public async Task<IActionResult> GetCategories()
+        {
+            var result = await _mediator.Send(new QueryGetCategories());
+            return Ok(ApiResponse<object>.Success(result));
+        }
+
+        [HttpGet("categories/{categoryId}/lessons")]
+        public async Task<IActionResult> GetLessonsByCategory(short categoryId)
+        {
+            var result = await _mediator.Send(new QueryGetLessonsByCategory(categoryId));
+            return Ok(ApiResponse<object>.Success(result));
+        }
+
+        [HttpGet("lessons/{id}")]
+        public async Task<IActionResult> GetLessonDetail(Guid id)
+        {
+            var result = await _mediator.Send(new QueryGetLessonFullDetail(id));
+            return Ok(ApiResponse<object>.Success(result));
+        }
+
         /// <summary>
         /// Lấy danh sách từ vựng theo từng nhóm bài học cụ thể.
         /// </summary>

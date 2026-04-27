@@ -12,7 +12,8 @@ public record ImportVocabularyCommand(
     string? TempZipPath,
     Guid AdminId,
     string OriginalFileName,
-    short? CategoryId) : IRequest<Guid>;
+    short? CategoryId,
+    Guid? LessonId = null) : IRequest<Guid>;
 
 public class ImportVocabularyHandler : IRequestHandler<ImportVocabularyCommand, Guid>
 {
@@ -43,6 +44,7 @@ public class ImportVocabularyHandler : IRequestHandler<ImportVocabularyCommand, 
             ProcessedRows = 0,
             FailedRows = 0,
             CategoryId = request.CategoryId,
+            LessonId = request.LessonId,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -65,7 +67,8 @@ public class ImportVocabularyHandler : IRequestHandler<ImportVocabularyCommand, 
                     request.TempExcelPath,
                     request.TempZipPath ?? "",
                     request.AdminId,
-                    jobRecord.Id);
+                    jobRecord.Id,
+                    request.LessonId);
             }
             catch (Exception ex)
             {

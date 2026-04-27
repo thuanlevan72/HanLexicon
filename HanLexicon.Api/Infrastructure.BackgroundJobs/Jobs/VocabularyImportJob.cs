@@ -19,11 +19,35 @@ public class VocabularyImportJob : IVocabularyImportJob
         _logger = logger;
     }
 
-    public async Task ProcessImportAsync(string tempExcelPath, string? tempZipPath, Guid adminId, Guid jobId)
+    public async Task ProcessImportAsync(string tempExcelPath, string? tempZipPath, Guid adminId, Guid jobId, Guid? lessonId = null)
     {
         var importJob = await _uow.Repository<ImportJob>().GetByIdAsync(jobId);
-
         if (importJob == null) return;
+
+        // 1. KIỂM TRA BÀI HỌC BẮT BUỘC
+        if (!lessonId.HasValue)
+        {
+            importJob.Status = "failed";
+            importJob.ErrorLog = JsonSerializer.Serialize(new { error = "Chưa chọn Bài học đích. Đây là trường bắt buộc." });
+            await _uow.SaveChangesAsync();
+            return;
+        }
+
+        var lessonExists = await _uow.Repository<Lesson>().Query().AnyAsync(l => l.Id == lessonId.Value);
+        if (!lessonExists)
+        {
+            importJob.Status = "failed";
+            importJob.ErrorLog = JsonSerializer.Serialize(new { error = $"Bài học với ID {lessonId.Value} không tồn tại." });
+            await _uow.SaveChangesAsync();
+            return;
+        }
+
+        // 2. LẤY SORT ORDER HIỆN TẠI CAO NHẤT ĐỂ ĐÁNH SỐ TIẾP THEO
+        short maxSortOrder = await _uow.Repository<Vocabulary>().Query()
+            .Where(v => v.LessonId == lessonId.Value)
+            .OrderByDescending(v => v.SortOrder)
+            .Select(v => v.SortOrder)
+            .FirstOrDefaultAsync();
 
         importJob.Status = "processing";
         importJob.StartedAt = DateTime.UtcNow;
@@ -40,46 +64,44 @@ public class VocabularyImportJob : IVocabularyImportJob
             int successCount = 0;
             int failedCount = 0;
             var errorLogs = new List<string>();
-            List<Vocabulary> list = new List<Vocabulary>();
 
             foreach (var row in rows)
             {
                 try
                 {
-                    var word = row.Cell(1).GetValue<string>();
-                    var pinyin = row.Cell(2).GetValue<string>();
-                    var meaning = row.Cell(3).GetValue<string>();
-                    var imageUrl = row.Cell(4).GetValue<string>();
-                    var audioUrl = row.Cell(5).GetValue<string>();
-                    var lessonIdStr = row.Cell(6).GetValue<string>();
-                    var meaningEn = row.Cell(7).GetValue<string>();
-                    var exampleCn = row.Cell(8).GetValue<string>();
-                    var examplePy = row.Cell(9).GetValue<string>();
-                    var exampleVn = row.Cell(10).GetValue<string>();
+                    var word = row.Cell(1).GetValue<string>()?.Trim();
+                    var pinyin = row.Cell(2).GetValue<string>()?.Trim();
+                    var meaning = row.Cell(3).GetValue<string>()?.Trim();
+                    var imageUrl = row.Cell(4).GetValue<string>()?.Trim();
+                    var audioUrl = row.Cell(5).GetValue<string>()?.Trim();
+                    var meaningEn = row.Cell(6).GetValue<string>()?.Trim();
+                    var exampleCn = row.Cell(7).GetValue<string>()?.Trim();
+                    var examplePy = row.Cell(8).GetValue<string>()?.Trim();
+                    var exampleVn = row.Cell(9).GetValue<string>()?.Trim();
 
-                    //if (string.IsNullOrEmpty(word) || !Guid.TryParse(lessonIdStr, out var lessonId))
-                    //{
-                    //    failedCount++;
-                    //    errorLogs.Add($"Dòng {row.RowNumber()}: Thiếu Word hoặc LessonId sai");
-                    //    continue;
-                    //}
+                    if (string.IsNullOrEmpty(word))
+                    {
+                        _logger.LogWarning("Dòng {Row}: Bỏ qua vì thiếu Word", row.RowNumber());
+                        continue; 
+                    }
 
+                    maxSortOrder++;
                     var vocabulary = new Vocabulary
                     {
                         Id = Guid.NewGuid(),
-                        LessonId = Guid.Parse("29fa1a00-8be7-48ed-8f22-b3950fd0ed34"),
+                        LessonId = lessonId.Value,
                         Word = word,
-                        Pinyin = pinyin,
-                        Meaning = meaning,
+                        Pinyin = pinyin ?? "",
+                        Meaning = meaning ?? "",
                         MeaningEn = meaningEn,
                         ExampleCn = exampleCn,
                         ExamplePy = examplePy,
                         ExampleVn = exampleVn,
                         ImageUrl = imageUrl,
                         AudioUrl = audioUrl,
-                        SortOrder = (short)(successCount + 1)
+                        SortOrder = maxSortOrder,
+                        CreatedAt = DateTime.UtcNow
                     };
-                    list.Add(vocabulary);
 
                     _uow.Repository<Vocabulary>().Add(vocabulary);
                     successCount++;

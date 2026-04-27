@@ -40,7 +40,7 @@ public class CreateLessonHandler : IRequestHandler<CreateLessonCommand, LessonDt
             Filename = request.Filename,
             TitleCn = request.TitleCn,
             TitleVn = request.TitleVn,
-            Icon = request.Icon,
+            Icon = string.IsNullOrWhiteSpace(request.Icon) ? "📚" : request.Icon,
             Description = request.Description,
             Badge = request.Badge,
             IsPublished = request.IsPublished,

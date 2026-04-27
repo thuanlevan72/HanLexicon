@@ -4,20 +4,17 @@ import { adminService, ImportJob } from '@/src/services/api';
 import { 
   History, 
   CheckCircle2, 
-  Loader2, 
   FileText, 
   ChevronLeft,
   ChevronRight,
-  AlertCircle,
-  RefreshCw,
-  Plus
+  RefreshCw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { dateUtils } from '@/src/utils/formatters';
 import ImportJobTracker from './import/ImportJobTracker';
-import ImportVocabulary from './import/ImportVocabulary';
 
 export default function ImportJobManager() {
   const [jobs, setJobs] = useState<ImportJob[]>([]);
@@ -26,8 +23,6 @@ export default function ImportJobManager() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [activeJobIds, setActiveJobIds] = useState<string[]>([]);
-  
-  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -52,20 +47,13 @@ export default function ImportJobManager() {
 
   useEffect(() => {
     fetchData();
-    // Vẫn duy trì polling nhẹ mỗi 10s cho toàn bộ list
     const interval = setInterval(fetchData, 10000);
     return () => clearInterval(interval);
   }, [page]);
 
-  const handleNewJob = (jobId: string) => {
-    setActiveJobIds(prev => [jobId, ...prev]);
-    setIsImportModalOpen(false);
-    fetchData(); // Tải lại list để thấy job mới ở trạng thái Pending
-  };
-
   const handleJobFinished = (jobId: string) => {
     console.log(`Job ${jobId} đã hoàn thành, đang cập nhật dữ liệu...`);
-    fetchData(); // GỌI LẠI API THỐNG KÊ VÀ DANH SÁCH
+    fetchData();
   };
 
   return (
@@ -78,9 +66,6 @@ export default function ImportJobManager() {
           </h1>
           <p className="text-brand-secondary font-medium">Trung tâm điều hành và giám sát dữ liệu nhập từ Excel.</p>
         </div>
-        <Button onClick={() => setIsImportModalOpen(true)} className="h-12 px-8 rounded-2xl bg-brand-primary text-white font-black shadow-lg gap-2">
-           <Plus className="w-5 h-5" /> Import Excel mới
-        </Button>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -107,7 +92,7 @@ export default function ImportJobManager() {
             </div>
 
             <div className="divide-y divide-brand-border">
-              {jobs.length > 0 ? jobs.map((job) => (
+              {Array.isArray(jobs) && jobs.length > 0 ? jobs.map((job) => (
                 <div key={job.id} className="p-8 hover:bg-brand-highlight/5 transition-colors space-y-4">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
@@ -136,7 +121,7 @@ export default function ImportJobManager() {
                     <Progress value={(job.processedRows / (job.totalRows || 1)) * 100} className="h-2 bg-brand-highlight rounded-full" />
                   </div>
                 </div>
-              )) : <div className="p-20 text-center text-brand-secondary italic">Chưa có dữ liệu.</div>}
+              )) : <div className="p-20 text-center text-brand-secondary italic">Chưa có dữ liệu Job nào được tạo.</div>}
             </div>
 
             <div className="p-8 border-t border-brand-border flex items-center justify-between bg-brand-highlight/20">
@@ -160,18 +145,6 @@ export default function ImportJobManager() {
            </div>
         </div>
       </div>
-
-      {/* Import Modal */}
-      {isImportModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-brand-ink/40 backdrop-blur-sm p-4 animate-in zoom-in-95 duration-200">
-           <div className="w-full max-w-2xl relative">
-              <Button onClick={() => setIsImportModalOpen(false)} size="icon" className="absolute -top-4 -right-4 h-12 w-12 rounded-full bg-white shadow-xl z-[110] border border-brand-border hover:rotate-90 transition-transform"><X className="w-6 h-6" /></Button>
-              <ImportVocabulary onImportStarted={handleNewJob} />
-           </div>
-        </div>
-      )}
     </div>
   );
 }
-
-import { X } from 'lucide-react';

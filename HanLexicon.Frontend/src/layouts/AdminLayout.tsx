@@ -16,7 +16,11 @@ import {
   Search,
   LayoutGrid,
   Database,
-  FileCode
+  FileCode,
+  FileText,
+  Layers,
+  Terminal,
+  Type
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -25,6 +29,12 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutGrid },
   { name: 'Quản lý từ vựng', href: '/admin/vocabularies', icon: FileCode },
+  { name: 'Danh mục bài học', href: '/admin/categories', icon: Layers },
+  { name: 'Quản lý bài học', href: '/admin/lessons', icon: BookMarked },
+  { name: 'Quản lý tài liệu', href: '/admin/documents', icon: FileText },
+  { name: 'Quản lý bộ thủ', href: '/admin/radicals', icon: Type },
+  { name: 'Quản lý học sinh', href: '/admin/students', icon: Users },
+  { name: 'Logs Hệ thống', href: '/admin/logs', icon: Terminal },
   { name: 'Quản lý Job', href: '/admin/jobs', icon: Database },
 ];
 

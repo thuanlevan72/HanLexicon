@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, FileSpreadsheet, CheckCircle2, RefreshCw, XCircle } from 'lucide-react';
+import { Upload, FileSpreadsheet, CheckCircle2, RefreshCw, XCircle, BookOpen, Info, Layers } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
-import { adminService } from '@/src/services/api';
+import { adminService, learningService, LessonFlat } from '@/src/services/api';
 
 interface Props {
   onImportStarted: (jobId: string) => void;
@@ -15,6 +15,57 @@ export default function ImportVocabulary({ onImportStarted }: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [importState, setImportState] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  
+  // Category & Lesson Selection
+  const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
+  const [lessons, setLessons] = useState<LessonFlat[]>([]);
+  const [selectedLessonId, setSelectedLessonId] = useState<string>('');
+  
+  const [isLoadingCategories, setIsLoadingCategories] = useState(false);
+  const [isLoadingLessons, setIsLoadingLessons] = useState(false);
+
+  // 1. Fetch Categories on Mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoadingCategories(true);
+      try {
+        const res = await learningService.getCategories();
+        const data = res.data || res || [];
+        setCategories(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Failed to fetch categories", err);
+        setCategories([]);
+      } finally {
+        setIsLoadingCategories(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // 2. Fetch Lessons when Category changes
+  useEffect(() => {
+    const fetchLessons = async () => {
+      if (!selectedCategoryId) {
+        setLessons([]);
+        setSelectedLessonId('');
+        return;
+      }
+      setIsLoadingLessons(true);
+      try {
+        const res = await learningService.getLessonsByCategoryId(Number(selectedCategoryId));
+        const data = res.data || res || [];
+        setLessons(Array.isArray(data) ? data : []);
+        setSelectedLessonId(''); // Reset lesson when category changes
+      } catch (err) {
+        console.error("Failed to fetch lessons", err);
+        setLessons([]);
+      } finally {
+        setIsLoadingLessons(false);
+      }
+    };
+    fetchLessons();
+  }, [selectedCategoryId]);
 
   const startImport = async () => {
     if (!file) return;
@@ -22,7 +73,7 @@ export default function ImportVocabulary({ onImportStarted }: Props) {
     setErrorMsg('');
     
     try {
-      const response = await adminService.importVocabularies(file);
+      const response = await adminService.importVocabularies(file, selectedLessonId);
       if (response.isSuccess && response.data?.jobId) {
         onImportStarted(response.data.jobId);
         setImportState('success');
@@ -36,41 +87,103 @@ export default function ImportVocabulary({ onImportStarted }: Props) {
   };
 
   return (
-    <Card className="border-0 bg-white shadow-sm rounded-3xl overflow-hidden min-h-[400px] flex flex-col">
+    <Card className="border-0 bg-white shadow-sm rounded-3xl overflow-hidden min-h-[500px] flex flex-col">
       <CardContent className="p-10 flex-1 flex flex-col justify-center">
         <AnimatePresence mode="wait">
           {importState === 'idle' || importState === 'error' ? (
             <motion.div
               key="idle" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-              className={cn(
-                "border-4 border-dashed rounded-3xl p-12 text-center transition-all cursor-pointer relative",
-                isDragging ? "border-brand-primary bg-brand-primary/5" : "border-brand-highlight bg-brand-highlight/10",
-                file ? "border-emerald-500/50 bg-emerald-50/50" : ""
-              )}
-              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-              onDragLeave={() => setIsDragging(false)}
-              onDrop={(e) => { e.preventDefault(); setIsDragging(false); setFile(e.dataTransfer.files[0]); }}
+              className="space-y-8"
             >
-              <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => setFile(e.target.files?.[0] || null)} accept=".xlsx,.xls" />
-              
-              <div className="flex flex-col items-center space-y-6">
-                <div className={cn("w-20 h-20 rounded-2xl flex items-center justify-center shadow-sm border-2", file ? "bg-emerald-500 border-emerald-400 text-white" : "bg-white border-brand-highlight text-brand-secondary")}>
-                  <FileSpreadsheet className="w-10 h-10" />
-                </div>
-                
-                <div className="space-y-1">
-                   <p className="text-xl font-bold text-brand-ink">{file ? file.name : "Kéo tệp Excel Từ vựng vào đây"}</p>
-                   <p className="text-sm text-brand-secondary italic">Hỗ trợ .xlsx, .xls (Tối đa 50MB)</p>
+              {/* Category & Lesson Selection */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <label className="text-sm font-bold text-brand-ink flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-brand-primary" />
+                    DANH MỤC
+                  </label>
+                  <select 
+                    className="w-full h-14 bg-brand-highlight/30 border-2 border-brand-border rounded-2xl px-4 text-brand-ink focus:outline-none focus:border-brand-primary transition-colors font-medium appearance-none"
+                    value={selectedCategoryId}
+                    onChange={(e) => setSelectedCategoryId(e.target.value)}
+                    disabled={isLoadingCategories}
+                  >
+                    <option value="">-- Chọn Danh mục --</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
                 </div>
 
-                {importState === 'error' && <p className="text-rose-600 text-sm font-bold bg-rose-50 px-4 py-2 rounded-xl border border-rose-100">{errorMsg}</p>}
+                <div className="space-y-3">
+                  <label className="text-sm font-bold text-brand-ink flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-brand-primary" />
+                    BÀI HỌC ĐÍCH
+                  </label>
+                  <select 
+                    className="w-full h-14 bg-brand-highlight/30 border-2 border-brand-border rounded-2xl px-4 text-brand-ink focus:outline-none focus:border-brand-primary transition-colors font-medium appearance-none"
+                    value={selectedLessonId}
+                    onChange={(e) => setSelectedLessonId(e.target.value)}
+                    disabled={isLoadingLessons || !selectedCategoryId}
+                  >
+                    <option value="">-- Chọn bài học --</option>
+                    {lessons.map(lesson => (
+                      <option key={lesson.id} value={lesson.id}>
+                        {lesson.title} {lesson.titleVn ? `/ ${lesson.titleVn}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <p className="text-xs text-brand-secondary italic px-1">
+                * Vui lòng chọn Danh mục trước, sau đó chọn Bài học cụ thể để nạp dữ liệu.
+              </p>
 
-                {file && (
-                   <div className="flex gap-3 pt-2 relative z-10">
-                    <Button onClick={(e) => { e.stopPropagation(); startImport(); }} className="bg-brand-primary hover:bg-brand-secondary text-white font-black rounded-xl px-8 h-12 shadow-lg shadow-brand-primary/20">BẮT ĐẦU NHẬP</Button>
-                    <Button variant="ghost" onClick={(e) => { e.stopPropagation(); setFile(null); setImportState('idle'); }} className="text-rose-500 font-bold hover:bg-rose-50 rounded-xl px-6">Hủy</Button>
-                   </div>
+              {/* Requirement Notice */}
+              <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex gap-3 items-start">
+                <Info className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                <div className="text-xs text-amber-800 leading-relaxed">
+                  <p className="font-bold mb-1">YÊU CẦU DỮ LIỆU:</p>
+                  <ul className="list-disc pl-4 space-y-0.5">
+                    <li>Cột <b>Word</b> và <b>Meaning</b> không được để trống.</li>
+                    <li>Cột <b>Audio URL</b> là bắt buộc để hỗ trợ phát âm.</li>
+                    <li>Cột <b>Image URL</b> là tùy chọn.</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Drag & Drop Area */}
+              <div
+                className={cn(
+                  "border-4 border-dashed rounded-3xl p-12 text-center transition-all cursor-pointer relative",
+                  isDragging ? "border-brand-primary bg-brand-primary/5" : "border-brand-highlight bg-brand-highlight/10",
+                  file ? "border-emerald-500/50 bg-emerald-50/50" : ""
                 )}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => { e.preventDefault(); setIsDragging(false); setFile(e.dataTransfer.files[0]); }}
+              >
+                <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => setFile(e.target.files?.[0] || null)} accept=".xlsx,.xls" />
+                
+                <div className="flex flex-col items-center space-y-6">
+                  <div className={cn("w-20 h-20 rounded-2xl flex items-center justify-center shadow-sm border-2", file ? "bg-emerald-500 border-emerald-400 text-white" : "bg-white border-brand-highlight text-brand-secondary")}>
+                    <FileSpreadsheet className="w-10 h-10" />
+                  </div>
+                  
+                  <div className="space-y-1">
+                     <p className="text-xl font-bold text-brand-ink">{file ? file.name : "Kéo tệp Excel Từ vựng vào đây"}</p>
+                     <p className="text-sm text-brand-secondary italic">Hỗ trợ .xlsx, .xls (Tối đa 50MB)</p>
+                  </div>
+
+                  {importState === 'error' && <p className="text-rose-600 text-sm font-bold bg-rose-50 px-4 py-2 rounded-xl border border-rose-100">{errorMsg}</p>}
+
+                  {file && (
+                     <div className="flex gap-3 pt-2 relative z-10">
+                      <Button onClick={(e) => { e.stopPropagation(); startImport(); }} className="bg-brand-primary hover:bg-brand-secondary text-white font-black rounded-xl px-8 h-12 shadow-lg shadow-brand-primary/20">BẮT ĐẦU NHẬP</Button>
+                      <Button variant="ghost" onClick={(e) => { e.stopPropagation(); setFile(null); setImportState('idle'); }} className="text-rose-500 font-bold hover:bg-rose-50 rounded-xl px-6">Hủy</Button>
+                     </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           ) : importState === 'uploading' ? (
@@ -100,7 +213,7 @@ export default function ImportVocabulary({ onImportStarted }: Props) {
       <CardFooter className="p-6 bg-brand-highlight/20 border-t border-brand-border block">
          <div className="flex items-center gap-3 text-brand-secondary mb-3">
             <CheckCircle2 className="w-4 h-4 text-brand-primary" />
-            <span className="text-xs font-bold uppercase tracking-widest">Mẹo: Đảm bảo cột "Word" và "Meaning" không bị trống.</span>
+            <span className="text-xs font-bold uppercase tracking-widest">Mẹo: Cấu trúc file chuẩn giúp dữ liệu được xử lý nhanh hơn.</span>
          </div>
          <Button variant="link" className="text-brand-primary font-bold h-auto p-0 hover:no-underline">Tải tệp mẫu HSK Vocabulary Standard .xlsx</Button>
       </CardFooter>

@@ -71,8 +71,10 @@ Entities/
  QuizQuestion.cs
  Radical.cs
  RadicalSet.cs
+ ReviewHistory.cs
  Role.cs
  SearchHistory.cs
+ SystemLog.cs
  User.cs
  UserProgress.cs
  UserRole.cs
@@ -83,6 +85,7 @@ Entities/
  VUserStat.cs
 Interfaces/
  IGenericRepository.cs
+ ILogService.cs
  IUnitOfWork.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
