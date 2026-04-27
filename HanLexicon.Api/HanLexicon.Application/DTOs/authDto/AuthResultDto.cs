@@ -1,3 +1,5 @@
+using HanLexicon.Application.Features.Users;
+
 namespace HanLexicon.Application.DTOs.authDto;
 
 public record AuthResultDto
@@ -8,4 +10,5 @@ public record AuthResultDto
     public string? Message { get; init; }
     public IEnumerable<string>? Errors { get; init; }
     public Guid? UserId { get; init; }
+    public UserProfileDto? User { get; init; }
 }

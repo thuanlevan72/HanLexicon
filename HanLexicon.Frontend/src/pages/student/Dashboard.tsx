@@ -1,171 +1,155 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/src/context/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import {
-  Flame,
-  BookOpen,
-  Target,
-  Clock,
-  Play,
-  ArrowRight,
-  TrendingUp,
-  Award
+import { 
+  Flame, BookOpen, Target, Clock, Play, Award, ChevronRight, LayoutGrid, CheckCircle2, Sparkles, BookMarked, RefreshCw, Pencil
 } from 'lucide-react';
-import { UserStats } from '@/src/services/api';
+import { learningService, userService, Category } from '@/src/services/api';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 export default function StudentDashboard() {
   const { user } = useAuth();
-  const [userStats, setUserStats] = useState<UserStats | null>({ totalPoints: 1250, avgScore: 85.5, lessonsCompleted: 12, timeSpentS: 18000, lastPlayed: new Date().toISOString() });
+  const navigate = useNavigate();
+  const [catalog, setCatalog] = useState<Category[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedCat, setSelectedCat] = useState<string | null>(null);
 
-  // Pure UI mock
   useEffect(() => {
-    //
+    const fetchData = async () => {
+      try {
+        const [catsRes, statsRes] = await Promise.all([
+          learningService.getLessons(),
+          userService.getStats()
+        ]);
+        const catsData = catsRes.data || catsRes;
+        const statsData = statsRes.data || statsRes;
+        
+        setCatalog(Array.isArray(catsData) ? catsData : []);
+        setStats(statsData);
+        if (catsData.length > 0) setSelectedCat(catsData[0].categorySlug);
+      } catch (e) {
+        console.error("Lỗi khi tải dữ liệu dashboard", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   const statsList = [
-    { label: 'Điểm số', value: userStats?.totalPoints?.toString() || '...', icon: Flame, color: 'text-brand-primary', bg: 'bg-brand-highlight' },
-    { label: 'Bài học', value: userStats?.lessonsCompleted?.toString() || '...', icon: BookOpen, color: 'text-amber-600', bg: 'bg-[#FEF3C7]' },
-    { label: 'Điểm TB', value: userStats ? `${userStats.avgScore}%` : '...', icon: Target, color: 'text-brand-secondary', bg: 'bg-brand-highlight' },
-    { label: 'Số giờ học', value: userStats ? (userStats.timeSpentS / 3600).toFixed(1) : '...', icon: Clock, color: 'text-purple-500', bg: 'bg-[#F5F3FF]' },
+    { label: 'Bài học đã xong', value: stats?.lessonsCompleted || 0, icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50' },
+    { label: 'Điểm trung bình', value: `${Math.round(stats?.avgScore || 0)}%`, icon: Target, color: 'text-sky-500', bg: 'bg-sky-50' },
+    { label: 'Thời gian học', value: `${Math.round((stats?.timeSpentS || 0) / 60)} phút`, icon: Clock, color: 'text-purple-500', bg: 'bg-purple-50' },
+    { label: 'Tổng điểm tích lũy', value: (stats?.totalPoints || 0).toLocaleString(), icon: Flame, color: 'text-orange-500', bg: 'bg-orange-50' },
   ];
 
   return (
-    <div className="space-y-8 pb-12">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="space-y-10 pb-20 animate-in fade-in duration-700">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-3xl font-extrabold text-brand-ink tracking-tight">
-            Chào mừng, {user?.name}! 👋
+          <h1 className="text-4xl font-black text-brand-ink tracking-tight flex items-center gap-3">
+             Chào mừng trở lại, {(user as any)?.displayName || user?.name}! <Sparkles className="w-8 h-8 text-brand-primary animate-pulse" />
           </h1>
-          <p className="text-brand-secondary font-medium">Bạn đã hoàn thành 85% mục tiêu học tập tuần này.</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge className="bg-brand-primary text-white border-0">Cấp độ HSK 2</Badge>
-          <Badge variant="outline" className="text-brand-secondary border-brand-border bg-white">Bản miễn phí</Badge>
+          <p className="text-brand-secondary font-bold italic">Hôm nay bạn muốn học hay ôn luyện kiến thức cũ?</p>
         </div>
       </header>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {statsList.map((stat) => (
-          <motion.div
-            key={stat.label}
-            whileHover={{ y: -4 }}
-            className="transition-all"
-          >
-            <Card className="border border-brand-border shadow-sm overflow-hidden group bg-white rounded-2xl">
-              <CardContent className="p-6 relative">
-                <div className={cn("absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 opacity-10 group-hover:scale-120 transition-transform")}>
-                  <stat.icon className={cn("w-full h-full", stat.color)} />
-                </div>
-                <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mb-4", stat.bg)}>
-                  <stat.icon className={cn("w-6 h-6", stat.color)} />
-                </div>
-                <p className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest leading-none">{stat.label}</p>
-                <p className="text-3xl font-black text-brand-ink mt-1.5 leading-none">{stat.value}</p>
-              </CardContent>
+      {/* Stats Summary */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        {statsList.map((stat, idx) => (
+          <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}>
+            <Card className="border-brand-border bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all group overflow-hidden">
+               <CardContent className="p-6 relative">
+                  <div className={cn("absolute top-0 right-0 w-20 h-20 -mr-6 -mt-6 opacity-5 group-hover:scale-125 transition-transform", stat.color)}>
+                     <stat.icon className="w-full h-full" />
+                  </div>
+                  <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-4 border border-white shadow-sm", stat.bg)}>
+                     <stat.icon className={cn("w-6 h-6", stat.color)} />
+                  </div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+                  <p className="text-3xl font-black text-brand-ink mt-1">{loading ? "..." : stat.value}</p>
+               </CardContent>
             </Card>
           </motion.div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main learning section */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card className="rounded-3xl border border-brand-border shadow-sm bg-brand-highlight overflow-hidden relative group">
-            <CardContent className="p-8 relative z-10 flex flex-col md:flex-row gap-8 items-center">
-              <div className="space-y-4 flex-1 text-center md:text-left">
-                <span className="inline-block px-3 py-1 bg-brand-primary text-white text-[10px] font-bold uppercase rounded-full">Khám phá từ vựng mới</span>
-                <h3 className="text-3xl font-bold text-brand-ink">Hội thoại tại nhà hàng</h3>
-                <p className="text-brand-secondary text-sm max-w-sm font-medium">Bổ sung ngay 15 từ vựng thường gặp khi gọi món bằng tiếng Trung phổ thông.</p>
-                <div className="flex flex-wrap gap-4 pt-4 justify-center md:justify-start">
-                  <Button onClick={() => window.location.href='/student/vocabulary'} className="bg-brand-ink text-white hover:bg-black rounded-xl px-8 font-bold h-12 shadow-sm flex items-center gap-2">
-                    Từ điển HSK <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-              <div className="w-40 h-40 bg-white/50 rounded-2xl border border-white flex flex-col items-center justify-center space-y-2 shrink-0 shadow-sm">
-                <span className="text-6xl">🍜</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold text-brand-ink flex items-center gap-2">
-              <Award className="w-6 h-6 text-brand-primary" /> Thành tựu mới nhất
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Card className="border-brand-border bg-white rounded-2xl p-4 flex gap-4 items-center shadow-sm">
-                <div className="w-12 h-12 bg-brand-highlight rounded-full flex items-center justify-center shrink-0">🏆</div>
-                <div>
-                  <p className="font-bold text-brand-ink">Chiến thần học tập</p>
-                  <p className="text-xs text-brand-secondary">Học liên tiếp 7 ngày</p>
-                </div>
-              </Card>
-              <Card className="border-brand-border bg-white rounded-2xl p-4 flex gap-4 items-center shadow-sm">
-                <div className="w-12 h-12 bg-brand-highlight rounded-full flex items-center justify-center shrink-0">🔝</div>
-                <div>
-                  <p className="font-bold text-brand-ink">Vua từ vựng</p>
-                  <p className="text-xs text-brand-secondary">Ghi nhớ 100 từ vựng HSK 1</p>
-                </div>
-              </Card>
-            </div>
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="lg:col-span-3 space-y-6">
+           <h3 className="text-xs font-black text-brand-secondary uppercase tracking-[0.2em] px-2 italic">Chọn cấp độ</h3>
+           <div className="flex flex-col gap-2">
+             {loading ? (
+                Array(4).fill(0).map((_, i) => <div key={i} className="h-16 w-full bg-brand-highlight/20 animate-pulse rounded-2xl"></div>)
+             ) : catalog.map((cat) => (
+               <button
+                 key={cat.categorySlug}
+                 onClick={() => setSelectedCat(cat.categorySlug)}
+                 className={cn(
+                   "flex items-center justify-between p-5 rounded-2xl text-left font-black transition-all border-2",
+                   selectedCat === cat.categorySlug 
+                    ? "bg-brand-ink border-brand-ink text-white shadow-lg shadow-brand-ink/20 translate-x-2" 
+                    : "bg-white border-transparent text-brand-secondary hover:bg-brand-highlight/30 hover:border-brand-border"
+                 )}
+               >
+                 <span className="text-lg uppercase tracking-tight">{cat.categorySlug}</span>
+                 <div className={cn("w-8 h-8 rounded-xl flex items-center justify-center bg-white/10", selectedCat === cat.categorySlug ? "text-brand-primary" : "text-brand-border")}>
+                    <ChevronRight className="w-5 h-5" />
+                 </div>
+               </button>
+             ))}
+           </div>
         </div>
 
-        {/* Sidebar widgets */}
-        <div className="space-y-8">
-          <Card className="bg-white border border-brand-border shadow-sm rounded-3xl">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-center justify-between text-brand-ink">
-                Mục tiêu hôm nay
-                <TrendingUp className="w-4 h-4 text-emerald-500" />
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-brand-secondary">Học từ vựng</span>
-                  <span className="text-brand-ink">15/20</span>
-                </div>
-                <div className="w-full h-2 bg-brand-highlight rounded-full overflow-hidden">
-                  <div className="bg-emerald-500 h-full w-[75%] transition-all"></div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-brand-secondary">Học ngữ pháp</span>
-                  <span className="text-brand-ink">1/2</span>
-                </div>
-                <div className="w-full h-2 bg-brand-highlight rounded-full overflow-hidden">
-                  <div className="bg-brand-primary h-full w-[50%] transition-all"></div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-brand-secondary">Luyện nghe</span>
-                  <span className="text-brand-ink">0/15p</span>
-                </div>
-                <div className="w-full h-2 bg-brand-highlight rounded-full overflow-hidden">
-                  <div className="bg-brand-border h-full w-0 transition-all"></div>
-                </div>
-              </div>
-              <Button variant="outline" className="w-full font-bold text-brand-secondary border-brand-border hover:bg-brand-highlight rounded-xl">Thay đổi mục tiêu</Button>
-            </CardContent>
-          </Card>
+        <div className="lg:col-span-9 space-y-6">
+           <AnimatePresence mode="wait">
+             <motion.div
+               key={selectedCat}
+               initial={{ opacity: 0, x: 20 }}
+               animate={{ opacity: 1, x: 0 }}
+               exit={{ opacity: 0, x: -20 }}
+               transition={{ duration: 0.3 }}
+               className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+             >
+                {!loading && catalog.find(c => c.categorySlug === selectedCat)?.items.map((lesson: any, idx: number) => (
+                   <Card key={lesson.id} className="border-brand-border bg-white rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all overflow-hidden group border-2 hover:border-brand-primary flex flex-col">
+                      <div className="p-8 flex-1 space-y-5">
+                         <div className="flex justify-between items-start">
+                            <div className="w-12 h-12 bg-brand-highlight rounded-2xl flex items-center justify-center font-black text-brand-primary text-lg border-2 border-brand-border shadow-sm">
+                               {idx + 1}
+                            </div>
+                            <Badge variant="outline" className="rounded-full bg-brand-highlight/30 text-brand-secondary border-brand-border font-black italic text-[10px] uppercase tracking-tighter">Từ vựng</Badge>
+                         </div>
+                         <div>
+                            <h3 className="text-3xl font-black text-brand-ink leading-tight mb-1">{lesson.title}</h3>
+                            <p className="text-lg font-bold text-brand-secondary italic">{lesson.translation}</p>
+                         </div>
+                         <p className="text-sm text-slate-500 font-medium line-clamp-2 leading-relaxed">{lesson.desc}</p>
+                      </div>
 
-          <Card className="bg-white border border-brand-border shadow-sm rounded-3xl text-center p-8">
-            <h3 className="text-xs font-bold text-brand-secondary uppercase mb-6 tracking-widest">Hán Tự Mỗi Ngày</h3>
-            <div className="text-7xl mb-4 font-serif text-brand-ink">學</div>
-            <p className="text-xl font-bold text-brand-ink">xué</p>
-            <p className="text-brand-secondary italic text-sm">Học / Học tập</p>
-            <div className="mt-8 pt-6 border-t border-dashed border-brand-border">
-              <p className="text-xs font-medium text-brand-primary">3 từ liên quan đã sẵn sàng</p>
-            </div>
-          </Card>
+                      <div className="p-6 pt-0 flex gap-3">
+                         <Button 
+                            onClick={() => navigate(`/student/lessons/${lesson.id}`)}
+                            className="flex-1 h-14 rounded-2xl bg-brand-ink text-white font-black uppercase text-xs tracking-widest gap-2 shadow-lg hover:scale-105 transition-transform"
+                         >
+                            <Play className="w-4 h-4 fill-current text-brand-primary" /> Học tập
+                         </Button>
+                         <Button 
+                            onClick={() => navigate(`/student/lessons/${lesson.id}/review`)}
+                            variant="outline"
+                            className="flex-1 h-14 rounded-2xl border-2 border-brand-border font-black uppercase text-xs tracking-widest gap-2 hover:bg-brand-highlight transition-all"
+                         >
+                            <RefreshCw className="w-4 h-4 text-brand-primary" /> Ôn luyện
+                         </Button>
+                      </div>
+                   </Card>
+                ))}
+             </motion.div>
+           </AnimatePresence>
         </div>
       </div>
     </div>

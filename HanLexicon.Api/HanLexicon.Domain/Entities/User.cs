@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace HanLexicon.Domain.Entities;
 
 /// <summary>
-/// Tài kho?n h?c viên và qu?n tr? viên
+/// Tï¿½i kho?n h?c viï¿½n vï¿½ qu?n tr? viï¿½n
 /// </summary>
 public partial class User
 {
@@ -34,6 +34,8 @@ public partial class User
     public virtual ICollection<SearchHistory> SearchHistories { get; set; } = new List<SearchHistory>();
 
     public virtual ICollection<UserProgress> UserProgresses { get; set; } = new List<UserProgress>();
+
+    public virtual ICollection<ReviewHistory> ReviewHistories { get; set; } = new List<ReviewHistory>();
 
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 

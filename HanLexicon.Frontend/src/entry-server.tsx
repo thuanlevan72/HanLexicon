@@ -3,6 +3,7 @@ import { renderToString } from 'react-dom/server';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './store';
+import { AuthProvider } from './context/AuthContext';
 import LandingPage from './pages/LandingPage';
 import PublicLayout from './layouts/PublicLayout';
 import './i18n';
@@ -12,14 +13,15 @@ export function render(url: string) {
     <React.StrictMode>
       <Provider store={store}>
         <MemoryRouter initialEntries={[url]}>
-          <Routes>
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<LandingPage />} />
-            </Route>
-          </Routes>
+          <AuthProvider>
+            <Routes>
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<LandingPage />} />
+              </Route>
+            </Routes>
+          </AuthProvider>
         </MemoryRouter>
       </Provider>
     </React.StrictMode>
   );
 }
-

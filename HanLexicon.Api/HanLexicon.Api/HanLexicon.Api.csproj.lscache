@@ -55,8 +55,12 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 /warnaserror+:NU1605,SYSLIB0011
 
 [sourceFiles]
+Controllers/Admin/
+ AdminDashboardController.cs
+ AdminLearningManagerController.cs
+ AdminUsersController.cs
+ AdminVocabulariesController.cs
 Controllers/
- Admin/AdminVocabulariesController.cs
  Auth/AuthController.cs
  DictionaryController.cs
  LearningController.cs
@@ -429,6 +433,9 @@ Services/CurrentUserService.cs
  serilog.sinks.console/6.1.1/lib/net8.0/Serilog.Sinks.Console.dll
  serilog.sinks.debug/3.0.0/lib/net8.0/Serilog.Sinks.Debug.dll
  serilog.sinks.file/7.0.0/lib/net9.0/Serilog.Sinks.File.dll
+ serilog.sinks.periodicbatching/2.3.0/lib/netstandard2.0/Serilog.Sinks.PeriodicBatching.dll
+ serilog.sinks.postgresql.configuration/1.0.1/lib/netstandard2.0/Serilog.Sinks.PostgreSQL.Configuration.dll
+ serilog.sinks.postgresql/2.3.0/lib/net5.0/Serilog.Sinks.PostgreSQL.dll
  serilog.sinks.seq/9.0.0/lib/net6.0/Serilog.Sinks.Seq.dll
  serilog/4.3.0/lib/net9.0/Serilog.dll
  sixlabors.fonts/1.0.0/lib/netcoreapp3.1/SixLabors.Fonts.dll

@@ -12,7 +12,7 @@ public partial class Lesson
     public short? LessonNumber { get; set; }
 
     /// <summary>
-    /// Tên file HTML g?c, dùng làm game_id khi luu ti?n d?
+    /// Tï¿½n file HTML g?c, dï¿½ng lï¿½m game_id khi luu ti?n d?
     /// </summary>
     public string Filename { get; set; } = null!;
 
@@ -45,6 +45,8 @@ public partial class Lesson
     public virtual ICollection<RadicalSet> RadicalSets { get; set; } = new List<RadicalSet>();
 
     public virtual ICollection<UserProgress> UserProgresses { get; set; } = new List<UserProgress>();
+
+    public virtual ICollection<ReviewHistory> ReviewHistories { get; set; } = new List<ReviewHistory>();
 
     public virtual ICollection<Vocabulary> Vocabularies { get; set; } = new List<Vocabulary>();
 }

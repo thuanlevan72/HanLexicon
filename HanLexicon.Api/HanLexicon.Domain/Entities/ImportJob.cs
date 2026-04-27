@@ -23,6 +23,8 @@ public partial class ImportJob
 
     public short? CategoryId { get; set; }
 
+    public Guid? LessonId { get; set; }
+
     public DateTime? StartedAt { get; set; }
 
     public DateTime? FinishedAt { get; set; }
@@ -30,6 +32,8 @@ public partial class ImportJob
     public DateTime CreatedAt { get; set; }
 
     public virtual LessonCategory? Category { get; set; }
+
+    public virtual Lesson? Lesson { get; set; }
 
     public virtual User UploadedByNavigation { get; set; } = null!;
 }

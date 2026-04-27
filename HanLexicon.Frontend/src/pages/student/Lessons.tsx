@@ -1,129 +1,105 @@
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Search, Filter, BookOpen, Star, Clock, CheckCircle2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { 
+  BookOpen, Search, Filter, Play, Award, 
+  ChevronRight, RefreshCw, LayoutGrid 
+} from 'lucide-react';
 import { learningService, Category } from '@/src/services/api';
+import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
-export default function StudentLessons() {
+export default function LessonsPage() {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('Tất cả');
 
   useEffect(() => {
-    learningService.getLessons()
-      .then(data => {
-        setCategories(data);
-      })
-      .catch(err => {
-        console.error("Failed to fetch lessons", err);
-        // We could set some fallback data here if needed
-      });
+    const fetchData = async () => {
+      try {
+        const res: any = await learningService.getLessons();
+        const data = res.data || res;
+        setCategories(Array.isArray(data) ? data : []);
+      } catch (e) { console.error(e); }
+      finally { setLoading(false); }
+    };
+    fetchData();
   }, []);
 
-  // Compute total list of items across all categories
-  const allItems = categories.flatMap(cat => cat.items.map(item => ({ ...item, categoryName: cat.categoryName })));
+  const allItems = categories.flatMap(cat => cat.items.map(item => ({ ...item, categoryName: cat.name })));
 
-  // Filter based on selected category and search query
   const filteredItems = allItems.filter(item => {
-    const matchCat = selectedCategory === 'Tất cả' || item.categoryName === selectedCategory;
-    const matchSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                       item.translation.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchCat && matchSearch;
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         (item.translation && item.translation.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesFilter = selectedFilter === 'Tất cả' || item.categoryName === selectedFilter;
+    return matchesSearch && matchesFilter;
   });
 
-  const categoryNames = ['Tất cả', ...categories.map(c => c.categoryName)];
+  const categoryNames = ['Tất cả', ...categories.map(c => c.name)];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <header className="space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-1">
-            <h1 className="text-4xl font-black text-brand-ink tracking-tight flex items-center gap-3">
-              Danh Sách Bài Học
-              <Badge className="bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary/20">HSK</Badge>
-            </h1>
-            <p className="text-brand-secondary font-medium">Khám phá lộ trình học tập bài bản từ sơ cấp đến trung cấp.</p>
-          </div>
-          <Button variant="outline" className="h-12 px-8 gap-2 border-brand-border font-bold rounded-xl text-brand-secondary hover:bg-brand-highlight transition-all">
-            <Filter className="w-5 h-5" /> Lọc kết quả
-          </Button>
-        </div>
-        
-        <div className="relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-secondary group-focus-within:text-brand-primary transition-colors" />
-          <Input 
-            className="pl-12 h-14 bg-white border-brand-border rounded-2xl focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary transition-all shadow-sm text-lg" 
-            placeholder="Tìm bài học, từ vựng hoặc chủ đề..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+    <div className="space-y-10 pb-20 max-w-7xl mx-auto animate-in fade-in duration-700">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black text-brand-ink uppercase italic flex items-center gap-3">
+             <BookOpen className="w-8 h-8 text-brand-primary" /> Thư viện bài học
+          </h1>
+          <p className="text-brand-secondary font-medium">Hệ thống bài học Hán ngữ chuẩn quốc tế</p>
         </div>
       </header>
 
-      {/* Categories */}
-      <div className="flex gap-2 overflow-x-auto pb-4 -mx-1 px-1 no-scrollbar">
-        {categoryNames.map((cat) => (
-          <Button
-            key={cat}
-            variant={selectedCategory === cat ? 'default' : 'outline'}
-            onClick={() => setSelectedCategory(cat)}
-            className={cn(
-              "rounded-xl px-6 h-10 font-bold shrink-0 transition-all",
-              selectedCategory === cat ? "bg-brand-primary text-white shadow-md shadow-brand-primary/10" : "bg-white border-brand-border text-brand-secondary hover:bg-brand-highlight"
-            )}
-          >
-            {cat}
-          </Button>
-        ))}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+         <Card className="lg:col-span-3 p-4 bg-white rounded-[2rem] shadow-sm border-brand-border flex items-center gap-4">
+            <Search className="w-6 h-6 text-slate-400 ml-2" />
+            <Input 
+               placeholder="Tìm kiếm tên bài học..." 
+               className="border-none bg-transparent h-12 text-lg font-bold focus-visible:ring-0" 
+               value={searchTerm}
+               onChange={e => setSearchTerm(e.target.value)}
+            />
+         </Card>
+         <Card className="lg:col-span-1 p-4 bg-white rounded-[2rem] shadow-sm border-brand-border flex items-center gap-3">
+            <Filter className="w-5 h-5 text-brand-primary shrink-0" />
+            <select 
+               className="w-full bg-transparent outline-none font-bold text-brand-ink cursor-pointer"
+               value={selectedFilter}
+               onChange={e => setSelectedFilter(e.target.value)}
+            >
+               {categoryNames.map(name => <option key={name} value={name}>{name}</option>)}
+            </select>
+         </Card>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredItems.map((item, idx) => (
-          <Link key={idx} to={`/student/lessons/${item.id || item.link.split('/').pop()}`}>
-            <Card className="group overflow-hidden border border-brand-border bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col rounded-3xl relative">
-              {item.badge && (
-                <div className="absolute top-4 left-4 z-10">
-                  <Badge className="bg-brand-accent text-white shadow-lg border-0">{item.badge}</Badge>
-                </div>
-              )}
-              <div className="relative h-56 overflow-hidden bg-brand-surface flex items-center justify-center p-6">
-                <img
-                  src={item.icon || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=400'}
-                  alt={item.title}
-                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 mix-blend-multiply"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              <CardContent className="p-8 flex-1 flex flex-col">
-                <p className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mb-2">{item.categoryName}</p>
-                <h3 className="text-2xl font-bold text-brand-ink group-hover:text-brand-primary transition-colors mb-2 tracking-tight leading-tight">{item.title}</h3>
-                <p className="text-sm font-medium text-slate-500 line-clamp-2">{item.translation} - {item.desc}</p>
-                
-                <div className="flex items-center gap-5 text-xs text-brand-secondary mt-auto pt-6 font-medium">
-                  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> 15 phút</span>
-                  <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4" /> Từ vựng</span>
-                </div>
-                
-                <div className="mt-6 pt-6 border-t border-brand-border/40 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-1.5 text-amber-600 font-bold">
-                    <Star className="w-4 h-4 fill-amber-600" /> 4.9
-                  </div>
-                  <span className="font-bold text-brand-primary group-hover:translate-x-1 transition-transform">Bắt đầu học →</span>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-        {filteredItems.length === 0 && (
-          <div className="col-span-full py-20 text-center text-slate-400 font-medium">
-            Không tìm thấy bài học nào phù hợp.
-          </div>
-        )}
-      </div>
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+           {[1,2,3,4].map(i => <div key={i} className="h-64 bg-brand-highlight/20 animate-pulse rounded-[2.5rem]"></div>)}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+           {filteredItems.map((item, idx) => (
+              <Card key={item.id} className="border-2 border-brand-border bg-white rounded-[2.5rem] shadow-sm hover:shadow-xl hover:border-brand-primary transition-all group cursor-pointer flex flex-col overflow-hidden" onClick={() => navigate(`/student/lessons/${item.id}`)}>
+                 <div className="p-8 flex-1 space-y-4">
+                    <div className="flex justify-between items-start">
+                       <Badge className="bg-brand-highlight text-brand-primary border-brand-primary/20">{item.categoryName}</Badge>
+                       <div className="w-10 h-10 rounded-xl bg-brand-highlight flex items-center justify-center font-black text-brand-primary italic">#{idx+1}</div>
+                    </div>
+                    <div>
+                       <h3 className="text-2xl font-black text-brand-ink leading-tight">{item.title}</h3>
+                       <p className="text-brand-secondary font-bold italic">{item.translation}</p>
+                    </div>
+                    <p className="text-xs text-slate-400 font-medium line-clamp-2 leading-relaxed">{item.desc}</p>
+                 </div>
+                 <div className="px-8 py-5 bg-brand-highlight/30 border-t border-brand-border flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-brand-secondary">Ready to learn</span>
+                    <Play className="w-4 h-4 text-brand-primary fill-current group-hover:translate-x-1 transition-transform" />
+                 </div>
+              </Card>
+           ))}
+        </div>
+      )}
     </div>
   );
 }

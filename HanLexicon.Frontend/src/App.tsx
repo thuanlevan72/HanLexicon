@@ -5,32 +5,61 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { Provider } from 'react-redux';
 import { store } from './store';
+import GlobalLoading from './components/GlobalLoading';
+
+// Pages
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import StudentDashboard from './pages/student/Dashboard';
+import LearningPath from './pages/student/LearningPath';
+import ReviewCenter from './pages/student/ReviewCenter';
 import AdminDashboard from './pages/admin/Dashboard';
-import FileManager from './pages/admin/FileManager';
+import VocabularyManager from './pages/admin/VocabularyManager';
+import CategoryManager from './pages/admin/CategoryManager';
+import LessonManager from './pages/admin/LessonManager';
+import HanziManager from './pages/admin/HanziManager';
+import QuizManager from './pages/admin/QuizManager';
+import ChallengeManager from './pages/admin/ChallengeManager';
+import DocumentManager from './pages/admin/DocumentManager';
+import RadicalManager from './pages/admin/RadicalManager';
+import StudentManager from './pages/admin/StudentManager';
+import UserDetails from './pages/admin/UserDetails';
+import LogManager from './pages/admin/LogManager';
 import StudentLayout from './layouts/StudentLayout';
 import AdminLayout from './layouts/AdminLayout';
 import PublicLayout from './layouts/PublicLayout';
 import VocabularyPage from './pages/student/Vocabulary';
+import StudentLessonDetail from './pages/student/LessonDetail';
+import LessonReview from './pages/student/LessonReview';
 import HistoryPage from './pages/student/History';
 import ProfilePage from './pages/student/Profile';
-import AdminImportPage from './pages/admin/ImportData';
+import ImportJobManager from './pages/admin/ImportJobManager';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; role?: 'student' | 'admin' }> = ({ children, role }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
 
+  if (loading) {
+    return <GlobalLoading message="Đang xác thực quyền truy cập..." />;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  if (role && user?.role !== role) {
+  // Luôn đợi đến khi object user có dữ liệu
+  if (!user) {
+    return <GlobalLoading message="Đang tải hồ sơ cá nhân..." />;
+  }
+
+  // Kiểm tra quyền (Role) - Chấp nhận cả role hoặc roles (mảng)
+  const userRole = (user.role || '').toLowerCase();
+  
+  if (role && userRole !== role.toLowerCase()) {
+    console.warn(`Truy cập bị từ chối: Cần ${role}, tài khoản hiện tại là ${userRole}`);
     return <Navigate to="/" replace />;
   }
 
@@ -39,57 +68,67 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; role?: 'student' | '
 
 function AppRoutes() {
   return (
-    <Router>
-      <Routes>
-        {/* Các Tuyến Đường Công Khai (Public Routes) */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Route>
+    <Routes>
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
 
-        {/* Các Tuyến Đường Cho Học Viên (Student Routes) */}
-        <Route
-          path="/student"
-          element={
-            <ProtectedRoute role="student">
-              <StudentLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<StudentDashboard />} />
-          <Route path="vocabulary" element={<VocabularyPage />} />
-          <Route path="history" element={<HistoryPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-        </Route>
+      <Route
+        path="/student"
+        element={
+          <ProtectedRoute role="student">
+            <StudentLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<StudentDashboard />} />
+        <Route path="learning" element={<LearningPath />} />
+        <Route path="review" element={<ReviewCenter />} />
+        <Route path="lessons/:id" element={<StudentLessonDetail />} />
+        <Route path="lessons/:id/review" element={<LessonReview />} />
+        <Route path="vocabulary" element={<VocabularyPage />} />
+        <Route path="history" element={<HistoryPage />} />
+        <Route path="profile" element={<ProfilePage />} />
+      </Route>
 
-        {/* Các Tuyến Đường Cho Quản Trị Viên (Admin Routes) */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute role="admin">
-              <AdminLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminDashboard />} />
-          <Route path="import" element={<AdminImportPage />} />
-          <Route path="files" element={<FileManager />} />
-        </Route>
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute role="admin">
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="jobs" element={<ImportJobManager />} />
+        <Route path="vocabularies" element={<VocabularyManager />} />
+        <Route path="categories" element={<CategoryManager />} />
+        <Route path="lessons" element={<LessonManager />} />
+        <Route path="lessons/:lessonId/hanzi" element={<HanziManager />} />
+        <Route path="lessons/:lessonId/quizzes" element={<QuizManager />} />
+        <Route path="lessons/:lessonId/challenge" element={<ChallengeManager />} />
+        <Route path="documents" element={<DocumentManager />} />
+        <Route path="radicals" element={<RadicalManager />} />
+        <Route path="students" element={<StudentManager />} />
+        <Route path="students/:id" element={<UserDetails />} />
+        <Route path="logs" element={<LogManager />} />
+      </Route>
 
-        {/* Chuyển hướng dự phòng (Fallback Route) */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 
 export default function App() {
   return (
     <Provider store={store}>
-      <AppRoutes />
+      <Router>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </Router>
     </Provider>
   );
 }
-
-

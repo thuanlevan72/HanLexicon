@@ -17,6 +17,7 @@ public partial class Vocabulary
     public string? ExampleCn { get; set; }
     public string? ExamplePy { get; set; }
     public string? ExampleVn { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public virtual Lesson Lesson { get; set; } = null!;
     public virtual ICollection<SearchHistory> SearchHistories { get; set; } = new List<SearchHistory>();

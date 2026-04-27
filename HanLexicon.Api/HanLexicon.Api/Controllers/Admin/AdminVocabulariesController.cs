@@ -3,61 +3,83 @@ using Application.Interfaces;
 using HanLexicon.Domain.Interfaces;
 using HanLexicon.Domain.Entities;
 using HanLexicon.Application.Common;
+using HanLexicon.Application.DTOs.Admin;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace HanLexicon.Api.Controllers.Admin
 {
-    [Route("api/v1/admin/vocabularies")]
     [ApiController]
+    [Route("api/v1/admin/vocabularies")]
     [Authorize(Roles = "admin")]
     public class AdminVocabulariesController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IUnitOfWork _uow;
 
-        public AdminVocabulariesController(IMediator mediator, ICurrentUserService currentUserService, IUnitOfWork uow)
+        public AdminVocabulariesController(IMediator mediator, ICurrentUserService currentUserService)
         {
             _mediator = mediator;
             _currentUserService = currentUserService;
-            _uow = uow;
         }
 
-        /// <summary>
-        /// Import từ vựng thuần Text từ Excel. 
-        /// Các cột Hình ảnh/Âm thanh trong Excel phải là Link URL đã upload lên MinIO trước đó.
-        /// </summary>
-        [HttpPost("import")]
-        public async Task<IActionResult> ImportVocabulary(IFormFile excelFile, [FromQuery] short? categoryId)
+        [HttpGet]
+        public async Task<IActionResult> GetVocabularies(
+            [FromQuery] string? search, 
+            [FromQuery] short? categoryId,
+            [FromQuery] Guid? lessonId,
+            [FromQuery] bool? missingAudio,
+            [FromQuery] bool? missingImage,
+            [FromQuery] int page = 1, 
+            [FromQuery] int pageSize = 10)
         {
-            if (excelFile == null) return BadRequest(ApiResponse<object>.Failure("File Excel là bắt buộc."));
+            var result = await _mediator.Send(new QueryGetVocabulariesAdmin(search, categoryId, lessonId, missingAudio, missingImage, page, pageSize));
+            return Ok(ApiResponse<PagedResult<VocabularyDto>>.Success(result));
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateVocabulary([FromBody] CreateVocabularyCommand cmd)
+        {
+            var result = await _mediator.Send(cmd);
+            return Ok(ApiResponse<VocabularyDto>.Success(result));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateVocabulary(Guid id, [FromBody] UpdateVocabularyCommand cmd)
+        {
+            if (id != cmd.Id) return BadRequest();
+            var result = await _mediator.Send(cmd);
+            return Ok(ApiResponse<VocabularyDto>.Success(result));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteVocabulary(Guid id)
+        {
+            var result = await _mediator.Send(new DeleteVocabularyCommand(id));
+            return Ok(ApiResponse<bool>.Success(result));
+        }
+
+        [HttpGet("jobs")]
+        public async Task<IActionResult> GetImportJobs([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var result = await _mediator.Send(new QueryGetImportJobs(page, pageSize));
+            return Ok(ApiResponse<PagedResult<ImportJobDto>>.Success(result));
+        }
+
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportVocabulary(IFormFile excelFile, [FromQuery] short? categoryId, [FromQuery] Guid? lessonId)
+        {
+            if (excelFile == null) return BadRequest();
             var tempExcelPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".xlsx");
             using (var stream = new FileStream(tempExcelPath, FileMode.Create)) await excelFile.CopyToAsync(stream);
-
-            var jobId = await _mediator.Send(new ImportVocabularyCommand(
-                tempExcelPath,
-                null, // Không còn dùng Zip
-                _currentUserService.UserId,
-                excelFile.FileName,
-                categoryId
-            ));
-
-            return Ok(ApiResponse<object>.Success(new { jobId }, "Yêu cầu import text đã được gửi vào hàng chờ."));
-        }
-
-        [HttpGet("import-status/{jobId}")]
-        public async Task<IActionResult> GetImportStatus(Guid jobId)
-        {
-            var job = await _uow.Repository<ImportJob>().GetByIdAsync(jobId);
-            if (job == null) return NotFound(ApiResponse<object>.Failure("Không tìm thấy Job."));
-            return Ok(ApiResponse<object>.Success(job));
+            var jobId = await _mediator.Send(new ImportVocabularyCommand(tempExcelPath, null, _currentUserService.UserId, excelFile.FileName, categoryId, lessonId));
+            return Ok(ApiResponse<object>.Success(new { jobId }));
         }
     }
 }

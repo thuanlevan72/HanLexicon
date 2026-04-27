@@ -1,91 +1,124 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store';
-import { setUser, logoutUser, UserRole } from '../store/slices/authSlice';
-import { authService } from '../services/api';
-import { jwtDecode } from 'jwt-decode';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { authService, userService } from '../services/api';
 
-export type { UserRole };
+interface AuthContextType {
+  user: any;
+  isAuthenticated: boolean;
+  loading: boolean;
+  login: (data: any) => Promise<void>;
+  register: (data: any) => Promise<void>;
+  logout: () => void;
+  refreshProfile: () => Promise<void>;
+}
 
-export const useAuth = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.auth.user);
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-  const login = async (userName: string, password?: string) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    typeof window !== 'undefined' ? !!localStorage.getItem('accessToken') : false
+  );
+
+  const refreshProfile = async () => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    if (!token) {
+      setIsAuthenticated(false);
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+    
+    setLoading(true);
     try {
-      // 1. Giả lập gọi API login thuần túy
-      const response = await authService.login({
-        userName,
-        password,
-        ipAddress: '127.0.0.1'
-      });
-
-      if (response && response.isSuccess && response.data) {
-        const { accessToken, refreshToken, userId } = response.data;
-        
-        // 2. Decode JWT
-        const decoded: any = jwtDecode(accessToken);
-        
-        // Cấu trúc typical JWT claims array / URLs
-        const roleClaimKeys = [
-          'role',
-          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role',
-          'roles'
-        ];
-        let role = 'student';
-        for (const key of roleClaimKeys) {
-          if (decoded[key]) {
-            role = decoded[key].toLowerCase();
-            break;
-          }
-        }
-
-        const nameClaimKeys = [
-          'name',
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
-        ];
-        let name = userName;
-        for (const key of nameClaimKeys) {
-          if (decoded[key]) {
-            name = decoded[key];
-            break; // Stop at the first valid claim found for Name
-          }
-        }
-        
-        const email = decoded.email || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || userName;
-
-        // 3. Lưu vào localStorage
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('user', JSON.stringify({ userId, role, name, email }));
-
-        // 4. Update Redux
-        dispatch(setUser({
-          id: userId,
-          name,
-          email,
-          role: role as UserRole,
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`
-        }));
-
-        return role;
+      const response: any = await userService.getProfile();
+      const data = response.data || response;
+      
+      // Đảm bảo object user có đầy đủ thuộc tính bao gồm role
+      if (data && (data.username || data.id)) {
+        console.log("Xác thực thành công. Full Data:", data);
+        console.log("Role người dùng (từ API):", data.role);
+        setUser(data);
+        setIsAuthenticated(true);
       } else {
-        throw new Error(response?.message || 'Login failed');
+        throw new Error("Dữ liệu profile không hợp lệ");
       }
-    } catch (error: any) {
-      console.error('API Login failed', error);
-      throw new Error(error?.message || 'Lỗi đăng nhập'); // Re-throw so UI can catch it
+    } catch (error) {
+      console.error("Xác thực profile thất bại:", error);
+      setIsAuthenticated(false);
+      setUser(null);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    refreshProfile();
+  }, []);
+
+  const login = async (loginData: any) => {
+    setLoading(true);
+    try {
+      const response: any = await authService.login(loginData);
+      const data = response.data || response;
+      if (data && data.accessToken) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('accessToken', data.accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+        }
+        
+        // Nếu API trả về user trực tiếp, cập nhật ngay lập tức
+        if (data.user) {
+          console.log("Đăng nhập thành công. Role từ response:", data.user.role);
+          setUser(data.user);
+          setIsAuthenticated(true);
+          setLoading(false);
+        } else {
+          setIsAuthenticated(true);
+          // Fallback: Đợi refreshProfile tải xong role nếu response không có user
+          await refreshProfile();
+        }
+      } else {
+        throw new Error(response?.message || 'Đăng nhập thất bại.');
+      }
+    } catch (err) {
+      setLoading(false);
+      throw err;
+    }
+  };
+
+  const register = async (regData: any) => {
+    const response: any = await authService.register(regData);
+    const data = response.data || response;
+    if (response && (response.isSuccess || data.isSuccess)) {
+      // Success
+    } else {
+      throw new Error(response?.message || 'Đăng ký thất bại.');
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
-    dispatch(logoutUser());
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    }
+    setUser(null);
+    setIsAuthenticated(false);
   };
 
-  return { user, isAuthenticated, login, logout };
+  return (
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, register, logout, refreshProfile }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuth must be used within AuthProvider');
+  return context;
+};

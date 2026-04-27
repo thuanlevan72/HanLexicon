@@ -4,56 +4,63 @@ using HanLexicon.Application.DependencyInjections;
 using Infrastructure.Postgres.DependencyInjections;
 using Infrastructure.Minio;
 using Infrastructure.BackgroundJobs;
+using HanLexicon.Api.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using HanLexicon.Application.Features.Admin;
+using Serilog;
+using Serilog.Sinks.PostgreSQL;
+using System.Collections.Generic;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Lấy chuỗi kết nối từ appsettings.json
+// --- CẤU HÌNH SERILOG TỐI GIẢN ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Information)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.PostgreSQL(connectionString, "logs", needAutoCreateTable: true)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+// Add services to the container.
+builder.Services.AddControllers();
 
 // 1. Đăng ký Các services
 builder.Services.AddApplicationDependencyInjection();
-
 builder.Services.AddInfrastructurePostgres(builder.Configuration);
-
 builder.Services.AddInfrastructureMinio(builder.Configuration);
 builder.Services.AddInfrastructureBackgroundJobs(builder.Configuration);
 
 // đăng ký service dùng cho api
 builder.Services.AddApiServices(builder.Configuration);
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
-app.UseCors("AllowAll");
 
-//// Tự động Migrate Database khi khởi động
-//using (var scope = app.Services.CreateScope())
-//{
-//    var dbContext = scope.ServiceProvider.GetRequiredService<Infrastructure.Postgres.Persistence.HanLexiconDbContext>();
-//    await dbContext.Database.MigrateAsync();
-
-//    // Seed Data
-//    var mediator = scope.ServiceProvider.GetRequiredService<MediatR.IMediator>();
-//    await mediator.Send(new SeedInitialDataCommand());
-//}
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+});
+
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
+app.UseCors("AllowAll");
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

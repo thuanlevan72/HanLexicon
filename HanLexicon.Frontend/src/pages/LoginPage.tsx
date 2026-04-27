@@ -1,121 +1,148 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth, UserRole } from '@/src/context/AuthContext';
+import { useAuth } from '../context/AuthContext';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { GraduationCap, Mail, Lock, ArrowRight, Github } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useTranslation } from 'react-i18next';
+import { Label } from '@/components/ui/label';
+import { Sparkles, ArrowRight, Loader2, KeyRound, User as UserIcon } from 'lucide-react';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { login, user } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setErrorMsg('');
+    setLoading(true);
+    setError('');
+
     try {
-      const detectedRole = await login(email, password);
-      navigate(detectedRole === 'admin' ? '/admin' : '/student');
-    } catch (error: any) {
-      setErrorMsg(error.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+      // Backend yêu cầu ipAddress, tạm thời lấy giả lập hoặc từ dịch vụ bên thứ 3
+      await login({ 
+        userName, 
+        password, 
+        ipAddress: '127.0.0.1' // Backend yêu cầu bắt buộc
+      });
+      
+      // Chờ context cập nhật user role và navigate
+      // navigate được thực hiện dựa trên role sau khi login thành công
+    } catch (err: any) {
+      setError(err.message || 'Sai tên đăng nhập hoặc mật khẩu.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
+  // Tự động chuyển hướng nếu đã đăng nhập
+  React.useEffect(() => {
+    if (user) {
+      const role = user.role;
+      const isAdmin = (Array.isArray(role) 
+        ? role.some(r => r.toLowerCase() === 'admin')
+        : typeof role === 'string' && role.toLowerCase() === 'admin') 
+        || user.username?.toLowerCase() === 'admin'; // Override khẩn cấp cho username admin
+
+      if (isAdmin) navigate('/admin');
+      else navigate('/student');
+    }
+  }, [user, navigate]);
+
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center p-4 bg-brand-bg">
-      <Card className="w-full max-w-md border border-brand-border shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="space-y-4 text-center pb-8 pt-10">
-          <div className="flex justify-center items-center gap-2">
-            <span className="text-3xl font-bold tracking-tight text-brand-ink">Tiếng Trung</span>
-            <div className="bg-brand-primary w-auto px-4 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-sm font-heading">
-              Leyi
-            </div>
+    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Abstract Background Shapes */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-highlight rounded-full -mr-48 -mt-48 blur-3xl opacity-50"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-primary rounded-full -ml-48 -mb-48 blur-3xl opacity-10"></div>
+
+      <div className="w-full max-w-md relative z-10 space-y-8 animate-in fade-in zoom-in duration-500">
+        <div className="text-center space-y-4">
+          <div className="w-20 h-20 bg-brand-primary rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl shadow-brand-primary/20 rotate-3">
+             <Sparkles className="w-10 h-10 text-white fill-current" />
           </div>
-          <div className="space-y-1">
-            <CardTitle className="text-2xl font-bold tracking-tight text-brand-ink">Chào mừng trở lại</CardTitle>
-            <CardDescription className="font-medium text-brand-secondary">Đăng nhập để tiếp tục hành trình học tập</CardDescription>
+          <div>
+            <h1 className="text-4xl font-black text-brand-ink tracking-tighter uppercase italic">HanLexicon</h1>
+            <p className="text-brand-secondary font-bold mt-1 italic uppercase tracking-widest text-[10px]">Chinh phục Hán ngữ mỗi ngày</p>
           </div>
-        </CardHeader>
-        <CardContent>
-          {errorMsg && (
-            <div className="mb-4 p-3 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm text-center font-medium">
-              {errorMsg}
-            </div>
-          )}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-brand-secondary uppercase tracking-widest">Email / Tên đăng nhập</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 w-4 h-4 text-brand-secondary" />
-                <Input
-                  type="text"
-                  placeholder="name@example.com hoặc username"
-                  className="pl-10 h-12 border-brand-border bg-brand-highlight/30 focus:bg-white rounded-xl"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+        </div>
+
+        <Card className="border-4 border-brand-border bg-white rounded-[3rem] shadow-2xl overflow-hidden">
+          <CardHeader className="pt-10 pb-2 px-10 text-center">
+            <CardTitle className="text-2xl font-black text-brand-ink">Đăng nhập</CardTitle>
+            <p className="text-sm text-slate-400 font-medium">Vui lòng nhập tài khoản để tiếp tục</p>
+          </CardHeader>
+          
+          <CardContent className="p-10 pt-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {error && (
+                <div className="p-4 bg-rose-50 border-2 border-rose-100 rounded-2xl text-rose-600 text-xs font-black uppercase text-center animate-shake">
+                  {error}
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Tên đăng nhập</Label>
+                  <div className="relative group">
+                    <UserIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-brand-primary transition-colors" />
+                    <Input 
+                      placeholder="Username..." 
+                      className="h-16 pl-14 pr-6 bg-brand-highlight/20 border-2 border-transparent rounded-[1.5rem] font-bold text-brand-ink focus:border-brand-primary focus:bg-white transition-all text-lg shadow-inner"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Mật khẩu</Label>
+                  <div className="relative group">
+                    <KeyRound className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-brand-primary transition-colors" />
+                    <Input 
+                      type="password"
+                      placeholder="••••••••" 
+                      className="h-16 pl-14 pr-6 bg-brand-highlight/20 border-2 border-transparent rounded-[1.5rem] font-bold text-brand-ink focus:border-brand-primary focus:bg-white transition-all text-lg shadow-inner"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full h-20 bg-brand-ink text-white rounded-[2rem] text-xl font-black uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 group"
+                >
+                  {loading ? (
+                    <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
+                  ) : (
+                    <>
+                      Vào hệ thống
+                      <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform text-brand-primary" />
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+
+            <div className="mt-10 text-center space-y-4">
+              <p className="text-sm font-medium text-slate-400">
+                Chưa có tài khoản?{' '}
+                <Link to="/register" className="text-brand-primary font-black hover:underline underline-offset-4">Đăng ký ngay</Link>
+              </p>
+              <div className="pt-6 border-t border-brand-border">
+                <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">© 2026 HanLexicon Studio</p>
               </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-brand-secondary uppercase tracking-widest">Mật khẩu</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 w-4 h-4 text-brand-secondary" />
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  className="pl-10 h-12 border-brand-border bg-brand-highlight/30 focus:bg-white rounded-xl"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="bg-blue-50 text-blue-800 p-3 rounded-lg text-xs leading-relaxed mt-2 border border-blue-100">
-              <strong className="block mb-1">Tài khoản trải nghiệm:</strong>
-              • Học viên: <code className="bg-white px-1 font-bold">student@chuang.com</code> / <code className="bg-white px-1 font-bold">student123</code><br/>
-              • Admin: <code className="bg-white px-1 font-bold">Admin</code> / <code className="bg-white px-1 font-bold">@Anh123anh</code>
-            </div>
-
-            <Button disabled={isLoading} type="submit" className="w-full bg-brand-primary hover:bg-brand-secondary h-14 text-white rounded-xl text-lg font-bold shadow-sm group">
-              {isLoading ? 'Đang đăng nhập...' : t('nav.login')} {!isLoading && <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />}
-            </Button>
-          </form>
-
-          <div className="relative my-8 text-center text-xs uppercase tracking-widest text-slate-400 font-bold">
-            <span className="bg-white px-2 relative z-10">Hoặc tiếp tục với</span>
-            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-slate-100 -z-0"></div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" className="h-11 gap-2">
-              <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="Google" /> Google
-            </Button>
-            <Button variant="outline" className="h-11 gap-2">
-              <Github className="w-4 h-4" /> Github
-            </Button>
-          </div>
-        </CardContent>
-        <CardFooter className="justify-center border-t border-brand-border pt-6 pb-8 bg-brand-highlight/30">
-          <p className="text-sm text-brand-secondary font-medium">
-            Chưa có tài khoản?{' '}
-            <Link to="/register" className="text-brand-primary font-bold hover:underline">
-              Đăng ký ngay
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

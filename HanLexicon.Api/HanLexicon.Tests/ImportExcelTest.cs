@@ -37,19 +37,22 @@ namespace HanLexicon.Tests
             var adminId = realUser.Id;
             
             var jobId = Guid.NewGuid();
+            var targetLessonId = Guid.Parse("29fa1a00-8be7-48ed-8f22-b3950fd0ed34"); // HSK 1 Lesson 1
+            
             var jobRecord = new ImportJob
             {
                 Id = jobId,
                 UploadedBy = adminId,
                 FileName = "testImportV.xlsx",
                 Status = "pending",
+                LessonId = targetLessonId,
                 CreatedAt = DateTime.UtcNow
             };
             context.ImportJobs.Add(jobRecord);
             await context.SaveChangesAsync();
 
             var jobProcessor = new VocabularyImportJob(uow, logger);
-            await jobProcessor.ProcessImportAsync(excelPath, null, adminId, jobId);
+            await jobProcessor.ProcessImportAsync(excelPath, null, adminId, jobId, targetLessonId);
 
             var updatedJob = await context.ImportJobs.AsNoTracking().FirstOrDefaultAsync(j => j.Id == jobId);
             var vocabCount = await context.Vocabularies.CountAsync();
@@ -64,7 +67,7 @@ namespace HanLexicon.Tests
                 Console.WriteLine($"Log lỗi Job: {updatedJob.ErrorLog}");
             }
 
-            Assert.Equal("finished", updatedJob?.Status);
+            Assert.Equal("done", updatedJob?.Status);
             Assert.True(updatedJob?.ProcessedRows > 0);
         }
     }

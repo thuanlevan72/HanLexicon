@@ -45,5 +45,16 @@ namespace HanLexicon.Api.Controllers.Auth
             await _authService.RevokeSingleTokenAsync(request.ClientRefreshToken);
             return Ok(ApiResponse<object>.Success(null, "Đã đăng xuất."));
         }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        {
+            var result = await _mediator.Send(new RefreshTokenCommand(request.RefreshToken));
+            if (!result.IsSuccess) return Unauthorized(ApiResponse<object>.Failure(result.Errors, result.Message, 401));
+            return Ok(ApiResponse<object>.Success(result));
+        }
     }
+
+    public class LogoutRequest { public string ClientRefreshToken { get; set; } = null!; }
+    public class RefreshTokenRequest { public string RefreshToken { get; set; } = null!; }
 }

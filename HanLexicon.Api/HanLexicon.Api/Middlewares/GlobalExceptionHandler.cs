@@ -1,37 +1,43 @@
-using HanLexicon.Domain.Entities;
+using HanLexicon.Domain.Interfaces;
 using Microsoft.AspNetCore.Diagnostics;
+using System.Security.Claims;
 
 namespace HanLexicon.Api.Middlewares
 {
     public class GlobalExceptionHandler : IExceptionHandler
     {
         private readonly ILogger<GlobalExceptionHandler> _logger;
+        private readonly ILogService _dbLogger;
 
-        public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
+        public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, ILogService dbLogger)
         {
             _logger = logger;
+            _dbLogger = dbLogger;
         }
 
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            // 1. GHI LOG RA FILE (Ch? developer và sysadmin m?i th?y)
-            // Log luôn c? Exception (Stack trace chi ti?t) d? d? debug
+            // 1. Láº¥y thÃ´ng tin user hiá»‡n táº¡i (náº¿u cÃ³)
+            var userId = httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userName = httpContext.User?.Identity?.Name;
+
+            // 2. Ghi log ra Console/File
             _logger.LogError(exception, "L?I H? TH?NG: {Message}", exception.Message);
 
-            // 2. TR? V? CHO NGU?I DÙNG (Gi?u t?t l?i th?t, ch? hi?n câu chung chung)
+            // 3. GHI LOG VÃ€O DATABASE
+            await _dbLogger.LogErrorAsync($"Lá»—i há»‡ thá»‘ng: {exception.Message}", exception, userId, userName);
+
+            // 4. TR? V? CHO NGU?I DNG
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
             httpContext.Response.ContentType = "application/json";
 
             var response = new
             {
                 StatusCode = 500,
-                Message = "H? th?ng dang g?p s? c?. Vui lòng th? l?i sau!",
-                // B?t bu?c KHÔNG CÓ StackTrace ? dây
+                Message = "Há»‡ thá»‘ng Ä‘ang gáº·p sá»± cá»‘, vui lÃ²ng thá»­ láº¡i sau.",
             };
 
             await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
-
-            // Tr? v? true d? báo cho .NET bi?t: "Tôi dã x? lý l?i này r?i, d?ng quang l?i g?c ra ngoài n?a"
             return true;
         }
     }

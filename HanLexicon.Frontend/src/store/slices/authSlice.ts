@@ -17,9 +17,13 @@ interface AuthState {
   error: string | null;
 }
 
+// Thử khôi phục user từ localStorage khi ứng dụng khởi chạy
+const savedUser = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+const initialUser = savedUser ? JSON.parse(savedUser) : null;
+
 const initialState: AuthState = {
-  user: null,
-  isAuthenticated: false,
+  user: initialUser,
+  isAuthenticated: !!initialUser,
   status: 'idle',
   error: null,
 };
