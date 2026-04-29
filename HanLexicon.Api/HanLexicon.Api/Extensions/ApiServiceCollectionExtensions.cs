@@ -18,19 +18,31 @@ namespace HanLexicon.Api.Extensions
             services.AddControllers();
             services.AddEndpointsApiExplorer();
 
-            // 1. C?u hình CORS
+            // 1. Cáº¥u hÃ¬nh CORS
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                options.AddPolicy("AllowAll", policy => 
+                {
+                    // Cho phÃ©p cÃ¡c port local (React cháº¡y port 8080, Vite port 3000, 5173 v.v...)
+                    policy.WithOrigins(
+                            "http://localhost:3000",
+                            "http://localhost:5173",
+                            "http://localhost:8080",
+                            "https://localhost:3000"
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials(); // Há»— trá»£ Cookies/SignalR sau nÃ y náº¿u cáº§n
+                });
             });
 
             services.AddControllers().AddJsonOptions(options =>
             {
-                // B? qua các vòng l?p tham chi?u khi parse JSON
+                // B? qua cï¿½c vï¿½ng l?p tham chi?u khi parse JSON
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
 
-            // 2. C?u hình JWT
+            // 2. C?u hï¿½nh JWT
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -53,13 +65,13 @@ namespace HanLexicon.Api.Extensions
                 };
 
                 // ==========================================
-                // THÊM M?I: ÐO?N CODE KI?M TRA TOKEN CH?T CH?
+                // THï¿½M M?I: ï¿½O?N CODE KI?M TRA TOKEN CH?T CH?
                 // ==========================================
                 //options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
                 //{
                 //    OnTokenValidated = async context =>
                 //    {
-                //        // 1. Resolve các service c?n thi?t
+                //        // 1. Resolve cï¿½c service c?n thi?t
                 //        //var cacheService = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
                 //        var appContext = context.HttpContext.RequestServices.GetRequiredService<HanLexiconDbContext>();
                 //        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<g>>();
@@ -73,32 +85,32 @@ namespace HanLexicon.Api.Extensions
 
                 //        if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(deviceId))
                 //        {
-                //            context.Fail("Token không ch?a thông tin User và Claim h?p l?.");
+                //            context.Fail("Token khï¿½ng ch?a thï¿½ng tin User vï¿½ Claim h?p l?.");
                 //            return;
                 //        }
-                //        /// cách này không t?t vì nó call quá nhi?u l?n vào database
-                //        //// 4. Ki?m tra xem thi?t b? này dã t?ng login chua (có token cu trong DB không)
+                //        /// cï¿½ch nï¿½y khï¿½ng t?t vï¿½ nï¿½ call quï¿½ nhi?u l?n vï¿½o database
+                //        //// 4. Ki?m tra xem thi?t b? nï¿½y dï¿½ t?ng login chua (cï¿½ token cu trong DB khï¿½ng)
                 //        //var tokenInDb = await appContext.Set<ApplicationToken>()
                 //        //    .FirstOrDefaultAsync(t => t.UserId == Guid.Parse(userId) &&
                 //        //                              t.LoginProvider == deviceId &&
                 //        //                              t.Name == "RefreshToken");
 
-                //        //// N?U TÌM KHÔNG TH?Y -> Có nghia là thi?t b? này dã b? Ðang xu?t ho?c b? "Ðá"
+                //        //// N?U Tï¿½M KHï¿½NG TH?Y -> Cï¿½ nghia lï¿½ thi?t b? nï¿½y dï¿½ b? ï¿½ang xu?t ho?c b? "ï¿½ï¿½"
                 //        //if (tokenInDb == null)
                 //        //{
-                //        //    context.Fail("Phiên dang nh?p dã h?t h?n ho?c b? thu h?i trên thi?t b? này.");
+                //        //    context.Fail("Phiï¿½n dang nh?p dï¿½ h?t h?n ho?c b? thu h?i trï¿½n thi?t b? nï¿½y.");
                 //        //    return;
                 //        //}
 
-                //        //// 3. Tìm User trong Database
+                //        //// 3. Tï¿½m User trong Database
                 //        //var user = await userManager.FindByIdAsync(userId);
 
-                //        //// 4. Ki?m tra: User có b? xóa, ho?c b? Admin khóa (IsActive = false) không?
-                //        //// (D?a vào thu?c tính IsActive trong ApplicationUser c?a b?n)
+                //        //// 4. Ki?m tra: User cï¿½ b? xï¿½a, ho?c b? Admin khï¿½a (IsActive = false) khï¿½ng?
+                //        //// (D?a vï¿½o thu?c tï¿½nh IsActive trong ApplicationUser c?a b?n)
                 //        //if (user == null || !user.IsActive)
                 //        //{
-                //        //    // Ðánh d?u Token này là KHÔNG H?P L? -> Tr? v? l?i 401 Unauthorized ngay l?p t?c
-                //        //    context.Fail("Tài kho?n không t?n t?i ho?c dã b? khóa.");
+                //        //    // ï¿½ï¿½nh d?u Token nï¿½y lï¿½ KHï¿½NG H?P L? -> Tr? v? l?i 401 Unauthorized ngay l?p t?c
+                //        //    context.Fail("Tï¿½i kho?n khï¿½ng t?n t?i ho?c dï¿½ b? khï¿½a.");
                 //        //}
                 //        // ====================================================
                 //        // KI?M TRA 1: SESSION THI?T B? (B?c qua Redis)
@@ -106,7 +118,7 @@ namespace HanLexicon.Api.Extensions
 
                 //        string sessionCacheKey = $"Session:{userId}:{deviceId}";
 
-                //        // T? d?ng tìm trong Redis, n?u không có m?i ch?y hàm query DB
+                //        // T? d?ng tï¿½m trong Redis, n?u khï¿½ng cï¿½ m?i ch?y hï¿½m query DB
                 //        var isSessionValid = await cacheService.GetOrSetAsync(
                 //            sessionCacheKey,
                 //            factory: async (cToken) =>
@@ -116,19 +128,19 @@ namespace HanLexicon.Api.Extensions
                 //                    .FirstOrDefaultAsync(t => t.UserId == Guid.Parse(userId) &&
                 //                                              t.LoginProvider == loginProvider &&
                 //                                              t.Name == "RefreshToken");
-                //                return tokenInDb != null; // Tr? v? true n?u còn trong DB
+                //                return tokenInDb != null; // Tr? v? true n?u cï¿½n trong DB
                 //            },
-                //            slidingExpiration: TimeSpan.FromMinutes(15) // Cache t?n t?i 15 phút (b?ng tu?i th? JWT)
+                //            slidingExpiration: TimeSpan.FromMinutes(15) // Cache t?n t?i 15 phï¿½t (b?ng tu?i th? JWT)
                 //        );
 
                 //        if (!isSessionValid)
                 //        {
-                //            context.Fail("Phiên dang nh?p dã h?t h?n ho?c b? thu h?i trên thi?t b? này.");
+                //            context.Fail("Phiï¿½n dang nh?p dï¿½ h?t h?n ho?c b? thu h?i trï¿½n thi?t b? nï¿½y.");
                 //            return;
                 //        }
 
                 //        // ====================================================
-                //        // KI?M TRA 2: TR?NG THÁI USER ACTIVE (B?c qua Redis)
+                //        // KI?M TRA 2: TR?NG THï¿½I USER ACTIVE (B?c qua Redis)
                 //        // ====================================================
                 //        string userStatusCacheKey = $"UserActive:{userId}";
 
@@ -139,19 +151,19 @@ namespace HanLexicon.Api.Extensions
                 //                var user = await userManager.FindByIdAsync(userId);
                 //                return user != null && user.IsActive;
                 //            },
-                //            absoluteExpiration: TimeSpan.FromMinutes(5) // Cache 5 phút d? check ban account nhanh nh?y
+                //            absoluteExpiration: TimeSpan.FromMinutes(5) // Cache 5 phï¿½t d? check ban account nhanh nh?y
                 //        );
 
                 //        if (!isUserActive)
                 //        {
-                //            context.Fail("Tài kho?n không t?n t?i ho?c dã b? khóa.");
+                //            context.Fail("Tï¿½i kho?n khï¿½ng t?n t?i ho?c dï¿½ b? khï¿½a.");
                 //            return;
                 //        }
                 //    }
                 //};
             });
 
-            // 3. C?u hình Swagger
+            // 3. C?u hï¿½nh Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Todo API", Version = "v1" });

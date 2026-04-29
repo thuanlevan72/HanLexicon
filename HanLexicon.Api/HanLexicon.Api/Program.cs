@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using HanLexicon.Application.Features.Admin;
 using Serilog;
 using Serilog.Sinks.PostgreSQL;
+using Microsoft.AspNetCore.HttpOverrides;
 using System.Collections.Generic;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,15 @@ builder.Host.UseSerilog();
 // Add services to the container.
 builder.Services.AddControllers();
 
+// Cấu hình ForwardedHeaders để lấy IP thật của người dùng khi chạy sau Proxy/Docker
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    // Tùy chỉnh KnownProxies hoặc KnownIPNetworks ở đây nếu deploy thực tế
+    options.KnownIPNetworks.Clear(); 
+    options.KnownProxies.Clear();
+});
+
 // 1. Đăng ký Các services
 builder.Services.AddApplicationDependencyInjection();
 builder.Services.AddInfrastructurePostgres(builder.Configuration);
@@ -43,6 +53,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
 {
@@ -59,7 +71,11 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Phải gọi UseCors trước UseAuthentication và UseAuthorization
 app.UseCors("AllowAll");
+
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

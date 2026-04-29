@@ -99,12 +99,22 @@ namespace HanLexicon.Api.Controllers
             var uploadedUrls = new List<object>();
             var errors = new List<string>();
 
+            // Danh sách các đuôi file an toàn
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp3", ".wav", ".ogg" };
+
             foreach (var file in files)
             {
                 try
                 {
                     if (file.Length > 0)
                     {
+                        var ext = System.IO.Path.GetExtension(file.FileName).ToLowerInvariant();
+                        if (string.IsNullOrEmpty(ext) || !allowedExtensions.Contains(ext))
+                        {
+                            errors.Add($"File {file.FileName} có định dạng không được phép tải lên.");
+                            continue;
+                        }
+
                         using var stream = file.OpenReadStream();
                         var fileNameWithFolder = $"{folder.Trim('/')}/{Guid.NewGuid()}_{file.FileName}";
                         
@@ -141,10 +151,16 @@ namespace HanLexicon.Api.Controllers
 
             await _unitOfWork.SaveChangesAsync();
 
+            if (uploadedUrls.Count == 0 && errors.Count > 0)
+            {
+                return BadRequest(ApiResponse<object>.Failure(errors, "Tải lên thất bại do vi phạm định dạng file."));
+            }
+
             return Ok(ApiResponse<object>.Success(new {
                 total = uploadedUrls.Count,
-                files = uploadedUrls
-            }, "Upload và lưu Database hoàn tất."));
+                files = uploadedUrls,
+                errors = errors.Any() ? errors : null
+            }, "Upload hoàn tất."));
         }
     }
 }

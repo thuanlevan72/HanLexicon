@@ -38,8 +38,7 @@ public class ExceptionMiddleware
         {
             StatusCode = context.Response.StatusCode,
             Message = "Hệ thống đang gặp sự cố, vui lòng thử lại sau.",
-            Detail = exception.Message,
-            StackTrace = exception.StackTrace
+            // Detail = exception.Message // Bật lên nếu chỉ debug ở môi trường local
         };
 
         var json = JsonSerializer.Serialize(response);
