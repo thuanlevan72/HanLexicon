@@ -1,120 +1,107 @@
-Để rõ ràng hơn, để tôi vẽ sơ đồ mapping từng tính năng → bảng DB, rồi giải thích chiến lược import file.
-::view-transition-group(_),
-::view-transition-old(_),
-::view-transition-new(\*) {
-animation-duration: 0.25s;
-animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
-}
-VvisualizeVvisualize show_widgetDưới đây là giải thích chi tiết cho từng phần:
+# HanLexicon 🏮
 
-Các bảng cần dùng theo tính năng
-Tính năng 1 — Quản lý user: Dùng nguyên users và user_sessions đã có, không cần thêm gì.
-Tính năng 2 — Tra từ: Đây là tính năng cần thay đổi nhiều nhất. Bảng vocabularies hiện tại chỉ có example_cn/py/vn, cần ALTER để thêm 3 cột: meaning_en TEXT, image_url TEXT, audio_url TEXT. Ngoài ra cần tạo thêm 2 bảng mới: media_files (quản lý file vật lý) và word_meanings (để lưu nghĩa đa ngôn ngữ linh hoạt hơn nếu sau này cần thêm ngôn ngữ).
-Tính năng 3 — Lịch sử học: Bảng user_progress đã có đủ cho tiến độ game. Chỉ cần tạo thêm search_history để lưu lịch sử tra từ.
-Tính năng 4 — Import Excel: Cần bảng import_jobs để track trạng thái job, data ghi vào lessons + vocabularies + media_files.
+HanLexicon là một nền tảng học tập trực tuyến (E-learning) chuyên sâu về tiếng Trung (Hán ngữ). Hệ thống kết hợp giữa quản lý nội dung học tập theo chuẩn HSK, học tập tương tác qua trò chơi (Gamification) và theo dõi lộ trình cá nhân hóa.
 
-Schema cho 3 bảng mới + 1 ALTER
-sql-- ALTER bảng vocabularies hiện có
-ALTER TABLE vocabularies
-ADD COLUMN meaning_en TEXT,
-ADD COLUMN image_url TEXT, -- URL trỏ tới S3/CDN
-ADD COLUMN audio_url TEXT; -- URL file mp3
+## 🚀 Các Tính Năng Chính
 
--- Bảng lưu metadata file vật lý (ảnh + mp3)
-CREATE TABLE media_files (
-id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-owner_type VARCHAR(30) NOT NULL, -- 'vocabulary', 'hanzi', 'lesson'
-owner_id UUID NOT NULL,
-media_type VARCHAR(10) NOT NULL CHECK (media_type IN ('image','audio')),
-file_name VARCHAR(255) NOT NULL, -- tên file gốc từ Excel
-storage_key TEXT NOT NULL, -- path trên S3: 'vocab/hsk1/ni_hao.jpg'
-cdn_url TEXT NOT NULL, -- URL public để frontend dùng
-mime_type VARCHAR(50), -- 'image/jpeg', 'audio/mpeg'
-file_size_kb INTEGER,
-uploaded_by UUID REFERENCES users(id),
-created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-CREATE INDEX idx_media_owner ON media_files(owner_type, owner_id);
+- **Quản Trị Người Dùng & Phân Quyền (RBAC):** Xác thực an toàn với JWT và Refresh Token, phân quyền dựa trên vai trò (Admin, Student) và quản lý phiên làm việc.
+- **Quản Lý Nội Dung Học Tập:**
+  - Cấu trúc phân cấp: Danh mục (Cấp độ HSK) -> Bài học.
+  - **Thẻ Chữ Hán (Hanzi):** Thông tin số nét, bộ thủ, phiên âm và mẹo ghi nhớ.
+  - **Từ Vựng (Vocabulary):** Hỗ trợ đa ngôn ngữ (Trung, Việt, Anh) kèm hình ảnh và âm thanh trực quan.
+  - **Bộ Thủ (Radicals):** Tìm hiểu cấu tạo chữ Hán thông qua các bộ thủ cơ bản.
+- **Hệ Thống Đánh Giá & Kiểm Tra:** Các bài trắc nghiệm (Quiz) tương tác với nhiều cấp độ khó và giải thích chi tiết.
+- **Theo Dõi Tiến Độ Học Tập:**
+  - **Tiến độ bài học:** Lưu trữ điểm số, trạng thái hoàn thành và thời gian học.
+  - **Tiến độ từ vựng:** Theo dõi mức độ thuộc từ của từng cá nhân (tương tự phương pháp SRS).
+  - **Lịch sử tra cứu:** Lưu lại các từ đã tìm kiếm để ôn tập nhanh.
+- **Bảng Điều Khiển Admin:**
+  - **Nhập dữ liệu lớn (Bulk Import):** Hệ thống nhập dữ liệu từ Excel mạnh mẽ cho bài học, từ vựng và tệp media.
+  - **Quản lý Media:** Xử lý tệp tập trung qua lưu trữ tương thích S3 (Minio).
 
--- Bảng lịch sử tra từ
-CREATE TABLE search_history (
-id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-query VARCHAR(200) NOT NULL, -- từ người dùng tìm
-vocab_id UUID REFERENCES vocabularies(id), -- từ tìm thấy (nullable)
-searched_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-CREATE INDEX idx_search_user ON search_history(user_id, searched_at DESC);
+## 🛠 Công Nghệ Sử Dụng
 
--- Bảng quản lý job import Excel
-CREATE TABLE import_jobs (
-id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-uploaded_by UUID NOT NULL REFERENCES users(id),
-file_name VARCHAR(255) NOT NULL,
-status VARCHAR(20) NOT NULL DEFAULT 'pending'
-CHECK (status IN ('pending','processing','done','failed')),
-total_rows INTEGER NOT NULL DEFAULT 0,
-processed_rows INTEGER NOT NULL DEFAULT 0,
-failed_rows INTEGER NOT NULL DEFAULT 0,
-error_log JSONB, -- [{row:3, error:"thiếu pinyin"}, ...]
-category_id SMALLINT REFERENCES lesson_categories(id),
-started_at TIMESTAMPTZ,
-finished_at TIMESTAMPTZ,
-created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+### Backend
+- **Framework:** .NET 10 Web API
+- **Kiến trúc:** Clean Architecture / Domain-Driven Design (DDD)
+- **Cơ sở dữ liệu:** PostgreSQL với Entity Framework Core
+- **Giao tiếp nội bộ:** MediatR (Pattern CQRS)
+- **Xác thực dữ liệu:** FluentValidation
+- **Ánh xạ đối tượng:** AutoMapper
+- **Bảo mật:** JWT, BCrypt.Net
+- **Tác vụ nền:** Xử lý nhập dữ liệu lớn qua Background Jobs
 
-Chiến lược Import Excel có ảnh + MP3
-Đây là phần phức tạp nhất. Có 2 cách người dùng gửi file lên — bạn nên chọn cách 2 vì nó thực tế hơn:
-Cách 1 — ZIP chứa tất cả: Người dùng nén data.xlsx + folder images/ + folder audio/ thành một file .zip, upload lên một lần. Backend giải nén, đọc Excel, map tên file → upload từng media lên S3.
-Cách 2 (khuyến nghị) — Upload riêng 3 bước:
-Bước 1: POST /api/import/upload-excel → trả về import_job_id + danh sách hàng preview
-Bước 2: POST /api/import/upload-media → upload ảnh/mp3 theo batch, map vào job
-Bước 3: POST /api/import/{job_id}/run → xác nhận, chạy background job ghi vào DB
-Format Excel chuẩn để backend đọc được:
-wordpinyinmeaning_vnmeaning_enlevelimage_fileaudio_file你好nǐ hǎoXin chàoHellohsk1ni_hao.jpgni_hao.mp3谢谢xièxieCảm ơnThank youhsk1xiexie.pngxiexie.mp3
-Flow xử lý trong .NET backend:
-csharp// 1. Đọc Excel bằng ClosedXML hoặc EPPlus
-using var workbook = new XLWorkbook(stream);
-var ws = workbook.Worksheet(1);
+### Frontend
+- **Framework:** React 19 (TypeScript)
+- **Công cụ build:** Vite 6
+- **Quản lý trạng thái:** Redux Toolkit
+- **Giao diện:** Tailwind CSS v4, Shadcn UI
+- **Hiệu ứng:** Framer Motion (Motion)
+- **Điều hướng:** React Router v7
+- **Đa ngôn ngữ:** i18next
 
-// 2. Với mỗi hàng → upsert vocabulary
-foreach (var row in ws.RowsUsed().Skip(1))
-{
-var word = row.Cell(1).GetString();
-var imageFile = row.Cell(6).GetString(); // "ni_hao.jpg"
-var audioFile = row.Cell(7).GetString(); // "ni_hao.mp3"
+### Hạ tầng
+- **Containerization:** Docker & Docker Compose
+- **Lưu trữ đối tượng:** Minio (S3-compatible)
+- **Cơ sở dữ liệu:** PostgreSQL
 
-    // 3. Upload media lên S3 nếu file tồn tại trong batch đã upload
-    string? imageUrl = null;
-    if (!string.IsNullOrEmpty(imageFile) && uploadedFiles.ContainsKey(imageFile))
-    {
-        var s3Key  = $"vocab/{level}/{Guid.NewGuid()}/{imageFile}";
-        await s3Client.PutObjectAsync(bucket, s3Key, uploadedFiles[imageFile]);
-        imageUrl = $"https://cdn.yourdomain.com/{s3Key}";
+## 📂 Cấu Trúc Dự Án
 
-        // Ghi vào media_files
-        db.MediaFiles.Add(new MediaFile {
-            OwnerType  = "vocabulary",
-            OwnerId    = vocabId,
-            MediaType  = "image",
-            FileName   = imageFile,
-            StorageKey = s3Key,
-            CdnUrl     = imageUrl,
-        });
-    }
+```text
+HanLexicon/
+├── HanLexicon.Api/             # Backend .NET 10
+│   ├── HanLexicon.Domain/      # Thực thể và Logic nghiệp vụ lõi
+│   ├── HanLexicon.Application/ # Use Cases, DTOs, Handlers
+│   ├── Infrastructure.Postgres/# Kết nối DB và Repositories
+│   ├── Infrastructure.Minio/   # Triển khai lưu trữ Object Storage
+│   └── HanLexicon.Api/         # Controllers và Cấu hình API
+├── HanLexicon.Frontend/        # Frontend React 19
+│   ├── src/
+│   │   ├── components/         # Các thành phần giao diện dùng chung
+│   │   ├── pages/              # Các trang giao diện chính
+│   │   ├── store/              # Cấu hình Redux Slices
+│   │   └── services/           # Gọi API backend
+└── docker-compose.yml          # Điều phối hạ tầng (DB, Storage)
+```
 
-    // 4. Ghi vocabulary với URL đã có
-    db.Vocabularies.Add(new Vocabulary {
-        Word      = word,
-        ImageUrl  = imageUrl,
-        AudioUrl  = audioUrl,
-        ...
-    });
+## 🚦 Hướng Dẫn Cài Đặt
 
-}
+### Yêu cầu hệ thống
+- .NET 10 SDK
+- Node.js (v20+) & npm
+- Docker Desktop
 
-// 5. Cập nhật import_job status = 'done'
-job.Status = "done";
-job.FinishedAt = DateTime.UtcNow;
-await db.SaveChangesAsync();
-Lưu ý quan trọng về storage: Đừng lưu file binary vào PostgreSQL — BYTEA cho ảnh/mp3 sẽ làm DB phình to nhanh chóng và query chậm. Luôn lưu vào S3-compatible storage (AWS S3, MinIO tự host, Cloudflare R2) và chỉ lưu URL vào DB. MinIO là lựa chọn tốt nếu muốn tự host, hoàn toàn tương thích API S3.
+### Các bước thiết lập
+
+1. **Sao chép mã nguồn:**
+   ```bash
+   git clone https://github.com/your-repo/HanLexicon.git
+   cd HanLexicon
+   ```
+
+2. **Khởi chạy hạ tầng:**
+   Sử dụng Docker Compose để chạy Database và Minio:
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Thiết lập Backend:**
+   ```bash
+   cd HanLexicon.Api
+   dotnet restore
+   dotnet run --project HanLexicon.Api
+   ```
+
+4. **Thiết lập Frontend:**
+   ```bash
+   cd HanLexicon.Frontend
+   npm install
+   npm run dev
+   ```
+
+## 📖 Tài Liệu API
+Khi backend đang chạy, bạn có thể truy cập tài liệu Swagger tại:
+`http://localhost:5029/swagger` (Hoặc port được cấu hình trong `launchSettings.json`).
+
+## 📄 Giấy phép
+Dự án này được cấp phép theo MIT License.

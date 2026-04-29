@@ -1,35 +1,9 @@
 version: "3.8"
 
 services:
-  api:
-    build:
-      context: ./HanLexicon.Api
-      dockerfile: Dockerfile
-    environment:
-      ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=hanlexicon;Username=user;Password=password"
-      MinioSettings__Endpoint: "minio:9000"
-      MinioSettings__AccessKey: "minioadmin"
-      MinioSettings__SecretKey: "minioadminpassword"
-      MinioSettings__PublicUrl: "http://localhost:9000"
-      JWT__Key: "Chuoi_Bi_Mat_Sieu_Cap_An_Toan_Dung_De_Ky_JWT_123456789!@#"
-      JWT__Issuer: "TodoApp"
-      JWT__Audience: "TodoAppUsers"
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-      - minio
-  mandarin_flow:
-    build: ./HanLexicon.Frontend
-    container_name: mandarin_flow_app
-    restart: always
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - PORT=3000
+  # --- 1. DATABASE CHÍNH (Offline) ---
   db:
-    image: postgres:16-alpine # Thay đổi ở đây
+    image: postgres:16-alpine
     container_name: hanlexicon_db
     restart: always
     environment:
@@ -40,22 +14,26 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  # --- 2. DATABASE MỚI (CHẠY SONG SONG, TRẮNG TINH) ---
+
+  # --- 2. DATABASE TEST / EMPTY (API ĐANG DÙNG) ---
   db_empty:
     image: postgres:16-alpine
-    container_name: hanlexicon_db_empty # Đổi tên container
+    container_name: hanlexicon_db_empty
     restart: always
     environment:
-      POSTGRES_DB: hanlexicon_empty # Tên database bên trong (bạn có thể giữ nguyên hanlexicon nếu muốn)
+      POSTGRES_DB: hanlexicon_empty
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     ports:
-      - "5433:5432" # Đổi port ra ngoài thành 5433 để không đụng hàng
+      - "5433:5432"
     volumes:
-      - postgres_data_empty:/var/lib/postgresql/data # QUAN TRỌNG: Tên volume mới để data trống
+      - postgres_data_empty:/var/lib/postgresql/data
+
+  # --- 3. MINIO OBJECT STORAGE ---
   minio:
     image: minio/minio
-    container_name: hanlexicon-minio
+    container_name: hanlexicon_minio
+    restart: always
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -65,6 +43,48 @@ services:
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"
+
+  # --- 4. BACKEND API (.NET 10) ---
+  api:
+    build:
+      context: ./HanLexicon.Api
+      dockerfile: Dockerfile
+    container_name: hanlexicon_api
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080 # Chạy HTTP bên trong container để tránh lỗi Cert
+      - ConnectionStrings__DefaultConnection=Host=db_empty;Port=5432;Database=hanlexicon_empty;Username=user;Password=password
+      - MinioSettings__Endpoint=minio:9000
+      - MinioSettings__AccessKey=minioadmin
+      - MinioSettings__SecretKey=minioadminpassword
+      - MinioSettings__PublicUrl=http://localhost:9000
+      - MinioSettings__BucketName=hanlexicon
+      - JWT__Key=Chuoi_Bi_Mat_Sieu_Cap_An_Toan_Dung_De_Ky_JWT_123456789!@#
+      - JWT__Issuer=HanLexicon
+      - JWT__Audience=HanLexiconUsers
+    ports:
+      - "7285:8080"  # Map port 7285 của máy bạn vào port 8080 của container
+      - "5029:8080"
+    depends_on:
+      - db_empty
+      - minio
+
+  # --- 5. FRONTEND (React 19) ---
+  frontend:
+    build:
+      context: ./HanLexicon.Frontend
+      dockerfile: Dockerfile
+    container_name: hanlexicon_frontend
+    restart: always
+    ports:
+      - "8080:8080" # Chạy trên port 8080
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - VITE_API_URL=http://localhost:7285 # Gọi về API
+    depends_on:
+      - api
 
 volumes:
   postgres_data:
