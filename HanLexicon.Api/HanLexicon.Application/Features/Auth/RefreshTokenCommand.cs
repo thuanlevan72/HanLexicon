@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Features.Auth;
 
-public record RefreshTokenCommand(string clientRefreshToken) : IRequest<AuthResultDto>;
+public record RefreshTokenCommand(string clientRefreshToken, string ipAddress, string? userAgent) : IRequest<AuthResultDto>;
 
 public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, AuthResultDto>
 {
@@ -19,6 +19,6 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, A
 
     public async Task<AuthResultDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        return await _authService.RefreshTokenAsync(request.clientRefreshToken);
+        return await _authService.RefreshTokenAsync(request.clientRefreshToken, request.ipAddress, request.userAgent);
     }
 }

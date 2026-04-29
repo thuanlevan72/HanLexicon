@@ -4,10 +4,11 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
-  BookMarked, Plus, Edit3, Trash2, RefreshCw, X, Save, Filter, Search, Type, HelpCircle, Trophy
+  BookMarked, Plus, Edit3, Trash2, RefreshCw, X, Save, Filter, Search, Type, HelpCircle, Trophy, Layers, ArrowRight, History, CheckCircle2
 } from 'lucide-react';
 import { adminService, Category } from '@/src/services/api';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 export default function LessonManager() {
   const navigate = useNavigate();
@@ -63,7 +64,6 @@ export default function LessonManager() {
   };
 
   const handleOpenEdit = (lesson: any) => {
-    // Chuẩn hóa dữ liệu từ Backend (hỗ trợ cả PascalCase)
     setCurrentLesson({
       id: lesson.id || lesson.Id,
       titleCn: lesson.titleCn || lesson.TitleCn || '',
@@ -81,8 +81,6 @@ export default function LessonManager() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate & gán mặc định cho filename nếu trống
     const dataToSave = { ...currentLesson };
     if (!dataToSave.filename) {
        dataToSave.filename = dataToSave.titleCn.toLowerCase().replace(/\s+/g, '-') + '.html';
@@ -122,112 +120,120 @@ export default function LessonManager() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="flex flex-col h-[calc(100vh-100px)] gap-6 animate-in fade-in duration-500 relative">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 shrink-0">
         <div>
           <h1 className="text-3xl font-black text-brand-ink tracking-tight uppercase italic flex items-center gap-3 font-heading">
              <BookMarked className="w-8 h-8 text-brand-primary" />
              Quản lý Bài học
           </h1>
-          <p className="text-brand-secondary font-medium">Quản lý nội dung chi tiết của từng bài học</p>
+          <div className="flex items-center gap-2 mt-1">
+             <Badge variant="secondary" className="bg-brand-primary/10 text-brand-primary font-black border-none px-3 py-1">
+                {lessons.length} NỘI DUNG
+             </Badge>
+             <p className="text-brand-secondary text-xs font-bold uppercase tracking-widest opacity-60 italic">HSK Curriculum Stream</p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Button onClick={fetchData} variant="ghost" className="h-12 w-12 p-0 rounded-2xl hover:bg-brand-highlight">
             <RefreshCw className={cn("w-5 h-5", loading && "animate-spin text-brand-primary")} />
           </Button>
-          <Button onClick={handleOpenAdd} className="h-12 px-8 rounded-2xl bg-brand-primary text-white font-black shadow-lg gap-2">
+          <Button onClick={handleOpenAdd} className="h-12 px-8 rounded-2xl bg-brand-primary text-white font-black shadow-lg shadow-brand-primary/20 gap-2 transition-all hover:scale-105 active:scale-95">
             <Plus className="w-5 h-5" /> Thêm bài học
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-1 p-6 border-brand-border bg-white rounded-[2rem] shadow-sm">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-brand-primary" />
-              <span className="text-xs font-black uppercase tracking-widest text-brand-secondary">Theo danh mục</span>
-            </div>
-            <select 
-              className="w-full h-12 px-4 bg-brand-highlight/30 border-none rounded-xl font-bold text-brand-ink outline-none cursor-pointer"
-              value={selectedCategoryId}
-              onChange={(e) => setSelectedCategoryId(Number(e.target.value))}
-            >
-              <option value="0">Tất cả danh mục</option>
-              {categories.map(c => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
-        </Card>
+      {/* Advanced Filters Bar */}
+      <Card className="p-4 border-brand-border bg-white rounded-[1.5rem] shadow-sm shrink-0">
+        <div className="flex flex-col lg:flex-row gap-4">
+           <form onSubmit={e => e.preventDefault()} className="relative flex-1 group">
+             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-brand-primary transition-colors" />
+             <input 
+               placeholder="Tìm bài học theo tiêu đề..."
+               className="w-full h-12 pl-12 pr-4 bg-brand-highlight/20 border-2 border-transparent focus:border-brand-primary focus:bg-white rounded-xl font-bold text-sm outline-none transition-all"
+               value={searchTerm}
+               onChange={e => setSearchTerm(e.target.value)}
+             />
+           </form>
+           
+           <div className="flex items-center gap-2 min-w-[250px]">
+              <Layers className="w-4 h-4 text-brand-secondary shrink-0" />
+              <select 
+                className="w-full h-12 bg-brand-highlight/30 border-none rounded-xl px-4 font-bold text-xs text-brand-ink outline-none cursor-pointer hover:bg-brand-highlight/50 transition-colors"
+                value={selectedCategoryId}
+                onChange={e => setSelectedCategoryId(Number(e.target.value))}
+              >
+                <option value="0">Tất cả danh mục cấp độ</option>
+                {categories.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+           </div>
+        </div>
+      </Card>
 
-        <Card className="md:col-span-2 p-6 border-brand-border bg-white rounded-[2rem] shadow-sm">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <Search className="w-4 h-4 text-brand-primary" />
-              <span className="text-xs font-black uppercase tracking-widest text-brand-secondary">Tìm kiếm bài học</span>
-            </div>
-            <Input 
-              placeholder="Nhập tiêu đề tiếng Trung hoặc tiếng Việt..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-12 bg-brand-highlight/30 border-none rounded-xl font-bold text-brand-ink focus-visible:ring-brand-primary"
-            />
-          </div>
-        </Card>
-      </div>
-
-      <Card className="border border-brand-border bg-white rounded-[2.5rem] shadow-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-brand-highlight/30 border-b border-brand-border text-[10px] font-black uppercase tracking-widest text-brand-secondary">
-                <th className="p-6">Thứ tự</th>
-                <th className="p-6">Tiêu đề (Trung/Việt)</th>
-                <th className="p-6">Nội dung</th>
-                <th className="p-6 text-right">Thao tác</th>
+      {/* Main Table Card */}
+      <Card className="flex-1 border border-brand-border bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col min-h-0">
+        <div className="flex-1 overflow-y-auto relative custom-scrollbar">
+          <table className="w-full text-left border-collapse table-fixed">
+            <thead className="sticky top-0 z-10 bg-brand-highlight/95 backdrop-blur-md shadow-sm">
+              <tr className="border-b border-brand-border text-[10px] font-black uppercase tracking-widest text-brand-secondary">
+                <th className="p-6 w-24">Thứ tự</th>
+                <th className="p-6 w-1/3">Tiêu đề (Trung/Việt)</th>
+                <th className="p-6">Liên kết nội dung</th>
+                <th className="p-6 w-32 text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-border">
               {loading && lessons.length === 0 ? (
                 <tr><td colSpan={4} className="p-20 text-center"><RefreshCw className="w-10 h-10 animate-spin mx-auto text-brand-primary opacity-20" /></td></tr>
               ) : filteredLessons.length === 0 ? (
-                <tr><td colSpan={4} className="p-20 text-center font-bold text-brand-secondary italic">Không tìm thấy bài học nào.</td></tr>
+                <tr>
+                  <td colSpan={4} className="p-20 text-center">
+                    <p className="font-black text-brand-secondary uppercase italic opacity-40">Không tìm thấy bài học nào phù hợp</p>
+                  </td>
+                </tr>
               ) : filteredLessons.map((l) => (
-                <tr key={l.id} className="hover:bg-brand-highlight/5 transition-colors group">
-                  <td className="p-6 font-black text-brand-primary italic">{l.sortOrder}</td>
+                <tr key={l.id} className="hover:bg-brand-highlight/5 transition-all group border-b border-brand-border">
                   <td className="p-6">
-                    <div className="space-y-0.5">
-                      <p className="font-bold text-lg text-brand-ink">{l.titleCn}</p>
-                      <p className="text-sm text-brand-secondary italic">{l.titleVn}</p>
+                    <div className="w-10 h-10 rounded-xl bg-brand-highlight text-brand-primary flex items-center justify-center text-xs font-black italic border-2 border-brand-border shadow-sm">
+                       #{l.sortOrder}
                     </div>
                   </td>
                   <td className="p-6">
-                    <div className="flex gap-2">
+                    <div className="space-y-0.5">
+                      <p className="text-xl font-black text-brand-ink leading-tight">{l.titleCn}</p>
+                      <p className="text-sm font-bold text-brand-secondary italic opacity-70">{l.titleVn}</p>
+                    </div>
+                  </td>
+                  <td className="p-6">
+                    <div className="flex flex-wrap gap-1.5">
                        <Button 
                         onClick={() => navigate(`/admin/lessons/${l.id}/hanzi`)}
-                        variant="outline" size="sm" className="rounded-xl border-brand-border text-[10px] font-black uppercase gap-1.5 hover:bg-brand-highlight"
+                        variant="ghost" className="h-9 px-3 rounded-xl bg-brand-highlight/50 border border-brand-border text-[10px] font-black uppercase gap-1.5 hover:bg-brand-primary hover:text-white transition-all shadow-sm"
                        >
-                          <Type className="w-3 h-3 text-brand-primary" /> Hanzi
+                          <Type className="w-3.5 h-3.5" /> Hanzi
                        </Button>
                        <Button 
                         onClick={() => navigate(`/admin/lessons/${l.id}/quizzes`)}
-                        variant="outline" size="sm" className="rounded-xl border-brand-border text-[10px] font-black uppercase gap-1.5 hover:bg-brand-highlight"
+                        variant="ghost" className="h-9 px-3 rounded-xl bg-brand-highlight/50 border border-brand-border text-[10px] font-black uppercase gap-1.5 hover:bg-brand-primary hover:text-white transition-all shadow-sm"
                        >
-                          <HelpCircle className="w-3 h-3 text-brand-primary" /> Quiz
+                          <HelpCircle className="w-3.5 h-3.5" /> Quiz
                        </Button>
                        <Button 
                         onClick={() => navigate(`/admin/lessons/${l.id}/challenge`)}
-                        variant="outline" size="sm" className="rounded-xl border-brand-border text-[10px] font-black uppercase gap-1.5 hover:bg-brand-highlight"
+                        variant="ghost" className="h-9 px-3 rounded-xl bg-brand-highlight/50 border border-brand-border text-[10px] font-black uppercase gap-1.5 hover:bg-brand-primary hover:text-white transition-all shadow-sm"
                        >
-                          <Trophy className="w-3 h-3 text-brand-primary" /> Challenge
+                          <Trophy className="w-3.5 h-3.5" /> Challenge
                        </Button>
                     </div>
                   </td>
                   <td className="p-6 text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button onClick={() => handleOpenEdit(l)} variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-brand-highlight/50 text-brand-primary hover:bg-brand-primary hover:text-white transition-all"><Edit3 className="w-4 h-4" /></Button>
-                      <Button onClick={() => handleDelete(l.id)} variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all"><Trash2 className="w-4 h-4" /></Button>
+                    <div className="flex justify-end gap-1.5">
+                      <button onClick={() => handleOpenEdit(l)} className="h-9 w-9 rounded-xl flex items-center justify-center bg-brand-highlight/80 text-brand-primary hover:bg-brand-primary hover:text-white transition-all"><Edit3 className="w-4 h-4" /></button>
+                      <button onClick={() => handleDelete(l.id)} className="h-9 w-9 rounded-xl flex items-center justify-center bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </td>
                 </tr>
@@ -237,68 +243,104 @@ export default function LessonManager() {
         </div>
       </Card>
 
+      {/* Footer Info Bar */}
+      <div className="sticky bottom-0 z-20 shrink-0 bg-white/80 backdrop-blur-xl border border-brand-border p-4 rounded-3xl shadow-2xl flex items-center justify-between">
+          <div className="flex items-center gap-6">
+             <div className="flex flex-col">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Database Master</p>
+                <div className="flex items-center gap-2">
+                   <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                   <p className="text-xs font-bold text-brand-ink uppercase tracking-tighter italic">Live Lesson Stream</p>
+                </div>
+             </div>
+          </div>
+          <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] italic">HanLexicon Curriculum Core</p>
+      </div>
+
       {/* Edit Modal */}
       {isEditModalOpen && currentLesson && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-brand-ink/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <Card className="w-full max-w-lg bg-white border-brand-border shadow-2xl rounded-[2.5rem] overflow-hidden">
-            <div className="p-8 border-b border-brand-border bg-brand-highlight/20 flex items-center justify-between">
-              <h2 className="text-xl font-black text-brand-ink uppercase italic">{currentLesson.id ? "Cập nhật bài học" : "Thêm bài học mới"}</h2>
-              <Button variant="ghost" size="icon" onClick={() => setIsEditModalOpen(false)} className="rounded-full h-12 w-12 hover:bg-brand-highlight"><X className="w-6 h-6" /></Button>
+          <Card className="w-full max-w-2xl bg-white border-brand-border shadow-2xl rounded-[3rem] overflow-hidden border-8">
+            <div className="p-8 border-b-4 border-brand-border bg-brand-highlight/20 flex items-center justify-between">
+               <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-brand-ink rounded-2xl flex items-center justify-center shadow-lg rotate-3">
+                     <BookMarked className="w-6 h-6 text-brand-primary" />
+                  </div>
+                  <div>
+                     <h2 className="text-xl font-black text-brand-ink uppercase italic leading-none">{currentLesson.id ? "Sửa thông tin bài học" : "Tạo bài học mới"}</h2>
+                     <p className="text-[10px] font-bold text-brand-secondary uppercase tracking-widest mt-1 opacity-60 italic">Lesson Curriculum Entry</p>
+                  </div>
+               </div>
+               <Button variant="ghost" size="icon" onClick={() => setIsEditModalOpen(false)} className="rounded-full h-12 w-12 hover:bg-brand-highlight transition-all text-brand-ink"><X className="w-6 h-6" /></Button>
             </div>
 
-            <form onSubmit={handleSave} className="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Tiêu đề Hán tự *</label>
-                  <Input value={currentLesson.titleCn} onChange={e => setCurrentLesson({ ...currentLesson, titleCn: e.target.value })} className="h-14 rounded-2xl font-bold border-brand-border" required />
+            <form onSubmit={handleSave} className="p-10 space-y-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic ml-1">Tiêu đề Hán tự *</label>
+                  <Input value={currentLesson.titleCn} onChange={e => setCurrentLesson({ ...currentLesson, titleCn: e.target.value })} className="h-14 rounded-2xl font-black border-2 border-brand-border focus:border-brand-primary transition-all text-lg" required />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Tiêu đề Việt *</label>
-                  <Input value={currentLesson.titleVn} onChange={e => setCurrentLesson({ ...currentLesson, titleVn: e.target.value })} className="h-14 rounded-2xl font-bold border-brand-border" required />
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic ml-1">Tiêu đề tiếng Việt *</label>
+                  <Input value={currentLesson.titleVn} onChange={e => setCurrentLesson({ ...currentLesson, titleVn: e.target.value })} className="h-14 rounded-2xl font-bold border-2 border-brand-border focus:border-brand-primary transition-all" required />
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Danh mục cấp độ *</label>
-                <select 
-                  className="w-full h-14 px-4 bg-brand-highlight/30 border-2 border-brand-highlight rounded-2xl font-bold text-brand-ink outline-none"
-                  value={currentLesson.categoryId}
-                  onChange={e => setCurrentLesson({ ...currentLesson, categoryId: Number(e.target.value) })}
-                  required
-                >
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
-                </select>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic ml-1">Danh mục Cấp độ *</label>
+                <div className="relative">
+                   <Layers className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary z-10" />
+                   <select 
+                     className="w-full h-14 pl-12 pr-4 bg-brand-highlight/20 border-2 border-brand-border rounded-2xl font-black text-xs text-brand-ink outline-none focus:border-brand-primary transition-all appearance-none"
+                     value={currentLesson.categoryId}
+                     onChange={e => setCurrentLesson({ ...currentLesson, categoryId: Number(e.target.value) })}
+                     required
+                   >
+                     {categories.map(cat => (
+                       <option key={cat.id} value={cat.id}>{cat.name}</option>
+                     ))}
+                   </select>
+                </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Mô tả bài học</label>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic ml-1">Mô tả tóm tắt</label>
                 <textarea 
-                  className="w-full p-4 bg-white border-2 border-brand-border rounded-2xl font-medium text-brand-ink outline-none focus:border-brand-primary min-h-[100px]"
+                  className="w-full p-6 bg-brand-highlight/10 border-2 border-brand-border rounded-2xl font-medium text-brand-ink outline-none focus:bg-white focus:border-brand-primary transition-all min-h-[120px] text-sm"
                   value={currentLesson.description}
                   onChange={e => setCurrentLesson({ ...currentLesson, description: e.target.value })}
+                  placeholder="Nhập mô tả ngắn gọn về nội dung bài học..."
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Tên file (ID tĩnh)</label>
-                  <Input value={currentLesson.filename} onChange={e => setCurrentLesson({ ...currentLesson, filename: e.target.value })} className="h-14 rounded-2xl border-brand-border" placeholder="hsk1-b1.html" />
+              <div className="grid grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic ml-1">Mã file (ID tĩnh)</label>
+                  <Input value={currentLesson.filename} onChange={e => setCurrentLesson({ ...currentLesson, filename: e.target.value })} className="h-12 rounded-xl border-2 border-brand-border focus:border-brand-primary font-mono text-xs" placeholder="hsk1-b1.html" />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Thứ tự hiển thị</label>
-                  <Input type="number" value={currentLesson.sortOrder} onChange={e => setCurrentLesson({ ...currentLesson, sortOrder: Number(e.target.value) })} className="h-14 rounded-2xl border-brand-border" />
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic ml-1">Thứ tự hiển thị</label>
+                  <Input type="number" value={currentLesson.sortOrder} onChange={e => setCurrentLesson({ ...currentLesson, sortOrder: Number(e.target.value) })} className="h-12 rounded-xl border-2 border-brand-border focus:border-brand-primary font-bold" />
                 </div>
               </div>
 
-              <Button type="submit" disabled={isSaving} className="w-full bg-brand-primary text-white h-16 rounded-2xl font-black shadow-xl text-lg uppercase tracking-widest mt-4">
-                {isSaving ? <RefreshCw className="w-6 h-6 animate-spin" /> : <><Save className="w-5 h-5 mr-2" /> Xác nhận lưu</>}
-              </Button>
+              <div className="pt-4 flex gap-4">
+                 <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)} className="flex-1 h-16 rounded-2xl font-black uppercase tracking-widest border-4 border-brand-border">Hủy bỏ</Button>
+                 <Button type="submit" disabled={isSaving} className="flex-[2] bg-brand-primary text-white h-16 rounded-2xl font-black shadow-xl shadow-brand-primary/20 text-lg uppercase tracking-widest transition-all active:scale-95">
+                   {isSaving ? <RefreshCw className="w-6 h-6 animate-spin mx-auto" /> : <><Save className="w-5 h-5 mr-3" /> Lưu bài học</>}
+                 </Button>
+              </div>
             </form>
           </Card>
         </div>
       )}
+
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d1d1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #bbbbbb; }
+      `}</style>
     </div>
   );
 }

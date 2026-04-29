@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace HanLexicon.Api.Controllers.Auth
 {
     [Route("api/v1/auth")]
-    [ApiController]
+    [ApiController          ]
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -33,7 +33,26 @@ namespace HanLexicon.Api.Controllers.Auth
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginCommand command)
         {
-            var result = await _mediator.Send(command);
+            // Tự động lấy IP từ request nếu có thể
+            string? remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            
+            // Kiểm tra header X-Forwarded-For nếu chạy sau proxy/load balancer
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+            {
+                remoteIp = Request.Headers["X-Forwarded-For"].ToString().Split(',')[0].Trim();
+            }
+
+            // Ưu tiên IP từ server phát hiện được, nếu không có mới dùng IP từ client gửi lên (hoặc fallback 127.0.0.1)
+            string finalIp = !string.IsNullOrEmpty(remoteIp) && remoteIp != "::1" 
+                ? remoteIp 
+                : (!string.IsNullOrEmpty(command.ipAddress) ? command.ipAddress : "127.0.0.1");
+
+            // Lấy User Agent
+            string userAgent = Request.Headers["User-Agent"].ToString();
+
+            var updatedCommand = command with { ipAddress = finalIp, userAgent = userAgent };
+            
+            var result = await _mediator.Send(updatedCommand);
             if (!result.IsSuccess) return Unauthorized(ApiResponse<object>.Failure(result.Errors, result.Message, 401));
             return Ok(ApiResponse<object>.Success(result));
         }
@@ -49,7 +68,16 @@ namespace HanLexicon.Api.Controllers.Auth
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
-            var result = await _mediator.Send(new RefreshTokenCommand(request.RefreshToken));
+            // Tự động lấy IP từ request
+            string? remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+            {
+                remoteIp = Request.Headers["X-Forwarded-For"].ToString().Split(',')[0].Trim();
+            }
+            string finalIp = !string.IsNullOrEmpty(remoteIp) && remoteIp != "::1" ? remoteIp : "127.0.0.1";
+            string userAgent = Request.Headers["User-Agent"].ToString();
+
+            var result = await _mediator.Send(new RefreshTokenCommand(request.RefreshToken, finalIp, userAgent));
             if (!result.IsSuccess) return Unauthorized(ApiResponse<object>.Failure(result.Errors, result.Message, 401));
             return Ok(ApiResponse<object>.Success(result));
         }

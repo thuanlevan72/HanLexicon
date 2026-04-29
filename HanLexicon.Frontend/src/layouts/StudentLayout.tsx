@@ -29,11 +29,16 @@ export default function StudentLayout() {
       {/* Sidebar Desktop */}
       <aside className="hidden md:flex flex-col w-72 bg-white border-r border-slate-200">
         <div className="p-8">
-          <Link to="/student" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-lg shadow-brand-primary/20 rotate-3">
-              <Sparkles className="w-6 h-6 text-white fill-current" />
+          <Link to="/student" className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold tracking-tight text-brand-ink leading-none">
+                Tiếng Trung
+              </span>
+              <div className="bg-brand-primary w-auto px-3 h-9 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm font-heading">
+                Leyi
+              </div>
             </div>
-            <span className="text-xl font-black text-brand-ink tracking-tighter uppercase italic">HanLexicon</span>
+            <span className="text-[10px] font-bold text-brand-primary uppercase tracking-widest opacity-80">Student Portal</span>
           </Link>
         </div>
 
@@ -123,7 +128,14 @@ export default function StudentLayout() {
             className="absolute left-0 top-0 bottom-0 w-80 bg-white p-8 flex flex-col"
           >
             <div className="flex items-center justify-between mb-10">
-              <span className="text-xl font-black text-brand-ink italic uppercase">HanLexicon</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold tracking-tight text-brand-ink leading-none">
+                  Tiếng Trung
+                </span>
+                <div className="bg-brand-primary w-auto px-3 h-9 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm font-heading">
+                  Leyi
+                </div>
+              </div>
               <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}><X /></Button>
             </div>
             <nav className="flex-1 space-y-2">

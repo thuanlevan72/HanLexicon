@@ -49,7 +49,10 @@ namespace HanLexicon.Application.Features.LessonsUser
                             Score = lesson.UserProgresses
                                 .Where(up => up.UserId == userId)
                                 .Select(up => (short?)up.Score)
-                                .FirstOrDefault()
+                                .FirstOrDefault(),
+                            IsCompleted = lesson.UserProgresses
+                                .Where(up => up.UserId == userId)
+                                .Any(up => up.Completed)
                         }).ToList()
                 })
                 .ToListAsync(cancellationToken);

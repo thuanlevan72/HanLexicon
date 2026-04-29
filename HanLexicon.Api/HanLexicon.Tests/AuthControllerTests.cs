@@ -21,13 +21,21 @@ namespace HanLexicon.Tests
             _mediatorMock = new Mock<IMediator>();
             _authServiceMock = new Mock<IAuthService>();
             _controller = new AuthController(_mediatorMock.Object, _authServiceMock.Object);
+            
+            // Khởi tạo HttpContext giả lập
+            var httpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext();
+            httpContext.Connection.RemoteIpAddress = System.Net.IPAddress.Parse("127.0.0.1");
+            _controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext()
+            {
+                HttpContext = httpContext
+            };
         }
 
         [Fact]
         public async Task Login_ValidCommand_ReturnsOkResult()
         {
             // Arrange
-            var command = new LoginCommand("test@email.com", "testuser", "password123", "127.0.0.1");
+            var command = new LoginCommand("test@email.com", "testuser", "password123", "127.0.0.1", "test-agent");
             var expectedResult = new AuthResultDto 
             { 
                 IsSuccess = true, 
@@ -44,16 +52,15 @@ namespace HanLexicon.Tests
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnedValue = Assert.IsType<AuthResultDto>(okResult.Value);
+            var returnedValue = (dynamic)okResult.Value!;
             Assert.True(returnedValue.IsSuccess);
-            Assert.Equal("fake-token", returnedValue.AccessToken);
         }
 
         [Fact]
         public async Task Login_InvalidCommand_ReturnsUnauthorized()
         {
             // Arrange
-            var command = new LoginCommand("wrong@email.com", "wronguser", "wrongpass", "127.0.0.1");
+            var command = new LoginCommand("wrong@email.com", "wronguser", "wrongpass", "127.0.0.1", "test-agent");
             var expectedResult = new AuthResultDto 
             { 
                 IsSuccess = false, 

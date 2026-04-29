@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
   Search, BookOpen, Volume2, Filter, RefreshCw, 
-  LayoutGrid, BookMarked, Layers, ChevronLeft, ChevronRight
+  LayoutGrid, BookMarked, Layers, ChevronLeft, ChevronRight, X, ArrowRight
 } from 'lucide-react';
 import { dictionaryService, learningService, Vocabulary } from '@/src/services/api';
 import { cn } from '@/lib/utils';
@@ -13,6 +13,10 @@ export default function VocabularyPage() {
   const [words, setWords] = useState<Vocabulary[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Modal state
+  const [selectedWord, setSelectedWord] = useState<Vocabulary | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Pagination & Filter state
   const [categories, setCategories] = useState<any[]>([]);
@@ -67,6 +71,18 @@ export default function VocabularyPage() {
     const fullUrl = url.startsWith('http') ? url : `${backendUrl}/${url.startsWith('/') ? url.substring(1) : url}`;
     audioRef.current.src = fullUrl;
     audioRef.current.play().catch(err => console.error("Lỗi âm thanh:", err));
+  };
+
+  const getMediaUrl = (url?: string) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const backendUrl = (import.meta as any).env?.VITE_API_BASE_URL?.replace('/api/v1', '') || 'https://localhost:7285';
+    return `${backendUrl}/${url.startsWith('/') ? url.substring(1) : url}`;
+  };
+
+  const handleOpenDetail = (word: Vocabulary) => {
+    setSelectedWord(word);
+    setIsModalOpen(true);
   };
 
   return (
@@ -156,32 +172,21 @@ export default function VocabularyPage() {
                         transition={{ duration: 0.2 }}
                      >
                         <Card className="border border-brand-border bg-white rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all group overflow-hidden flex flex-col h-full border-b-8 border-b-brand-highlight">
-                           <CardContent className="p-8 flex-1 flex flex-col gap-6">
-                              <div className="flex justify-between items-start">
-                                 <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest bg-brand-highlight/50 text-brand-secondary border border-brand-border">
-                                    <BookMarked className="w-3 h-3" /> {w.lessonTitle || 'Từ vựng'}
-                                 </div>
+                           <CardContent className="p-8 flex-1 flex flex-col items-center text-center justify-center space-y-4">
+                              <div className="space-y-1">
+                                 <p className="text-lg font-black text-brand-primary uppercase italic tracking-wider leading-none">{w.pinyin}</p>
+                                 <h2 className="text-5xl font-black text-brand-ink tracking-tighter py-2">{w.word}</h2>
+                                 <p className="text-xl font-bold text-slate-500 italic">"{w.meaning}"</p>
+                              </div>
+
+                              <div className="w-full pt-4">
                                  <Button 
-                                    onClick={() => playAudio(w.audioUrl)} 
-                                    variant="ghost" 
-                                    size="icon" 
-                                    className="w-10 h-10 rounded-xl bg-sky-50 text-sky-500 border border-sky-100 hover:bg-sky-500 hover:text-white transition-all"
+                                    onClick={() => handleOpenDetail(w)}
+                                    className="w-full h-12 rounded-2xl bg-brand-ink text-white font-black uppercase text-[11px] tracking-widest hover:bg-brand-primary transition-all shadow-lg shadow-black/10 flex items-center justify-center gap-2 group"
                                  >
-                                    <Volume2 className="w-5 h-5" />
+                                    Xem chi tiết
+                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                  </Button>
-                              </div>
-
-                              <div className="text-center space-y-2">
-                                 <h2 className="text-5xl font-black text-brand-ink tracking-tighter">{w.word}</h2>
-                                 <p className="text-lg font-black text-brand-primary uppercase italic tracking-wider">{w.pinyin}</p>
-                                 <p className="font-bold text-slate-500 leading-tight">"{w.meaning}"</p>
-                              </div>
-
-                              <div className="mt-auto pt-6 border-t border-brand-border/50">
-                                 <div className="flex items-center justify-center gap-2">
-                                    <Layers className="w-3 h-3 text-brand-secondary" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-brand-secondary opacity-60">Thứ tự: {w.sortOrder}</span>
-                                 </div>
                               </div>
                            </CardContent>
                         </Card>
@@ -214,6 +219,85 @@ export default function VocabularyPage() {
             </div>
          </>
       )}
+
+      {/* Vocabulary Detail Modal */}
+      <AnimatePresence>
+        {isModalOpen && selectedWord && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsModalOpen(false)}
+              className="absolute inset-0 bg-brand-ink/60 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-2xl bg-white rounded-[3rem] shadow-2xl overflow-hidden border-4 border-brand-border"
+            >
+              <div className="relative h-64 bg-brand-highlight/30">
+                {selectedWord.imageUrl ? (
+                  <img src={getMediaUrl(selectedWord.imageUrl)} alt={selectedWord.word} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center opacity-10">
+                    <BookOpen className="w-32 h-32" />
+                  </div>
+                )}
+                <button 
+                  onClick={() => setIsModalOpen(false)}
+                  className="absolute top-6 right-6 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all text-brand-ink"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="p-10 space-y-8">
+                <div className="flex justify-between items-end">
+                  <div className="space-y-1">
+                    <p className="text-xl font-black text-brand-primary uppercase italic tracking-widest">{selectedWord.pinyin}</p>
+                    <h2 className="text-7xl font-black text-brand-ink tracking-tighter leading-none">{selectedWord.word}</h2>
+                  </div>
+                  <Button 
+                    onClick={() => playAudio(selectedWord.audioUrl)}
+                    className="h-16 w-16 rounded-2xl bg-brand-highlight text-brand-primary hover:bg-brand-primary hover:text-white transition-all shadow-md flex items-center justify-center border-2 border-brand-primary/20"
+                  >
+                    <Volume2 className="w-8 h-8" />
+                  </Button>
+                </div>
+
+                <div className="p-8 bg-brand-highlight/20 rounded-[2rem] border-2 border-brand-border/50">
+                  <p className="text-[10px] font-black text-brand-secondary uppercase tracking-[0.2em] mb-2 opacity-60">Ý nghĩa tiếng Việt</p>
+                  <p className="text-3xl font-black text-brand-ink italic">"{selectedWord.meaning}"</p>
+                </div>
+
+                {selectedWord.exampleCn && (
+                  <div className="space-y-3">
+                    <p className="text-[10px] font-black text-brand-primary uppercase tracking-[0.2em] opacity-60">Ví dụ bối cảnh</p>
+                    <div className="space-y-2">
+                       <p className="text-2xl font-bold text-brand-ink leading-tight">{selectedWord.exampleCn}</p>
+                       <p className="text-sm font-medium text-slate-400 italic">{selectedWord.examplePy}</p>
+                       <p className="text-lg font-bold text-brand-secondary">{selectedWord.exampleVn}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-6 border-t border-brand-border flex items-center justify-between">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => setIsModalOpen(false)}
+                    className="h-12 px-8 rounded-xl font-black text-brand-secondary hover:bg-brand-highlight"
+                  >
+                    Đã hiểu
+                  </Button>
+                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">HanLexicon Data Engine</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

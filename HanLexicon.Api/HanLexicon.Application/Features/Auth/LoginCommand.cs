@@ -11,7 +11,7 @@ using MediatR;
 namespace HanLexicon.Application.Features.Auth;
 
 #region Record
-public record LoginCommand(string? Email, string? UserName, string Password, string ipAddress) : IRequest<AuthResultDto>;
+public record LoginCommand(string? Email, string? UserName, string Password, string ipAddress, string? userAgent) : IRequest<AuthResultDto>;
 #endregion
 
 
@@ -21,7 +21,7 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
 {
     public LoginCommandValidator()
     {
-        // ?? Rule chính: ph?i có Email ho?c Username
+        // ?? Rule chnh: ph?i c Email ho?c Username
         RuleFor(x => x)
             .Must(x => !string.IsNullOrWhiteSpace(x.Email)
                     || !string.IsNullOrWhiteSpace(x.UserName))
@@ -33,12 +33,12 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
             .MinimumLength(6)
             .MaximumLength(100);
 
-        // Email (n?u có thì ph?i dúng format)
+        // Email (n?u c th ph?i dng format)
         RuleFor(x => x.Email)
             .EmailAddress()
             .When(x => !string.IsNullOrWhiteSpace(x.Email));
 
-        // Username (n?u có thì validate)
+        // Username (n?u c th validate)
         RuleFor(x => x.UserName)
             .MinimumLength(4)
             .MaximumLength(50)
@@ -60,7 +60,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResultDto>
 
     public async Task<AuthResultDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        return await _authService.LoginAsync(request.Email, request.UserName, request.Password, request.ipAddress);
+        return await _authService.LoginAsync(request.Email, request.UserName, request.Password, request.ipAddress, request.userAgent);
     }
 }
 #endregion

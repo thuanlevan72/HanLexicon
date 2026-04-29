@@ -188,6 +188,9 @@ export default function VocabularyManager() {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <Button onClick={fetchData} variant="ghost" className="h-12 w-12 p-0 rounded-2xl hover:bg-brand-highlight transition-all">
+            <RefreshCw className={cn("w-5 h-5", loading && "animate-spin text-brand-primary")} />
+          </Button>
           <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="h-12 px-6 rounded-2xl border-brand-border font-bold gap-2 hover:bg-brand-highlight transition-all hover:scale-105 active:scale-95">
             <Upload className="w-5 h-5 text-brand-primary" /> Import Excel
           </Button>

@@ -15,17 +15,26 @@ export default function LoginPage() {
   const { login, user } = useAuth();
   const navigate = useNavigate();
 
+  const [ipAddress, setIpAddress] = useState('127.0.0.1');
+
+  // Lấy IP thực tế khi component mount
+  React.useEffect(() => {
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => setIpAddress(data.ip))
+      .catch(() => console.log('Không thể lấy IP thực tế, sử dụng fallback'));
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      // Backend yêu cầu ipAddress, tạm thời lấy giả lập hoặc từ dịch vụ bên thứ 3
       await login({ 
         userName, 
         password, 
-        ipAddress: '127.0.0.1' // Backend yêu cầu bắt buộc
+        ipAddress: ipAddress
       });
       
       // Chờ context cập nhật user role và navigate
@@ -59,13 +68,17 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md relative z-10 space-y-8 animate-in fade-in zoom-in duration-500">
         <div className="text-center space-y-4">
-          <div className="w-20 h-20 bg-brand-primary rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl shadow-brand-primary/20 rotate-3">
-             <Sparkles className="w-10 h-10 text-white fill-current" />
-          </div>
-          <div>
-            <h1 className="text-4xl font-black text-brand-ink tracking-tighter uppercase italic">HanLexicon</h1>
-            <p className="text-brand-secondary font-bold mt-1 italic uppercase tracking-widest text-[10px]">Chinh phục Hán ngữ mỗi ngày</p>
-          </div>
+          <Link to="/" className="inline-flex flex-col gap-1.5 items-center group">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl font-black text-brand-ink tracking-tight group-hover:text-brand-primary transition-colors">
+                Tiếng Trung
+              </span>
+              <div className="bg-brand-primary w-auto px-4 h-12 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-xl rotate-3 group-hover:rotate-0 transition-all duration-300 font-heading">
+                Leyi
+              </div>
+            </div>
+            <p className="text-brand-secondary font-bold mt-1 italic uppercase tracking-widest text-[10px] opacity-80">Chinh phục Hán ngữ mỗi ngày</p>
+          </Link>
         </div>
 
         <Card className="border-4 border-brand-border bg-white rounded-[3rem] shadow-2xl overflow-hidden">

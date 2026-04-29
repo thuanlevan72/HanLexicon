@@ -33,7 +33,7 @@ namespace HanLexicon.Application.Services
             _currentId = _currentUserService.UserId;
         }
 
-        public async Task<AuthResultDto> LoginAsync(string? email, string? userName, string password, string ipAddress)
+        public async Task<AuthResultDto> LoginAsync(string? email, string? userName, string password, string ipAddress, string? userAgent)
         {
             if (string.IsNullOrWhiteSpace(email) && string.IsNullOrWhiteSpace(userName))
                 return new AuthResultDto { IsSuccess = false, Message = "Phải cung cấp Email hoặc Username để đăng nhập." };
@@ -89,7 +89,7 @@ namespace HanLexicon.Application.Services
                     ExpiresAt = DateTime.UtcNow.AddDays(3),
                     RefreshToken = refreshToken,
                     IpAddress = IPAddress.Parse(ipAddress),
-                    UserAgent = ""
+                    UserAgent = userAgent ?? ""
                 });
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
@@ -121,7 +121,7 @@ namespace HanLexicon.Application.Services
             }
         }
 
-        public async Task<AuthResultDto> RefreshTokenAsync(string clientRefreshToken)
+        public async Task<AuthResultDto> RefreshTokenAsync(string clientRefreshToken, string ipAddress, string? userAgent)
         {
             if (string.IsNullOrWhiteSpace(clientRefreshToken))
                 return new AuthResultDto { IsSuccess = false, Message = "Refresh Token không được để trống." };
@@ -152,7 +152,7 @@ namespace HanLexicon.Application.Services
                 await _unitOfWork.BeginTransactionAsync();
                 List<string> roles = user.UserRoles.Select(x => x.Role.Code.ToLower()).ToList();
 
-                string newAccessToken = await GenerateJwtTokenAsync(roles, user, session.IpAddress?.ToString() ?? "");
+                string newAccessToken = await GenerateJwtTokenAsync(roles, user, ipAddress);
                 string newRefreshToken = GenerateRefreshToken();
 
                 sessionRepo.Delete(session);
@@ -163,8 +163,8 @@ namespace HanLexicon.Application.Services
                     CreatedAt = DateTime.UtcNow,
                     ExpiresAt = DateTime.UtcNow.AddDays(3),
                     RefreshToken = newRefreshToken,
-                    IpAddress = session.IpAddress,
-                    UserAgent = session.UserAgent
+                    IpAddress = IPAddress.Parse(ipAddress),
+                    UserAgent = userAgent ?? session.UserAgent
                 });
 
                 await _unitOfWork.SaveChangesAsync();
