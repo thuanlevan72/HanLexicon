@@ -1,0 +1,374 @@
+Table "__EFMigrationsHistory" {
+  "MigrationId" varchar(150) [pk, not null]
+  "ProductVersion" varchar(32) [not null]
+}
+
+Table "challenge_words" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "lesson_id" uuid [not null]
+  "sort_order" int2 [not null, default: 0]
+  "hanzi" varchar(50) [not null]
+  "pinyin" varchar(100) [not null]
+  "meaning_vn" text [not null]
+  "example_zh" text
+  "example_vn" text
+
+  Indexes {
+    (lesson_id, sort_order) [type: btree, name: "idx_challenge_words_lesson"]
+  }
+}
+
+Table "documents" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "category_id" int2 [not null]
+  "title" text [not null]
+  "description" text
+  "download_url" text [not null]
+  "doc_type" varchar(30) [not null, check: `(doc_type)::text = ANY (ARRAY[('pdf'::character varying)::text, ('ppt'::character varying)::text, ('drive_folder'::character varying)::text, ('audio'::character varying)::text, ('other'::character varying)::text])`, default: 'pdf']
+  "sort_order" int2 [not null, default: 0]
+  "is_published" bool [not null, default: true]
+  "created_at" timestamptz [not null, default: `now()`]
+
+  Indexes {
+    category_id [type: btree, name: "idx_docs_category"]
+  }
+}
+
+Table "hanzi_cards" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "lesson_id" uuid [not null]
+  "sort_order" int2 [not null, default: 0]
+  "character" varchar(10) [not null]
+  "pinyin" varchar(50) [not null]
+  "meaning" text [not null]
+  "mnemonic" text
+  "stroke_count" int2
+  "radical" varchar(10)
+
+  Indexes {
+    (lesson_id, sort_order) [type: btree, name: "idx_hanzi_lesson"]
+  }
+}
+
+Table "import_jobs" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "uploaded_by" uuid [not null]
+  "file_name" varchar(255) [not null]
+  "status" varchar(20) [not null, check: `(status)::text = ANY (ARRAY[('pending'::character varying)::text, ('processing'::character varying)::text, ('done'::character varying)::text, ('failed'::character varying)::text])`, default: 'pending']
+  "total_rows" int4 [not null, default: 0]
+  "processed_rows" int4 [not null, default: 0]
+  "failed_rows" int4 [not null, default: 0]
+  "error_log" jsonb
+  "category_id" int2
+  "started_at" timestamptz
+  "finished_at" timestamptz
+  "created_at" timestamptz [not null, default: `now()`]
+  "LessonId" uuid
+}
+
+Table "lesson_categories" {
+  "id" int2 [pk, not null, increment]
+  "slug" varchar(30) [unique, not null]
+  "name" varchar(80) [not null]
+  "sort_order" int2 [not null, default: 0]
+}
+
+Table "lessons" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "category_id" int2 [not null]
+  "lesson_number" int2
+  "filename" varchar(120) [not null, note: 'Tên file HTML gốc, dùng làm game_id khi lưu tiến độ']
+  "title_cn" varchar(200)
+  "title_vn" varchar(500)
+  "icon" varchar(10) [not null, default: '📚']
+  "description" varchar(200)
+  "badge" varchar(20)
+  "is_published" bool [not null, default: true]
+  "sort_order" int2 [not null, default: 0]
+  "created_at" timestamptz [not null, default: `now()`]
+  "updated_at" timestamptz [not null, default: `now()`]
+
+  Indexes {
+    category_id [type: btree, name: "idx_lessons_category"]
+    filename [type: btree, name: "idx_lessons_filename"]
+  }
+}
+
+Table "media_files" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "owner_type" varchar(30) [not null]
+  "owner_id" uuid [not null]
+  "media_type" varchar(10) [not null, check: `(media_type)::text = ANY (ARRAY[('image'::character varying)::text, ('audio'::character varying)::text])`]
+  "file_name" varchar(255) [not null]
+  "storage_key" text [not null]
+  "cdn_url" text [not null]
+  "mime_type" varchar(50)
+  "file_size_kb" int4
+  "uploaded_by" uuid
+  "created_at" timestamptz [not null, default: `now()`]
+
+  Indexes {
+    (owner_type, owner_id) [type: btree, name: "idx_media_owner"]
+  }
+}
+
+Table "permissions" {
+  "id" int2 [pk, not null, increment]
+  "code" varchar(50) [unique, not null]
+  "name" varchar(100) [not null]
+  "description" text
+}
+
+Table "quiz_options" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "question_id" uuid [not null]
+  "sort_order" int2 [not null, default: 0]
+  "option_text" text [not null]
+  "is_correct" bool [not null, default: false]
+
+  Indexes {
+    (question_id, sort_order) [type: btree, name: "idx_quiz_options_question"]
+  }
+}
+
+Table "quiz_questions" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "lesson_id" uuid [not null]
+  "sort_order" int2 [not null, default: 0]
+  "question" text [not null]
+  "explanation" text [not null]
+  "difficulty" int2 [not null, check: `(difficulty >= 1) AND (difficulty <= 5)`, default: 1]
+
+  Indexes {
+    (lesson_id, sort_order) [type: btree, name: "idx_quiz_lesson"]
+  }
+}
+
+Table "radical_sets" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "set_number" int2 [unique, not null]
+  "title" varchar(100) [not null]
+  "icon" varchar(10) [not null, default: '🌱']
+  "lesson_id" uuid
+}
+
+Table "radicals" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "set_id" uuid [not null]
+  "sort_order" int2 [not null, default: 0]
+  "radical" varchar(10) [not null]
+  "name" varchar(50) [not null]
+  "meaning" text
+  "example_chars" text
+}
+
+Table "role_permissions" {
+  "role_id" int2 [not null]
+  "permission_id" int2 [not null]
+
+  Indexes {
+    (role_id, permission_id) [pk, type: btree, name: "role_permissions_pkey"]
+    role_id [type: btree, name: "idx_role_permissions_role"]
+  }
+}
+
+Table "roles" {
+  "id" int2 [pk, not null, increment]
+  "code" varchar(50) [unique, not null]
+  "name" varchar(100) [not null]
+  "description" text
+}
+
+Table "search_history" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "user_id" uuid [not null]
+  "query" varchar(200) [not null]
+  "vocab_id" uuid
+  "searched_at" timestamptz [not null, default: `now()`]
+
+  Indexes {
+    (user_id, searched_at) [type: btree, name: "idx_search_user"]
+  }
+}
+
+Table "user_progress" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "user_id" uuid [not null]
+  "lesson_id" uuid [not null]
+  "score" int2 [not null, check: `(score >= 0) AND (score <= 100)`, default: 0]
+  "completed" bool [not null, default: false]
+  "attempts" int2 [not null, default: 1]
+  "time_spent_s" int4 [not null, default: 0]
+  "last_played" timestamptz [not null, default: `now()`]
+  "created_at" timestamptz [not null, default: `now()`]
+  "current_index" int4 [default: 0]
+
+  Indexes {
+    (user_id, lesson_id) [type: btree, unique, name: "user_progress_user_id_lesson_id_key"]
+    (user_id, completed) [type: btree, name: "idx_progress_completed"]
+    lesson_id [type: btree, name: "idx_progress_lesson"]
+    user_id [type: btree, name: "idx_progress_user"]
+  }
+}
+
+Table "user_roles" {
+  "user_id" uuid [not null]
+  "role_id" int2 [not null]
+  "created_at" timestamptz [not null, default: `now()`]
+
+  Indexes {
+    (user_id, role_id) [pk, type: btree, name: "user_roles_pkey"]
+    user_id [type: btree, name: "idx_user_roles_user"]
+  }
+}
+
+Table "user_sessions" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "user_id" uuid [not null]
+  "refresh_token" text [unique, not null]
+  "ip_address" inet
+  "user_agent" text
+  "expires_at" timestamptz [not null]
+  "created_at" timestamptz [not null, default: `now()`]
+
+  Indexes {
+    expires_at [type: btree, name: "idx_sessions_expires"]
+    refresh_token [type: btree, name: "idx_sessions_token"]
+    user_id [type: btree, name: "idx_sessions_user"]
+  }
+}
+
+Table "user_word_progress" {
+  "user_id" uuid [not null]
+  "vocab_id" uuid [not null]
+  "status" varchar(20) [not null, default: 'learning']
+  "review_count" int2 [not null, default: 0]
+  "last_reviewed" timestamptz [not null, default: `now()`]
+
+  Indexes {
+    (user_id, vocab_id) [pk, type: btree, name: "user_word_progress_pkey"]
+  }
+  Note: 'Lưu lịch sử học tập/tra cứu của từng từ vựng riêng biệt'
+}
+
+Table "users" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "username" varchar(50) [unique, not null]
+  "password_hash" text [not null, note: 'bcrypt hash, cost=12']
+  "display_name" varchar(100)
+  "email" varchar(150) [unique]
+  "is_active" bool [not null, default: true]
+  "created_at" timestamptz [not null, default: `now()`]
+  "last_login_at" timestamptz
+  Note: 'Tài khoản học viên và quản trị viên'
+}
+
+Table "vocabulary" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "lesson_id" uuid [not null]
+  "sort_order" int2 [not null, default: 0]
+  "word" varchar(50) [not null]
+  "pinyin" varchar(100) [not null]
+  "meaning" text [not null]
+  "example_cn" text
+  "example_py" text
+  "example_vn" text
+  "audio_url" text
+  "meaning_en" varchar(255)
+  "image_url" text
+  "created_at" timestamptz [default: `now()`]
+
+  Indexes {
+    (lesson_id, sort_order) [type: btree, name: "idx_vocab_lesson"]
+  }
+}
+
+Table "system_logs" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "log_level" varchar(20)
+  "message" text
+  "exception" text
+  "trace_id" varchar(100)
+  "user_id" varchar(100)
+  "user_name" varchar(100)
+  "request_path" varchar(255)
+  "request_method" varchar(10)
+  "created_at" timestamptz [default: `now()`]
+}
+
+Table "review_history" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "user_id" uuid [not null]
+  "lesson_id" uuid [not null]
+  "score" int2 [not null]
+  "total_questions" int2 [not null]
+  "correct_count" int2 [not null]
+  "details_json" jsonb
+  "created_at" timestamptz [not null, default: `now()`]
+
+  Indexes {
+    lesson_id [type: btree, name: "idx_review_history_lesson"]
+    user_id [type: btree, name: "idx_review_history_user"]
+  }
+}
+
+Table "logs" {
+  "message" text
+  "message_template" text
+  "level" int4
+  "timestamp" timestamp
+  "exception" text
+  "log_event" jsonb
+}
+
+Ref "challenge_words_lesson_id_fkey":"lessons"."id" < "challenge_words"."lesson_id" [delete: cascade]
+
+Ref "documents_category_id_fkey":"lesson_categories"."id" < "documents"."category_id"
+
+Ref "hanzi_cards_lesson_id_fkey":"lessons"."id" < "hanzi_cards"."lesson_id" [delete: cascade]
+
+Ref "import_jobs_LessonId_fkey":"lessons"."id" < "import_jobs"."LessonId"
+
+Ref "import_jobs_category_id_fkey":"lesson_categories"."id" < "import_jobs"."category_id"
+
+Ref "import_jobs_uploaded_by_fkey":"users"."id" < "import_jobs"."uploaded_by"
+
+Ref "lessons_category_id_fkey":"lesson_categories"."id" < "lessons"."category_id"
+
+Ref "media_files_uploaded_by_fkey":"users"."id" < "media_files"."uploaded_by"
+
+Ref "quiz_options_question_id_fkey":"quiz_questions"."id" < "quiz_options"."question_id" [delete: cascade]
+
+Ref "quiz_questions_lesson_id_fkey":"lessons"."id" < "quiz_questions"."lesson_id" [delete: cascade]
+
+Ref "radical_sets_lesson_id_fkey":"lessons"."id" < "radical_sets"."lesson_id"
+
+Ref "radicals_set_id_fkey":"radical_sets"."id" < "radicals"."set_id" [delete: cascade]
+
+Ref "review_history_lesson_id_fkey":"lessons"."id" < "review_history"."lesson_id" [delete: cascade]
+
+Ref "review_history_user_id_fkey":"users"."id" < "review_history"."user_id" [delete: cascade]
+
+Ref "role_permissions_permission_id_fkey":"permissions"."id" < "role_permissions"."permission_id" [delete: cascade]
+
+Ref "role_permissions_role_id_fkey":"roles"."id" < "role_permissions"."role_id" [delete: cascade]
+
+Ref "search_history_user_id_fkey":"users"."id" < "search_history"."user_id" [delete: cascade]
+
+Ref "search_history_vocab_id_fkey":"vocabulary"."id" < "search_history"."vocab_id"
+
+Ref "user_progress_lesson_id_fkey":"lessons"."id" < "user_progress"."lesson_id" [delete: cascade]
+
+Ref "user_progress_user_id_fkey":"users"."id" < "user_progress"."user_id" [delete: cascade]
+
+Ref "user_roles_role_id_fkey":"roles"."id" < "user_roles"."role_id" [delete: cascade]
+
+Ref "user_roles_user_id_fkey":"users"."id" < "user_roles"."user_id" [delete: cascade]
+
+Ref "user_sessions_user_id_fkey":"users"."id" < "user_sessions"."user_id" [delete: cascade]
+
+Ref "user_word_progress_user_id_fkey":"users"."id" < "user_word_progress"."user_id" [delete: cascade]
+
+Ref "user_word_progress_vocab_id_fkey":"vocabulary"."id" < "user_word_progress"."vocab_id" [delete: cascade]
+
+Ref "vocabulary_lesson_id_fkey":"lessons"."id" < "vocabulary"."lesson_id" [delete: cascade]
