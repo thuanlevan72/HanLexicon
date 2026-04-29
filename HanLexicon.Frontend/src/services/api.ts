@@ -177,6 +177,21 @@ export const adminService = {
   adminGetUserDetails: (id: string): Promise<any> => apiClient.get(`/admin/users/${id}`),
   adminGetStudentStats: (id: string): Promise<any> => apiClient.get(`/admin/users/${id}/stats`),
   adminUpdateUserStatus: (id: string, isActive: boolean): Promise<any> => apiClient.patch(`/admin/users/${id}/status`, { id, isActive }),
+
+  // File Manager
+  adminGetFolders: (): Promise<any> => apiClient.get('/media/folders'),
+  adminGetFiles: (folder: string, page: number = 1, pageSize: number = 50): Promise<any> => apiClient.get('/media/files', { params: { folder, page, pageSize } }),
+  adminDeleteFile: (id: string): Promise<any> => apiClient.delete(`/media/${id}`),
+  adminUploadFiles: (files: FileList | File[], folder: string): Promise<any> => {
+    const formData = new FormData();
+    Array.from(files).forEach((file) => {
+      formData.append('files', file);
+    });
+    return apiClient.post('/media/upload-batch', formData, {
+      params: { folder },
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
 };
 
 // --- CÁC DỊCH VỤ KHÁC ---

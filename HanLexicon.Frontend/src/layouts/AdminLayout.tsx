@@ -20,7 +20,8 @@ import {
   FileText,
   Layers,
   Terminal,
-  Type
+  Type,
+  FolderOpen
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -28,6 +29,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutGrid },
+  { name: 'Quản lý File', href: '/admin/files', icon: FolderOpen },
   { name: 'Quản lý từ vựng', href: '/admin/vocabularies', icon: FileCode },
   { name: 'Danh mục bài học', href: '/admin/categories', icon: Layers },
   { name: 'Quản lý bài học', href: '/admin/lessons', icon: BookMarked },

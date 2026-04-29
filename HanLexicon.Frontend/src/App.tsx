@@ -38,6 +38,7 @@ import LessonReview from './pages/student/LessonReview';
 import HistoryPage from './pages/student/History';
 import ProfilePage from './pages/student/Profile';
 import ImportJobManager from './pages/admin/ImportJobManager';
+import FileManager from './pages/admin/FileManager';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; role?: 'student' | 'admin' }> = ({ children, role }) => {
   const { user, isAuthenticated, loading } = useAuth();
@@ -103,6 +104,7 @@ function AppRoutes() {
       >
         <Route index element={<AdminDashboard />} />
         <Route path="jobs" element={<ImportJobManager />} />
+        <Route path="files" element={<FileManager />} />
         <Route path="vocabularies" element={<VocabularyManager />} />
         <Route path="categories" element={<CategoryManager />} />
         <Route path="lessons" element={<LessonManager />} />

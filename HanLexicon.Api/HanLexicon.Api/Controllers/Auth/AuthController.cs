@@ -52,7 +52,7 @@ namespace HanLexicon.Api.Controllers.Auth
 
             var updatedCommand = command with { ipAddress = finalIp, userAgent = userAgent };
             
-            var result = await _mediator.Send(updatedCommand);
+                var result = await _mediator.Send(updatedCommand);
             if (!result.IsSuccess) return Unauthorized(ApiResponse<object>.Failure(result.Errors, result.Message, 401));
             return Ok(ApiResponse<object>.Success(result));
         }

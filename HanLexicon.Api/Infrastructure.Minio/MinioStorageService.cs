@@ -24,8 +24,6 @@ public class MinioStorageService : IStorageService
 
     public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
     {
-        var uniqueFileName = $"{Guid.NewGuid()}_{fileName}";
-
         // Đảm bảo bucket tồn tại
         var beArgs = new BucketExistsArgs().WithBucket(_settings.BucketName);
         bool found = await _minioClient.BucketExistsAsync(beArgs).ConfigureAwait(false);
@@ -43,13 +41,29 @@ public class MinioStorageService : IStorageService
         // Upload file
         var putObjectArgs = new PutObjectArgs()
             .WithBucket(_settings.BucketName)
-            .WithObject(uniqueFileName)
+            .WithObject(fileName)
             .WithStreamData(fileStream)
             .WithObjectSize(fileStream.Length)
             .WithContentType(contentType);
 
         await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
 
-        return $"{_settings.PublicUrl}/{_settings.BucketName}/{uniqueFileName}";
+        return $"{_settings.PublicUrl}/{_settings.BucketName}/{fileName}";
+    }
+
+    public async Task<bool> DeleteFileAsync(string objectName)
+    {
+        try
+        {
+            var removeObjectArgs = new RemoveObjectArgs()
+                .WithBucket(_settings.BucketName)
+                .WithObject(objectName);
+            await _minioClient.RemoveObjectAsync(removeObjectArgs).ConfigureAwait(false);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
