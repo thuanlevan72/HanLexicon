@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { dateUtils } from '@/src/utils/formatters';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '@/src/utils/logger';
 
 export default function HistoryPage() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function HistoryPage() {
       const res = await userService.getHistory();
       if (res.isSuccess) setHistory(res.data);
     } catch (e) {
-      console.error(e);
+      logger.error("Lỗi tải lịch sử học tập", e);
     } finally {
       setLoading(false);
     }

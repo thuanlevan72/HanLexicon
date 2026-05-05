@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { adminService } from '@/src/services/api';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 export default function QuizManager() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -31,7 +32,7 @@ export default function QuizManager() {
         setQuizzes(res.data);
       }
     } catch (error) {
-      console.error(error);
+      logger.error('Lỗi tải danh sách Quiz', error);
     } finally {
       setLoading(false);
     }
@@ -71,15 +72,16 @@ export default function QuizManager() {
         : await adminService.adminCreateQuiz(currentQuiz);
       
       if (res.isSuccess) {
+        toast.success(currentQuiz.id ? 'Cập nhật câu hỏi thành công' : 'Thêm câu hỏi mới thành công');
         // If it's a new quiz, we need its ID to save options (not supported in this simple UI yet)
         // For now, let's just close and refresh
         setIsEditModalOpen(false);
         fetchData();
       } else {
-        alert(res.message);
+        toast.error(res.message || 'Có lỗi xảy ra khi lưu câu hỏi');
       }
     } catch (error: any) {
-      alert("Lỗi: " + error);
+      toast.error("Lỗi: " + error.message);
     } finally {
       setIsSaving(false);
     }
@@ -88,17 +90,22 @@ export default function QuizManager() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Xóa câu hỏi này?")) return;
     try {
-      await adminService.adminDeleteQuiz(id);
-      fetchData();
-    } catch (error) {
-      alert("Lỗi khi xóa");
+      const res = await adminService.adminDeleteQuiz(id);
+      if (res.isSuccess) {
+        toast.success('Xóa câu hỏi thành công');
+        fetchData();
+      } else {
+        toast.error(res.message || 'Không thể xóa câu hỏi này');
+      }
+    } catch (error: any) {
+      toast.error("Lỗi khi xóa: " + error.message);
     }
   };
 
   // Option management logic
   const handleAddOption = async () => {
     if (!currentQuiz?.id) {
-       alert("Vui lòng lưu câu hỏi trước khi thêm phương án.");
+       toast.error("Vui lòng lưu câu hỏi trước khi thêm phương án.");
        return;
     }
     const newOpt = { 
@@ -109,8 +116,13 @@ export default function QuizManager() {
     };
     try {
        const res = await adminService.adminCreateQuizOption(newOpt);
-       if (res.isSuccess) setOptions([...options, res.data]);
-    } catch (e) { alert("Lỗi khi thêm phương án"); }
+       if (res.isSuccess) {
+          toast.success('Thêm phương án thành công');
+          setOptions([...options, res.data]);
+       } else {
+          toast.error(res.message || 'Lỗi khi thêm phương án');
+       }
+    } catch (e: any) { toast.error("Lỗi khi thêm phương án: " + e.message); }
   };
 
   const handleToggleCorrect = async (opt: any) => {
@@ -124,8 +136,11 @@ export default function QuizManager() {
 
   const handleDeleteOption = async (optId: string) => {
      try {
-        await adminService.adminDeleteQuizOption(optId);
-        setOptions(options.filter(o => o.id !== optId));
+        const res = await adminService.adminDeleteQuizOption(optId);
+        if (res.isSuccess) {
+           toast.success('Xóa phương án thành công');
+           setOptions(options.filter(o => o.id !== optId));
+        }
      } catch (e) { console.error(e); }
   };
 

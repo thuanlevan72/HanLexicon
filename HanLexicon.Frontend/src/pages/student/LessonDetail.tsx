@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { learningService, Vocabulary } from '@/src/services/api';
 import { cn } from '@/lib/utils';
+import { logger } from '@/src/utils/logger';
 
 export default function StudentLessonDetail() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +20,7 @@ export default function StudentLessonDetail() {
   const [loading, setLoading] = useState(true);
   const [vocabIndex, setVocabIndex] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -34,6 +36,8 @@ export default function StudentLessonDetail() {
           if (data.currentIndex > 0 && data.currentIndex < (data.vocabularies?.length || 0)) {
             setVocabIndex(data.currentIndex);
           }
+          // Đánh dấu đã tải xong dữ liệu ban đầu
+          setTimeout(() => setIsInitialLoad(false), 100);
         }
       } catch (e) { console.error(e); }
       finally { setLoading(false); }
@@ -43,7 +47,8 @@ export default function StudentLessonDetail() {
 
   // Tự động lưu tiến độ khi thay đổi từ vựng
   useEffect(() => {
-    if (lesson && vocabIndex >= 0) {
+    // Chỉ lưu khi không phải là lần tải đầu tiên (để tránh race condition với currentIndex ban đầu)
+    if (lesson && vocabIndex >= 0 && !isInitialLoad) {
       const saveProgress = async () => {
         try {
           await learningService.saveProgress({
@@ -55,10 +60,9 @@ export default function StudentLessonDetail() {
           });
         } catch (e) { console.error("Lỗi lưu tiến độ", e); }
       };
-      // Debounce hoặc chỉ lưu khi thực sự cần thiết, ở đây lưu mỗi lần next để đảm bảo trải nghiệm
       saveProgress();
     }
-  }, [vocabIndex, lesson]);
+  }, [vocabIndex, lesson, isInitialLoad]);
 
   const playAudio = (url?: string) => {
     if (!url || !audioRef.current) return;
@@ -85,7 +89,7 @@ export default function StudentLessonDetail() {
   if (loading) return <div className="flex items-center justify-center min-h-screen bg-brand-bg"><RefreshCw className="w-10 h-10 animate-spin text-brand-primary opacity-20" /></div>;
   if (!lesson || !lesson.vocabularies?.length) return <div className="text-center p-20 font-bold">Bài học này chưa có nội dung từ vựng.</div>;
 
-  const currentVocab = lesson.vocabularies[vocabIndex];
+  const currentVocab = lesson.vocabularies[vocabIndex] || {};
 
   if (isFinished) {
     return (

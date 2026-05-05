@@ -20,18 +20,20 @@ import {
   FileText,
   Layers,
   Terminal,
-  Type
+  Type,
+  HardDrive
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutGrid },
+  { name: 'Bảng điều khiển', href: '/admin', icon: LayoutGrid },
   { name: 'Quản lý từ vựng', href: '/admin/vocabularies', icon: FileCode },
   { name: 'Danh mục bài học', href: '/admin/categories', icon: Layers },
   { name: 'Quản lý bài học', href: '/admin/lessons', icon: BookMarked },
   { name: 'Quản lý tài liệu', href: '/admin/documents', icon: FileText },
+  { name: 'Tệp tin & Media', href: '/admin/media', icon: HardDrive },
   { name: 'Quản lý bộ thủ', href: '/admin/radicals', icon: Type },
   { name: 'Quản lý học sinh', href: '/admin/students', icon: Users },
   { name: 'Logs Hệ thống', href: '/admin/logs', icon: Terminal },
@@ -49,22 +51,15 @@ export default function AdminLayout() {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-brand-ink text-brand-secondary">
-      <div className="p-8 border-b border-white/5">
-        <Link to="/" className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold tracking-tight text-white leading-none">
-              Tiếng Trung
-            </span>
-            <div className="bg-brand-primary w-auto px-3 h-9 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm font-heading">
-              Leyi
-            </div>
-          </div>
-          <span className="text-[10px] font-bold text-brand-primary uppercase tracking-widest opacity-80">Admin Console</span>
+    <div className="flex flex-col h-full bg-white border-r border-brand-border text-brand-ink">
+      <div className="p-8 border-b border-brand-border/50">
+        <Link to="/" className="flex flex-col gap-1.5 items-center justify-center py-2">
+          <img src="/images/logo/2.png" alt="Tiếng Trung Leyi" className="h-32 w-auto object-contain" />
+          <span className="text-[10px] font-bold text-brand-primary uppercase tracking-widest mt-2">Bảng Quản Trị</span>
         </Link>
       </div>
 
-      <nav className="flex-1 px-4 py-10 space-y-2">
+      <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar">
         {navigation.map((item) => (
           <Link
             key={item.name}
@@ -73,23 +68,23 @@ export default function AdminLayout() {
               "flex items-center gap-3 px-5 py-4 rounded-xl text-sm font-bold transition-all group",
               isActive(item.href)
                 ? "bg-brand-primary text-white shadow-lg shadow-brand-primary/20"
-                : "text-brand-border/60 hover:bg-white/5 hover:text-white"
+                : "text-slate-500 hover:bg-brand-highlight/50 hover:text-brand-ink"
             )}
           >
             <item.icon className={cn(
               "w-5 h-5",
-              isActive(item.href) ? "text-white" : "text-brand-border/40 group-hover:text-brand-border"
+              isActive(item.href) ? "text-white" : "text-slate-400 group-hover:text-brand-primary"
             )} />
             {item.name}
           </Link>
         ))}
       </nav>
 
-      <div className="p-6 border-t border-white/5 space-y-2">
+      <div className="p-6 border-t border-brand-border/50 space-y-2">
         <Button
           variant="ghost"
           onClick={logout}
-          className="w-full justify-start gap-3 text-brand-primary hover:text-brand-accent hover:bg-white/5 mt-4 font-black"
+          className="w-full justify-start gap-3 text-slate-500 hover:text-rose-600 hover:bg-rose-50 mt-2 font-black h-12 rounded-xl"
         >
           <LogOut className="w-5 h-5" /> Thoát Admin
         </Button>
@@ -98,7 +93,7 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="flex h-screen bg-brand-bg overflow-hidden text-brand-ink font-sans">
+    <div className="flex h-screen bg-brand-bg overflow-hidden text-brand-ink font-sans theme-app">
       {/* Desktop Sidebar */}
       <aside className="hidden md:block w-80 shrink-0 overflow-hidden shadow-2xl z-20">
         <SidebarContent />
@@ -142,11 +137,11 @@ export default function AdminLayout() {
             <div className="flex items-center gap-4 pl-6 border-l border-brand-border">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-bold text-brand-ink leading-tight normal-case italic">Quản trị viên</p>
-                <p className="text-brand-primary tracking-widest">Master Admin</p>
+                <p className="text-brand-primary tracking-widest">Admin Tổng</p>
               </div>
               <Avatar className="h-10 w-10 border border-brand-border shadow-sm ring-4 ring-brand-primary/5">
                 <AvatarImage src={`https://api.dicebear.com/7.x/shapes/svg?seed=Admin`} />
-                <AvatarFallback className="bg-brand-primary text-white">AD</AvatarFallback>
+                <AvatarFallback className="bg-brand-primary text-white">QT</AvatarFallback>
               </Avatar>
             </div>
           </div>

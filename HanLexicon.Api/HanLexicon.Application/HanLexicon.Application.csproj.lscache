@@ -75,7 +75,9 @@ DTOs/
   VocabularyItemDto.cs
 Features/Admin/
  ChallengeWords/ChallengeWordFeatures.cs
- DashboardAdmin/GetSystemStats.cs
+ DashboardAdmin/
+  GetGrowthStats.cs
+  GetSystemStats.cs
  Documents/DocumentFeatures.cs
  HanziCards/HanziCardFeatures.cs
  LessonCategories/
@@ -93,6 +95,7 @@ Features/Admin/
  Radicals/RadicalFeatures.cs
  SeedInitialData.cs
  UsersAdmin/
+  CreateUser.cs
   GetStudentStats.cs
   GetUsers.cs
  VocabulariesAdmin/
@@ -115,12 +118,18 @@ Features/LessonsUser/
  GetReviewHistory.cs
  GetVocabularyLessons.cs
  SaveUserProgress.cs
+Features/Media/
+ CreateMediaFolder.cs
+ DeleteMedia.cs
+ GetMediaList.cs
+ UploadMediaBatch.cs
 Features/
  Search/LogSearchHistory.cs
  Users/
   GetProfile.cs
   UserFeatures.cs
  VocabulariesUser/
+  GetVocabulariesPaged.cs
   SearchVocabularies.cs
   UpdateWordProgress.cs
 Interfaces/

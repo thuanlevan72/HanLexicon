@@ -36,28 +36,28 @@ export default function StudentQuiz() {
               options: q.options.map(o => o.optionText),
               correct: correctOptIdx >= 0 ? correctOptIdx : 0
             };
-          }));
-        } else {
-          // Fallback questions if empty
-          setQuestions([
+            }));
+            } else {
+            // Fallback questions if empty
+            setQuestions([
             { id: 1, type: 'translate', question: 'Dịch sang tiếng Việt: 你好', options: ['Chào buổi sáng', 'Tạm biệt', 'Xin chào', 'Cảm ơn'], correct: 2, audio: true },
             { id: 2, type: 'matching', question: 'Chọn Hán tự cho: wǒ (Tôi)', options: ['你', '我', '好', '叫'], correct: 1 }
-          ]);
-        }
-      }).catch(err => console.error("Failed to fetch lesson detail", err));
-    }
-  }, [id]);
+            ]);
+            }
+            }).catch(err => logger.error("Failed to fetch lesson detail", err));
+            }
+            }, [id]);
 
-  useEffect(() => {
-    if (isFinished && id) {
-      learningService.saveProgress({
-        lessonId: id,
-        score: Math.round((score / questions.length) * 100),
-        completed: true,
-        timeSpentS: 300 // example time
-      }).catch(err => console.error("Failed to save progress", err));
-    }
-  }, [isFinished, id, score, questions.length]);
+            useEffect(() => {
+            if (isFinished && id) {
+            learningService.saveProgress({
+            lessonId: id,
+            score: Math.round((score / questions.length) * 100),
+            completed: true,
+            timeSpentS: 300 // example time
+            }).catch(err => logger.error("Failed to save progress", err));
+            }
+            }, [isFinished, id, score, questions.length]);
 
   if (!lesson || questions.length === 0) {
     return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div></div>;

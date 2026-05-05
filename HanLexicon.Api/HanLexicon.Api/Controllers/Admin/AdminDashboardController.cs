@@ -31,17 +31,24 @@ namespace HanLexicon.Api.Controllers.Admin
             return Ok(ApiResponse<object>.Success(result));
         }
 
+        [HttpGet("growth-stats")]
+        public async Task<IActionResult> GetGrowthStats()
+        {
+            var result = await _mediator.Send(new QueryGetGrowthStats());
+            return Ok(ApiResponse<object>.Success(result));
+        }
+
         [HttpGet("import-stats")]
         public async Task<IActionResult> GetImportStats()
         {
-            var query = _uow.Repository<ImportJob>().Query();
+            var repo = _uow.Repository<ImportJob>();
             var stats = new
             {
-                Total = await query.CountAsync(),
-                Pending = await query.CountAsync(j => j.Status == "Pending"),
-                Processing = await query.CountAsync(j => j.Status == "Processing"),
-                Completed = await query.CountAsync(j => j.Status == "Completed"),
-                Failed = await query.CountAsync(j => j.Status == "Failed")
+                Total = await repo.CountAsync(),
+                Pending = await repo.CountAsync(j => j.Status == "Pending"),
+                Processing = await repo.CountAsync(j => j.Status == "Processing"),
+                Completed = await repo.CountAsync(j => j.Status == "Completed"),
+                Failed = await repo.CountAsync(j => j.Status == "Failed")
             };
             return Ok(ApiResponse<object>.Success(stats));
         }

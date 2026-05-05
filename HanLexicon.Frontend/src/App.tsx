@@ -6,14 +6,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { logger } from '@/src/utils/logger';
 import { Provider } from 'react-redux';
 import { store } from './store';
 import GlobalLoading from './components/GlobalLoading';
+import { Toaster } from 'sonner';
+import CommandPalette from './components/CommandPalette';
 
 // Pages
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import StudentDashboard from './pages/student/Dashboard';
 import LearningPath from './pages/student/LearningPath';
 import ReviewCenter from './pages/student/ReviewCenter';
@@ -29,6 +31,7 @@ import RadicalManager from './pages/admin/RadicalManager';
 import StudentManager from './pages/admin/StudentManager';
 import UserDetails from './pages/admin/UserDetails';
 import LogManager from './pages/admin/LogManager';
+import MediaManager from './pages/admin/MediaManager';
 import StudentLayout from './layouts/StudentLayout';
 import AdminLayout from './layouts/AdminLayout';
 import PublicLayout from './layouts/PublicLayout';
@@ -38,6 +41,7 @@ import LessonReview from './pages/student/LessonReview';
 import HistoryPage from './pages/student/History';
 import ProfilePage from './pages/student/Profile';
 import ImportJobManager from './pages/admin/ImportJobManager';
+import NotFoundPage from './pages/NotFound';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; role?: 'student' | 'admin' }> = ({ children, role }) => {
   const { user, isAuthenticated, loading } = useAuth();
@@ -59,7 +63,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; role?: 'student' | '
   const userRole = (user.role || '').toLowerCase();
   
   if (role && userRole !== role.toLowerCase()) {
-    console.warn(`Truy cập bị từ chối: Cần ${role}, tài khoản hiện tại là ${userRole}`);
+    logger.warn(`Truy cập bị từ chối: Cần ${role}, tài khoản hiện tại là ${userRole}`);
     return <Navigate to="/" replace />;
   }
 
@@ -72,7 +76,6 @@ function AppRoutes() {
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
       </Route>
 
       <Route
@@ -110,13 +113,14 @@ function AppRoutes() {
         <Route path="lessons/:lessonId/quizzes" element={<QuizManager />} />
         <Route path="lessons/:lessonId/challenge" element={<ChallengeManager />} />
         <Route path="documents" element={<DocumentManager />} />
+        <Route path="media" element={<MediaManager />} />
         <Route path="radicals" element={<RadicalManager />} />
         <Route path="students" element={<StudentManager />} />
         <Route path="students/:id" element={<UserDetails />} />
         <Route path="logs" element={<LogManager />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
@@ -124,8 +128,10 @@ function AppRoutes() {
 export default function App() {
   return (
     <Provider store={store}>
+      <Toaster position="top-center" richColors closeButton />
       <Router>
         <AuthProvider>
+          <CommandPalette />
           <AppRoutes />
         </AuthProvider>
       </Router>

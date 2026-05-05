@@ -82,15 +82,16 @@ namespace HanLexicon.Application.Features.Admin.UsersAdmin
             var roadmap = await _uow.Repository<Lesson>().Query()
                 .Include(l => l.Category)
                 .Include(l => l.UserProgresses.Where(up => up.UserId == request.UserId))
+                .Include(l => l.UserStudyProgresses.Where(usp => usp.UserId == request.UserId))
                 .OrderBy(l => l.Category.SortOrder).ThenBy(l => l.SortOrder)
                 .Select(l => new LessonProgressDto
                 {
                     LessonId = l.Id,
                     Title = l.TitleCn + " / " + l.TitleVn,
                     Level = l.Category.Slug,
-                    IsCompleted = l.UserProgresses.Any(up => up.UserId == request.UserId && up.Completed),
+                    IsCompleted = l.UserStudyProgresses.Any(usp => usp.UserId == request.UserId && usp.IsCompleted),
                     Score = (int)(l.UserProgresses.Where(up => up.UserId == request.UserId).Select(up => (short?)up.Score).FirstOrDefault() ?? 0),
-                    LastPlayed = l.UserProgresses.Where(up => up.UserId == request.UserId).Select(up => (DateTime?)up.LastPlayed).FirstOrDefault()
+                    LastPlayed = l.UserStudyProgresses.Where(usp => usp.UserId == request.UserId).Select(usp => (DateTime?)usp.LastStudiedAt).FirstOrDefault()
                 })
                 .ToListAsync(cancellationToken);
 

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { adminService } from '@/src/services/api';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 export default function ChallengeManager() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -27,7 +28,8 @@ export default function ChallengeManager() {
         setWords(res.data);
       }
     } catch (error) {
-      console.error(error);
+      logger.error('Lỗi tải từ thách thức', error);
+      toast.error('Không thể tải danh sách từ thách thức');
     } finally {
       setLoading(false);
     }
@@ -58,13 +60,14 @@ export default function ChallengeManager() {
         : await adminService.adminCreateChallengeWord(currentWord);
       
       if (res.isSuccess) {
+        toast.success(currentWord.id ? 'Cập nhật từ vựng thành công' : 'Thêm từ vựng mới thành công');
         setIsEditModalOpen(false);
         fetchData();
       } else {
-        alert(res.message);
+        toast.error(res.message || 'Có lỗi xảy ra khi lưu từ vựng');
       }
     } catch (error: any) {
-      alert("Lỗi: " + error);
+      toast.error("Lỗi: " + error.message);
     } finally {
       setIsSaving(false);
     }
@@ -73,10 +76,15 @@ export default function ChallengeManager() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Xóa từ thử thách này?")) return;
     try {
-      await adminService.adminDeleteChallengeWord(id);
-      fetchData();
-    } catch (error) {
-      alert("Lỗi khi xóa");
+      const res = await adminService.adminDeleteChallengeWord(id);
+      if (res.isSuccess) {
+        toast.success('Xóa từ vựng thành công');
+        fetchData();
+      } else {
+        toast.error(res.message || 'Không thể xóa từ vựng này');
+      }
+    } catch (error: any) {
+      toast.error("Lỗi khi xóa: " + error.message);
     }
   };
 

@@ -6,7 +6,9 @@ import {
   Type, Plus, Edit3, Trash2, RefreshCw, X, Save, ArrowLeft, Layers, BookMarked, Search
 } from 'lucide-react';
 import { adminService, learningService, LessonFlat } from '@/src/services/api';
+import { FormSelect } from '@/src/components/ui/FormSelect';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 export default function RadicalManager() {
   const [sets, setSets] = useState<any[]>([]);
@@ -35,7 +37,7 @@ export default function RadicalManager() {
       setLessons(lessonsRes);
       if (setsRes.isSuccess) setSets(setsRes.data);
     } catch (error) {
-      console.error(error);
+      logger.error('Lỗi tải dữ liệu bộ thủ', error);
     } finally {
       setLoading(false);
     }
@@ -74,13 +76,14 @@ export default function RadicalManager() {
         : await adminService.adminCreateRadicalSet(currentSet);
       
       if (res.isSuccess) {
+        toast.success(currentSet.id ? 'Cập nhật nhóm bộ thủ thành công' : 'Thêm nhóm bộ thủ mới thành công');
         setIsSetModalOpen(false);
         fetchInitialData();
       } else {
-        alert(res.message);
+        toast.error(res.message || 'Có lỗi xảy ra khi lưu nhóm bộ thủ');
       }
     } catch (error: any) {
-      alert("Lỗi: " + error);
+      toast.error("Lỗi: " + error.message);
     } finally {
       setIsSaving(false);
     }
@@ -89,10 +92,15 @@ export default function RadicalManager() {
   const handleDeleteSet = async (id: string) => {
     if (!window.confirm("Xóa bộ thủ này? Tất cả các mục bên trong sẽ bị xóa.")) return;
     try {
-      await adminService.adminDeleteRadicalSet(id);
-      fetchInitialData();
-    } catch (error) {
-      alert("Lỗi khi xóa");
+      const res = await adminService.adminDeleteRadicalSet(id);
+      if (res.isSuccess) {
+        toast.success('Xóa nhóm bộ thủ thành công');
+        fetchInitialData();
+      } else {
+        toast.error(res.message || 'Không thể xóa nhóm bộ thủ này');
+      }
+    } catch (error: any) {
+      toast.error("Lỗi khi xóa: " + error.message);
     }
   };
 
@@ -122,22 +130,30 @@ export default function RadicalManager() {
           ? await adminService.adminUpdateRadical(currentItem.id, currentItem)
           : await adminService.adminCreateRadical(currentItem);
         if (res.isSuccess) {
+           toast.success(currentItem.id ? 'Cập nhật mục bộ thủ thành công' : 'Thêm mục bộ thủ mới thành công');
            setIsItemModalOpen(false);
            // Refresh radicals list
            const refresh = await adminService.adminGetRadicals(currentSet.id);
            if (refresh.isSuccess) setRadicals(refresh.data);
+        } else {
+           toast.error(res.message || 'Lỗi lưu mục bộ thủ');
         }
-     } catch (e) { alert("Lỗi lưu mục bộ thủ"); }
+     } catch (e: any) { toast.error("Lỗi lưu mục bộ thủ: " + e.message); }
      finally { setIsSaving(false); }
   };
 
   const handleDeleteItem = async (id: string) => {
     if (!window.confirm("Xóa mục này?")) return;
     try {
-      await adminService.adminDeleteRadical(id);
-      setRadicals(radicals.filter(r => r.id !== id));
-    } catch (error) {
-      alert("Lỗi khi xóa");
+      const res = await adminService.adminDeleteRadical(id);
+      if (res.isSuccess) {
+        toast.success('Xóa mục bộ thủ thành công');
+        setRadicals(radicals.filter(r => r.id !== id));
+      } else {
+        toast.error(res.message || 'Không thể xóa mục này');
+      }
+    } catch (error: any) {
+      toast.error("Lỗi khi xóa: " + error.message);
     }
   };
 
@@ -165,19 +181,20 @@ export default function RadicalManager() {
         <div className="flex items-center gap-4">
           <BookMarked className="w-5 h-5 text-brand-primary" />
           <span className="text-xs font-black uppercase tracking-widest text-brand-secondary">Lọc theo bài học:</span>
-          <select 
-            className="h-12 px-4 bg-brand-highlight/30 border-none rounded-xl font-bold text-brand-ink outline-none cursor-pointer max-w-md"
-            value={selectedLessonId}
-            onChange={(e) => setSelectedLessonId(e.target.value)}
-          >
-            <option value="">Tất cả bài học</option>
-            {lessons.map(l => (
-              <option key={l.id} value={l.id}>[{l.level}] {l.title}</option>
-            ))}
-          </select>
+          <div className="flex-1 max-w-md">
+            <FormSelect
+              className="h-12 border-none bg-brand-highlight/30"
+              value={selectedLessonId}
+              onChange={(e) => setSelectedLessonId(e.target.value)}
+            >
+              <option value="">Tất cả bài học</option>
+              {lessons.map(l => (
+                <option key={l.id} value={l.id}>[{l.level}] {l.title}</option>
+              ))}
+            </FormSelect>
+          </div>
         </div>
       </Card>
-
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {loading && sets.length === 0 ? (
           <div className="col-span-full p-20 text-center"><RefreshCw className="w-10 h-10 animate-spin mx-auto text-brand-primary opacity-20" /></div>
@@ -237,14 +254,14 @@ export default function RadicalManager() {
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gắn vào bài học</label>
-                    <select 
-                      className="w-full h-12 px-4 bg-white border-2 border-brand-border rounded-xl font-bold text-brand-ink outline-none"
+                    <FormSelect 
+                      className="w-full h-12 bg-white border-2 border-brand-border rounded-xl font-bold"
                       value={currentSet.lessonId || ''}
                       onChange={e => setCurrentSet({ ...currentSet, lessonId: e.target.value || null })}
                     >
                       <option value="">-- Không gắn (Chung) --</option>
-                      {lessons.map(l => <option key={l.id} value={l.id}>{l.title}</option>)}
-                    </select>
+                      {lessons.map((l: any) => <option key={l.id} value={l.id}>{l.title}</option>)}
+                    </FormSelect>
                   </div>
                   <Button type="submit" disabled={isSaving} className="w-full bg-brand-ink text-white h-14 rounded-xl font-black uppercase tracking-widest shadow-lg">
                     {isSaving ? <RefreshCw className="w-5 h-5 animate-spin" /> : 'Lưu thông tin'}

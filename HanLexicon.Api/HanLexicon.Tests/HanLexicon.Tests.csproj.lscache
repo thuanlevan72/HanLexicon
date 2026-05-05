@@ -56,20 +56,27 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 
 [sourceFiles]
 <NUGET>/microsoft.net.test.sdk/17.14.1/build/net8.0/Microsoft.NET.Test.Sdk.Program.cs
+AdminControllerTests.cs
 AdminStatsTest.cs
 ApiIntegrationTest.cs
 AuthControllerTests.cs
 CheckLogsSchema.cs
 DbCheck.cs
+DictionaryControllerTests.cs
 DirectDbSetup.cs
 ImportExcelTest.cs
+LearningControllerTests.cs
 LogIntegrationTests.cs
+MediaControllerTests.cs
+MediaIntegrationTest.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  HanLexicon.Tests.AssemblyInfo.cs
  HanLexicon.Tests.GlobalUsings.g.cs
+ProfileControllerTests.cs
 ResetAdmin.cs
 ReviewIntegrationTest.cs
+StudyProgressControllerTests.cs
 UnitTest1.cs
 UserTests.cs
 

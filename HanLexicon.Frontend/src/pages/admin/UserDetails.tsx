@@ -38,7 +38,7 @@ export default function UserDetails() {
       if (userRes.isSuccess) setUser(userRes.data);
       if (statsRes.isSuccess) setStats(statsRes.data);
     } catch (error) {
-      console.error("Lỗi tải chi tiết học viên:", error);
+      logger.error("Lỗi tải chi tiết học viên", error);
     } finally {
       setLoading(false);
     }

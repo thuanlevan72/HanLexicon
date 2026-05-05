@@ -66,6 +66,7 @@ Entities/
  Lesson.cs
  LessonCategory.cs
  MediaFile.cs
+ MediaFolder.cs
  Permission.cs
  QuizOption.cs
  QuizQuestion.cs
@@ -79,6 +80,7 @@ Entities/
  UserProgress.cs
  UserRole.cs
  UserSession.cs
+ UserStudyProgress.cs
  UserWordProgress.cs
  VLessonsSummary.cs
  Vocabulary.cs

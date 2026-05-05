@@ -24,7 +24,18 @@ public class MinioStorageService : IStorageService
 
     public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string contentType)
     {
-        var uniqueFileName = $"{Guid.NewGuid()}_{fileName}";
+        string uniqueFileName;
+        int lastSlashIndex = fileName.LastIndexOf('/');
+        if (lastSlashIndex >= 0)
+        {
+            var path = fileName.Substring(0, lastSlashIndex + 1);
+            var filePart = fileName.Substring(lastSlashIndex + 1);
+            uniqueFileName = $"{path}{Guid.NewGuid()}_{filePart}";
+        }
+        else
+        {
+            uniqueFileName = $"{Guid.NewGuid()}_{fileName}";
+        }
 
         // Đảm bảo bucket tồn tại
         var beArgs = new BucketExistsArgs().WithBucket(_settings.BucketName);
@@ -51,5 +62,24 @@ public class MinioStorageService : IStorageService
         await _minioClient.PutObjectAsync(putObjectArgs).ConfigureAwait(false);
 
         return $"{_settings.PublicUrl}/{_settings.BucketName}/{uniqueFileName}";
+    }
+
+    public async Task DeleteFileAsync(string storageKey)
+    {
+        if (string.IsNullOrEmpty(storageKey)) return;
+        
+        try 
+        {
+            var removeObjectArgs = new RemoveObjectArgs()
+                .WithBucket(_settings.BucketName)
+                .WithObject(storageKey);
+                
+            await _minioClient.RemoveObjectAsync(removeObjectArgs).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // Log exception here if necessary, but don't throw to prevent breaking DB delete
+            Console.WriteLine($"Error deleting file {storageKey} from MinIO: {ex.Message}");
+        }
     }
 }

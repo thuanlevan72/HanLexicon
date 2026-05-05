@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService, userService } from '../services/api';
+import { logger } from '@/src/utils/logger';
 
 interface AuthContextType {
   user: any;
@@ -36,15 +37,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Đảm bảo object user có đầy đủ thuộc tính bao gồm role
       if (data && (data.username || data.id)) {
-        console.log("Xác thực thành công. Full Data:", data);
-        console.log("Role người dùng (từ API):", data.role);
         setUser(data);
         setIsAuthenticated(true);
       } else {
         throw new Error("Dữ liệu profile không hợp lệ");
       }
     } catch (error) {
-      console.error("Xác thực profile thất bại:", error);
+      logger.error("Xác thực profile thất bại", error);
       setIsAuthenticated(false);
       setUser(null);
       if (typeof window !== 'undefined') {
@@ -73,7 +72,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // Nếu API trả về user trực tiếp, cập nhật ngay lập tức
         if (data.user) {
-          console.log("Đăng nhập thành công. Role từ response:", data.user.role);
           setUser(data.user);
           setIsAuthenticated(true);
           setLoading(false);

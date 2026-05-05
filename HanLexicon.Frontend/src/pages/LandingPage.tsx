@@ -37,25 +37,25 @@ const staggerContainer = {
 
 const features = [
   {
-    icon: <Search className="w-8 h-8 text-emerald-600" />,
+    icon: <Search className="w-8 h-8 text-brand-primary" />,
     title: "Từ điển HSK",
     description: "Tra cứu từ vựng chuẩn HSK 1 đến 6 với nghĩa tiếng Việt, tiếng Anh và hình ảnh trực quan.",
     count: "6 Cấp độ",
-    color: "bg-emerald-50"
+    color: "bg-brand-highlight"
   },
   {
-    icon: <BookOpen className="w-8 h-8 text-amber-600" />,
+    icon: <BookOpen className="w-8 h-8 text-brand-accent" />,
     title: "Danh sách từ vựng",
     description: "Hệ thống từ vựng chi tiết, dễ dàng nắm bắt số lượng từ theo yêu cầu của từng cấp độ.",
     count: "Hàng ngàn từ",
     color: "bg-amber-50"
   },
   {
-    icon: <Trophy className="w-8 h-8 text-sky-600" />,
+    icon: <Trophy className="w-8 h-8 text-rose-500" />,
     title: "Lịch sử học tập",
     description: "Theo dõi tiến độ học tập, ghi lại nhật ký tra cứu từ vựng hàng ngày của bạn.",
     count: "Cá nhân hóa",
-    color: "bg-sky-50"
+    color: "bg-rose-50"
   }
 ];
 
@@ -133,19 +133,13 @@ export default function LandingPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative flex justify-center"
           >
-            {/* Teacher Nga Image Focal Point - Using high quality asset */}
-            <div className="relative w-full max-w-[500px] aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group bg-slate-100">
+            {/* Main Brand Banner */}
+            <div className="relative w-full max-w-[500px] aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group bg-brand-surface">
               <img 
-                src="https://images.unsplash.com/photo-1544717297-fa95b3ee9bc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                alt="Tiếng Trung Leyi Creator" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                referrerPolicy="no-referrer"
+                src="/images/logo/image_banner.png" 
+                alt="Tiếng Trung Leyi Banner" 
+                className="w-full h-full object-cover object-left group-hover:scale-105 transition-transform duration-1000"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-secondary/80 via-transparent to-transparent opacity-60"></div>
-              <div className="absolute bottom-8 left-8 right-8 text-white p-6 backdrop-blur-xl bg-white/10 rounded-[2rem] border border-white/20 shadow-2xl">
-                <h2 className="text-2xl font-black mb-1">Tiếng Trung Leyi</h2>
-                <p className="text-sm font-bold opacity-90 leading-tight">Môi trường học tiếng Trung chuẩn HSK, giao tiếp thực tế • 🌿</p>
-              </div>
             </div>
             
             {/* Floating Accents */}
@@ -311,13 +305,13 @@ export default function LandingPage() {
           </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
-            <Link to="/register" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto h-20 px-12 rounded-[2rem] bg-gradient-to-r from-brand-accent-dark via-brand-accent to-brand-accent-light text-xl font-black shadow-2xl shadow-brand-accent/40 text-white transition-all hover:scale-105 border-0 flex items-center justify-center")}>
-              Đăng ký học miễn phí
+            <Link to="/login" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto h-20 px-12 rounded-[2rem] bg-gradient-to-r from-brand-accent-dark via-brand-accent to-brand-accent-light text-xl font-black shadow-2xl shadow-brand-accent/40 text-white transition-all hover:scale-105 border-0 flex items-center justify-center")}>
+              Vào học ngay
             </Link>
             <Link to="/login" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "w-full sm:w-auto h-20 px-12 rounded-[2rem] border-0 bg-white text-brand-primary hover:bg-brand-highlight text-xl font-black shadow-xl transition-all hover:scale-105 flex items-center justify-center")}>
               Đăng nhập <ArrowRight className="w-6 h-6 ml-3" />
             </Link>
-          </div>
+            </div>
         </div>
       </section>
 
@@ -325,8 +319,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4">
            <div className="flex flex-col items-center gap-4">
              <div className="flex items-center gap-2">
-               <span className="text-2xl font-black text-brand-secondary tracking-tight">Tiếng Trung</span>
-               <div className="bg-brand-primary w-auto px-4 h-12 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-brand-primary/20 shadow-lg font-heading">Leyi</div>
+               <img src="/images/logo/2.png" alt="Tiếng Trung Leyi" className="h-24 w-auto" />
              </div>
              <p className="text-slate-400 font-bold tracking-widest uppercase text-xs">© 2026 Tiếng Trung Leyi • Crafted with Heart</p>
            </div>

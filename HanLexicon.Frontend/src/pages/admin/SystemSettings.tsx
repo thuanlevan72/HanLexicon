@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormSelect } from '@/src/components/ui/FormSelect';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -60,10 +61,10 @@ export default function SystemSettings() {
             </div>
             <div className="space-y-2">
               <label className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">{t('admin.form.defaultLangLabel')}</label>
-              <select className="w-full h-12 px-4 bg-brand-surface rounded-xl border border-transparent focus:border-brand-primary focus:bg-white transition-all font-bold appearance-none">
-                <option>{t('admin.form.vi')} (Vietnam)</option>
-                <option>{t('admin.form.en')} (International)</option>
-              </select>
+              <FormSelect className="w-full h-12 bg-brand-surface rounded-xl border border-transparent font-bold">
+                <option value="vi">{t('admin.form.vi')} (Vietnam)</option>
+                <option value="en">{t('admin.form.en')} (International)</option>
+              </FormSelect>
             </div>
           </div>
         </Card>

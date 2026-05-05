@@ -59,11 +59,11 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md relative z-10 space-y-8 animate-in fade-in zoom-in duration-500">
         <div className="text-center space-y-4">
-          <div className="w-20 h-20 bg-brand-primary rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl shadow-brand-primary/20 rotate-3">
-             <Sparkles className="w-10 h-10 text-white fill-current" />
+          <div className="w-32 h-32 mx-auto rounded-[2rem] shadow-2xl shadow-brand-primary/20 overflow-hidden bg-white p-2 border-2 border-white">
+             <img src="/images/logo/2.png" alt="Tiếng Trung Leyi Logo" className="w-full h-full object-contain" />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-brand-ink tracking-tighter uppercase italic">HanLexicon</h1>
+            <h1 className="text-3xl font-black text-brand-ink tracking-tighter uppercase">Tiếng Trung Leyi</h1>
             <p className="text-brand-secondary font-bold mt-1 italic uppercase tracking-widest text-[10px]">Chinh phục Hán ngữ mỗi ngày</p>
           </div>
         </div>
@@ -132,10 +132,6 @@ export default function LoginPage() {
             </form>
 
             <div className="mt-10 text-center space-y-4">
-              <p className="text-sm font-medium text-slate-400">
-                Chưa có tài khoản?{' '}
-                <Link to="/register" className="text-brand-primary font-black hover:underline underline-offset-4">Đăng ký ngay</Link>
-              </p>
               <div className="pt-6 border-t border-brand-border">
                 <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">© 2026 HanLexicon Studio</p>
               </div>

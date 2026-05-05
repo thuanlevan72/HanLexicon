@@ -27,12 +27,12 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         
         // Save to local storage using util
         storage.set(key, valueToStore);
-      } catch (error) {
-        console.warn(`Error setting localStorage key "${key}":`, error);
-      }
-    },
-    [key, storedValue]
-  );
+        } catch (error) {
+        logger.warn(`Error setting localStorage key \"${key}\":`, error);
+        }
+        },
+        [key, storedValue]
+        );
 
   const removeValue = useCallback(() => {
     storage.remove(key);

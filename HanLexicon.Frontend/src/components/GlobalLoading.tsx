@@ -24,9 +24,9 @@ export default function GlobalLoading({ message = "Đang chuẩn bị không gia
             repeatType: "reverse",
             ease: "easeInOut"
           }}
-          className="w-24 h-24 bg-brand-primary rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-brand-primary/30"
+          className="w-24 h-24 bg-white border-4 border-brand-primary rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-brand-primary/30 p-2 overflow-hidden"
         >
-          <Sparkles className="w-12 h-12 text-white fill-current" />
+          <img src="/images/logo/2.png" alt="Logo" className="w-full h-full object-contain" />
         </motion.div>
 
         {/* Text and Progress */}
@@ -35,9 +35,9 @@ export default function GlobalLoading({ message = "Đang chuẩn bị không gia
             initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-xl font-black text-brand-ink uppercase italic tracking-widest font-heading"
+            className="text-xl font-black text-brand-ink uppercase tracking-widest font-heading"
           >
-            HanLexicon
+            Tiếng Trung Leyi
           </motion.h2>
           
           <div className="space-y-2">

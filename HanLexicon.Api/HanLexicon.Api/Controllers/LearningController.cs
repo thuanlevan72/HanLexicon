@@ -9,6 +9,7 @@ namespace HanLexicon.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/learning")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class LearningController : ControllerBase
     {
         private readonly IMediator _mediator;

@@ -9,6 +9,8 @@ import {
 import { adminService } from '@/src/services/api';
 import { cn } from '@/lib/utils';
 import { dateUtils } from '@/src/utils/formatters';
+import { logger } from '@/src/utils/logger';
+import { FormSelect } from '@/src/components/ui/FormSelect';
 
 export default function LogManager() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -40,7 +42,7 @@ export default function LogManager() {
         setTotalItems(res.data.totalItems);
       }
     } catch (error) {
-      console.error(error);
+      logger.error("Lỗi khi tải Logs", error);
     } finally {
       setLoading(false);
     }
@@ -135,11 +137,11 @@ export default function LogManager() {
           </div>
           <div>
             <h1 className="text-xl font-black text-brand-ink tracking-tight uppercase italic font-heading flex items-center gap-2">
-              System Observer
+              Giám sát hệ thống
               <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
             </h1>
             <p className="text-[10px] font-bold text-brand-secondary flex items-center gap-2 uppercase tracking-widest">
-              <Activity className="w-3 h-3" /> Real-time database streams
+              <Activity className="w-3 h-3" /> Luồng dữ liệu thời gian thực
             </p>
           </div>
         </div>
@@ -147,18 +149,18 @@ export default function LogManager() {
         <div className="flex items-center gap-2">
           <div className="hidden lg:flex items-center bg-brand-highlight/30 px-4 py-2 rounded-xl border border-brand-border gap-4">
             <div className="text-center">
-              <p className="text-[8px] font-black text-slate-400 uppercase">Total Entries</p>
+              <p className="text-[8px] font-black text-slate-400 uppercase">Tổng số bản ghi</p>
               <p className="text-sm font-black text-brand-ink">{totalItems.toLocaleString()}</p>
             </div>
             <div className="w-px h-6 bg-brand-border" />
             <div className="text-center">
-              <p className="text-[8px] font-black text-slate-400 uppercase">Current Page</p>
+              <p className="text-[8px] font-black text-slate-400 uppercase">Trang hiện tại</p>
               <p className="text-sm font-black text-brand-ink">{page}/{totalPages}</p>
             </div>
           </div>
           <Button onClick={fetchData} variant="outline" className="h-11 rounded-xl border-2 hover:bg-brand-highlight gap-2 font-bold">
             <RefreshCw className={cn("w-4 h-4", loading && "animate-spin text-brand-primary")} />
-            Refresh
+            Làm mới
           </Button>
         </div>
       </div>
@@ -170,14 +172,14 @@ export default function LogManager() {
             {/* Severity Filter */}
             <div className="space-y-3">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Filter className="w-3 h-3" /> Severity Filter
+                <Filter className="w-3 h-3" /> Mức độ Log
               </label>
               <div className="grid grid-cols-2 gap-1.5">
                 {[
-                  { id: '', label: 'All', icon: <FilterX className="w-3.5 h-3.5" />, color: "bg-slate-400" },
-                  { id: 'Information', label: 'Info', icon: <Info className="w-3.5 h-3.5" />, color: "bg-emerald-400" },
-                  { id: 'Warning', label: 'Warn', icon: <Bug className="w-3.5 h-3.5" />, color: "bg-amber-400" },
-                  { id: 'Error', label: 'Error', icon: <AlertCircle className="w-3.5 h-3.5" />, color: "bg-rose-400" },
+                  { id: '', label: 'Tất cả', icon: <FilterX className="w-3.5 h-3.5" />, color: "bg-slate-400" },
+                  { id: 'Information', label: 'Thông tin', icon: <Info className="w-3.5 h-3.5" />, color: "bg-emerald-400" },
+                  { id: 'Warning', label: 'Cảnh báo', icon: <Bug className="w-3.5 h-3.5" />, color: "bg-amber-400" },
+                  { id: 'Error', label: 'Lỗi', icon: <AlertCircle className="w-3.5 h-3.5" />, color: "bg-rose-400" },
                 ].map((lvl) => (
                   <button
                     key={lvl.id}
@@ -199,15 +201,15 @@ export default function LogManager() {
             {/* Time Filter */}
             <div className="pt-4 border-t border-brand-border space-y-4">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Calendar className="w-3 h-3" /> Time Range
+                <Calendar className="w-3 h-3" /> Khoảng thời gian
               </label>
               
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { id: 'today', label: 'Today' },
-                  { id: 'yesterday', label: 'Yesterday' },
-                  { id: 'week', label: '7 Days' },
-                  { id: 'all', label: 'All Time' },
+                  { id: 'today', label: 'Hôm nay' },
+                  { id: 'yesterday', label: 'Hôm qua' },
+                  { id: 'week', label: '7 ngày qua' },
+                  { id: 'all', label: 'Tất cả' },
                 ].map((p) => (
                   <Button 
                     key={p.id} 
@@ -223,7 +225,7 @@ export default function LogManager() {
 
               <div className="space-y-3 pt-2">
                  <div className="space-y-1">
-                    <p className="text-[9px] font-black text-slate-400 uppercase">From</p>
+                    <p className="text-[9px] font-black text-slate-400 uppercase">Từ ngày</p>
                     <input 
                       type="date" 
                       className="w-full bg-brand-highlight/30 border-2 border-transparent focus:border-brand-primary rounded-xl px-3 py-2 text-xs font-bold outline-none transition-all"
@@ -232,7 +234,7 @@ export default function LogManager() {
                     />
                  </div>
                  <div className="space-y-1">
-                    <p className="text-[9px] font-black text-slate-400 uppercase">To</p>
+                    <p className="text-[9px] font-black text-slate-400 uppercase">Đến ngày</p>
                     <input 
                       type="date" 
                       className="w-full bg-brand-highlight/30 border-2 border-transparent focus:border-brand-primary rounded-xl px-3 py-2 text-xs font-bold outline-none transition-all"
@@ -246,7 +248,7 @@ export default function LogManager() {
                     className="w-full text-[10px] font-black text-rose-500 hover:text-rose-600 hover:bg-rose-50"
                     onClick={() => { setFromDate(''); setToDate(''); }}
                    >
-                     Clear Time Filter
+                     Xóa bộ lọc thời gian
                    </Button>
                  )}
               </div>
@@ -254,18 +256,18 @@ export default function LogManager() {
 
             <div className="pt-4 border-t border-brand-border space-y-3">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Clock className="w-3 h-3" /> Stream Insights
+                <Clock className="w-3 h-3" /> Thông tin luồng
               </label>
               <div className="bg-brand-highlight/20 rounded-2xl p-4 space-y-4 border border-brand-border/50">
                 <div className="space-y-1">
-                  <p className="text-[8px] font-black text-slate-400 uppercase">Retention</p>
-                  <p className="text-xs font-bold text-brand-ink">Last 30 Days</p>
+                  <p className="text-[8px] font-black text-slate-400 uppercase">Lưu trữ</p>
+                  <p className="text-xs font-bold text-brand-ink">30 ngày gần nhất</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[8px] font-black text-slate-400 uppercase">Status</p>
+                  <p className="text-[8px] font-black text-slate-400 uppercase">Trạng thái</p>
                   <div className="flex items-center gap-2">
                     <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    <p className="text-xs font-bold text-brand-ink">Active Logging</p>
+                    <p className="text-xs font-bold text-brand-ink">Đang ghi nhận</p>
                   </div>
                 </div>
               </div>
@@ -281,7 +283,7 @@ export default function LogManager() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-brand-primary transition-colors" />
               <form onSubmit={handleSearch}>
                 <input
-                  type="text" placeholder="Search by message, SQL keywords, endpoint or trace ID..."
+                  type="text" placeholder="Tìm kiếm theo thông điệp, từ khóa SQL, endpoint hoặc Trace ID..."
                   className="w-full h-11 pl-12 pr-4 bg-transparent border-none rounded-xl font-bold text-sm focus:ring-0 outline-none placeholder:text-slate-300"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -293,7 +295,7 @@ export default function LogManager() {
                 onClick={() => setSelectedLevel('')}
                 className="mx-2 px-3 py-1 bg-brand-highlight rounded-lg text-[10px] font-bold text-brand-primary flex items-center gap-2 border border-brand-primary/10 hover:bg-brand-primary/10 transition-colors"
               >
-                Level: {selectedLevel} <FilterX className="w-3 h-3" />
+                Mức độ: {selectedLevel} <FilterX className="w-3 h-3" />
               </button>
             )}
           </Card>
@@ -309,7 +311,7 @@ export default function LogManager() {
              <div className="divide-y divide-white/5 font-mono text-[11px]">
                {logs.length === 0 && !loading ? (
                  <div className="p-20 text-center text-slate-500 uppercase tracking-widest font-bold opacity-30">
-                   No logs detected in the selected timeframe
+                   Không tìm thấy log nào trong khoảng thời gian này
                  </div>
                ) : logs.map((log, index) => {
                  const logKey = log.id || `log-${log.createdAt}-${index}`;
@@ -369,34 +371,34 @@ export default function LogManager() {
                             <div className="space-y-4">
                               <div className="space-y-1">
                                 <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                  <Clock className="w-3 h-3" /> Timestamp
+                                  <Clock className="w-3 h-3" /> Thời gian
                                 </p>
                                 <p className="text-slate-200 text-xs">{dateUtils.formatDate(log.createdAt, 'HH:mm:ss.SSS dd/MM/yyyy')}</p>
                               </div>
                               <div className="space-y-1">
                                 <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                  <User className="w-3 h-3" /> Identity
+                                  <User className="w-3 h-3" /> Người dùng
                                 </p>
-                                <p className="text-emerald-400 text-xs font-bold">{log.userName || 'SYSTEM_ANONYMOUS'}</p>
+                                <p className="text-emerald-400 text-xs font-bold">{log.userName || 'HỆ THỐNG'}</p>
                               </div>
                             </div>
 
                             <div className="space-y-4">
                               <div className="space-y-1">
                                 <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                  <Globe className="w-3 h-3" /> Request Context
+                                  <Globe className="w-3 h-3" /> Ngữ cảnh Request
                                 </p>
                                 <div className="flex items-center gap-2">
                                    <span className="bg-emerald-500 text-brand-ink px-1.5 py-0.5 rounded text-[9px] font-black">{log.requestMethod || 'N/A'}</span>
-                                   <span className="text-slate-300 text-xs truncate max-w-[200px]">{log.requestPath || 'INTERNAL_PROC'}</span>
+                                   <span className="text-slate-300 text-xs truncate max-w-[200px]">{log.requestPath || 'NỘI BỘ'}</span>
                                 </div>
                               </div>
                               <div className="space-y-1">
                                 <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                  <Code className="w-3 h-3" /> Trace Identifier
+                                  <Code className="w-3 h-3" /> Trace ID
                                 </p>
                                 <div className="flex items-center gap-2 group/id">
-                                  <p className="text-slate-400 text-xs font-mono">{log.traceId || 'NO_TRACE'}</p>
+                                  <p className="text-slate-400 text-xs font-mono">{log.traceId || 'KHÔNG CÓ'}</p>
                                   {log.traceId && (
                                     <button 
                                       onClick={() => copyToClipboard(log.traceId, logKey)}
@@ -411,7 +413,7 @@ export default function LogManager() {
 
                             <div className="flex flex-col justify-end">
                                <Button variant="ghost" className="w-fit text-[10px] font-black text-emerald-400 hover:bg-emerald-400/10 gap-2 uppercase tracking-tighter">
-                                 <ExternalLink className="w-3.5 h-3.5" /> Full Payload Insight
+                                 <ExternalLink className="w-3.5 h-3.5" /> Chi tiết Payload
                                </Button>
                             </div>
                          </div>
@@ -420,7 +422,7 @@ export default function LogManager() {
                             {log.exception && (
                               <div className="space-y-3">
                                 <p className="text-[9px] font-black text-rose-400 uppercase tracking-widest flex items-center gap-2">
-                                  <AlertCircle className="w-3.5 h-3.5" /> Exception Trace
+                                  <AlertCircle className="w-3.5 h-3.5" /> Thông tin Exception
                                 </p>
                                 <div className="bg-rose-950/30 p-6 rounded-2xl text-[11px] font-mono text-rose-300 border border-rose-500/20 leading-relaxed overflow-x-auto">
                                   {log.exception}
@@ -431,7 +433,7 @@ export default function LogManager() {
                             {(log.message?.includes('SELECT') || log.message?.includes('INSERT') || log.message?.includes('UPDATE') || log.message?.includes('DELETE')) ? (
                                <div className="space-y-3">
                                  <p className="text-[9px] font-black text-sky-400 uppercase tracking-widest flex items-center gap-2">
-                                   <Database className="w-3.5 h-3.5" /> Query Execution Plan
+                                   <Database className="w-3.5 h-3.5" /> Truy vấn SQL
                                  </p>
                                  <div className="bg-sky-950/20 p-6 rounded-2xl text-[11px] font-mono text-sky-300 border border-sky-500/20 overflow-x-auto shadow-inner leading-relaxed">
                                    {log.message}
@@ -442,7 +444,7 @@ export default function LogManager() {
                             {log.logEvent && (
                                <div className="space-y-3">
                                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                   <Globe className="w-3.5 h-3.5" /> Raw Log Event (Structured)
+                                   <Globe className="w-3.5 h-3.5" /> Log Event thô (Structured)
                                  </p>
                                  <pre className="bg-white/[0.02] p-6 rounded-2xl text-[10px] font-mono text-slate-400 overflow-x-auto border border-white/5 custom-scrollbar leading-relaxed">
                                    {(() => {
@@ -468,11 +470,11 @@ export default function LogManager() {
           <div className="flex items-center justify-between bg-white px-4 py-3 rounded-2xl border border-brand-border shadow-sm shrink-0">
              <div className="flex items-center gap-4">
                <p className="text-[10px] font-black text-brand-secondary uppercase tracking-widest">
-                 Page <span className="text-brand-primary">{page}</span> of {totalPages}
+                 Trang <span className="text-brand-primary">{page}</span> / {totalPages}
                </p>
                <span className="text-slate-300">|</span>
                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">
-                 Showing {logs.length} entries this fetch
+                 Hiển thị {logs.length} bản ghi
                </p>
              </div>
              <div className="flex gap-2">
@@ -482,7 +484,7 @@ export default function LogManager() {
                   onClick={() => { setPage(page - 1); setExpandedLog(null); }} 
                   className="rounded-xl border-brand-border h-9 px-3 gap-2 font-bold text-xs bg-white"
                 >
-                  <ChevronLeft className="w-4 h-4" /> Previous
+                  <ChevronLeft className="w-4 h-4" /> Trước
                 </Button>
                 <Button 
                   variant="outline" 
@@ -490,7 +492,7 @@ export default function LogManager() {
                   onClick={() => { setPage(page + 1); setExpandedLog(null); }} 
                   className="rounded-xl border-brand-border h-9 px-3 gap-2 font-bold text-xs bg-white"
                 >
-                  Next <ChevronRight className="w-4 h-4" />
+                  Sau <ChevronRight className="w-4 h-4" />
                 </Button>
              </div>
           </div>

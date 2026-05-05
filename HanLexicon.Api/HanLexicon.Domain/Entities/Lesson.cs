@@ -46,6 +46,8 @@ public partial class Lesson
 
     public virtual ICollection<UserProgress> UserProgresses { get; set; } = new List<UserProgress>();
 
+    public virtual ICollection<UserStudyProgress> UserStudyProgresses { get; set; } = new List<UserStudyProgress>();
+
     public virtual ICollection<ReviewHistory> ReviewHistories { get; set; } = new List<ReviewHistory>();
 
     public virtual ICollection<Vocabulary> Vocabularies { get; set; } = new List<Vocabulary>();

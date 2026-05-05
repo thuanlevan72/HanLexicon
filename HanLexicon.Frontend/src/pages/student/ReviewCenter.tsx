@@ -31,7 +31,7 @@ export default function ReviewCenter() {
         const categories = Array.isArray(data) ? data : [];
         setCatalog(categories);
         if (categories.length > 0) setSelectedCat(categories[0].categorySlug);
-      } catch (e) { console.error(e); }
+      } catch (e) { logger.error("Lỗi tải danh mục ôn tập", e); }
       finally { setLoading(false); }
     };
     fetchData();
@@ -45,7 +45,7 @@ export default function ReviewCenter() {
      try {
         const res = await learningService.getReviewHistory(lesson.id);
         setReviewHistory(res.data || []);
-     } catch (e) { console.error(e); }
+     } catch (e) { logger.error("Lỗi tải lịch sử bài thi", e); }
      finally { setLoadingHistory(false); }
   };
 
@@ -54,9 +54,9 @@ export default function ReviewCenter() {
       {/* ... (phần header và catalog giữ nguyên) */}
       <header className="space-y-1">
         <h1 className="text-4xl font-black text-brand-ink tracking-tight flex items-center gap-3 italic uppercase">
-           <RefreshCw className="w-10 h-10 text-brand-primary animate-spin-slow" /> Trung tâm ôn luyện
+           <Trophy className="w-10 h-10 text-brand-primary" /> Phòng thi & Kiểm tra
         </h1>
-        <p className="text-brand-secondary font-bold">Luyện tập gõ phím Hán tự để ghi nhớ từ vựng vĩnh viễn.</p>
+        <p className="text-brand-secondary font-bold">Thực hiện các bài thi gõ phím Hán tự để đánh giá năng lực của bạn.</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -77,46 +77,48 @@ export default function ReviewCenter() {
 
         <div className="lg:col-span-9">
            <AnimatePresence mode="wait">
-             <motion.div key={selectedCat} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+             <motion.div key={selectedCat} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-4">
                 {!loading && catalog.find(c => c.categorySlug === selectedCat)?.items.map((lesson: any, idx: number) => (
-                   <Card key={lesson.id} className="border-brand-border bg-white rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all group border-2 hover:border-brand-primary flex flex-col">
-                      <div className="p-8 flex-1 space-y-5">
-                         <div className="flex justify-between items-start">
-                            <div className="w-12 h-12 bg-brand-highlight rounded-2xl flex items-center justify-center font-black text-brand-primary text-lg border-2 border-brand-border shadow-sm">{idx + 1}</div>
-                            {lesson.score !== null && lesson.score !== undefined ? (
-                               <div className="text-right">
-                                  <Badge variant="outline" className="rounded-full bg-emerald-50 text-emerald-600 border-emerald-100 font-black italic text-[10px] uppercase mb-1">Đã hoàn thành</Badge>
-                                  <div className="text-xl font-black text-brand-primary">{lesson.score}%</div>
-                               </div>
-                            ) : (
-                               <Badge variant="outline" className="rounded-full bg-amber-50 text-amber-600 border-amber-100 font-black italic text-[10px] uppercase">Sẵn sàng</Badge>
-                            )}
+                   <div key={lesson.id} className="bg-white border-2 border-brand-border rounded-[2rem] p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm hover:shadow-lg hover:border-brand-primary transition-all group">
+                      <div className="flex items-center gap-6">
+                         <div className="w-16 h-16 bg-brand-highlight rounded-2xl flex items-center justify-center font-black text-brand-primary text-2xl border-2 border-brand-border shadow-sm shrink-0">
+                            {idx + 1}
                          </div>
                          <div>
-                            <h3 className="text-3xl font-black text-brand-ink leading-tight mb-1">{lesson.title}</h3>
-                            <p className="text-lg font-bold text-brand-secondary italic">{lesson.translation}</p>
-                         </div>
-                         <div className="flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 tracking-widest">
-                            <History className="w-3 h-3" /> Chế độ: Gõ phím
+                            <div className="flex items-center gap-3 mb-1">
+                               <h3 className="text-2xl font-black text-brand-ink leading-tight">{lesson.title}</h3>
+                               {lesson.score !== null && lesson.score !== undefined ? (
+                                   <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white font-black italic text-[9px] uppercase px-2 py-0.5 border-0">Đã Thi</Badge>
+                               ) : (
+                                   <Badge className="bg-brand-primary hover:opacity-90 text-white font-black italic text-[9px] uppercase px-2 py-0.5 border-0">Sẵn sàng</Badge>
+                               )}
+                            </div>
+                            <p className="text-sm font-bold text-brand-secondary italic mb-2">{lesson.translation}</p>
+                            <div className="flex items-center gap-4 text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                               <span className="flex items-center gap-1.5"><History className="w-3 h-3" /> Chế độ: Gõ phím</span>
+                               {lesson.score !== null && lesson.score !== undefined && (
+                                   <span className="flex items-center gap-1.5 text-brand-primary"><Trophy className="w-3 h-3" /> Điểm cao nhất: {lesson.score}%</span>
+                               )}
+                            </div>
                          </div>
                       </div>
-                      <div className="p-6 pt-0 flex gap-2">
+                      <div className="flex items-center gap-3 shrink-0 w-full md:w-auto mt-4 md:mt-0">
                          {lesson.score !== null && lesson.score !== undefined ? (
                             <>
-                               <Button onClick={() => openHistory(lesson)} variant="outline" className="flex-1 h-14 rounded-2xl border-2 border-brand-border font-black uppercase text-[10px] tracking-widest gap-2 hover:bg-brand-highlight">
+                               <Button onClick={() => openHistory(lesson)} variant="outline" className="flex-1 md:flex-none h-12 rounded-xl border-2 border-brand-border font-black uppercase text-[10px] tracking-widest gap-2 hover:bg-brand-highlight">
                                   <History className="w-4 h-4" /> Lịch sử
                                </Button>
-                               <Button onClick={() => navigate(`/student/lessons/${lesson.id}/review`)} className="flex-1 h-14 rounded-2xl bg-brand-ink text-white font-black uppercase text-[10px] tracking-widest gap-2 shadow-lg hover:scale-105 transition-all">
-                                  <RefreshCw className="w-4 h-4 text-brand-primary" /> Làm lại
+                               <Button onClick={() => navigate(`/student/lessons/${lesson.id}/review`)} className="flex-1 md:flex-none h-12 rounded-xl bg-brand-ink text-white font-black uppercase text-[10px] tracking-widest gap-2 shadow-md hover:scale-105 transition-all">
+                                  <RefreshCw className="w-4 h-4 text-brand-primary" /> Thi Lại
                                </Button>
                             </>
                          ) : (
-                            <Button onClick={() => navigate(`/student/lessons/${lesson.id}/review`)} className="w-full h-14 rounded-2xl bg-brand-ink text-white font-black uppercase text-xs tracking-widest gap-2 shadow-lg hover:scale-105 transition-all">
-                               <RefreshCw className="w-4 h-4 text-brand-primary" /> Bắt đầu luyện tập
+                            <Button onClick={() => navigate(`/student/lessons/${lesson.id}/review`)} className="w-full h-12 rounded-xl bg-brand-primary text-white font-black uppercase text-[10px] tracking-widest gap-2 shadow-md hover:scale-105 transition-all px-8">
+                               <CheckCircle2 className="w-4 h-4" /> Bắt đầu Thi
                             </Button>
                          )}
                       </div>
-                   </Card>
+                   </div>
                 ))}
              </motion.div>
            </AnimatePresence>

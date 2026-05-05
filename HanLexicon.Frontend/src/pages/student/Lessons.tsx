@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { 
-  BookOpen, Search, Filter, Play, Award, 
-  ChevronRight, RefreshCw, LayoutGrid 
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { learningService, Category } from '@/src/services/api';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '@/src/utils/logger';
+import { FormSelect } from '@/src/components/ui/FormSelect';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { BookOpen, Search, Filter, Play } from 'lucide-react';
 
 export default function LessonsPage() {
   const navigate = useNavigate();
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Tất cả');
@@ -23,13 +22,13 @@ export default function LessonsPage() {
         const res: any = await learningService.getLessons();
         const data = res.data || res;
         setCategories(Array.isArray(data) ? data : []);
-      } catch (e) { console.error(e); }
+      } catch (e) { logger.error("Lỗi tải danh mục bài học", e); }
       finally { setLoading(false); }
     };
     fetchData();
   }, []);
 
-  const allItems = categories.flatMap(cat => cat.items.map(item => ({ ...item, categoryName: cat.name })));
+  const allItems = categories.flatMap(cat => cat.items.map((item: any) => ({ ...item, categoryName: cat.name })));
 
   const filteredItems = allItems.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -44,7 +43,7 @@ export default function LessonsPage() {
     <div className="space-y-10 pb-20 max-w-7xl mx-auto animate-in fade-in duration-700">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black text-brand-ink uppercase italic flex items-center gap-3">
+          <h1 className="text-3xl font-black text-brand-ink uppercase italic flex items-center gap-3 font-heading">
              <BookOpen className="w-8 h-8 text-brand-primary" /> Thư viện bài học
           </h1>
           <p className="text-brand-secondary font-medium">Hệ thống bài học Hán ngữ chuẩn quốc tế</p>
@@ -63,13 +62,13 @@ export default function LessonsPage() {
          </Card>
          <Card className="lg:col-span-1 p-4 bg-white rounded-[2rem] shadow-sm border-brand-border flex items-center gap-3">
             <Filter className="w-5 h-5 text-brand-primary shrink-0" />
-            <select 
-               className="w-full bg-transparent outline-none font-bold text-brand-ink cursor-pointer"
+            <FormSelect 
+               className="h-12 border-none bg-transparent"
                value={selectedFilter}
                onChange={e => setSelectedFilter(e.target.value)}
             >
                {categoryNames.map(name => <option key={name} value={name}>{name}</option>)}
-            </select>
+            </FormSelect>
          </Card>
       </div>
 

@@ -10,8 +10,10 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Vocabulary, adminService, learningService, LessonFlat } from '@/src/services/api';
+import { FormSelect } from '@/src/components/ui/FormSelect';
 import { Badge } from '@/components/ui/badge';
 import ImportVocabulary from './import/ImportVocabulary';
+import { toast } from 'sonner';
 
 export default function VocabularyManager() {
   const [vocabularies, setVocabularies] = useState<Vocabulary[]>([]);
@@ -94,7 +96,7 @@ export default function VocabularyManager() {
         setTotalItems(res.data.totalItems);
       }
     } catch (error) {
-      console.error("Lỗi tải dữ liệu:", error);
+      logger.error("Lỗi tải dữ liệu từ vựng", error);
     } finally {
       setLoading(false);
     }
@@ -130,7 +132,7 @@ export default function VocabularyManager() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentVocab.lessonId) {
-       alert("Vui lòng chọn bài học gắn kèm!");
+       toast.error("Vui lòng chọn bài học gắn kèm!");
        return;
     }
     setIsSaving(true);
@@ -140,13 +142,14 @@ export default function VocabularyManager() {
         : await adminService.createVocabulary(currentVocab) as any;
       
       if (res.isSuccess) {
+        toast.success(currentVocab.id ? 'Cập nhật từ vựng thành công' : 'Thêm từ vựng mới thành công');
         setIsEditModalOpen(false);
         fetchData();
       } else {
-        alert(res.message);
+        toast.error(res.message || 'Có lỗi xảy ra khi lưu từ vựng');
       }
-    } catch (err) {
-      alert("Lỗi: " + err);
+    } catch (err: any) {
+      toast.error("Lỗi: " + err.message);
     } finally {
       setIsSaving(false);
     }
@@ -155,10 +158,15 @@ export default function VocabularyManager() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Xóa từ vựng này?")) return;
     try {
-      await adminService.deleteVocabulary(id);
-      fetchData();
-    } catch (err) {
-      alert("Lỗi khi xóa");
+      const res = await adminService.deleteVocabulary(id);
+      if (res.isSuccess) {
+        toast.success('Xóa từ vựng thành công');
+        fetchData();
+      } else {
+        toast.error(res.message || 'Không thể xóa từ vựng này');
+      }
+    } catch (err: any) {
+      toast.error("Lỗi khi xóa: " + err.message);
     }
   };
 
@@ -212,8 +220,8 @@ export default function VocabularyManager() {
            
            <div className="flex items-center gap-2 min-w-[200px]">
               <Layers className="w-4 h-4 text-brand-secondary shrink-0" />
-              <select 
-                className="w-full h-12 bg-brand-highlight/30 border-none rounded-xl px-4 font-bold text-xs text-brand-ink outline-none cursor-pointer hover:bg-brand-highlight/50 transition-colors"
+              <FormSelect 
+                className="h-12 border-none bg-brand-highlight/30"
                 value={selectedCategoryId}
                 onChange={e => setSelectedCategoryId(Number(e.target.value))}
               >
@@ -223,13 +231,13 @@ export default function VocabularyManager() {
                   const name = c.name || c.Name;
                   return <option key={id} value={id}>{name}</option>;
                 })}
-              </select>
+              </FormSelect>
            </div>
 
            <div className="flex items-center gap-2 min-w-[200px]">
               <BookMarked className="w-4 h-4 text-brand-secondary shrink-0" />
-              <select 
-                className="w-full h-12 bg-brand-highlight/30 border-none rounded-xl px-4 font-bold text-xs text-brand-ink outline-none cursor-pointer hover:bg-brand-highlight/50 transition-colors"
+              <FormSelect 
+                className="h-12 border-none bg-brand-highlight/30"
                 value={selectedLessonId}
                 onChange={e => setSelectedLessonId(e.target.value)}
                 disabled={selectedCategoryId === 0}
@@ -240,7 +248,7 @@ export default function VocabularyManager() {
                   const title = l.title || l.Title || l.translation || l.Translation;
                   return <option key={id} value={id}>{title}</option>;
                 })}
-              </select>
+              </FormSelect>
            </div>
 
            <div className="flex items-center gap-2 border-l border-brand-border pl-4">
@@ -539,9 +547,9 @@ export default function VocabularyManager() {
                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Đích đến (Bài học) *</label>
                          <div className="relative">
                             <BookMarked className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-primary z-10" />
-                            <select 
-                                className="w-full h-12 pl-12 pr-4 bg-brand-highlight/20 border-2 border-brand-border rounded-xl font-bold text-xs text-brand-ink outline-none focus:border-brand-primary transition-all appearance-none"
-                                value={currentVocab.lessonId}
+                            <FormSelect 
+                                className="w-full h-12 pl-12 pr-4 bg-brand-highlight/20 border-2 border-brand-border rounded-xl font-bold"
+                                value={currentVocab.lessonId || ''}
                                 onChange={e => setCurrentVocab({...currentVocab, lessonId: e.target.value})}
                                 required
                             >
@@ -549,7 +557,7 @@ export default function VocabularyManager() {
                                 {flatLessons.map(l => (
                                    <option key={l.id} value={l.id}>{l.title} ({l.level})</option>
                                 ))}
-                            </select>
+                            </FormSelect>
                          </div>
                       </div>
                    </div>

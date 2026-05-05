@@ -54,5 +54,13 @@ namespace HanLexicon.Api.Controllers.Admin
             var result = await _mediator.Send(command);
             return Ok(ApiResponse<object>.Success(result));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] CommandCreateUser command)
+        {
+            var result = await _mediator.Send(command);
+            if (!result.IsSuccess) return BadRequest(ApiResponse<object>.Failure((IEnumerable<string>?)null, result.Message));
+            return Ok(ApiResponse<object>.Success(null, result.Message));
+        }
     }
 }

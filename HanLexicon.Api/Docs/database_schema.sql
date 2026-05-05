@@ -121,6 +121,14 @@ CREATE TABLE media_files (
     CONSTRAINT media_files_uploaded_by_fkey FOREIGN KEY (uploaded_by) REFERENCES users (id)
 );
 
+CREATE TABLE media_folders (
+    id uuid NOT NULL DEFAULT (uuid_generate_v4()),
+    name character varying(100) NOT NULL,
+    description text,
+    created_at timestamp with time zone NOT NULL DEFAULT (now()),
+    CONSTRAINT media_folders_pkey PRIMARY KEY (id)
+);
+
 CREATE TABLE user_roles (
     user_id uuid NOT NULL,
     role_id smallint NOT NULL,

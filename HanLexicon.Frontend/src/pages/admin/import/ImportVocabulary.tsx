@@ -5,6 +5,7 @@ import { Upload, FileSpreadsheet, CheckCircle2, RefreshCw, XCircle, BookOpen, In
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { adminService, learningService, LessonFlat } from '@/src/services/api';
+import { FormSelect } from '@/src/components/ui/FormSelect';
 
 interface Props {
   onImportStarted: (jobId: string) => void;
@@ -34,7 +35,7 @@ export default function ImportVocabulary({ onImportStarted }: Props) {
         const data = res.data || res || [];
         setCategories(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("Failed to fetch categories", err);
+        logger.error("Failed to fetch categories", err);
         setCategories([]);
       } finally {
         setIsLoadingCategories(false);
@@ -102,8 +103,8 @@ export default function ImportVocabulary({ onImportStarted }: Props) {
                     <Layers className="w-4 h-4 text-brand-primary" />
                     DANH MỤC
                   </label>
-                  <select 
-                    className="w-full h-14 bg-brand-highlight/30 border-2 border-brand-border rounded-2xl px-4 text-brand-ink focus:outline-none focus:border-brand-primary transition-colors font-medium appearance-none"
+                  <FormSelect 
+                    className="h-14 border-2 border-brand-border bg-brand-highlight/30"
                     value={selectedCategoryId}
                     onChange={(e) => setSelectedCategoryId(e.target.value)}
                     disabled={isLoadingCategories}
@@ -112,7 +113,7 @@ export default function ImportVocabulary({ onImportStarted }: Props) {
                     {categories.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
-                  </select>
+                  </FormSelect>
                 </div>
 
                 <div className="space-y-3">
@@ -120,8 +121,8 @@ export default function ImportVocabulary({ onImportStarted }: Props) {
                     <BookOpen className="w-4 h-4 text-brand-primary" />
                     BÀI HỌC ĐÍCH
                   </label>
-                  <select 
-                    className="w-full h-14 bg-brand-highlight/30 border-2 border-brand-border rounded-2xl px-4 text-brand-ink focus:outline-none focus:border-brand-primary transition-colors font-medium appearance-none"
+                  <FormSelect 
+                    className="h-14 border-2 border-brand-border bg-brand-highlight/30"
                     value={selectedLessonId}
                     onChange={(e) => setSelectedLessonId(e.target.value)}
                     disabled={isLoadingLessons || !selectedCategoryId}
@@ -132,7 +133,7 @@ export default function ImportVocabulary({ onImportStarted }: Props) {
                         {lesson.title} {lesson.titleVn ? `/ ${lesson.titleVn}` : ""}
                       </option>
                     ))}
-                  </select>
+                  </FormSelect>
                 </div>
               </div>
               <p className="text-xs text-brand-secondary italic px-1">
@@ -220,3 +221,4 @@ export default function ImportVocabulary({ onImportStarted }: Props) {
     </Card>
   );
 }
+

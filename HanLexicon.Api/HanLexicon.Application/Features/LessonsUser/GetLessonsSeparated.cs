@@ -1,6 +1,7 @@
 using HanLexicon.Domain.Entities;
 using HanLexicon.Application.DTOs.gamesData;
 using HanLexicon.Domain.Interfaces;
+using Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -48,10 +49,17 @@ namespace HanLexicon.Application.Features.LessonsUser
     public class GetLessonsByCategoryHandler : IRequestHandler<QueryGetLessonsByCategory, List<GameItemDto>>
     {
         private readonly IUnitOfWork _uow;
-        public GetLessonsByCategoryHandler(IUnitOfWork uow) => _uow = uow;
+        private readonly ICurrentUserService _currentUser;
+        public GetLessonsByCategoryHandler(IUnitOfWork uow, ICurrentUserService currentUser)
+        {
+            _uow = uow;
+            _currentUser = currentUser;
+        }
 
         public async Task<List<GameItemDto>> Handle(QueryGetLessonsByCategory request, CancellationToken cancellationToken)
         {
+            var userId = _currentUser.UserId;
+
             return await _uow.Repository<Lesson>()
                 .Query()
                 .AsNoTracking()
@@ -63,7 +71,19 @@ namespace HanLexicon.Application.Features.LessonsUser
                     Title = x.TitleCn,
                     Translation = x.TitleVn,
                     Desc = x.Description,
-                    Link = x.Filename
+                    Link = x.Filename,
+                    Score = x.UserProgresses
+                        .Where(up => up.UserId == userId)
+                        .Select(up => (short?)up.Score)
+                        .FirstOrDefault(),
+                    StudyIndex = x.UserStudyProgresses
+                        .Where(usp => usp.UserId == userId)
+                        .Select(usp => (int?)usp.CurrentIndex)
+                        .FirstOrDefault(),
+                    IsStudied = x.UserStudyProgresses
+                        .Any(usp => usp.UserId == userId),
+                    IsStudyCompleted = x.UserStudyProgresses
+                        .Any(usp => usp.UserId == userId && usp.IsCompleted)
                 })
                 .ToListAsync(cancellationToken);
         }

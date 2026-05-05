@@ -27,6 +27,8 @@ public partial class HanLexiconDbContext : DbContext
 
     public virtual DbSet<MediaFile> MediaFiles { get; set; }
 
+    public virtual DbSet<MediaFolder> MediaFolders { get; set; }
+
     public virtual DbSet<Permission> Permissions { get; set; }
 
     public virtual DbSet<QuizOption> QuizOptions { get; set; }
@@ -46,6 +48,8 @@ public partial class HanLexiconDbContext : DbContext
     public virtual DbSet<ReviewHistory> ReviewHistories { get; set; }
 
     public virtual DbSet<UserProgress> UserProgresses { get; set; }
+
+    public virtual DbSet<UserStudyProgress> UserStudyProgresses { get; set; }
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
@@ -318,6 +322,16 @@ public partial class HanLexiconDbContext : DbContext
                 .HasConstraintName("media_files_uploaded_by_fkey");
         });
 
+        modelBuilder.Entity<MediaFolder>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("media_folders_pkey");
+            entity.ToTable("media_folders");
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()").HasColumnName("id");
+            entity.Property(e => e.Name).HasMaxLength(100).HasColumnName("name");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+        });
+
         modelBuilder.Entity<Permission>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("permissions_pkey");
@@ -583,7 +597,6 @@ public partial class HanLexiconDbContext : DbContext
             entity.Property(e => e.LessonId).HasColumnName("lesson_id");
             entity.Property(e => e.Score).HasColumnName("score");
             entity.Property(e => e.TimeSpentS).HasColumnName("time_spent_s");
-            entity.Property(e => e.CurrentIndex).HasColumnName("current_index");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Lesson).WithMany(p => p.UserProgresses)
@@ -593,6 +606,28 @@ public partial class HanLexiconDbContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UserProgresses)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("user_progress_user_id_fkey");
+        });
+
+        modelBuilder.Entity<UserStudyProgress>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("user_study_progress_pkey");
+            entity.ToTable("user_study_progress");
+            entity.HasIndex(e => new { e.UserId, e.LessonId }, "user_study_progress_user_id_lesson_id_key").IsUnique();
+            entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()").HasColumnName("id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.LessonId).HasColumnName("lesson_id");
+            entity.Property(e => e.CurrentIndex).HasDefaultValue(0).HasColumnName("current_index");
+            entity.Property(e => e.IsCompleted).HasDefaultValue(false).HasColumnName("is_completed");
+            entity.Property(e => e.LastStudiedAt).HasDefaultValueSql("now()").HasColumnName("last_studied_at");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()").HasColumnName("created_at");
+
+            entity.HasOne(d => d.Lesson).WithMany(p => p.UserStudyProgresses)
+                .HasForeignKey(d => d.LessonId)
+                .HasConstraintName("user_study_progress_lesson_id_fkey");
+
+            entity.HasOne(d => d.User).WithMany()
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("user_study_progress_user_id_fkey");
         });
 
         modelBuilder.Entity<UserRole>(entity =>

@@ -4,10 +4,14 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
-  BookMarked, Plus, Edit3, Trash2, RefreshCw, X, Save, Filter, Search, Type, HelpCircle, Trophy
+  BookMarked, Plus, Edit3, Trash2, RefreshCw, X, Save, Filter, Search, Type, HelpCircle, Trophy,
+  ArrowRight, History, Layers
 } from 'lucide-react';
 import { adminService, Category } from '@/src/services/api';
+import { FormSelect } from '@/src/components/ui/FormSelect';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 
 export default function LessonManager() {
   const navigate = useNavigate();
@@ -26,7 +30,7 @@ export default function LessonManager() {
       const res = await adminService.adminGetCategories();
       const data = res.data || res || [];
       setCategories(Array.isArray(data) ? data : []);
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error('Lỗi tải bộ lọc bài học', e); }
   };
 
   const fetchData = async () => {
@@ -36,7 +40,7 @@ export default function LessonManager() {
       const data = res.data || res || [];
       setLessons(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error(error);
+      console.error('Lỗi tải danh sách bài học', error);
     } finally {
       setLoading(false);
     }
@@ -63,7 +67,6 @@ export default function LessonManager() {
   };
 
   const handleOpenEdit = (lesson: any) => {
-    // Chuẩn hóa dữ liệu từ Backend (hỗ trợ cả PascalCase)
     setCurrentLesson({
       id: lesson.id || lesson.Id,
       titleCn: lesson.titleCn || lesson.TitleCn || '',
@@ -81,8 +84,6 @@ export default function LessonManager() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate & gán mặc định cho filename nếu trống
     const dataToSave = { ...currentLesson };
     if (!dataToSave.filename) {
        dataToSave.filename = dataToSave.titleCn.toLowerCase().replace(/\s+/g, '-') + '.html';
@@ -95,13 +96,14 @@ export default function LessonManager() {
         : await adminService.adminCreateLesson(dataToSave);
       
       if (res.isSuccess) {
+        toast.success(dataToSave.id ? 'Cập nhật bài học thành công' : 'Thêm bài học mới thành công');
         setIsEditModalOpen(false);
         fetchData();
       } else {
-        alert(res.message || "Lỗi khi lưu bài học");
+        toast.error(res.message || "Lỗi khi lưu bài học");
       }
     } catch (error: any) {
-      alert("Lỗi kết nối: " + error);
+      toast.error("Lỗi kết nối: " + error.message);
     } finally {
       setIsSaving(false);
     }
@@ -112,44 +114,59 @@ export default function LessonManager() {
     try {
       const res = await adminService.adminDeleteLesson(id);
       if (res.isSuccess) {
+        toast.success('Xóa bài học thành công');
         fetchData();
       } else {
-        alert(res.message || "Không thể xóa bài học này.");
+        toast.error(res.message || "Không thể xóa bài học này.");
       }
     } catch (error: any) {
-      alert("Lỗi: " + error.toString());
+      toast.error("Lỗi khi xóa: " + error.message);
     }
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-10">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="flex flex-col h-[calc(100vh-100px)] gap-6 animate-in fade-in duration-500 relative">
+      {/* Top Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 shrink-0">
         <div>
           <h1 className="text-3xl font-black text-brand-ink tracking-tight uppercase italic flex items-center gap-3 font-heading">
              <BookMarked className="w-8 h-8 text-brand-primary" />
              Quản lý Bài học
           </h1>
-          <p className="text-brand-secondary font-medium">Quản lý nội dung chi tiết của từng bài học</p>
+          <div className="flex items-center gap-2 mt-1">
+             <Badge variant="secondary" className="bg-brand-primary/10 text-brand-primary font-black border-none px-3 py-1">
+                {lessons.length} BÀI HỌC
+             </Badge>
+             <p className="text-brand-secondary text-xs font-bold uppercase tracking-widest opacity-60">Lesson Master Index</p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
-          <Button onClick={fetchData} variant="ghost" className="h-12 w-12 p-0 rounded-2xl hover:bg-brand-highlight">
+          <Button onClick={fetchData} variant="outline" className="h-12 w-12 p-0 rounded-2xl border-brand-border hover:bg-brand-highlight transition-all hover:scale-105 active:scale-95">
             <RefreshCw className={cn("w-5 h-5", loading && "animate-spin text-brand-primary")} />
           </Button>
-          <Button onClick={handleOpenAdd} className="h-12 px-8 rounded-2xl bg-brand-primary text-white font-black shadow-lg gap-2">
+          <Button onClick={handleOpenAdd} className="h-12 px-8 rounded-2xl bg-brand-primary text-white font-black shadow-lg shadow-brand-primary/20 gap-2 transition-all hover:scale-105 active:scale-95">
             <Plus className="w-5 h-5" /> Thêm bài học
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-1 p-6 border-brand-border bg-white rounded-[2rem] shadow-sm">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-brand-primary" />
-              <span className="text-xs font-black uppercase tracking-widest text-brand-secondary">Theo danh mục</span>
-            </div>
-            <select 
-              className="w-full h-12 px-4 bg-brand-highlight/30 border-none rounded-xl font-bold text-brand-ink outline-none cursor-pointer"
+      {/* Filters Bar */}
+      <Card className="p-4 border-brand-border bg-white rounded-[1.5rem] shadow-sm shrink-0">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="relative group flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-brand-primary transition-colors" />
+            <input
+              type="text" placeholder="Tìm kiếm bài học theo tên..."
+              className="w-full h-12 pl-12 pr-4 bg-brand-highlight/20 border-2 border-transparent focus:border-brand-primary focus:bg-white rounded-xl font-bold text-sm outline-none transition-all"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="flex items-center gap-2 min-w-[250px]">
+            <Layers className="w-4 h-4 text-brand-secondary shrink-0" />
+            <FormSelect 
+              className="h-12 border-none bg-brand-highlight/30"
               value={selectedCategoryId}
               onChange={(e) => setSelectedCategoryId(Number(e.target.value))}
             >
@@ -157,77 +174,95 @@ export default function LessonManager() {
               {categories.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
-            </select>
+            </FormSelect>
           </div>
-        </Card>
+        </div>
+      </Card>
 
-        <Card className="md:col-span-2 p-6 border-brand-border bg-white rounded-[2rem] shadow-sm">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <Search className="w-4 h-4 text-brand-primary" />
-              <span className="text-xs font-black uppercase tracking-widest text-brand-secondary">Tìm kiếm bài học</span>
-            </div>
-            <Input 
-              placeholder="Nhập tiêu đề tiếng Trung hoặc tiếng Việt..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-12 bg-brand-highlight/30 border-none rounded-xl font-bold text-brand-ink focus-visible:ring-brand-primary"
-            />
-          </div>
-        </Card>
-      </div>
-
-      <Card className="border border-brand-border bg-white rounded-[2.5rem] shadow-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-brand-highlight/30 border-b border-brand-border text-[10px] font-black uppercase tracking-widest text-brand-secondary">
-                <th className="p-6">Thứ tự</th>
-                <th className="p-6">Tiêu đề (Trung/Việt)</th>
-                <th className="p-6">Nội dung</th>
-                <th className="p-6 text-right">Thao tác</th>
+      {/* Main Table Content */}
+      <Card className="flex-1 border border-brand-border bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col min-h-0">
+        <div className="flex-1 overflow-y-auto custom-scrollbar relative">
+          <table className="w-full text-left border-collapse table-fixed">
+            <thead className="sticky top-0 z-10 bg-brand-highlight/95 backdrop-blur-md shadow-sm">
+              <tr className="border-b border-brand-border text-[10px] font-black uppercase tracking-widest text-brand-secondary">
+                <th className="p-6 w-1/3">Tiêu đề (Trung/Việt)</th>
+                <th className="p-6 w-1/4">Quản lý nội dung</th>
+                <th className="p-6 w-1/4">Hệ thống</th>
+                <th className="p-6 w-32 text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-border">
               {loading && lessons.length === 0 ? (
                 <tr><td colSpan={4} className="p-20 text-center"><RefreshCw className="w-10 h-10 animate-spin mx-auto text-brand-primary opacity-20" /></td></tr>
               ) : filteredLessons.length === 0 ? (
-                <tr><td colSpan={4} className="p-20 text-center font-bold text-brand-secondary italic">Không tìm thấy bài học nào.</td></tr>
+                <tr>
+                  <td colSpan={4} className="p-20 text-center">
+                    <div className="max-w-xs mx-auto space-y-4">
+                      <div className="w-20 h-20 bg-brand-highlight rounded-full flex items-center justify-center mx-auto">
+                        <Filter className="w-10 h-10 text-slate-300" />
+                      </div>
+                      <p className="font-black text-brand-ink uppercase italic">No lessons found</p>
+                    </div>
+                  </td>
+                </tr>
               ) : filteredLessons.map((l) => (
-                <tr key={l.id} className="hover:bg-brand-highlight/5 transition-colors group">
-                  <td className="p-6 font-black text-brand-primary italic">{l.sortOrder}</td>
+                <tr key={l.id} className="hover:bg-brand-highlight/5 transition-all group border-b border-brand-border">
                   <td className="p-6">
-                    <div className="space-y-0.5">
-                      <p className="font-bold text-lg text-brand-ink">{l.titleCn}</p>
-                      <p className="text-sm text-brand-secondary italic">{l.titleVn}</p>
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-brand-ink text-white flex items-center justify-center shrink-0 text-xs font-black italic shadow-lg shadow-brand-ink/20">
+                        #{l.sortOrder}
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-black text-3xl text-brand-ink leading-tight">{l.titleCn}</p>
+                        <p className="text-sm font-bold text-brand-secondary italic opacity-60">{l.titleVn}</p>
+                      </div>
                     </div>
                   </td>
                   <td className="p-6">
-                    <div className="flex gap-2">
-                       <Button 
+                    <div className="flex flex-wrap gap-2">
+                       <button 
                         onClick={() => navigate(`/admin/lessons/${l.id}/hanzi`)}
-                        variant="outline" size="sm" className="rounded-xl border-brand-border text-[10px] font-black uppercase gap-1.5 hover:bg-brand-highlight"
+                        className="h-9 px-3 rounded-xl bg-brand-highlight/80 text-brand-primary text-[10px] font-black uppercase flex items-center gap-1.5 hover:bg-brand-primary hover:text-white transition-all shadow-sm"
                        >
-                          <Type className="w-3 h-3 text-brand-primary" /> Hanzi
-                       </Button>
-                       <Button 
+                          <Type className="w-3.5 h-3.5" /> Hanzi
+                       </button>
+                       <button 
                         onClick={() => navigate(`/admin/lessons/${l.id}/quizzes`)}
-                        variant="outline" size="sm" className="rounded-xl border-brand-border text-[10px] font-black uppercase gap-1.5 hover:bg-brand-highlight"
+                        className="h-9 px-3 rounded-xl bg-brand-highlight/80 text-brand-primary text-[10px] font-black uppercase flex items-center gap-1.5 hover:bg-brand-primary hover:text-white transition-all shadow-sm"
                        >
-                          <HelpCircle className="w-3 h-3 text-brand-primary" /> Quiz
-                       </Button>
-                       <Button 
+                          <HelpCircle className="w-3.5 h-3.5" /> Quiz
+                       </button>
+                       <button 
                         onClick={() => navigate(`/admin/lessons/${l.id}/challenge`)}
-                        variant="outline" size="sm" className="rounded-xl border-brand-border text-[10px] font-black uppercase gap-1.5 hover:bg-brand-highlight"
+                        className="h-9 px-3 rounded-xl bg-brand-highlight/80 text-brand-primary text-[10px] font-black uppercase flex items-center gap-1.5 hover:bg-brand-primary hover:text-white transition-all shadow-sm"
                        >
-                          <Trophy className="w-3 h-3 text-brand-primary" /> Challenge
-                       </Button>
+                          <Trophy className="w-3.5 h-3.5" /> Challenge
+                       </button>
+                    </div>
+                  </td>
+                  <td className="p-6">
+                    <div className="flex flex-col gap-1.5 opacity-40">
+                       <div className="flex items-center gap-1.5">
+                          <History className="w-3 h-3" />
+                          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">ID: {l.id?.substring(0,8)}...</p>
+                       </div>
+                       <p className="text-[9px] font-black text-slate-400 truncate max-w-[150px]">{l.filename}</p>
                     </div>
                   </td>
                   <td className="p-6 text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button onClick={() => handleOpenEdit(l)} variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-brand-highlight/50 text-brand-primary hover:bg-brand-primary hover:text-white transition-all"><Edit3 className="w-4 h-4" /></Button>
-                      <Button onClick={() => handleDelete(l.id)} variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all"><Trash2 className="w-4 h-4" /></Button>
+                    <div className="flex justify-end gap-1.5">
+                      <button 
+                        onClick={() => handleOpenEdit(l)} 
+                        className="h-9 w-9 rounded-xl flex items-center justify-center bg-brand-highlight/80 text-brand-primary hover:bg-brand-primary hover:text-white transition-all"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(l.id)} 
+                        className="h-9 w-9 rounded-xl flex items-center justify-center bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -236,6 +271,29 @@ export default function LessonManager() {
           </table>
         </div>
       </Card>
+
+      {/* STICKY STATUS BAR */}
+      <div className="sticky bottom-0 z-20 shrink-0 bg-white/80 backdrop-blur-xl border border-brand-border p-4 rounded-3xl shadow-2xl flex items-center justify-between animate-in slide-in-from-bottom-4 duration-500">
+          <div className="flex items-center gap-6">
+             <div className="flex flex-col">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hệ thống</p>
+                <p className="text-sm font-black text-brand-ink tracking-tight italic">
+                  Tổng cộng {lessons.length} <span className="text-[10px] opacity-40 uppercase ml-1">Bài học</span>
+                </p>
+             </div>
+             <div className="h-8 w-px bg-brand-border mx-2" />
+             <div className="flex flex-col">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Trạng thái</p>
+                <div className="flex items-center gap-2">
+                   <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                   <p className="text-xs font-bold text-brand-ink uppercase tracking-tighter italic">Live Lessons Stream</p>
+                </div>
+             </div>
+          </div>
+          <p className="text-[10px] font-black text-brand-secondary uppercase tracking-[0.2em] opacity-40">
+             Admin Dashboard <ArrowRight className="inline w-3 h-3 mx-1" /> Lessons
+          </p>
+      </div>
 
       {/* Edit Modal */}
       {isEditModalOpen && currentLesson && (
@@ -260,16 +318,17 @@ export default function LessonManager() {
 
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Danh mục cấp độ *</label>
-                <select 
-                  className="w-full h-14 px-4 bg-brand-highlight/30 border-2 border-brand-highlight rounded-2xl font-bold text-brand-ink outline-none"
-                  value={currentLesson.categoryId}
+                <FormSelect 
+                  className="w-full h-14 bg-brand-highlight/30 border-2 border-brand-highlight rounded-2xl font-bold"
+                  value={currentLesson.categoryId || ''}
                   onChange={e => setCurrentLesson({ ...currentLesson, categoryId: Number(e.target.value) })}
                   required
                 >
-                  {categories.map(cat => (
+                  <option value="">-- Chọn danh mục --</option>
+                  {categories.map((cat: any) => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
-                </select>
+                </FormSelect>
               </div>
 
               <div className="space-y-1">

@@ -1,3 +1,5 @@
+import { logger } from '@/src/utils/logger';
+
 export const playAudio = (text: string) => {
   if ('speechSynthesis' in window) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -5,6 +7,6 @@ export const playAudio = (text: string) => {
     utterance.rate = 0.8; // Slightly slower for language learners
     window.speechSynthesis.speak(utterance);
   } else {
-    console.warn("Speech synthesis not supported in this browser.");
+    logger.warn("Speech synthesis not supported in this browser.");
   }
 };

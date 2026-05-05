@@ -15,5 +15,8 @@ namespace HanLexicon.Application.DTOs.gamesData
         public string? Desc { get; set; }        // Map t?: lessons.description
         public string? Badge { get; set; }       // Map t?: lessons.badge (C th? null)
         public short? Score { get; set; }        // Điểm số gần nhất/cao nhất của người dùng
-        }
+        public int? StudyIndex { get; set; }     // Vị trí thẻ đang học dở
+        public bool IsStudied { get; set; }      // Đã từng vào học hay chưa
+        public bool IsStudyCompleted { get; set; } // Đã xem hết toàn bộ nội dung học
+    }
 }

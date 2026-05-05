@@ -9,7 +9,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureMinio(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
+        services.Configure<MinioSettings>(configuration.GetSection("Minio"));
         services.AddScoped<IStorageService, MinioStorageService>();
         return services;
     }

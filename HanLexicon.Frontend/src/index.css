@@ -1,18 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-primary: #228040;
-  --color-brand-secondary: #175e2e;
-  --color-brand-primary-light: #05aa48;
-  --color-brand-accent: #f17407;
-  --color-brand-accent-light: #ff9400;
-  --color-brand-accent-dark: #e23300;
-  --color-brand-cyan: #a8f2eb;
-  --color-brand-bg: #FAF9F6;
-  --color-brand-surface: #F4F2EE;
-  --color-brand-border: #E5E1DA;
-  --color-brand-highlight: #e9f6ef;
-  --color-brand-ink: #2C3333;
+  /* Strict Brand Palette */
+  --color-brand-50: #fef4f2;
+  --color-brand-100: #ffe6e1;
+  --color-brand-200: #ffd3c9;
+  --color-brand-300: #feb3a3;
+  --color-brand-400: #fc876d;
+  --color-brand-500: #f45f3f;
+  --color-brand-600: #e24a29;
+  --color-brand-700: #bd3518;
+  --color-brand-800: #9c3018;
+  --color-brand-900: #822d1a;
+  --color-brand-950: #471308;
+
+  /* Semantic Mappings using only the palette above */
+  --color-brand-primary: var(--color-brand-600);
+  --color-brand-secondary: var(--color-brand-800);
+  --color-brand-primary-light: var(--color-brand-400);
+  --color-brand-accent: var(--color-brand-500);
+  --color-brand-bg: var(--color-brand-50);
+  --color-brand-surface: var(--color-brand-100);
+  --color-brand-border: var(--color-brand-200);
+  --color-brand-highlight: var(--color-brand-100);
+  --color-brand-ink: var(--color-brand-950);
 
   --radius-xl: 0.75rem;
   --radius-2xl: 1rem;
@@ -22,6 +33,33 @@
 @layer base {
   body {
     @apply bg-brand-bg text-brand-ink;
+  }
+}
+
+.theme-app {
+  --primary: var(--color-brand-600);
+  --primary-foreground: #FFFFFF;
+  --secondary: var(--color-brand-100);
+  --secondary-foreground: var(--color-brand-800);
+  --muted: var(--color-brand-100);
+  --ring: var(--color-brand-600);
+  --radius: 1rem;
+}
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #E5E1DA;
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #B3361B;
   }
 }
 @import "tw-animate-css";

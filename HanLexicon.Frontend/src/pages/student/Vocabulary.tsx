@@ -8,6 +8,7 @@ import {
 import { dictionaryService, learningService, Vocabulary } from '@/src/services/api';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
+import { logger } from '@/src/utils/logger';
 
 export default function VocabularyPage() {
   const [words, setWords] = useState<Vocabulary[]>([]);
@@ -28,7 +29,7 @@ export default function VocabularyPage() {
       const res = await learningService.getCategories();
       const data = res.data || res || [];
       if (Array.isArray(data)) setCategories(data);
-    } catch (e) { console.error(e); }
+    } catch (e) { logger.error("Lỗi tải bộ lọc từ điển", e); }
   };
 
   const fetchData = async () => {

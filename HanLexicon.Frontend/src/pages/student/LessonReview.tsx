@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { learningService, Vocabulary } from '@/src/services/api';
 import { cn } from '@/lib/utils';
+import { logger } from '@/src/utils/logger';
 
 export default function LessonReview() {
   const { id } = useParams<{ id: string }>();
@@ -41,10 +42,10 @@ export default function LessonReview() {
           // Tự động khôi phục vị trí ôn tập (nếu chưa hoàn thành)
           if (data.currentIndex > 0 && data.currentIndex < data.vocabularies.length) {
             setCurrentIndex(data.currentIndex);
-            console.log("Khôi phục vị trí ôn tập:", data.currentIndex);
+            logger.log("Khôi phục vị trí ôn tập:", data.currentIndex);
           }
         }
-      } catch (e) { console.error(e); }
+      } catch (e) { logger.error("Lỗi tải dữ liệu ôn tập", e); }
       finally { setLoading(false); }
     };
     fetchData();

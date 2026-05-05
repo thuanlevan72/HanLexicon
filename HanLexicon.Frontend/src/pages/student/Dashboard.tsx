@@ -10,6 +10,7 @@ import {
 import { learningService, userService, Category } from '@/src/services/api';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { logger } from '@/src/utils/logger';
 
 export default function StudentDashboard() {
   const { user } = useAuth();

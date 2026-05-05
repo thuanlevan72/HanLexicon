@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
-  BookOpen, ChevronRight, Play, CheckCircle2, Sparkles, BookMarked
+  BookOpen, ChevronRight, Play, CheckCircle2, Sparkles, BookMarked, RefreshCw
 } from 'lucide-react';
 import { learningService, Category } from '@/src/services/api';
 import { cn } from '@/lib/utils';
@@ -63,7 +63,13 @@ export default function LearningPath() {
                       <div className="p-8 flex-1 space-y-5">
                          <div className="flex justify-between items-start">
                             <div className="w-12 h-12 bg-brand-highlight rounded-2xl flex items-center justify-center font-black text-brand-primary text-lg border-2 border-brand-border shadow-sm">{idx + 1}</div>
-                            <Badge variant="outline" className="rounded-full bg-emerald-50 text-emerald-600 border-emerald-100 font-black italic text-[10px] uppercase">New Lesson</Badge>
+                            {lesson.isStudyCompleted ? (
+                               <Badge className="bg-emerald-500 text-white font-black italic text-[9px] uppercase px-2 py-0.5 border-0 shadow-sm">Đã học xong</Badge>
+                            ) : lesson.isStudied ? (
+                               <Badge className="bg-brand-primary text-white font-black italic text-[9px] uppercase px-2 py-0.5 border-0 shadow-sm animate-pulse">Tiếp tục học</Badge>
+                            ) : (
+                               <Badge variant="outline" className="rounded-full bg-slate-50 text-slate-400 border-slate-200 font-black italic text-[9px] uppercase px-2 py-0.5">Chưa học</Badge>
+                            )}
                          </div>
                          <div>
                             <h3 className="text-3xl font-black text-brand-ink leading-tight mb-1">{lesson.title}</h3>
@@ -72,9 +78,19 @@ export default function LearningPath() {
                          <p className="text-sm text-slate-500 font-medium line-clamp-2 leading-relaxed">{lesson.desc}</p>
                       </div>
                       <div className="p-6 pt-0">
-                         <Button onClick={() => navigate(`/student/lessons/${lesson.id}`)} className="w-full h-14 rounded-2xl bg-brand-primary text-white font-black uppercase text-xs tracking-widest gap-2 shadow-lg shadow-brand-primary/20">
-                            <Play className="w-4 h-4 fill-current" /> Bắt đầu học ngay
-                         </Button>
+                         {lesson.isStudyCompleted ? (
+                            <Button onClick={() => navigate(`/student/lessons/${lesson.id}`)} variant="outline" className="w-full h-14 rounded-2xl border-2 border-brand-border text-brand-secondary font-black uppercase text-xs tracking-widest gap-2 hover:bg-brand-highlight transition-all">
+                               <RefreshCw className="w-4 h-4 text-brand-primary" /> Học lại
+                            </Button>
+                         ) : lesson.isStudied ? (
+                            <Button onClick={() => navigate(`/student/lessons/${lesson.id}`)} className="w-full h-14 rounded-2xl bg-brand-ink text-white font-black uppercase text-xs tracking-widest gap-2 shadow-lg hover:scale-[1.02] transition-transform">
+                               <Play className="w-4 h-4 fill-current text-brand-primary" /> Tiếp tục học
+                            </Button>
+                         ) : (
+                            <Button onClick={() => navigate(`/student/lessons/${lesson.id}`)} className="w-full h-14 rounded-2xl bg-brand-primary text-white font-black uppercase text-xs tracking-widest gap-2 shadow-lg shadow-brand-primary/20 hover:scale-[1.02] transition-transform">
+                               <BookOpen className="w-4 h-4 fill-current" /> Học bài này
+                            </Button>
+                         )}
                       </div>
                    </Card>
                 ))}

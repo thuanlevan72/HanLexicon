@@ -73,7 +73,7 @@ export default function ImportJobTracker({ activeJobIds, onJobFinished }: Props)
                   "bg-amber-50 text-amber-600"
                 )}>
                   {job.status === 'Processing' && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
-                  {job.status}
+                  {job.status === 'Completed' ? 'Hoàn thành' : job.status === 'Failed' ? 'Thất bại' : 'Đang xử lý'}
                 </div>
               </div>
 

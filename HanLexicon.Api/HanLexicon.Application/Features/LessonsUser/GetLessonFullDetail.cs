@@ -54,14 +54,14 @@ namespace HanLexicon.Application.Features.LessonsUser
 
             if (lesson == null) throw new Exception("Lesson not found");
 
-            // Lấy tiến độ hiện tại của người dùng
+            // Lấy tiến độ hiện tại của người dùng (Từ bảng Study mới)
             int savedIndex = 0;
             if (_currentUserService.UserId != Guid.Empty)
             {
-                var progress = await _uow.Repository<UserProgress>().Query()
+                var study = await _uow.Repository<UserStudyProgress>().Query()
                     .AsNoTracking()
                     .FirstOrDefaultAsync(p => p.UserId == _currentUserService.UserId && p.LessonId == request.LessonId, cancellationToken);
-                if (progress != null) savedIndex = progress.CurrentIndex;
+                if (study != null) savedIndex = study.CurrentIndex;
             }
 
             var vocabularies = await _uow.Repository<Vocabulary>().Query()

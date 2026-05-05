@@ -17,7 +17,11 @@ public class CurrentUserService : ICurrentUserService
     {
         get
         {
-            var userIdStr = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = _httpContextAccessor.HttpContext?.User;
+            var userIdStr = user?.FindFirstValue(ClaimTypes.NameIdentifier) 
+                         ?? user?.FindFirstValue("sub")
+                         ?? user?.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+            
             return string.IsNullOrEmpty(userIdStr) ? Guid.Empty : Guid.Parse(userIdStr);
         }
     }

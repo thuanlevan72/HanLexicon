@@ -2,6 +2,7 @@ using HanLexicon.Domain.Entities;
 using HanLexicon.Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System;
 using System.Linq;
 using System.Threading;
@@ -28,61 +29,83 @@ namespace HanLexicon.Application.Features.LessonsUser
 
         public async Task<bool> Handle(SaveUserProgressCommand request, CancellationToken cancellationToken)
         {
-            var repo = _uow.Repository<UserProgress>();
-            var progress = await repo.Query()
-                .FirstOrDefaultAsync(x => x.UserId == request.UserId && x.LessonId == request.LessonId, cancellationToken);
-
-            if (progress != null)
+            // 1. XỬ LÝ TIẾN ĐỘ HỌC TẬP (Study Progress)
+            // Nếu có currentIndex, đây là một cập nhật về việc xem thẻ bài học
+            if (request.CurrentIndex.HasValue)
             {
-                // Cập nhật kỷ lục cũ
-                if (request.Score > progress.Score) progress.Score = request.Score;
-                if (request.Completed) progress.Completed = true;
-                
-                // Cập nhật vị trí đang học (nếu có gửi lên)
-                if (request.CurrentIndex.HasValue)
+                var studyRepo = _uow.Repository<UserStudyProgress>();
+                var study = await studyRepo.Query()
+                    .FirstOrDefaultAsync(x => x.UserId == request.UserId && x.LessonId == request.LessonId, cancellationToken);
+
+                if (study != null)
                 {
-                    progress.CurrentIndex = request.CurrentIndex.Value;
+                    study.CurrentIndex = request.CurrentIndex.Value;
+                    if (request.Completed) study.IsCompleted = true;
+                    study.LastStudiedAt = DateTime.UtcNow;
+                    studyRepo.Update(study);
+                }
+                else
+                {
+                    studyRepo.Add(new UserStudyProgress
+                    {
+                        UserId = request.UserId,
+                        LessonId = request.LessonId,
+                        CurrentIndex = request.CurrentIndex.Value,
+                        IsCompleted = request.Completed,
+                        LastStudiedAt = DateTime.UtcNow,
+                        CreatedAt = DateTime.UtcNow
+                    });
+                }
+            }
+
+            // 2. XỬ LÝ KẾT QUẢ THI/ÔN TẬP (Exam Summary)
+            // Chỉ cập nhật điểm số và lịch sử nếu đây là một bài test (có điểm số hoặc số câu hỏi)
+            if (request.TotalQuestions.HasValue || request.Score > 0)
+            {
+                var examRepo = _uow.Repository<UserProgress>();
+                var exam = await examRepo.Query()
+                    .FirstOrDefaultAsync(x => x.UserId == request.UserId && x.LessonId == request.LessonId, cancellationToken);
+
+                if (exam != null)
+                {
+                    if (request.Score > exam.Score) exam.Score = request.Score;
+                    if (request.Score >= 80) exam.Completed = true;
+                    exam.Attempts += 1;
+                    exam.LastPlayed = DateTime.UtcNow;
+                    examRepo.Update(exam);
+                }
+                else
+                {
+                    examRepo.Add(new UserProgress
+                    {
+                        UserId = request.UserId,
+                        LessonId = request.LessonId,
+                        Score = request.Score,
+                        Completed = request.Score >= 80,
+                        Attempts = 1,
+                        LastPlayed = DateTime.UtcNow,
+                        CreatedAt = DateTime.UtcNow
+                    });
                 }
 
-                progress.Attempts += 1;
-                progress.LastPlayed = DateTime.UtcNow;
-                repo.Update(progress);
-            }
-            else
-            {
-                // Tạo mới tiến độ bài học
-                var newProgress = new UserProgress
+                // Lưu lịch sử chi tiết (ReviewHistory)
+                if (request.TotalQuestions.HasValue && request.CorrectCount.HasValue)
                 {
-                    UserId = request.UserId,
-                    LessonId = request.LessonId,
-                    Score = request.Score,
-                    Completed = request.Completed,
-                    CurrentIndex = request.CurrentIndex ?? 0,
-                    Attempts = 1,
-                    LastPlayed = DateTime.UtcNow,
-                    CreatedAt = DateTime.UtcNow
-                };
-                repo.Add(newProgress);
+                    _uow.Repository<ReviewHistory>().Add(new ReviewHistory
+                    {
+                        UserId = request.UserId,
+                        LessonId = request.LessonId,
+                        Score = request.Score,
+                        TotalQuestions = request.TotalQuestions.Value,
+                        CorrectCount = request.CorrectCount.Value,
+                        DetailsJson = request.DetailsJson,
+                        CreatedAt = DateTime.UtcNow
+                    });
+                }
             }
 
-            // LƯU LỊCH SỬ CHI TIẾT: Chỉ lưu khi có thông tin câu hỏi (thường là khi kết thúc bài test/review)
-            if (request.TotalQuestions.HasValue && request.CorrectCount.HasValue)
-            {
-                var history = new ReviewHistory
-                {
-                    UserId = request.UserId,
-                    LessonId = request.LessonId,
-                    Score = request.Score,
-                    TotalQuestions = request.TotalQuestions.Value,
-                    CorrectCount = request.CorrectCount.Value,
-                    DetailsJson = request.DetailsJson,
-                    CreatedAt = DateTime.UtcNow
-                };
-                _uow.Repository<ReviewHistory>().Add(history);
-            }
-
-            // ĐỒNG BỘ TỪ VỰNG: Nếu học viên hoàn thành bài học (học mới), ghi nhận toàn bộ từ vựng trong bài
-            if (request.Score >= 80) // Ngưỡng coi là đã học thuộc sơ bộ
+            // 3. ĐỒNG BỘ TỪ VỰNG (Nếu đạt điểm cao coi như đã học xong các từ trong bài)
+            if (request.Score >= 80)
             {
                 var vocabIds = await _uow.Repository<Vocabulary>().Query()
                     .Where(v => v.LessonId == request.LessonId)
@@ -115,7 +138,14 @@ namespace HanLexicon.Application.Features.LessonsUser
                 }
             }
 
-            await _uow.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await _uow.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: "23505" })
+            {
+                // Unique constraint violation - ignoring as record already exists (mục đích đạt được)
+            }
             return true;
         }
     }

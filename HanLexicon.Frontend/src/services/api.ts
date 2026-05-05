@@ -99,11 +99,23 @@ export interface LessonFlat {
   level: string;
 }
 
-export interface Category {
-  id: number;
-  name: string;
+export interface GameItemDto {
+  id: string;
+  link: string;
+  icon: string;
+  title: string;
+  translation: string;
+  desc: string;
+  badge?: string;
+  score?: number;
+  studyIndex?: number;
+  isStudied: boolean;
+  isStudyCompleted: boolean;
+}
+
+export interface GameCategoryResponseDto {
   categorySlug: string;
-  items: any[];
+  items: GameItemDto[];
 }
 
 // --- DỊCH VỤ QUẢN TRỊ ---
@@ -114,6 +126,7 @@ export const adminService = {
   deleteVocabulary: (id: string): Promise<any> => apiClient.delete(`/admin/vocabularies/${id}`),
   
   adminGetOverallStats: (): Promise<any> => apiClient.get('/admin/dashboard/overall-stats'),
+  adminGetGrowthStats: (): Promise<any> => apiClient.get('/admin/dashboard/growth-stats'),
   getAllImportJobs: (page: number = 1): Promise<any> => apiClient.get('/admin/vocabularies/jobs', { params: { page, pageSize: 10 } }),
   getImportStats: (): Promise<any> => apiClient.get('/admin/dashboard/import-stats'),
   getImportStatus: (id: string): Promise<any> => apiClient.get(`/admin/vocabularies/import-status/${id}`),
@@ -177,6 +190,19 @@ export const adminService = {
   adminGetUserDetails: (id: string): Promise<any> => apiClient.get(`/admin/users/${id}`),
   adminGetStudentStats: (id: string): Promise<any> => apiClient.get(`/admin/users/${id}/stats`),
   adminUpdateUserStatus: (id: string, isActive: boolean): Promise<any> => apiClient.patch(`/admin/users/${id}/status`, { id, isActive }),
+  adminCreateUser: (data: any): Promise<any> => apiClient.post('/admin/users', data),
+};
+
+export const mediaService = {
+  getMediaList: (params: any): Promise<any> => apiClient.get('/media', { params }),
+  uploadMedia: (formData: FormData, folder: string = 'general'): Promise<any> => 
+    apiClient.post(`/media/upload-batch`, formData, { 
+      params: { folder },
+      headers: { 'Content-Type': 'multipart/form-data' } 
+    }),
+  createFolder: (name: string, description?: string): Promise<any> => 
+    apiClient.post('/media/folders', { name, description }),
+  deleteMedia: (id: string): Promise<any> => apiClient.delete(`/media/${id}`)
 };
 
 // --- CÁC DỊCH VỤ KHÁC ---

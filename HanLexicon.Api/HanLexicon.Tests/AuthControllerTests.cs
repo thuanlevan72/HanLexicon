@@ -3,6 +3,7 @@ using HanLexicon.Api.Controllers.Auth;
 using HanLexicon.Application.DTOs.authDto;
 using HanLexicon.Application.Features.Auth;
 using HanLexicon.Application.Interfaces;
+using HanLexicon.Application.Common;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -44,7 +45,8 @@ namespace HanLexicon.Tests
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnedValue = Assert.IsType<AuthResultDto>(okResult.Value);
+            var apiResponse = Assert.IsType<ApiResponse<object>>(okResult.Value);
+            var returnedValue = Assert.IsType<AuthResultDto>(apiResponse.Data);
             Assert.True(returnedValue.IsSuccess);
             Assert.Equal("fake-token", returnedValue.AccessToken);
         }

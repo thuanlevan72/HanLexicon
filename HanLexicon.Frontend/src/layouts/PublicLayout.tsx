@@ -16,13 +16,8 @@ export default function PublicLayout() {
     <div className="min-h-screen flex flex-col bg-brand-bg text-brand-ink">
       <header className="sticky top-0 z-50 w-full border-b border-brand-border bg-white/80 backdrop-blur-md">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group active:scale-95 transition-all duration-300 ease-out">
-            <span className="text-xl font-bold tracking-tight text-brand-ink transition-colors group-hover:text-brand-primary">
-              Tiếng Trung
-            </span>
-            <div className="bg-brand-primary w-auto px-3 h-10 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-sm transition-all duration-500 ease-out group-hover:scale-110 group-hover:bg-brand-accent group-hover:rotate-3 font-heading">
-              Leyi
-            </div>
+          <Link to="/" className="flex items-center group active:scale-95 transition-all duration-300 ease-out">
+            <img src="/images/logo/2.png" alt="Tiếng Trung Leyi" className="h-16 w-auto group-hover:scale-105 transition-transform duration-300" />
           </Link>
 
           {/* Desktop Nav */}
@@ -57,13 +52,8 @@ export default function PublicLayout() {
             ) : (
               <>
                 <Link to="/login">
-                  <Button variant="ghost" className="flex items-center gap-2 text-brand-secondary font-bold hover:text-brand-ink">
-                    <LogIn className="w-4 h-4" /> {t('nav.login')}
-                  </Button>
-                </Link>
-                <Link to="/register">
                   <Button className="bg-gradient-to-r from-brand-accent-dark via-brand-accent to-brand-accent-light hover:opacity-90 text-white rounded-xl px-6 shadow-sm font-bold border-0 hover:-translate-y-0.5 transition-all">
-                    {t('nav.start')}
+                    {t('nav.login')}
                   </Button>
                 </Link>
               </>
@@ -134,13 +124,8 @@ export default function PublicLayout() {
                     ) : (
                       <>
                         <Link to="/login" onClick={() => setIsOpen(false)}>
-                          <Button variant="ghost" className="w-full h-14 rounded-2xl font-bold flex items-center gap-2">
-                             <LogIn className="w-5 h-5" /> {t('nav.login')}
-                          </Button>
-                        </Link>
-                        <Link to="/register" onClick={() => setIsOpen(false)}>
                           <Button className="w-full h-14 bg-gradient-to-r from-brand-accent-dark via-brand-accent to-brand-accent-light hover:opacity-90 border-0 text-white font-black text-lg rounded-2xl shadow-xl shadow-brand-accent/20">
-                            {t('nav.start')}
+                             {t('nav.login')}
                           </Button>
                         </Link>
                       </>
@@ -162,8 +147,7 @@ export default function PublicLayout() {
         <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-12 relative z-10">
           <div className="space-y-6 md:col-span-2">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <span className="text-3xl font-black text-white tracking-tight">Tiếng Trung</span>
-              <div className="bg-gradient-to-br from-brand-primary to-brand-primary-light w-auto px-4 h-12 rounded-xl flex items-center justify-center text-white font-black text-2xl font-heading shadow-xl">Leyi</div>
+              <img src="/images/logo/logo-transparent.png" alt="Tiếng Trung Leyi" className="h-12 w-auto" />
             </div>
             <p className="text-sm leading-relaxed max-w-sm opacity-80 font-medium">
               {t('common.footerDesc')}
@@ -228,3 +212,4 @@ export default function PublicLayout() {
     </div>
   );
 }
+

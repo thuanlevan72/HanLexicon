@@ -19,8 +19,6 @@ public partial class UserProgress
 
     public int TimeSpentS { get; set; }
 
-    public int CurrentIndex { get; set; }
-
     public DateTime LastPlayed { get; set; }
 
     public DateTime CreatedAt { get; set; }

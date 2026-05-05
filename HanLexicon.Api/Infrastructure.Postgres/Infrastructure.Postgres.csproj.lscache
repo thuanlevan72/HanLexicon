@@ -67,6 +67,8 @@ Persistence/
   20260425011229_Baseline.Designer.cs
   20260427050526_AddReviewHistory.cs
   20260427050526_AddReviewHistory.Designer.cs
+  20260505150101_AddMediaFolders.cs
+  20260505150101_AddMediaFolders.Designer.cs
   HanLexiconDbContextModelSnapshot.cs
 Repositories/
  GenericRepository.cs

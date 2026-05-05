@@ -1,3 +1,5 @@
+import { logger } from '@/src/utils/logger';
+
 /**
  * Type-safe LocalStorage wrappers to avoid direct manipulation errors.
  */
@@ -12,7 +14,7 @@ export const storage = {
         window.localStorage.setItem(key, JSON.stringify(value));
       }
     } catch (error) {
-      console.warn(`Error setting localStorage key "${key}":`, error);
+      logger.warn(`Error setting localStorage key \"${key}\":`, error);
     }
   },
 
@@ -27,7 +29,7 @@ export const storage = {
       }
       return defaultValue;
     } catch (error) {
-      console.warn(`Error getting localStorage key "${key}":`, error);
+      logger.warn(`Error getting localStorage key \"${key}\":`, error);
       return defaultValue;
     }
   },
@@ -41,7 +43,7 @@ export const storage = {
         window.localStorage.removeItem(key);
       }
     } catch (error) {
-      console.warn(`Error removing localStorage key "${key}":`, error);
+      logger.warn(`Error removing localStorage key \"${key}\":`, error);
     }
   },
 
@@ -54,7 +56,7 @@ export const storage = {
         window.localStorage.clear();
       }
     } catch (error) {
-      console.warn('Error clearing localStorage:', error);
+      logger.warn('Error clearing localStorage:', error);
     }
   }
 };

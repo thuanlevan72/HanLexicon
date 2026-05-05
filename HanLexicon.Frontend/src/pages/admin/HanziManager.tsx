@@ -8,6 +8,8 @@ import {
 } from 'lucide-react';
 import { adminService } from '@/src/services/api';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import { logger } from '@/src/utils/logger';
 
 export default function HanziManager() {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -27,7 +29,7 @@ export default function HanziManager() {
         setCards(res.data);
       }
     } catch (error) {
-      console.error(error);
+      logger.error('Lỗi tải thẻ chữ Hán', error);
     } finally {
       setLoading(false);
     }
@@ -59,13 +61,14 @@ export default function HanziManager() {
         : await adminService.adminCreateHanziCard(currentCard);
       
       if (res.isSuccess) {
+        toast.success(currentCard.id ? 'Cập nhật thẻ Hanzi thành công' : 'Thêm thẻ Hanzi mới thành công');
         setIsEditModalOpen(false);
         fetchData();
       } else {
-        alert(res.message);
+        toast.error(res.message || 'Có lỗi xảy ra khi lưu thẻ Hanzi');
       }
     } catch (error: any) {
-      alert("Lỗi: " + error);
+      toast.error("Lỗi: " + error.message);
     } finally {
       setIsSaving(false);
     }
@@ -74,10 +77,15 @@ export default function HanziManager() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Xóa thẻ chữ Hán này?")) return;
     try {
-      await adminService.adminDeleteHanziCard(id);
-      fetchData();
-    } catch (error) {
-      alert("Lỗi khi xóa");
+      const res = await adminService.adminDeleteHanziCard(id);
+      if (res.isSuccess) {
+        toast.success('Xóa thẻ Hanzi thành công');
+        fetchData();
+      } else {
+        toast.error(res.message || 'Không thể xóa thẻ Hanzi này');
+      }
+    } catch (error: any) {
+      toast.error("Lỗi khi xóa: " + error.message);
     }
   };
 

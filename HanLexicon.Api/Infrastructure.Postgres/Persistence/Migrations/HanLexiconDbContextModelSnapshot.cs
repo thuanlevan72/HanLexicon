@@ -447,6 +447,36 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.ToTable("media_files", (string)null);
                 });
 
+            modelBuilder.Entity("HanLexicon.Domain.Entities.MediaFolder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("media_folders_pkey");
+
+                    b.ToTable("media_folders", (string)null);
+                });
+
             modelBuilder.Entity("HanLexicon.Domain.Entities.Permission", b =>
                 {
                     b.Property<short>("Id")
@@ -762,60 +792,31 @@ namespace Infrastructure.Postgres.Persistence.Migrations
 
             modelBuilder.Entity("HanLexicon.Domain.Entities.SystemLog", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id")
-                        .HasDefaultValueSql("uuid_generate_v4()");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("now()");
-
                     b.Property<string>("Exception")
                         .HasColumnType("text")
                         .HasColumnName("exception");
 
-                    b.Property<string>("LogLevel")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("log_level");
+                    b.Property<int>("Level")
+                        .HasColumnType("integer")
+                        .HasColumnName("level");
+
+                    b.Property<string>("LogEvent")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("log_event");
 
                     b.Property<string>("Message")
                         .HasColumnType("text")
                         .HasColumnName("message");
 
-                    b.Property<string>("RequestMethod")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasColumnName("request_method");
+                    b.Property<string>("MessageTemplate")
+                        .HasColumnType("text")
+                        .HasColumnName("message_template");
 
-                    b.Property<string>("RequestPath")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("request_path");
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("timestamp");
 
-                    b.Property<string>("TraceId")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("trace_id");
-
-                    b.Property<string>("UserId")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("user_id");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("user_name");
-
-                    b.HasKey("Id")
-                        .HasName("system_logs_pkey");
-
-                    b.ToTable("system_logs", (string)null);
+                    b.ToTable("logs", (string)null);
                 });
 
             modelBuilder.Entity("HanLexicon.Domain.Entities.User", b =>
@@ -902,10 +903,6 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("now()");
-
-                    b.Property<int>("CurrentIndex")
-                        .HasColumnType("integer")
-                        .HasColumnName("current_index");
 
                     b.Property<DateTime>("LastPlayed")
                         .ValueGeneratedOnAdd()
@@ -1018,6 +1015,57 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("user_sessions", (string)null);
+                });
+
+            modelBuilder.Entity("HanLexicon.Domain.Entities.UserStudyProgress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("uuid_generate_v4()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CurrentIndex")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("current_index");
+
+                    b.Property<bool>("IsCompleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_completed");
+
+                    b.Property<DateTime>("LastStudiedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_studied_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("LessonId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("lesson_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("user_study_progress_pkey");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex(new[] { "UserId", "LessonId" }, "user_study_progress_user_id_lesson_id_key")
+                        .IsUnique();
+
+                    b.ToTable("user_study_progress", (string)null);
                 });
 
             modelBuilder.Entity("HanLexicon.Domain.Entities.UserWordProgress", b =>
@@ -1465,6 +1513,27 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HanLexicon.Domain.Entities.UserStudyProgress", b =>
+                {
+                    b.HasOne("HanLexicon.Domain.Entities.Lesson", "Lesson")
+                        .WithMany("UserStudyProgresses")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("user_study_progress_lesson_id_fkey");
+
+                    b.HasOne("HanLexicon.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("user_study_progress_user_id_fkey");
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HanLexicon.Domain.Entities.UserWordProgress", b =>
                 {
                     b.HasOne("HanLexicon.Domain.Entities.User", "User")
@@ -1528,6 +1597,8 @@ namespace Infrastructure.Postgres.Persistence.Migrations
                     b.Navigation("ReviewHistories");
 
                     b.Navigation("UserProgresses");
+
+                    b.Navigation("UserStudyProgresses");
 
                     b.Navigation("Vocabularies");
                 });

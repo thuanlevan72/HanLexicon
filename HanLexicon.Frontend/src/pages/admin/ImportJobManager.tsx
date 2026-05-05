@@ -39,22 +39,22 @@ export default function ImportJobManager() {
         setStats(statsRes.data);
       }
     } catch (error) {
-      console.error("Lỗi khi tải dữ liệu", error);
+      logger.error("Lỗi khi tải dữ liệu Job", error);
     } finally {
       setLoading(false);
     }
-  };
+    };
 
-  useEffect(() => {
+    useEffect(() => {
     fetchData();
     const interval = setInterval(fetchData, 10000);
     return () => clearInterval(interval);
-  }, [page]);
+    }, [page]);
 
-  const handleJobFinished = (jobId: string) => {
-    console.log(`Job ${jobId} đã hoàn thành, đang cập nhật dữ liệu...`);
+    const handleJobFinished = (jobId: string) => {
+    logger.log(`Job ${jobId} đã hoàn thành, đang cập nhật dữ liệu...`);
     fetchData();
-  };
+    };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 max-w-6xl mx-auto pb-20">
@@ -110,7 +110,7 @@ export default function ImportJobManager() {
                       job.status === 'Failed' ? "bg-rose-50 text-rose-600 border-rose-100" :
                       "bg-amber-50 text-amber-600 border-amber-100"
                     )}>
-                      {job.status}
+                      {job.status === 'Completed' ? 'Hoàn thành' : job.status === 'Failed' ? 'Thất bại' : 'Đang xử lý'}
                     </Badge>
                   </div>
                   <div className="space-y-1.5">
